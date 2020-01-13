@@ -1,0 +1,27 @@
+Start LOG File Mon Jan 13 2020 09:52:43 GMT+0200 (Eastern European Standard Time)
+----------------- Start FOX TESTS ----------------
+----- Переменные из config.config -------
+(FRONT_FOX_URL)=(http://localhost:8080)
+(SHOW_ACTION_IN_BROWSER)=(true)
+(OUT_TO_LOG_FILE)=(true)
+(LOG_FILE_NAME)=(test1_log.log)
+(TEST_VAR)=(this is test var from file)
+------------
+Тесты ========================================
+Тест[ LoginPage ]=> Запущен => Вітаємо вас в системі FOX CRM => Пройден 
+Тест[ CheckUserExist->"Тостер" ]=> Запущен => Провален !!! 
+Тест[ CreateNewUser->"Тостер" ]=> Запущен => Пройден 
+Тест[ ReLoginToster ]=> Запущен => Пройден 
+Тест[ ContactCheckValidation->"undefined" ]=> Запущен => Ошибка Валидируемых полей 3 < 6  => Провален !!! 
+Тест[ ContactCreateNew->"Фамилия8552" ]=> Запущен => Пройден 
+Тест[ CompanyCheckExist->"40720837" ]=> Запущен => Пройден 
+Тест[ CompanyCreateNew->"40720837" ]=> Запущен => Пройден 
+Тест[ CompanyWrongEdit->"40720837" ]=> Запущен => Пройден 
+Тест[ DriverCreateNew->"ВодФам5300" ]=> Запущен => Пройден 
+Тест[ VehicleCreateNew->"Тест 5841 Ном" ]=> Запущен => Ошибка Not ElementIsPresent(class="head__title""Транспортные стредства") => Провален !!! 
+============================================
+-> Всего тестов запущено : 11   ===========
++++++++++ Удачно пройдено: 8   +++++++++++
+--------------- Провалено: 3   -----------
+----------------- END   FOX TESTS ----------------
+End Log File | Прошло времени: 00 час, 02 мин, 47 сек
