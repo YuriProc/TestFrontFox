@@ -9,4 +9,4 @@
     * OUT_TO_LOG_FILE = true/false
     * LOG_FILE_NAME = test1_log.log <-своё имя лог файла.
 
-5) npm start.
+5) **npm start**.
