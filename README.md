@@ -1,5 +1,5 @@
 # TestFrontFox
-Тестирование Fox через фронт
-brew install node
-npm i puppeteer
-npm start
+Тестирование Fox через фронт:
+1) brew install node.
+2) npm i puppeteer.
+3) npm start.
