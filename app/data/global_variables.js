@@ -11,6 +11,9 @@ global.g_OutToLogFile = false;
 global.gname_LogFileName = 'LOG_FILE_NAME';
 global.g_LogFileName = 'test_log.log';
 
+global.gname_CheckFileName = 'CHECK_FILE_NAME';
+global.g_CheckFileName = 'test_check.check';
+
 global.gname_TestVar = 'TEST_VAR';
 global.g_TestVar = 'test';
 

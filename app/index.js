@@ -54,6 +54,7 @@ let OpenFox = async () => {
         oConfig = await OpenConfig.SetAllConfigConst();
         if (oConfig === "OK") {
             await console.log('\x1b[38;5;2m', "Load Config", oConfig, '\x1b[0m');
+            fs_log.writeFileSync(g_CheckFileName, `-1`);
         }else{
             throw 'Ошибка OpenConfig !!!';//<--специальный вызов ошибки!
         }
@@ -78,10 +79,14 @@ let OpenFox = async () => {
         //
         //
 
+        // 9) Создаём Транспорт
+      //  RNum = randomInt(1000, 9999);
+      //  strLicensePlate = 'Тест '+ RNum + ' Ном';
+
+      //  returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
 
 
-
-        //throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+        // throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
         //------------END Для тестов------------------------------------------------------------------
 
         //  1) Логинимся под Рутом
@@ -176,6 +181,7 @@ let OpenFox = async () => {
             g_StrOutLog+='----------------- END   FOX TESTS ----------------\n';
             g_StrOutLog+=`End Log File | Прошло времени: ${strDtAll}\n`;
 
+            fs_log.writeFileSync(g_CheckFileName, `${g_FailedTests}`);
             fs_log.writeFileSync(g_LogFileName, g_StrOutLog);
             await console.log('\x1b[38;5;2m', "Запись LOG файла:", g_LogFileName, "  +++ OK +++", '\x1b[0m');
         }catch (errWriteFile) {

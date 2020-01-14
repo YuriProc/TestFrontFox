@@ -37,6 +37,8 @@ let SetAllConfigConst = async () => {
 
         global.g_LogFileName = await GetConfigConst(ContentFromConfigFile, gname_LogFileName);
 
+        global.g_CheckFileName = await GetConfigConst(ContentFromConfigFile, gname_CheckFileName);
+
         global.g_TestVar = await GetConfigConst(ContentFromConfigFile, gname_TestVar);
 
         await console.log("------------");
@@ -53,6 +55,9 @@ let SetAllConfigConst = async () => {
 
         await console.log("(",gname_LogFileName,")=(",g_LogFileName,")");
         g_StrOutLog+=`(${gname_LogFileName})=(${g_LogFileName})\n`;
+
+        await console.log("(",gname_CheckFileName,")=(",g_CheckFileName,")");
+        g_StrOutLog+=`(${gname_CheckFileName})=(${g_CheckFileName})\n`;
 
         await console.log("(",gname_TestVar,")=(",g_TestVar,")");
         g_StrOutLog+=`(${gname_TestVar})=(${g_TestVar})\n`;

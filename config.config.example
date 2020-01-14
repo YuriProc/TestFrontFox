@@ -4,6 +4,7 @@ FRONT_FOX_URL = http://localhost:8080
 SHOW_ACTION_IN_BROWSER = true
 OUT_TO_LOG_FILE = true
 LOG_FILE_NAME = test1_log.log
+CHECK_FILE_NAME = test1_check.check
 
 3. zzzzz = НАХ
 # SHOW_ACTION=true

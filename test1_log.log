@@ -1,26 +1,21 @@
-Start LOG File Tue Jan 14 2020 17:17:20 GMT+0200 (Eastern European Standard Time)
+Start LOG File Tue Jan 14 2020 18:06:45 GMT+0200 (Eastern European Standard Time)
 ----------------- Start FOX TESTS ----------------
 ----- Переменные из config.config -------
 (FRONT_FOX_URL)=(http://localhost:8080)
 (SHOW_ACTION_IN_BROWSER)=(true)
 (OUT_TO_LOG_FILE)=(true)
 (LOG_FILE_NAME)=(test1_log.log)
+(CHECK_FILE_NAME)=(test1_check.check)
 (TEST_VAR)=(this is test var from file)
 ------------
 Тесты ========================================
-Тест[ LoginPage ]=> Запущен => Вітаємо вас в системі FOX CRM => Пройден 
-Тест[ CheckUserExist->"Тостер" ]=> Запущен => Пройден 
 Тест[ ReLoginToster ]=> Запущен => Пройден 
-Тест[ ContactCheckValidation->"undefined" ]=> Запущен => Пройден 
-Тест[ ContactCreateNew->"Фамилия1776" ]=> Запущен => Пройден 
-Тест[ CompanyCheckExist->"40720837" ]=> Запущен => Пройден 
-Тест[ CompanyCreateNew->"40720837" ]=> Запущен => Пройден 
-Тест[ CompanyWrongEdit->"40720837" ]=> Запущен => Пройден 
-Тест[ DriverCreateNew->"ВодФам7043" ]=> Запущен => Пройден 
-Тест[ VehicleCreateNew->"Тест 4129 Ном" ]=> Запущен => Пройден 
+Тест[ VehicleCreateNew->"Тест 1133 Ном" ]=> Запущен => Пройден 
+Ошибка: НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!
+Все остальные тесты не будут запущены!!! 
 ============================================
--> Всего тестов запущено : 10   ===========
-+++++++++ Удачно пройдено: 10   +++++++++++
+-> Всего тестов запущено : 2   ===========
++++++++++ Удачно пройдено: 2   +++++++++++
 --------------- Провалено: 0   -----------
 ----------------- END   FOX TESTS ----------------
-End Log File | Прошло времени: 00 час, 03 мин, 30 сек
+End Log File | Прошло времени: 00 час, 00 мин, 50 сек

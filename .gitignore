@@ -1,3 +1,5 @@
 /node_modules
 /temp_images
 config.config
+*.log
+*.check
