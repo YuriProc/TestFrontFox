@@ -36,7 +36,7 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
         }
 
         //Проверяем наличие на странице Характерных элементов (Транспортные стредства)
-        resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Транспортные стредства")]');
+        resOk = await WaitUntilElementIsPresentByXPath(1000, page,'//div[@class="head__title"][contains(text(), "Транспортные стредства")]');
         if (!resOk) {
             throw 'Not ElementIsPresent(class="head__title""Транспортные стредства")';//<--специальный вызов ошибки!
         }
@@ -53,7 +53,7 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
         //Проверяем наличие на странице Характерных элементов (Создать транспорт)
         resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Создать транспорт")]');
         if (!resOk) {
-            throw 'ElementIsPresent(class="head__title""Создание контакта")';//<--специальный вызов ошибки!
+            throw 'ElementIsPresent(class="head__title""Создать транспорт")';//<--специальный вызов ошибки!
         }
 //---------------
 
@@ -86,8 +86,10 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
         if (!resOk) {
             throw 'ElementIsPresent(class="head__title""Создание контакта")';//<--специальный вызов ошибки!
         }
+
+        //await page.waitFor(1111113000);
         //Клик по инпуту Марка автомобиля
-        let xpCarBrand = '//div[@data-vv-name="car_brand"]/input';
+        let xpCarBrand = '//div[@data-vv-name="car_brand"]/div/input';
         resOk = await ClickByXPath(page, xpCarBrand);
         if (!resOk) {
             throw `ClickByXPath(${xpCarBrand})`;//<--специальный вызов ошибки!

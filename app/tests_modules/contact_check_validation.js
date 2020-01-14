@@ -106,8 +106,11 @@ let ContactCheckValidation = async (page, strLastName) => {
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
             await console.log('\x1b[38;5;2m', "     Вижу валидируемые поля" ,linkHandlers.length,"шт" , '\x1b[0m');
-            if (linkHandlers.length < 6){
-                throw `Валидируемых полей ${linkHandlers.length} < 6 `;//<--специальный вызов ошибки!
+
+            //await page.waitFor(1115000);
+
+            if (linkHandlers.length < 3){
+                throw `Валидируемых полей ${linkHandlers.length} < 3 `;//<--специальный вызов ошибки!
             }
         }
 
