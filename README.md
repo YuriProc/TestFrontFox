@@ -8,5 +8,10 @@
     * задать SHOW_ACTION_IN_BROWSER = true/false <- запускать или нет браузер для визуального контроля действий Puppeteer'а.
     * OUT_TO_LOG_FILE = true/false
     * LOG_FILE_NAME = test1_log.log <-своё имя лог файла.
+    * CHECK_FILE_NAME = test1_check.check <- своё имя чек файла.
+                    
+                    * -1 = непредвиденная ошибка.
+                    * 0  = Все тесты прошли без ошибок.
+                    * [1 .. number] = количество провалившихся тестов. 
 
 5) **npm start**.
