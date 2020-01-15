@@ -64,29 +64,38 @@ let OpenFox = async () => {
         g_NumberCurrentTest = 1;
 
         //------------START Для тестов--------------------------------------------------------------
+        /*
+                returnResult = await LPage.LoginPage(page);
+                // 2) Проверяем наличие Тостера
+                let strUserLastName = 'Тостер';//Тостер
+                returnResult = await UCEPage.CheckUserExist(page, strUserLastName);
+
+                if (!returnResult) {    // если его нет то создаём
+                    returnResult = await UCNPage.CreateNewUser(page, strUserLastName);
+                }
+                returnResult = await RL.ReLoginToster(page);
+
+                // RNum = randomInt(1000, 9999);
+                // strLicensePlate = 'Тест '+ RNum + ' Ном';
+                //
+                // returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
+             //   returnResult = await DealCNPage.DealCreateNew(browser,page,strLicensePlate);
+             //   if (!returnResult) {    // если не получилось перелогиниться то всё остальное будет пропущено
+             //       throw 'Не получилось DealCreateNew';//<--специальный вызов ошибки!
+             //   }
+                //
+                //
+
+                // 8) Создаём нового Водителя
+               RNum = randomInt(1000, 9999);
+                strLastName = 'ВодФам'+ RNum;
+                strFirstName = 'ВодИмя' + RNum;
+                strMiddleName = 'ВодОтч' + RNum;
+                returnResult = await DriverCNPage.DriverCreateNew(browser,page,0,strLastName,strFirstName,strMiddleName);
 
 
-        //returnResult = await RL.ReLoginToster(page);
-
-        // RNum = randomInt(1000, 9999);
-        // strLicensePlate = 'Тест '+ RNum + ' Ном';
-        //
-        // returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
-     //   returnResult = await DealCNPage.DealCreateNew(browser,page,strLicensePlate);
-     //   if (!returnResult) {    // если не получилось перелогиниться то всё остальное будет пропущено
-     //       throw 'Не получилось DealCreateNew';//<--специальный вызов ошибки!
-     //   }
-        //
-        //
-
-        // 9) Создаём Транспорт
-      //  RNum = randomInt(1000, 9999);
-      //  strLicensePlate = 'Тест '+ RNum + ' Ном';
-
-      //  returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
-
-
-        // throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+                throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+          */
         //------------END Для тестов------------------------------------------------------------------
 
         //  1) Логинимся под Рутом

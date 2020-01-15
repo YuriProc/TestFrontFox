@@ -68,7 +68,7 @@ global.g_ArrayURL = {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAJmmQepPRB1cmaU9wuWKiy07PABvw9vB-_GK1UO9GRou_1IMQ&s',
     ],
     'DriverDocURL': [
-        'https://lh3.googleusercontent.com/pPd3R5r_isMlAxZT-M2xx8q-J2P1BKuBmxkERYv_IOEAdb_cs9EhZ-gqhMRzOCf1_fosKw=s130',
+        //'https://lh3.googleusercontent.com/pPd3R5r_isMlAxZT-M2xx8q-J2P1BKuBmxkERYv_IOEAdb_cs9EhZ-gqhMRzOCf1_fosKw=s130',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8KgKxL8zD-2POxgBVtfs3VJ3rR4j4xWa8BruUXm2gRYF_ypOVzg&s',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNGO44uyP58nKPJHzeE7Uy_OsDOtBqCE32sY4AJLWlo675dpmS&s',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSYfo3GGyFyEWEsqlXSvY-CTe6_cu_EVulKb5j5cEBiKmaNwpUpA&s',

@@ -158,7 +158,11 @@ SaveTempPictureFromURL = async function(browser, strPicURL, MyFileName) {
     const fs = require('fs');
     try {
         let viewSource = await page.goto(strPicURL);
-
+        let StatusX = await viewSource._status;
+        //await console.log('StatusX:',StatusX,':');
+        if (StatusX !== 200 ) {
+            throw 'StatusX !== 200' // <- специальный вызов ошибки !!!
+        }
         // Проверим, существует ли папка, если нет — создадим её
         const imagesDirectory = './temp_images/';
         if (!fs.existsSync(imagesDirectory)) {
@@ -169,6 +173,7 @@ SaveTempPictureFromURL = async function(browser, strPicURL, MyFileName) {
         fs.writeFileSync(filePath, await viewSource.buffer(), async function (err) {
             if (err) {
                 await console.log(err);
+                await page.close();
                 return '';
             }
             await console.log("The file was saved!");
@@ -190,10 +195,11 @@ SaveTempPictureFromRandomURL = async function(browser, MyArrayName) {
         NumTry++;
         RandNum = await randomInt(0, g_ArrayURL[MyArrayName].length - 1);
         strPicURL = g_ArrayURL[MyArrayName][RandNum];
+        //strPicURL = g_ArrayURL[MyArrayName][0];
         //await console.log('\x1b[38;5;2m', `         g_ArrayURL['TrollFaceUrl'][${RandNum}]`, strPicURL, '\x1b[0m');
         MyFilePath = await SaveTempPictureFromURL(browser, strPicURL, 'temp_picture.png');
     }while ((MyFilePath === '')&&(NumTry < MaxTry) );
-
+    //await console.log('MyFilePath:',MyFilePath,':');
     return MyFilePath;
 };
 //-----------------------------------------------------------------------------------

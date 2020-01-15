@@ -7,7 +7,7 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
 
     //await page.waitFor(500);
     let width = 1200;
-    let height = 880;
+    let height = 900;
     let widthX = 1200;
     let heightX = 1800;
     let xPath;

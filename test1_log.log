@@ -1,4 +1,4 @@
-Start LOG File Tue Jan 14 2020 18:38:57 GMT+0200 (Eastern European Standard Time)
+Start LOG File Wed Jan 15 2020 14:18:46 GMT+0200 (Eastern European Standard Time)
 ----------------- Start FOX TESTS ----------------
 ----- Переменные из config.config -------
 (FRONT_FOX_URL)=(http://localhost:8080)
@@ -13,15 +13,14 @@ Start LOG File Tue Jan 14 2020 18:38:57 GMT+0200 (Eastern European Standard Time
 Тест[ CheckUserExist->"Тостер" ]=> Запущен => Пройден 
 Тест[ ReLoginToster ]=> Запущен => Пройден 
 Тест[ ContactCheckValidation->"undefined" ]=> Запущен => Пройден 
-Тест[ ContactCreateNew->"Фамилия2588" ]=> Запущен => Пройден 
+Тест[ ContactCreateNew->"Фамилия6250" ]=> Запущен => Пройден 
 Тест[ CompanyCheckExist->"40720837" ]=> Запущен => Пройден 
-Тест[ CompanyCreateNew->"40720837" ]=> Запущен => Пройден 
 Тест[ CompanyWrongEdit->"40720837" ]=> Запущен => Пройден 
-Тест[ DriverCreateNew->"ВодФам2164" ]=> Запущен => Пройден 
-Тест[ VehicleCreateNew->"Тест 8872 Ном" ]=> Запущен => Пройден 
+Тест[ DriverCreateNew->"ВодФам3309" ]=> Запущен => Пройден 
+Тест[ VehicleCreateNew->"Тест 6136 Ном" ]=> Запущен => Пройден 
 ============================================
--> Всего тестов запущено : 10   ===========
-+++++++++ Удачно пройдено: 10   +++++++++++
+-> Всего тестов запущено : 9   ===========
++++++++++ Удачно пройдено: 9   +++++++++++
 --------------- Провалено: 0   -----------
 ----------------- END   FOX TESTS ----------------
-End Log File | Прошло времени: 00 час, 03 мин, 31 сек
+End Log File | Прошло времени: 00 час, 02 мин, 50 сек

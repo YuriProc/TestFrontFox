@@ -7,6 +7,7 @@ let CreateNewUser = async (page, strUserLastName) => {
 
     let width = 1200;
     let height = 880;
+    let resOk;
 
     await page.setViewport({width, height});
 
@@ -22,26 +23,41 @@ let CreateNewUser = async (page, strUserLastName) => {
         //await page.click("svg[class=fa-faicon]");
         await page.click("div[class=header__toogle]");
         await page.waitForXPath("//div[contains(text(), 'Добавить данные')]", {timeout: 12000});
-
+        //Клик по Добавить данные
         let linkAddData = await page.$x("//div[contains(text(), 'Добавить данные')]");
         //await page.waitFor(500);
         await linkAddData[0].click();
-
+        //Ждём пока раскроется меню
         await page.waitForXPath("//a[contains(text(), 'Пользователи')]", {timeout: 12000});
+        //Клик по пункту Пользователи
         let linkUsers = await page.$x("//a[contains(text(), 'Пользователи')]");
         await linkUsers[0].click();
+
+        //Закрываем меню Добавить данные
+        await linkAddData[0].click();
+        // Закрываем SideBar (Клик по стрелке)
+        await page.click("div[class=header__toogle]");
 //  //*[@id="app"]/div/main/div/div[1]/div[1]/div[1]
         //#app > div > main > div > div.head > div.head__left-block > div.head__title
        // #app > div > main > div > div.head > div.head__left-block > div.head__title
-        await page.waitForXPath("//div[contains(text(), 'Пользователи')]", {timeout: 12000});
-
+        // Ждём открытие страницы Пользователи
+        await page.waitForXPath("//div[@class='head__title'][contains(text(), 'Пользователи')]", {timeout: 12000});
+        // Ждём появление кнопки Создать
         await page.waitForXPath("//span[contains(text(), 'Создать')]", {timeout: 12000});
+        // Клик по кнопке Создать
         let linkButtonCreate = await page.$x("//span[contains(text(), 'Создать')]");
         await linkButtonCreate[0].click();
+        // Ждём пока загрузится страница
+        resOk = await WaitUntilPageLoads(page);
+        // Проверяем наличие на странице характерных элементов (Создать пользователя)
 
-        //await page.waitForXPath("//div[contains(text(), 'Создать пользователя')]", {timeout: 12000});
+        resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Создать пользователя")]');
+        if (!resOk) {
+            throw `Не вижу  //div[@class="head__title"][contains(text(), "Создать пользователя")]`;//<--специальный вызов ошибки!
+        }
+
         await page.waitForXPath('//*[@id="first_name"]', {timeout: 12000});
-        let linkGotoUsers = await page.$x('//*[@href="/user"]');
+
         await page.click("input[id=first_name]");
         await page.type("input[id=first_name]", 'Тест');
         await page.click("input[id=last_name]");
@@ -91,8 +107,7 @@ let CreateNewUser = async (page, strUserLastName) => {
             try {
                 await page.waitForXPath("//span[contains(text(), 'Такое значение уже существует.')]", {timeout: 3000});
                 await console.log('\x1b[38;5;1m', "Пользователь с таким ЛОГИНОМ или EMAIL уже существует !!!", '\x1b[0m');
-                //let linkGotoUsers = await page.$x('//*[@href="/user"]');
-                //await linkGotoUsers[0].click();
+
                 await page.waitForXPath('//div[contains(text(), "Пользователи")]', {timeout: 7000});
                 await console.log('\x1b[38;5;2m', "Пользователи", '\x1b[0m');
                 g_StatusCurrentTest = 'Пройден';
@@ -111,7 +126,7 @@ let CreateNewUser = async (page, strUserLastName) => {
                 //await page.waitFor(11111500);
             }
             //await console.log('\x1b[38;5;1m', "При создании Нового Юзера ЧТО ТО ПОШЛО НЕ В ТУ ДА!!!\n", err, '\x1b[0m');
-            await linkGotoUsers[0].click();
+
         }
 
     }catch (err) {
