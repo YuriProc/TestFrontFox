@@ -2,5 +2,6 @@
 /temp_images
 config.config
 *.config
-*.log
+ *.log
+/*.log
 *.check
