@@ -6,11 +6,6 @@ OUT_TO_LOG_FILE = true
 LOG_FILE_NAME = test1_log.log
 CHECK_FILE_NAME = test1_check.check
 
-3. zzzzz = НАХ
-# SHOW_ACTION=true
-3453yy5
-ewgrt
-1: qwer
-2) xxxxxx=Хер
+# <- this is a comment
             TEST_VAR  =          this is test var from file
 #end file

@@ -4,4 +4,5 @@ config.config
 *.config
  *.log
 /*.log
+test1_log.log
 *.check
