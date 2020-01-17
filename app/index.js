@@ -32,6 +32,9 @@ let CWEPage = require('./tests_modules/company_wrong_edit');
 let ContactCVPage = require('./tests_modules/contact_check_validation');
 let ContactCNPage = require('./tests_modules/contact_create_new');
 let DriverCNPage = require('./tests_modules/driver_create_new');
+let DriverCNV2Page = require('./tests_modules/driver_create_new_v2');
+let DriverCheckNV2Page = require('./tests_modules/driver_check_new_v2');
+
 let VehicleCNPage = require('./tests_modules/vehicle_create_new');
 let DealCNPage = require('./tests_modules/deal_create_new');
 
@@ -64,16 +67,18 @@ let OpenFox = async () => {
         g_NumberCurrentTest = 1;
 
         //------------START Для тестов--------------------------------------------------------------
-        /*
+/*
                 returnResult = await LPage.LoginPage(page);
                 // 2) Проверяем наличие Тостера
-                let strUserLastName = 'Тостер';//Тостер
-                returnResult = await UCEPage.CheckUserExist(page, strUserLastName);
+                let strUserLastNameT = 'Тостер';//Тостер
+                returnResult = await UCEPage.CheckUserExist(page, strUserLastNameT);
 
                 if (!returnResult) {    // если его нет то создаём
-                    returnResult = await UCNPage.CreateNewUser(page, strUserLastName);
+                    returnResult = await UCNPage.CreateNewUser(page, strUserLastNameT);
                 }
-                returnResult = await RL.ReLoginToster(page);
+*/
+
+                //returnResult = await RL.ReLoginToster(page);
 
                 // RNum = randomInt(1000, 9999);
                 // strLicensePlate = 'Тест '+ RNum + ' Ном';
@@ -86,17 +91,37 @@ let OpenFox = async () => {
                 //
                 //
 
-                // 8) Создаём нового Водителя
+    /*            // 8) Создаём нового Водителя V2
                RNum = randomInt(1000, 9999);
-                strLastName = 'ВодФам'+ RNum;
-                strFirstName = 'ВодИмя' + RNum;
-                strMiddleName = 'ВодОтч' + RNum;
-                returnResult = await DriverCNPage.DriverCreateNew(browser,page,0,strLastName,strFirstName,strMiddleName);
+               RNum = 3546;
+        //let strDriverLicenseNumber = 'DLN' + randomInt(1000, 9999) + strLastName;
+               let tempStrLN = 'ВодФам'+ RNum;
+               let DriverData = {
+                   typeWork : 0,
+                   strLastName : tempStrLN,
+                   strFirstName : 'ВодИмя' + RNum,
+                   strMiddleName : 'ВодОтч' + RNum,
+                   strDriverLicenseNumber : 'DLN' + tempStrLN,
+                   strCompanyName : 'ТРАНСЛОЙД',
 
+               };
+
+                // strLastName = 'ВодФам'+ RNum;
+                // strFirstName = 'ВодИмя' + RNum;
+                // strMiddleName = 'ВодОтч' + RNum;
+  //              returnResult = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
+                returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser,page,DriverData);
+
+*/
+        // 10) Создаём Транспорт
+ /*       RNum = randomInt(1000, 9999);
+        strLicensePlate = 'Тест '+ RNum + ' Ном';
+
+        returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
 
                 throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+*/
 
-          */
         //------------END Для тестов------------------------------------------------------------------
 
         //  1) Логинимся под Рутом
@@ -149,14 +174,25 @@ let OpenFox = async () => {
         // 7) Пробуем отредактировать и сохранить тестовую компанию без обязательных полей
         returnResult = await CWEPage.CompanyWrongEdit(page, CodeCompany);
 
-        // 8) Создаём нового Водителя
+        // 8) Создаём нового Водителя V2
         RNum = randomInt(1000, 9999);
-        strLastName = 'ВодФам'+ RNum;
-        strFirstName = 'ВодИмя' + RNum;
-        strMiddleName = 'ВодОтч' + RNum;
-        returnResult = await DriverCNPage.DriverCreateNew(browser,page,0,strLastName,strFirstName,strMiddleName);
+       // RNum = 3546;
 
-        // 9) Создаём Транспорт
+        let tempStrLN = 'ВодФам'+ RNum;
+        let DriverData = {
+            typeWork : 0,
+            strLastName : tempStrLN,
+            strFirstName : 'ВодИмя' + RNum,
+            strMiddleName : 'ВодОтч' + RNum,
+            strDriverLicenseNumber : 'DLN' + tempStrLN,
+            strCompanyName : 'ТРАНСЛОЙД',
+
+        };
+        returnResult = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
+        // 9) Проверяем нового водителя
+        returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser,page,DriverData);
+
+        // 10) Создаём Транспорт
         RNum = randomInt(1000, 9999);
         strLicensePlate = 'Тест '+ RNum + ' Ном';
 

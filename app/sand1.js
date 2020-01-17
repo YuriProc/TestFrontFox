@@ -144,6 +144,39 @@ linkHandlers[0].click();
 //    .//div[@class="MyClassName1" and text()="MyText"]/ancestor::div[1]
 //===================
 //----------------------------------------------------------------------------------------
+// $('.check__item input[type=radio]:checked').value
+// "contact"
+
+//  //label[@class="check__item"]/input[@type="radio"] <-- input с родителем label
+//  //label[@class="check__item"][./input[@type="radio"]] <-- label с дочерним input
+try {
+    let linkTemp = await page.$x('//input[@type="radio"]');
+    let MaxL = linkTemp.length;
+
+    let ValF;
+    let TextF;
+    let PropF;
+    let VVV;
+    await console.log('\x1b[38;5;2m', "length", MaxL , '\x1b[0m');
+    for (let i = 0 ; i < MaxL; i++){
+
+        ValF = await page.evaluate(elm => elm.value, linkTemp[i]);
+        TextF = await page.evaluate(elm => elm.innerText, linkTemp[i]);
+        PropF = await page.evaluate(elm => elm.checked, linkTemp[i]);
+        //TextF = await TextF.trim();
+        await console.log('\x1b[38;5;2m', "(", ValF ,")(",TextF,")(" ,PropF ,")",'\x1b[0m');//linkManagers[i].visible();
+    }
+
+    VVV = await page.$('input[type=radio]:checked').value;
+    await console.log('\x1b[38;5;2m', "VVV->>>(" ,VVV ,")",'\x1b[0m');
+}catch (e) {
+    throw `XPath Wrong3 ${e}`;
+}
+//--------------------
+const list = await page.evaluateHandle(() => {
+    return Array.from(document.getElementsByTagName('a')).map(a => a.href);
+});
+console.log(await list.jsonValue());
 //--------------------
 const browser = await puppeteer.launch();
 const page = await browser.newPage();

@@ -114,9 +114,15 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
         MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL');
         if (MyFilePath !== '') {
             let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
+            //await ClickByXPath(page, xpDriverLicensePhoto);
+            await page.waitFor(500);
             let [fileChooserDPhoto] = await Promise.all([
+                //ClickByXPath(page, xpDriverLicensePhoto),
+                //page.waitFor(500),
                 page.waitForFileChooser(),
+                //page.waitFor(500),
                 ClickByXPath(page, xpDriverLicensePhoto)
+                //page.waitFor(500),
             ]);
             await fileChooserDPhoto.accept([MyFilePath]);
             await page.waitFor(3000);

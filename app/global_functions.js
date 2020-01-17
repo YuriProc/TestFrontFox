@@ -59,7 +59,78 @@ ElementIsPresent = async function (page , MyXPath) {
     }else{
         return false;
     }
-}
+};
+//-----------------------------------------------------------------------------------
+ElementGetLength = async function (page , MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        return linkHandlers.length;
+    }catch (e) {
+        return -1;
+    }
+};
+ElementGetCheckedNum = async function (page , MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length;
+        let PropC;
+        if ( MaxL > 0 ) {
+            let i = 0;
+            do{
+                PropC = await page.evaluate(elm => elm.checked, linkHandlers[i]);
+                if (PropC) {
+                    return i;
+                }
+                i++;
+            }while (i < MaxL);
+
+            return -1;
+        } else {
+            return -1;
+        }
+    }catch (e) {
+        return -1;
+    }
+};
+ElementGetValue = async function (page , Num, MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        let PropValue;
+        if (Num > MaxL){
+            return '';
+        }else{
+            PropValue = await page.evaluate(elm => elm.value, linkHandlers[Num]);
+            return PropValue;
+        }
+    }catch (e) {
+        return '';
+    }
+};
+ElementGetInnerText = async function (page , Num, MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        let PropInnerText;
+        if (Num > MaxL){
+            return '';
+        }else{
+            PropInnerText = await page.evaluate(elm => elm.innerText, linkHandlers[Num]);
+            return PropInnerText;
+        }
+    }catch (e) {
+        return '';
+    }
+};
+ElementIsChecked = async function (page , Num, MyXPath) {
+  try {
+      const linkHandlers = await page.$x(MyXPath);
+      let PropChecked = await page.evaluate(elm => elm.checked, linkHandlers[Num]);
+      return PropChecked;
+  }catch (e) {
+      return undefined;
+  }
+};
 //-----------------------------------------------------------------------------------
 ClickByXPath = async function (page , MyXPath) {
     const linkHandlers = await page.$x(MyXPath);
@@ -67,6 +138,21 @@ ClickByXPath = async function (page , MyXPath) {
         if (await linkHandlers.length > 0) {
             //await linkHandlers[0].click({ clickCount:20, delay: 500 });
             await linkHandlers[0].click();
+            //await page.evaluate(el => el.click(), linkHandlers[0]);
+            return true;
+        } else {
+            return false;
+        }
+    }catch (e) {
+        return false;
+    }
+}
+ClickByXPathNum = async function (page ,Num ,MyXPath) {
+    const linkHandlers = await page.$x(MyXPath);
+    try {
+        if (await linkHandlers.length >= Num) {
+            //await linkHandlers[0].click({ clickCount:20, delay: 500 });
+            await linkHandlers[Num - 1].click();
             //await page.evaluate(el => el.click(), linkHandlers[0]);
             return true;
         } else {
@@ -127,6 +213,10 @@ TypeByXPath = async function (page , MyXPath, MyText) {
         return false;
     }
 
+}
+//-----------------------------------------------------------------------------------
+NameFunction = function() {
+    return NameFunction.caller.name;
 }
 //-----------------------------------------------------------------------------------
 randomInt = function(low, high) {
@@ -209,6 +299,14 @@ DeleteTempPicture = async function(MyFileName) {
         fs.unlinkSync(MyFileName);
     }
 
+};
+//-----------------------------------------------------------------------------------
+TrimCompanyName = async function(strCompanyName) {
+    let pos;
+    pos = strCompanyName.indexOf(' ', 0);
+    strCompanyName = strCompanyName.slice(pos);
+    strCompanyName = strCompanyName.trim();
+    return strCompanyName;
 };
 //-----------------------------------------------------------------------------------
 String.prototype.toHHMMSS = function () {
