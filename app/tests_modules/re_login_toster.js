@@ -1,5 +1,5 @@
 let ReLoginToster = async (page) => {
-    const nameTest = 'ReLoginToster';
+    const nameTest = NameFunction();
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');

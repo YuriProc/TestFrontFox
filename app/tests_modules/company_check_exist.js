@@ -1,5 +1,5 @@
 let CompanyCheckExist = async (page, strCodeCompany) => {
-    const nameTest = 'CompanyCheckExist->"' + strCodeCompany + '"';
+    const nameTest = NameFunction()+'->"' + strCodeCompany + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');

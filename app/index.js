@@ -36,6 +36,9 @@ let DriverCNV2Page = require('./tests_modules/driver_create_new_v2');
 let DriverCheckNV2Page = require('./tests_modules/driver_check_new_v2');
 
 let VehicleCNPage = require('./tests_modules/vehicle_create_new');
+let VehicleCNV2Page = require('./tests_modules/vehicle_create_new_v2');
+let VehicleCheckNV2Page = require('./tests_modules/vehicle_check_new_v2');
+
 let DealCNPage = require('./tests_modules/deal_create_new');
 
 
@@ -48,7 +51,7 @@ let MyFilePath;
 let RNum;
 let strLastName,strFirstName,strMiddleName;
 let strLicensePlate;
-
+let VehicleData;
 
 let OpenFox = async () => {
     try {
@@ -76,9 +79,9 @@ let OpenFox = async () => {
                 if (!returnResult) {    // если его нет то создаём
                     returnResult = await UCNPage.CreateNewUser(page, strUserLastNameT);
                 }
-*/
 
-                //returnResult = await RL.ReLoginToster(page);
+*/
+ //               returnResult = await RL.ReLoginToster(page);
 
                 // RNum = randomInt(1000, 9999);
                 // strLicensePlate = 'Тест '+ RNum + ' Ном';
@@ -113,11 +116,20 @@ let OpenFox = async () => {
                 returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser,page,DriverData);
 
 */
-        // 10) Создаём Транспорт
- /*       RNum = randomInt(1000, 9999);
-        strLicensePlate = 'Тест '+ RNum + ' Ном';
+    /*
 
-        returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
+        // 10) Создаём Транспорт
+        RNum = randomInt(1000, 9999);
+        strLicensePlate = 'TEST '+ RNum + ' NUM';
+        VehicleData = {
+            strLicensePlate: strLicensePlate,
+            strCarType: 'Тягач',
+            strCarBrand: 'DAF',
+            strCompanyName : 'ТРАНСЛОЙД',
+        };
+        VehicleData = await VehicleCNV2Page.VehicleCreateNewV2(browser,page,VehicleData);
+        await console.log("returnResultObject",VehicleData);
+        VehicleData = await VehicleCheckNV2Page.VehicleCheckNewV2(browser,page,VehicleData);
 
                 throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 */
@@ -191,12 +203,27 @@ let OpenFox = async () => {
         returnResult = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
         // 9) Проверяем нового водителя
         returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser,page,DriverData);
-
+/*
         // 10) Создаём Транспорт
         RNum = randomInt(1000, 9999);
         strLicensePlate = 'Тест '+ RNum + ' Ном';
 
         returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
+*/
+        // 10) Создаём Транспорт
+        RNum = randomInt(1000, 9999);
+        strLicensePlate = 'TEST '+ RNum + ' NUM'
+        VehicleData = {
+            strLicensePlate: strLicensePlate,
+            strCarType: 'Тягач',
+            strCarBrand: 'DAF',
+            strCompanyName : 'ТРАНСЛОЙД',
+        };
+        VehicleData = await VehicleCNV2Page.VehicleCreateNewV2(browser,page,VehicleData);
+        //await console.log("returnResultObject",VehicleData);
+        // 11) Проверяем только что созданный Транспорт
+        VehicleData = await VehicleCheckNV2Page.VehicleCheckNewV2(browser,page,VehicleData);
+        //await console.log("returnResultObject",VehicleData);
 
     }catch (err0) {
         await console.log('\x1b[38;5;1m', "Ошибка:",err0, '\x1b[0m');
@@ -224,7 +251,8 @@ let OpenFox = async () => {
             g_StrOutLog+=`+++++++++ Удачно пройдено: ${g_SuccessfulTests}   +++++++++++\n`;
             g_StrOutLog+=`--------------- Провалено: ${g_FailedTests}   -----------\n`;
 
-            g_StrOutLog+='----------------- END   FOX TESTS ----------------\n';
+            //g_StrOutLog+='----------------- END   FOX TESTS ----------------\n';
+            g_StrOutLog+='----------------- Во всём виноваты СракЕндеры ----------------\n';
             g_StrOutLog+=`End Log File | Прошло времени: ${strDtAll}\n`;
 
             fs_log.writeFileSync(g_CheckFileName, `${g_FailedTests}`);

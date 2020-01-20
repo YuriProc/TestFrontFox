@@ -122,6 +122,21 @@ ElementGetInnerText = async function (page , Num, MyXPath) {
         return '';
     }
 };
+ElementGetHref = async function (page , Num, MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        let PropInnerText;
+        if (Num > MaxL){
+            return '';
+        }else{
+            PropInnerText = await page.evaluate(elm => elm.href, linkHandlers[Num]);
+            return PropInnerText;
+        }
+    }catch (e) {
+        return '';
+    }
+};
 ElementIsChecked = async function (page , Num, MyXPath) {
   try {
       const linkHandlers = await page.$x(MyXPath);
@@ -291,6 +306,37 @@ SaveTempPictureFromRandomURL = async function(browser, MyArrayName) {
     }while ((MyFilePath === '')&&(NumTry < MaxTry) );
     //await console.log('MyFilePath:',MyFilePath,':');
     return MyFilePath;
+};
+//-----------------------------------------------------------------------------------
+InsertPhoto = async function(browser , page, MyArrayName, MyXPath) {
+    let MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL');
+    if (MyFilePath !== '') {
+        //let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
+        //await ClickByXPath(page, MyXPath);
+        await page.waitFor(1000);
+        let [fileChooserDPhoto] = await Promise.all([
+            //ClickByXPath(page, MyXPath),
+            //page.waitFor(500),
+            page.waitForFileChooser(),
+            //page.waitFor(500),
+            ClickByXPathWithScroll(2000 ,page, MyXPath)
+            //page.waitFor(500),
+        ]);
+        //await ClickByXPath(page, MyXPath);
+        await fileChooserDPhoto.accept([MyFilePath]);
+        await page.waitFor(3000);
+        //await DeleteTempPicture(MyFilePath);
+        //await fileChooser.cancel();
+        //await page.waitFor(1111500);
+        //let Href = await ElementGetHref(page,0, '//div[@class="dz-image"]/a[@target="_blank"]');
+        //let Href = await ElementGetHref(page,0, '//a[@target="_blank"]');
+
+
+
+        return '';
+    }
+
+    return '';
 };
 //-----------------------------------------------------------------------------------
 DeleteTempPicture = async function(MyFileName) {

@@ -1,5 +1,5 @@
 let DriverCreateNewV2 = async (browser, page, DriverData) => {
-    const nameTest = 'DriverCreateNewV2->"' + DriverData.strLastName + '"';
+    const nameTest = NameFunction()+'->"' + DriverData.strLastName + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');

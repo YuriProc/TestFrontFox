@@ -41,7 +41,7 @@ let BrowserGetPage = async (browser) => {
 };
 
 let LoginPage = async (page) => {
-    const nameTest = 'LoginPage';
+    const nameTest = NameFunction()+'->"' + 'root' + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');

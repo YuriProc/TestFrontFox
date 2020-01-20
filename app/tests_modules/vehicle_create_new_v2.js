@@ -1,5 +1,5 @@
-let DealCreateNew = async (browser, page, strLicensePlate) => {
-    const nameTest = NameFunction()+'->"' + strLicensePlate + '"';
+let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
+    const nameTest = NameFunction()+'->"' + VehicleData.strLicensePlate + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
@@ -7,14 +7,14 @@ let DealCreateNew = async (browser, page, strLicensePlate) => {
 
     //await page.waitFor(500);
     let width = 1200;
-    let height = 880;
+    let height = 900;
     let widthX = 1200;
     let heightX = 1800;
     let xPath;
     let ElPresent, ElPresent1, ElPresent2, ElPresent3;
     let resOk;
     let MyFilePath = '';
-    let returnResult = false;
+    VehicleData['returnResult'] = false;
     await page.setViewport({width, height});
 
     //await page.setViewport({width2, height2});
@@ -23,22 +23,22 @@ let DealCreateNew = async (browser, page, strLicensePlate) => {
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);
 
-        //Клик по пункту Сделки
-        resOk = await ClickByXPath(page, '//a[@href="/deal"][contains(text(), "Сделки")]');
+        //Клик по пункту Транспорт
+        resOk = await ClickByXPath(page, '//a[@href="/vehicle"][contains(text(), "Транспорт")]');
         if (!resOk) {
-            throw 'ClickByXPath(//a[@href="/deal"][contains(text(), "Сделки")])';//<--специальный вызов ошибки!
+            throw 'ClickByXPath(//a[@href="/vehicle"][contains(text(), "Транспорт")])';//<--специальный вызов ошибки!
         }
 
         //Ждём загрузки страницы
         resOk = await WaitUntilPageLoads(page);
         if (!resOk) {
-            throw 'WaitUntilPageLoads("Сделки")';//<--специальный вызов ошибки!
+            throw 'WaitUntilPageLoads("Создать транспорт")';//<--специальный вызов ошибки!
         }
 
-        //Проверяем наличие на странице Характерных элементов (Сделки)
-        resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Сделки")]');
+        //Проверяем наличие на странице Характерных элементов (Транспортные стредства)
+        resOk = await WaitUntilElementIsPresentByXPath(1000, page,'//div[@class="head__title"][contains(text(), "Транспортные стредства")]');
         if (!resOk) {
-            throw 'Not ElementIsPresent(class="head__title""Сделки")';//<--специальный вызов ошибки!
+            throw 'Not ElementIsPresent(class="head__title""Транспортные стредства")';//<--специальный вызов ошибки!
         }
 
         //Клик по кнопке Создать
@@ -48,23 +48,23 @@ let DealCreateNew = async (browser, page, strLicensePlate) => {
         }
         resOk = await WaitUntilPageLoads(page);
         if (!resOk) {
-            throw 'WaitUntilPageLoads("Створити угоду")';//<--специальный вызов ошибки!
+            throw 'WaitUntilPageLoads("Создать транспорт")';//<--специальный вызов ошибки!
         }
-        //Проверяем наличие на странице Характерных элементов (Створити угоду)
-        resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Створити угоду")]');
+        //Проверяем наличие на странице Характерных элементов (Создать транспорт)
+        resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Создать транспорт")]');
         if (!resOk) {
-            throw 'ElementIsPresent(class="head__title""Створити угоду")';//<--специальный вызов ошибки!
+            throw 'Not ElementIsPresent(class="head__title""Создать транспорт")';//<--специальный вызов ошибки!
         }
 //---------------
 
-        //Клик по инпуту (Дата завантаження )
-        let xpDateOfLoad = '//div[@class="form__item"][./label[contains(text(), "Дата завантаження ")]]/input[@class="element__area"]';
-        resOk = await ClickByXPath(page, xpDateOfLoad);
+        //Клик по инпуту Номерной знак
+        let xpLicensePlate = '//input[@id="license_plate"]';
+        resOk = await ClickByXPath(page, xpLicensePlate);
         if (!resOk) {
-            throw `ClickByXPath(${xpDateOfLoad})`;//<--специальный вызов ошибки!
+            throw `ClickByXPath(${xpLicensePlate})`;//<--специальный вызов ошибки!
         }
         //Вводим Номерной знак
-        resOk = await TypeByXPath(page, xpLicensePlate, strLicensePlate);
+        resOk = await TypeByXPath(page, xpLicensePlate, VehicleData.strLicensePlate);
         if (!resOk) {
             throw `TypeByXPath(${xpLicensePlate})`;//<--специальный вызов ошибки!
         }
@@ -75,28 +75,36 @@ let DealCreateNew = async (browser, page, strLicensePlate) => {
         if (!resOk) {
             throw `ClickByXPath(${xpButtonCheckInBase})`;//<--специальный вызов ошибки!
         }
-
+        // Ждём загрузки страницы
         resOk = await WaitUntilPageLoads(page);
         if (!resOk) {
             throw 'WaitUntilPageLoads("(Создать транспорт)(Проверить в базе)")';//<--специальный вызов ошибки!
         }
-
+        // Ждём появление ДропЗоны
+        //resOk = await WaitUntilElementIsPresentByXPath(2000, page, '//div[@id="dropzone"]');
+        resOk = await WaitUntilElementIsPresentByXPath(12000, page, '//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]');
+        if (!resOk) {
+            throw `ElementNotPresent(DropZone)('//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]'])`;//<--специальный вызов ошибки!
+        }
         //Проверяем наличие характерных элементов (Марка автомобиля )
         resOk = await ElementIsPresent(page,'//label[@class="search__label"][contains(text(), "Марка автомобиля ")]');
         if (!resOk) {
-            throw 'ElementIsPresent(class="head__title""Создание контакта")';//<--специальный вызов ошибки!
+            throw 'ElementNotPresent(class="search__label""Марка автомобиля ")';//<--специальный вызов ошибки!
         }
+
+        //await page.waitFor(1111113000);
         //Клик по инпуту Марка автомобиля
-        let xpCarBrand = '//div[@data-vv-name="car_brand"]/input';
+        let xpCarBrand = '//div[@data-vv-name="car_brand"]/div/input';
         resOk = await ClickByXPath(page, xpCarBrand);
         if (!resOk) {
             throw `ClickByXPath(${xpCarBrand})`;//<--специальный вызов ошибки!
         }
         //Вводим Марка автомобиля
-        resOk = await TypeByXPath(page, xpCarBrand, 'DAF');
+        resOk = await TypeByXPath(page, xpCarBrand, VehicleData.strCarBrand);
         if (!resOk) {
             throw `TypeByXPath(${xpLicensePlate})`;//<--специальный вызов ошибки!
         }
+        //Ждём пока найдёт марку автомобиля
         resOk = await WaitUntilPageLoads(page);
         if (!resOk) {
             throw 'WaitUntilPageLoads("(Find)(Марка автомобиля)")';//<--специальный вызов ошибки!
@@ -104,17 +112,25 @@ let DealCreateNew = async (browser, page, strLicensePlate) => {
 
         //Выбираем из списка
         let xpItemCarBrand = '//div[@class="search__item"][1]';// <---Нумерация с 1 !!!
-        resOk = await ClickByXPath(page, xpItemCarBrand);
+            resOk = await ClickByXPath(page, xpItemCarBrand);
         if (!resOk) {
             throw `ClickByXPath(${xpItemCarBrand})`;//<--специальный вызов ошибки!
         }
         // Вставляем Фото тех пас
+
+        /*
         MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL');
         if (MyFilePath !== '') {
             let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
+            //await ClickByXPath(page, xpDriverLicensePhoto);
+            await page.waitFor(500);
             let [fileChooserDPhoto] = await Promise.all([
+                //ClickByXPath(page, xpDriverLicensePhoto),
+                //page.waitFor(500),
                 page.waitForFileChooser(),
+                //page.waitFor(500),
                 ClickByXPath(page, xpDriverLicensePhoto)
+                //page.waitFor(500),
             ]);
             await fileChooserDPhoto.accept([MyFilePath]);
             await page.waitFor(3000);
@@ -123,19 +139,28 @@ let DealCreateNew = async (browser, page, strLicensePlate) => {
             //await page.waitFor(1111500);
         }
 
+        */
+        let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
+        let PhotoURL = await InsertPhoto(browser, page , 'DriverDocURL', xpDriverLicensePhoto);
+
+
+
         //Клик по селекту инпуту
         let xpSelectType = '//div[@class="multiselect__tags"][./input[@name="car_type"]]';
         resOk = await ClickByXPath(page, xpSelectType);
         if (!resOk) {
             throw `ClickByXPath(${xpSelectType})`;//<--специальный вызов ошибки!
         }
-        await page.waitFor(500);
+        await page.waitFor(600);
         //Выбираем Тягач
+
+        // VehicleData.strCarType
         let xpItemType = '//div[./div[@class="multiselect__tags"][./input[@name="car_type"]]]';
-        xpItemType = xpItemType + '/div[@class="multiselect__content-wrapper"]/ul/li/span/span[contains(text(), "Тягач")]';
-        resOk = await ClickByXPath(page, xpItemType);
+        xpItemType = xpItemType + '/div[@class="multiselect__content-wrapper"]/ul/li/span/span[contains(text(), ';
+        xpItemType = xpItemType + `"${VehicleData.strCarType}")]`;
+            resOk = await ClickByXPath(page, xpItemType);
         if (!resOk) {
-            throw `ClickByXPath(Тягач)`;//<--специальный вызов ошибки!
+            throw `ClickByXPath(${VehicleData.strCarType})`;//<--специальный вызов ошибки!
         }
         await page.waitFor(1000);
         //Клик по инпуту КОМПАНИЯ
@@ -145,14 +170,15 @@ let DealCreateNew = async (browser, page, strLicensePlate) => {
             throw `ClickByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
         }
         await page.waitFor(500);
-        resOk = await TypeByXPath(page, xpCompanies, 'транслойд');
+        // 'ТРАНСЛОЙД'
+        resOk = await TypeByXPath(page, xpCompanies, VehicleData.strCompanyName);
         if (!resOk) {
             throw `TypeByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
         }
         resOk = await WaitUntilPageLoads(page);
         //await page.waitFor(1111500);
         if (!resOk) {
-            throw 'WaitUntilPageLoads("поиск ТРАНСЛОЙД")';//<--специальный вызов ошибки!
+            throw `WaitUntilPageLoads("поиск ${VehicleData.strCompanyName}")`;//<--специальный вызов ошибки!
         }
         await page.waitFor(500);
 
@@ -190,25 +216,37 @@ let DealCreateNew = async (browser, page, strLicensePlate) => {
             throw `Отсутствует (Успешно сохранено)`;//<--специальный вызов ошибки!
         }
 
+        resOk = await WaitUntilPageLoads(page);
+        if (!resOk) {
+            throw 'WaitUntilPageLoads("Редактировать КОНТАКТ Водитель")';//<--специальный вызов ошибки!
+        }
+        let Href = await ElementGetHref(page,0, '//div[@class="dz-image"]/a');
+        //await console.log('PhotoURL(',Href,')');
 
+        VehicleData['strHrefPhotoURL'] = Href;
+        if (!resOk) {
+            VehicleData['strFuck'] = Href;
+        }
         g_StatusCurrentTest = 'Пройден';
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
-        returnResult = true;
+        VehicleData.returnResult = true;
 
     } catch (err) {
-        await console.log('\x1b[38;5;1m', "!!!! Ошибка на странице (Создать Сделку) : ",err , '\x1b[0m');
+        await console.log('\x1b[38;5;1m', "!!!! Ошибка на странице (Создать транспорт) : ",err , '\x1b[0m');
         g_StatusCurrentTest = 'Провален !!!';
         await g_FailedTests++;
         await console.log('\x1b[38;5;1m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
         g_StrOutLog+=`=> Ошибка ${err} => ${g_StatusCurrentTest} \n`;
-        returnResult = false;
+        VehicleData.returnResult = false;
         //await page.waitFor(5001111);
     }
+
+
     await page.setViewport({width, height});
-    return returnResult;//<------------------EXIT !!!
+    return VehicleData;//<------------------EXIT !!!
 
 };
 
-module.exports.DealCreateNew = DealCreateNew;
+module.exports.VehicleCreateNewV2 = VehicleCreateNewV2;

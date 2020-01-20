@@ -1,5 +1,5 @@
 let CreateNewUser = async (page, strUserLastName) => {
-    const nameTest = 'CreateNewUser->"' + strUserLastName + '"';
+    const nameTest = NameFunction()+'->"' + strUserLastName + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
