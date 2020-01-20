@@ -83,6 +83,7 @@ let CompanyWrongEdit = async (page, strCodeCompany) => {
         if (resOk) {
             throw `Компании с таким ЕДРПОУ (${strCodeCompany}) нет в базе`;//<--специальный вызов ошибки!
         }
+        await page.waitFor(500);
         //Клик по кнопке Редактировать table__option
         resOk = await ClickByXPath(page, '//a[@class="table__option"]');
         if (!resOk) {
