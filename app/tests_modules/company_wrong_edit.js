@@ -67,7 +67,7 @@ let CompanyWrongEdit = async (page, strCodeCompany) => {
         resOk = await WaitUntilPageLoads(page);
                     //await console.log('\x1b[38;5;2m', "WaitUntilPageLoads" ,resOk , '\x1b[0m');
 
-
+        await page.waitFor(500);
         //Клик по Инпуту ЕДРПОУ
         resOk = await ClickByXPath(page, '//input[@placeholder="ЕДРПОУ\\ИНН"]');
         if (!resOk) {
