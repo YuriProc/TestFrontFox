@@ -109,10 +109,18 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         if (!resOk) {
             throw 'WaitUntilPageLoads("(Find)(Марка автомобиля)")';//<--специальный вызов ошибки!
         }
+        //Проверим выпадающий список
+        let xpItemCarBrand = '//div[@class="search__item"][1]';// <--- Тут Нумерация с 1 !!!
+
+        let strFirstItemList = ElementGetInnerText(page , 0, MyXPath); // <--- Тут Нумерация с 0 !!!
+
+        if ( !strFirstItemList.includes(VehicleData.strCarBrand) ){
+            throw `Марка Автомобиля ввели: "${VehicleData.strCarBrand}" , нашли: "${strFirstItemList}" `;
+        }
 
         //Выбираем из списка
-        let xpItemCarBrand = '//div[@class="search__item"][1]';// <---Нумерация с 1 !!!
-            resOk = await ClickByXPath(page, xpItemCarBrand);
+
+        resOk = await ClickByXPath(page, xpItemCarBrand);
         if (!resOk) {
             throw `ClickByXPath(${xpItemCarBrand})`;//<--специальный вызов ошибки!
         }
