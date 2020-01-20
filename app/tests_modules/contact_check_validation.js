@@ -57,7 +57,7 @@ let ContactCheckValidation = async (page, strLastName) => {
 
         //Жмём на кнопку Создать контакт
         let xpButtonCreateContact = '//button[@class="btn"][./span[contains(text(), "Создать контакт")]]';
-        resOk = await ClickByXPath(page, xpButtonCreateContact);
+        resOk = await ClickByXPathWithScroll(1000, page, xpButtonCreateContact);
         if (!resOk) {
             throw 'ClickByXPath([....] "Создать контакт")';//<--специальный вызов ошибки!
         }
