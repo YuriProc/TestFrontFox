@@ -217,9 +217,9 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         }
 
         resOk = await WaitUntilPageLoads(page);
-        if (!resOk) {
+        /*if (!resOk) {
             throw 'WaitUntilPageLoads("Редактировать КОНТАКТ Водитель")';//<--специальный вызов ошибки!
-        }
+        }*/
         let Href = await ElementGetHref(page,0, '//div[@class="dz-image"]/a');
         //await console.log('PhotoURL(',Href,')');
 
