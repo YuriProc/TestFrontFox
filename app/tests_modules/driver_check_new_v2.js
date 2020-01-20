@@ -82,10 +82,13 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
         if (!resOk) {
             throw 'ElementIsPresent(class="head__title""Редактирование контакта")';//<--специальный вызов ошибки!
         }
+
         resOk = await WaitUntilPageLoads(page);
-        if (!resOk) {
+        /*if (!resOk) {
             throw 'WaitUntilPageLoads("Вторая часть страницы Редактирование контакта Водителя")';//<--специальный вызов ошибки!
-        }
+        }*/
+
+
         //теперь нужно проверить все ранее введённые поля
         //---------->>>
         //   '//input[@id="last_name"]'
