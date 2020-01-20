@@ -46,46 +46,59 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         if (!resOk) {
             throw 'ClickByXPath(//span[contains(text(), "Создать")])';//<--специальный вызов ошибки!
         }
-        resOk = await WaitUntilPageLoads(page);
-        if (!resOk) {
-            throw 'WaitUntilPageLoads("Создать транспорт")';//<--специальный вызов ошибки!
-        }
-        //Проверяем наличие на странице Характерных элементов (Создать транспорт)
-        resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Создать транспорт")]');
-        if (!resOk) {
-            throw 'Not ElementIsPresent(class="head__title""Создать транспорт")';//<--специальный вызов ошибки!
-        }
+        let NumTryDropZone = 0;
+        do { // DROP_ZONE_PHANTOM_BAG
+            NumTryDropZone++;
+            resOk = await WaitUntilPageLoads(page);
+            if (!resOk) {
+                throw 'WaitUntilPageLoads("Создать транспорт")';//<--специальный вызов ошибки!
+            }
+            //Проверяем наличие на странице Характерных элементов (Создать транспорт)
+            resOk = await ElementIsPresent(page, '//div[@class="head__title"][contains(text(), "Создать транспорт")]');
+            if (!resOk) {
+                throw 'Not ElementIsPresent(class="head__title""Создать транспорт")';//<--специальный вызов ошибки!
+            }
 //---------------
 
-        //Клик по инпуту Номерной знак
-        let xpLicensePlate = '//input[@id="license_plate"]';
-        resOk = await ClickByXPath(page, xpLicensePlate);
-        if (!resOk) {
-            throw `ClickByXPath(${xpLicensePlate})`;//<--специальный вызов ошибки!
-        }
-        //Вводим Номерной знак
-        resOk = await TypeByXPath(page, xpLicensePlate, VehicleData.strLicensePlate);
-        if (!resOk) {
-            throw `TypeByXPath(${xpLicensePlate})`;//<--специальный вызов ошибки!
-        }
-        await page.waitFor(500);
-        //Клик по кнопке Проверить в базе
-        let xpButtonCheckInBase = '//button[@class="btn"][./span[contains(text(), "Проверить в базе")]]';
-        resOk = await ClickByXPath(page, xpButtonCheckInBase);
-        if (!resOk) {
-            throw `ClickByXPath(${xpButtonCheckInBase})`;//<--специальный вызов ошибки!
-        }
-        // Ждём загрузки страницы
-        resOk = await WaitUntilPageLoads(page);
-        if (!resOk) {
-            throw 'WaitUntilPageLoads("(Создать транспорт)(Проверить в базе)")';//<--специальный вызов ошибки!
-        }
-        // Ждём появление ДропЗоны
-        //resOk = await WaitUntilElementIsPresentByXPath(2000, page, '//div[@id="dropzone"]');
-        resOk = await WaitUntilElementIsPresentByXPath(12000, page, '//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]');
-        if (!resOk) {
-            throw `ElementNotPresent(DropZone)('//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]'])`;//<--специальный вызов ошибки!
-        }
+            //Клик по инпуту Номерной знак
+            let xpLicensePlate = '//input[@id="license_plate"]';
+            resOk = await ClickByXPath(page, xpLicensePlate);
+            if (!resOk) {
+                throw `ClickByXPath(${xpLicensePlate})`;//<--специальный вызов ошибки!
+            }
+            //Вводим Номерной знак
+            resOk = await TypeByXPath(page, xpLicensePlate, VehicleData.strLicensePlate);
+            if (!resOk) {
+                throw `TypeByXPath(${xpLicensePlate})`;//<--специальный вызов ошибки!
+            }
+            await page.waitFor(500);
+            //Клик по кнопке Проверить в базе
+            let xpButtonCheckInBase = '//button[@class="btn"][./span[contains(text(), "Проверить в базе")]]';
+            resOk = await ClickByXPath(page, xpButtonCheckInBase);
+            if (!resOk) {
+                throw `ClickByXPath(${xpButtonCheckInBase})`;//<--специальный вызов ошибки!
+            }
+            // Ждём загрузки страницы
+            resOk = await WaitUntilPageLoads(page);
+            if (!resOk) {
+                throw 'WaitUntilPageLoads("(Создать транспорт)(Проверить в базе)")';//<--специальный вызов ошибки!
+            }
+
+            // Ждём появление ДропЗоны
+            //resOk = await WaitUntilElementIsPresentByXPath(2000, page, '//div[@id="dropzone"]');
+            resOk = await WaitUntilElementIsPresentByXPath(12000, page, '//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]');
+            if (!resOk) {
+                //await page.waitFor(9990000);
+                //throw `ElementNotPresent(DropZone)('//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]'])`;//<--специальный вызов ошибки!
+                await console.log(`ElementNotPresent(DropZone) попытка ${NumTryDropZone}` );
+                g_StrOutLog+=`=> ElementNotPresent(DropZone) попытка ${NumTryDropZone} \n`;
+                if (NumTryDropZone < 2){
+                    await page.reload(); //<--------ПЕРЕЗАГРУЗКА страницы
+                }else {
+                    throw `ElementNotPresent(DropZone)('//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]'])`;//<--специальный вызов ошибки!
+                }
+            }
+        }while (!resOk && (NumTryDropZone < 2) ); //повторяет пока истина не станет ложью &&<-AND ; ||<-OR
         //Проверяем наличие характерных элементов (Марка автомобиля )
         resOk = await ElementIsPresent(page,'//label[@class="search__label"][contains(text(), "Марка автомобиля ")]');
         if (!resOk) {
@@ -112,8 +125,8 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         //Проверим выпадающий список
         let xpItemCarBrand = '//div[@class="search__item"][1]';// <--- Тут Нумерация с 1 !!!
 
-        let strFirstItemList = ElementGetInnerText(page , 0, MyXPath); // <--- Тут Нумерация с 0 !!!
-
+        let strFirstItemList = await ElementGetInnerText(page , 0, xpItemCarBrand); // <--- Num Нумерация с 0 !!!
+        //await console.log('strFirstItemList=(', strFirstItemList ,')');
         if ( !strFirstItemList.includes(VehicleData.strCarBrand) ){
             throw `Марка Автомобиля ввели: "${VehicleData.strCarBrand}" , нашли: "${strFirstItemList}" `;
         }

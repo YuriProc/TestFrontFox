@@ -1,3 +1,27 @@
+//установить обработчик запросов-------------------------------------------------
+const browser = await puppeteer.launch();
+const page = await browser.newPage();
+await page.setRequestInterception(true);
+page.on('request', req => {
+    console.log('request:', req.url())
+    req.continue();
+});
+page.on('requestfinished', (req) => {
+    console.log('finished:', req.url())
+});
+page.on('requestfailed', (req) => {
+    console.log('failed:', req.url())
+})
+await page.goto(url);
+await page.click(selector);
+//установить обработчик запросов-------------------------------------------------------
+
+//перезагрузка стрницы--------------------------------------------------------------
+await Promise.all([
+    page.select('select[name=sort]', 'size'),
+    page.waitForNavigation(),
+]);
+//перезагрузка стрницы---------------------------------------------------------
 //=====Select File================
 let [fileChooser] = await Promise.all([
     page.waitForFileChooser(),

@@ -123,7 +123,7 @@ function GetConfigConst(ConfigData , NameConst) {
                 }
             }
         }
-    } while (posEndStr !== -1);
+    } while (posEndStr !== -1); //повторяет пока истина не станет ложью &&<-AND ; ||<-OR
 
     return ConfigValue;
 }

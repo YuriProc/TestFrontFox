@@ -80,9 +80,8 @@ let OpenFox = async () => {
                     returnResult = await UCNPage.CreateNewUser(page, strUserLastNameT);
                 }
 
+                returnResult = await RL.ReLoginToster(page);
 */
- //               returnResult = await RL.ReLoginToster(page);
-
                 // RNum = randomInt(1000, 9999);
                 // strLicensePlate = 'Тест '+ RNum + ' Ном';
                 //
@@ -116,7 +115,7 @@ let OpenFox = async () => {
                 returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser,page,DriverData);
 
 */
-    /*
+/*
 
         // 10) Создаём Транспорт
         RNum = randomInt(1000, 9999);
@@ -129,11 +128,13 @@ let OpenFox = async () => {
         };
         VehicleData = await VehicleCNV2Page.VehicleCreateNewV2(browser,page,VehicleData);
         await console.log("returnResultObject",VehicleData);
-        VehicleData = await VehicleCheckNV2Page.VehicleCheckNewV2(browser,page,VehicleData);
+        if (VehicleData.returnResult) {
+            VehicleData = await VehicleCheckNV2Page.VehicleCheckNewV2(browser, page, VehicleData);
+        }
 
                 throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
-*/
 
+*/
         //------------END Для тестов------------------------------------------------------------------
 
         //  1) Логинимся под Рутом
@@ -222,7 +223,9 @@ let OpenFox = async () => {
         VehicleData = await VehicleCNV2Page.VehicleCreateNewV2(browser,page,VehicleData);
         //await console.log("returnResultObject",VehicleData);
         // 11) Проверяем только что созданный Транспорт
-        VehicleData = await VehicleCheckNV2Page.VehicleCheckNewV2(browser,page,VehicleData);
+        if (VehicleData.returnResult) {
+            VehicleData = await VehicleCheckNV2Page.VehicleCheckNewV2(browser, page, VehicleData);
+        }
         //await console.log("returnResultObject",VehicleData);
 
     }catch (err0) {
