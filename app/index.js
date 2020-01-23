@@ -40,6 +40,7 @@ let VehicleCNV2Page = require('./tests_modules/vehicle_create_new_v2');
 let VehicleCheckNV2Page = require('./tests_modules/vehicle_check_new_v2');
 
 let DealCNPage = require('./tests_modules/deal_create_new');
+let DealCheckNPage = require('./tests_modules/deal_check_new');
 
 
 let readPic = require('./tests_modules/test_save_picture');
@@ -70,7 +71,7 @@ let OpenFox = async () => {
         g_NumberCurrentTest = 1;
 
         //------------START Для тестов--------------------------------------------------------------
-/*
+
                 returnResult = await LPage.LoginPage(page);
                 // 2) Проверяем наличие Тостера
                 let strUserLastNameT = 'Тостер';//Тостер
@@ -81,12 +82,38 @@ let OpenFox = async () => {
                 }
 
                 returnResult = await RL.ReLoginToster(page);
-*/
+
                 // RNum = randomInt(1000, 9999);
                 // strLicensePlate = 'Тест '+ RNum + ' Ном';
                 //
                 // returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
-             //   returnResult = await DealCNPage.DealCreateNew(browser,page,strLicensePlate);
+        let DealData = {
+            //strLicensePlate : 'TEST 3245 NUM',
+            // strPointLoading : 'Хреново', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
+            // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
+            strPointLoading : await GetFunnyRandomAddress('StrAddressFunny'),
+            strPointUnLoading : await GetFunnyRandomAddress('StrAddressFunny'),
+            strTypeLoad : 'Алкоголь',
+            strCargoCost : '100500',
+            strCompanyClient : 'ОСНОВА',
+            strOurCompanyClient : 'СТАВАНГЕР',
+            strCompanyTransporter : 'ЛЬВІВКУЛЬТТОВАРИ',
+            strOurCompanyTransporter : 'ТРАНСЛОЙД',
+            strDriverMiddleName : 'Курганов',
+            strLicensePlate1 : 'BC3082EE',//DAF BC3082EE
+            strLicensePlate2 : 'BC7519XO',// KRONE BC7519XO
+            strFoxResponsible : 'Тостер',
+            strLogistician : 'Тостер',
+            strDealID : '',
+            returnResult : false,
+        };
+
+        //await page.waitFor(11000);
+        DealData = await DealCNPage.DealCreateNew(browser,page,DealData);
+        if (DealData.returnResult) {
+            DealData = await DealCheckNPage.DealCheckNew(browser, page, DealData);
+        }
+
              //   if (!returnResult) {    // если не получилось перелогиниться то всё остальное будет пропущено
              //       throw 'Не получилось DealCreateNew';//<--специальный вызов ошибки!
              //   }
@@ -135,6 +162,7 @@ let OpenFox = async () => {
                 throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 
 */
+        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
         //------------END Для тестов------------------------------------------------------------------
 
         //  1) Логинимся под Рутом

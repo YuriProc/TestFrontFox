@@ -22,8 +22,8 @@ WaitUntilPageLoads  = async function (page) {
         // Теперь ждём пока не пропадёт селектор (html[class=nprogress-busy])
         while (await page.$(cssSelector) !== null){
             // Если прошло больше 35 сек то выход!!!
-            if(Date.now() - startTime > 35000) {
-                await console.log('page NOT load > 35 sec');
+            if(Date.now() - startTime > 65000) {
+                await console.log('page NOT load > 65 sec');
                 return false;
             }
         }
@@ -161,8 +161,8 @@ ClickByXPath = async function (page , MyXPath) {
     }catch (e) {
         return false;
     }
-}
-ClickByXPathNum = async function (page ,Num ,MyXPath) {
+};
+ClickByXPathNum = async function (page ,Num ,MyXPath) { // Отсчёт с 1 !!!
     const linkHandlers = await page.$x(MyXPath);
     try {
         if (await linkHandlers.length >= Num) {
@@ -176,7 +176,7 @@ ClickByXPathNum = async function (page ,Num ,MyXPath) {
     }catch (e) {
         return false;
     }
-}
+};
 //-----------------------------------------------------------------------------------
 ClickByXPathWithScroll = async function (timeMS, page , MyXPath) {
     let startTime = await Date.now();
@@ -200,7 +200,158 @@ ClickByXPathWithScroll = async function (timeMS, page , MyXPath) {
     }catch (e) {
         return false;
     }
-}
+};
+//-----------------------------------------------------------------------------------
+ClickByXPathNumWithScroll = async function (timeMS, page ,Num , MyXPath) {
+    let startTime = await Date.now();
+    const elHandle = await page.$x(MyXPath);
+    try {
+        if (await elHandle.length >= Num) {
+
+            await page.evaluate(el => el.scrollIntoView(), elHandle[Num - 1]);
+            await page.waitFor(500);
+            while (!await ClickByXPath(page, MyXPath)) {
+                await page.waitFor(100);
+                if( (await Date.now() - startTime) > timeMS ) {
+                    //await console.log('Element:',MyXPath,' Not Present >', timeMS, 'ms');
+                    return false;
+                }
+            }
+            return true;
+        }else {
+            return false;
+        }
+    }catch (e) {
+        return false;
+    }
+};
+//--------------------------------------------------------------------------------
+SelectFromList = async function (page, selectorList, valueItem ) {
+    try {
+        await page.select(selectorList, valueItem);
+        return true;
+    }catch (e) {
+        return false;
+    }
+};
+//--------------------------------------------------------------------------------
+GetDataFromList = async function (page, xPath ) {
+    //let DataArray = [{returnResult : false}];
+    let Data = {};
+
+    let linkHandlers;
+    let PropInnerText;
+    let PropValue;
+    let MaxL;
+    let Num;
+    let i;
+    Data.returnStatus = false;
+    Data.returnList = [];
+    try {
+        linkHandlers = await page.$x(xPath);
+        MaxL = await linkHandlers.length ;
+        if (MaxL < 1) {
+            throw `GetDataFromList => Длина списка(${xPath}) меньше 1 !!!`;
+        }
+
+        //await console.log('MaxL=', MaxL , 'xPath(', xPath , ')');
+        for (Num = 0; Num < MaxL; Num++) {
+
+            PropValue = await page.evaluate(elm => elm.value, linkHandlers[Num]);
+            if ((PropValue === '')||(PropValue === undefined)){
+                PropValue = '';
+            }else {
+                PropValue = PropValue.trim();
+                PropInnerText = await page.evaluate(elm => elm.innerText, linkHandlers[Num]);
+                if (PropInnerText === undefined){ PropInnerText = '';}
+                PropInnerText = PropInnerText.trim();
+                Data.returnList.push({PropValue : PropValue, PropInnerText : PropInnerText});
+            }
+        }
+        Data.returnStatus = true;
+    }catch (e) {
+        Data.returnError = e;
+        //await console.log('returnError(',e , ')');
+    }
+    return Data;
+};
+//------------------------
+TempStop = async function(page){
+    await console.log('Временно СТОП');
+    await page.waitFor(98765400);
+};
+// DEAL --------------------------------------------------------------------------
+ClickDealCreateNewPlus = async  function( page ){
+    try {
+        await page.hover('a[href="/deal"]');
+
+        await page.hover('a[href="/deal-save"]');
+
+        await page.click('a[href="/deal-save"]');
+
+        return true;
+    }catch (e) {
+        return false;
+    }
+};
+EnterDealPointLoading = async  function( page , strEnter){
+    try {
+        await ClickByXPath(page, '//div[@name="point_loadings"]/div/div[@class="select__zone"]');
+
+        await ClickByXPath(page, '//div[@name="point_loadings"]/div/input[@class="select__input"]');
+
+        await page.waitFor(500);
+
+        await TypeByXPath(page, '//div[@name="point_loadings"]/div/input[@class="select__input"]', strEnter);
+
+        await WaitUntilElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+
+        await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+
+        let xP = `//div[@name="point_loadings"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
+        await WaitUntilElementIsPresentByXPath(5000, page, xP);
+
+        let sT = await ElementGetInnerText(page , 0, xP);
+
+        if (!sT.includes(strEnter)) {
+            throw '';
+        }
+
+        return true;
+    }catch (e) {
+        return false;
+    }
+};
+EnterDealPointUnLoading = async  function( page , strEnter){
+    try {
+        await ClickByXPath(page, '//div[@name="point_unloading"]/div/div[@class="select__zone"]');
+
+        await ClickByXPath(page, '//div[@name="point_unloading"]/div/input[@class="select__input"]');
+
+        await page.waitFor(500);
+
+        await TypeByXPath(page, '//div[@name="point_unloading"]/div/input[@class="select__input"]', strEnter);
+
+        await WaitUntilElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+
+        await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+
+        let xP = `//div[@name="point_unloading"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
+        await WaitUntilElementIsPresentByXPath(5000, page, xP);
+
+        let sT = await ElementGetInnerText(page , 0, xP);
+
+        if (!sT.includes(strEnter)) {
+            throw '';
+        }
+
+        return true;
+    }catch (e) {
+        return false;
+    }
+};
+
+// DEAL------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 // ClickByXPath = async function (page , MyXPath) {
 //     const linkHandlers = await page.$x(MyXPath);
@@ -306,6 +457,13 @@ SaveTempPictureFromRandomURL = async function(browser, MyArrayName) {
     }while ((MyFilePath === '')&&(NumTry < MaxTry) );
     //await console.log('MyFilePath:',MyFilePath,':');
     return MyFilePath;
+};
+//----------------------------------------------------------------------------------
+GetFunnyRandomAddress = async function(MyArrayName) {
+
+    let RandNum = await randomInt(0, g_ArraySTR[MyArrayName].length - 1);
+
+    return g_ArraySTR[MyArrayName][RandNum];
 };
 //-----------------------------------------------------------------------------------
 InsertPhoto = async function(browser , page, MyArrayName, MyXPath) {
