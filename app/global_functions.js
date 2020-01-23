@@ -156,11 +156,11 @@ ClickByXPath = async function (page , MyXPath) {
             //await page.evaluate(el => el.click(), linkHandlers[0]);
             return true;
         } else {
-            await console.log('Ошибка:(linkHandlers.length=',linkHandlers.length , ')','\n');
+            //await console.log('Ошибка:(linkHandlers.length=',linkHandlers.length , ')','\n');
             return false;
         }
     }catch (e) {
-        await console.log('Ошибка:', e ,'\n');
+        //await console.log('Ошибка:', e ,'\n');
         return false;
     }
 };
