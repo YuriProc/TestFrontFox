@@ -225,17 +225,20 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
                 throw `Валидируемых незаполненных полей ${linkHandlers.length} < 3 `;//<--специальный вызов ошибки!
             }
         }
-        resOk = await WaitUntilPageLoads(page);
-        //await page.waitFor(1111500);
-        if (!resOk) {
-            throw 'WaitUntilPageLoads("СОХРАНИТЬ КОНТАКТ Водитель")';//<--специальный вызов ошибки!
-        }
+
         //Ждём Успешно сохранено
-        resOk = await WaitUntilElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        resOk = await WaitUntilElementIsPresentByXPath(5000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
         if (!resOk) {
             await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено)`;//<--специальный вызов ошибки!
         }
+        resOk = await WaitUntilPageLoads(page);
+        //await page.waitFor(1111500);
+        /*
+        if (!resOk) {
+            throw 'WaitUntilPageLoads("СОХРАНИТЬ КОНТАКТ Водитель")';//<--специальный вызов ошибки!
+        }*/
+
 
         resOk = await WaitUntilPageLoads(page);
         /*if (!resOk) {

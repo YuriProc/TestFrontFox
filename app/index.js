@@ -260,9 +260,9 @@ let OpenFox = async () => {
         // 12) Создаём новую сделку
         let DealData = {
             //strLicensePlate : 'TEST 3245 NUM',
-             strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
+            // strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
             // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
-            //strPointLoading : await GetFunnyRandomAddress('StrAddressFunny'),
+            strPointLoading : await GetFunnyRandomAddress('StrAddressFunny'),
             strPointUnLoading : await GetFunnyRandomAddress('StrAddressFunny'),
             strTypeLoad : 'Алкоголь',
             strCargoCost : '100500',
