@@ -321,6 +321,7 @@ EnterDealPointLoading = async  function( page , strEnter){
 
         return true;
     }catch (e) {
+        await console.log('     Ошибка(', e,')');
         return false;
     }
 };
