@@ -119,12 +119,13 @@ let CompanyWrongEdit = async (page, strCodeCompany) => {
             resOk = await ClickByXPath(page, xPath);
         }
                 //await console.log('\x1b[38;5;2m', "Ответственный ClickByXPath" ,resOk , '\x1b[0m');
-
+        await page.waitFor(500);
         //Очищаем Отсрочка Дней Оплаты
         //input[@id='delay_days']
         //await page.click("input[id=delay_days]");
 
         resOk = await ClickByXPath(page, "input[@id='delay_days']");
+        await page.waitFor(500);
         //Очищаем значение
         await page.$eval('input[id=delay_days]', el => el.value = '');
         await page.type("input[id=delay_days]", ' ');
