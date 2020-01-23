@@ -321,7 +321,7 @@ EnterDealPointLoading = async  function( page , strEnter){
 
         return true;
     }catch (e) {
-        await console.log('     Ошибка(', e,')');
+        await console.log('     Ошибка => EnterDealPointLoading =>(', e,')');
         return false;
     }
 };
@@ -350,6 +350,7 @@ EnterDealPointUnLoading = async  function( page , strEnter){
 
         return true;
     }catch (e) {
+        await console.log('     Ошибка => EnterDealPointUnLoading =>(', e,')');
         return false;
     }
 };
