@@ -50,9 +50,10 @@ let CreateNewUser = async (page, strUserLastName) => {
         // Ждём пока загрузится страница
         resOk = await WaitUntilPageLoads(page);
         // Проверяем наличие на странице характерных элементов (Создать пользователя)
-
+        await page.waitFor(500);
         resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Создать пользователя")]');
         if (!resOk) {
+            //await TempStop(page);
             throw `Не вижу  //div[@class="head__title"][contains(text(), "Создать пользователя")]`;//<--специальный вызов ошибки!
         }
 

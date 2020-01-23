@@ -228,9 +228,11 @@ let DealCreateNew = async (browser, page, DealData) => {
         await WaitUntilPageLoads(page);
         // ВЫБОР из списка
         //xPath = `//div[@class="search__item"][starts-with(text(), "${DealData.strDriverMiddleName}")]`;
+        //xPath = `//div[@class="search__item"][contains(text(), "${DealData.strDriverMiddleName}")]`;
         xPath = `//div[@class="search__item"][contains(text(), "${DealData.strDriverMiddleName}")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk) {
+            //await TempStop(page);
             throw `FAIL => клик по СПИСКУ(Данні про водія"${DealData.strDriverMiddleName}")`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);

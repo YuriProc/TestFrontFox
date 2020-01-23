@@ -71,7 +71,7 @@ let OpenFox = async () => {
         g_NumberCurrentTest = 1;
 
         //------------START Для тестов--------------------------------------------------------------
-
+/*
                 returnResult = await LPage.LoginPage(page);
                 // 2) Проверяем наличие Тостера
                 let strUserLastNameT = 'Тостер';//Тостер
@@ -80,13 +80,14 @@ let OpenFox = async () => {
                 if (!returnResult) {    // если его нет то создаём
                     returnResult = await UCNPage.CreateNewUser(page, strUserLastNameT);
                 }
-
-                returnResult = await RL.ReLoginToster(page);
+*/
+//                returnResult = await RL.ReLoginToster(page);
 
                 // RNum = randomInt(1000, 9999);
                 // strLicensePlate = 'Тест '+ RNum + ' Ном';
                 //
                 // returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
+/*
         let DealData = {
             //strLicensePlate : 'TEST 3245 NUM',
             // strPointLoading : 'Хреново', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
@@ -113,7 +114,7 @@ let OpenFox = async () => {
         if (DealData.returnResult) {
             DealData = await DealCheckNPage.DealCheckNew(browser, page, DealData);
         }
-
+*/
              //   if (!returnResult) {    // если не получилось перелогиниться то всё остальное будет пропущено
              //       throw 'Не получилось DealCreateNew';//<--специальный вызов ошибки!
              //   }
@@ -162,7 +163,7 @@ let OpenFox = async () => {
                 throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 
 */
-        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+//        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
         //------------END Для тестов------------------------------------------------------------------
 
         //  1) Логинимся под Рутом
@@ -256,6 +257,38 @@ let OpenFox = async () => {
         }
         //await console.log("returnResultObject",VehicleData);
 
+        // 12) Создаём новую сделку
+        let DealData = {
+            //strLicensePlate : 'TEST 3245 NUM',
+            // strPointLoading : 'Хреново', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
+            // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
+            strPointLoading : await GetFunnyRandomAddress('StrAddressFunny'),
+            strPointUnLoading : await GetFunnyRandomAddress('StrAddressFunny'),
+            strTypeLoad : 'Алкоголь',
+            strCargoCost : '100500',
+            strCompanyClient : 'ОСНОВА',
+            strOurCompanyClient : 'СТАВАНГЕР',
+            strCompanyTransporter : 'ЛЬВІВКУЛЬТТОВАРИ',
+            strOurCompanyTransporter : 'ТРАНСЛОЙД',
+            strDriverMiddleName : 'Курганов',
+            strLicensePlate1 : 'BC3082EE',//DAF BC3082EE
+            strLicensePlate2 : 'BC7519XO',// KRONE BC7519XO
+            strFoxResponsible : 'Тостер',
+            strLogistician : 'Тостер',
+            strDealID : '',
+            returnResult : false,
+        };
+
+        //await page.waitFor(11000);
+        DealData = await DealCNPage.DealCreateNew(browser,page,DealData);
+        if (DealData.returnResult) {
+
+            // 12.1) Проверяем новую сделку
+            DealData = await DealCheckNPage.DealCheckNew(browser, page, DealData);
+        }
+
+
+
     }catch (err0) {
         await console.log('\x1b[38;5;1m', "Ошибка:",err0, '\x1b[0m');
         g_StrOutLog+=`Ошибка: ${err0}\n`;
@@ -264,7 +297,7 @@ let OpenFox = async () => {
     }
 
 
-    await page.waitFor(5000);
+    //await page.waitFor(5000);
     browser.close();
 
     dtEnd = new Date(Date.now());
