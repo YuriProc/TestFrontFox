@@ -40,7 +40,7 @@ let DealCheckNew = async (browser, page, DealData) => {
         //Проверяем наличие на странице Характерных элементов (Сделки)
         // Ждём появление таблицы сделки
         xPath = '//div[@class="head__title"][contains(text(), "Сделки")]';
-        resOk = await WaitUntilElementIsPresentByXPath(5000, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
         if (!resOk) {
             throw `FAIL => Не Вижу(//div[@class="head__title"][contains(text(), "Сделки")]) `;//<--специальный вызов ошибки!
         }
@@ -68,7 +68,7 @@ let DealCheckNew = async (browser, page, DealData) => {
         //xPath = `//div[@class="table"]/table/tbody/tr/td[@class="has-nav"]/div/a/svg[@class="fa-icon"]`;
         // //a[@class="table__option"]
         xPath = `//a[@class="table__option"]`;
-        resOk = await WaitUntilElementIsPresentByXPath(5000, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
         if (!resOk) {
             await console.log('Не Вижу(кнопки редактировать сделку)');
             throw `FAIL => Не Вижу(кнопки редактировать сделку) `;//<--специальный вызов ошибки!
@@ -89,7 +89,7 @@ let DealCheckNew = async (browser, page, DealData) => {
 
         //Проверяем наличие характерных элементов(Редагувати угоду)
         xPath = '//div[@class="head__title"][contains(text(), "Редагувати угоду")]';
-        resOk = await WaitUntilElementIsPresentByXPath(5000, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
         if (!resOk) {
             throw `FAIL => Не Вижу(//div[@class="head__title"][contains(text(), "Редагувати угоду")]) `;//<--специальный вызов ошибки!
         }

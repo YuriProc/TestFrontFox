@@ -40,7 +40,7 @@ let VehicleCheckNewV2 = async (browser, page, VehicleData) => {
         }
 
         //Проверяем наличие на странице Характерных элементов (Транспортные стредства)
-        resOk = await WaitUntilElementIsPresentByXPath(1000, page,'//div[@class="head__title"][contains(text(), "Транспортные стредства")]');
+        resOk = await WaitForElementIsPresentByXPath(1000, page,'//div[@class="head__title"][contains(text(), "Транспортные стредства")]');
         if (!resOk) {
             throw 'Not ElementIsPresent(class="head__title""Транспортные стредства")';//<--специальный вызов ошибки!
         }
@@ -63,7 +63,7 @@ let VehicleCheckNewV2 = async (browser, page, VehicleData) => {
             throw 'WaitUntilPageLoads("Поиск транспорта")';//<--специальный вызов ошибки!
         }
 
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
+        resOk = await WaitForElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
         if (resOk) {//Надпись "Ничего не найдено " присутствует
             await console.log('\x1b[38;5;1m', "       Вижу ->  ",strNotFind, '\x1b[0m');
             throw `Только что созданный транспорт не Найден !!! ${strNotFind}`;

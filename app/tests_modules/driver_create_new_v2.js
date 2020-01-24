@@ -156,7 +156,7 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         }
         // Проверяем есть ли валидируемые незаполненные поля
         xPath = '//span[@class="element__error"]';
-        resOk = await WaitUntilElementIsPresentByXPath(500,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
             await console.log('\x1b[38;5;2m', "     Вижу валидируемые незаполненные поля" ,linkHandlers.length,"шт" , '\x1b[0m');
@@ -164,21 +164,24 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
                 throw `Валидируемых незаполненных полей ${linkHandlers.length} < 3 `;//<--специальный вызов ошибки!
             }
         }
+
+        //Ждём Успешно сохранено
+        resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        if (!resOk) {
+            await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
+            throw `Отсутствует (Успешно сохранено(СОХРАНИТЬ КОНТАКТ))`;//<--специальный вызов ошибки!
+        }
         resOk = await WaitUntilPageLoads(page);
         //await page.waitFor(1111500);
         if (!resOk) {
             throw 'WaitUntilPageLoads("СОХРАНИТЬ КОНТАКТ Водитель")';//<--специальный вызов ошибки!
         }
-        //Ждём Успешно сохранено
-        resOk = await WaitUntilElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
-        if (!resOk) {
-            await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
-            throw `Отсутствует (Успешно сохранено)`;//<--специальный вызов ошибки!
-        }
+        // Похоже есть разрыв в присутствии селектора (html[class=nprogress-busy])
+        await WaitUntilPageLoads(page);
 
         //Ждём label (Номер водительского удостоверения )
         xPath = '//label[@class="element__label"][contains(text(), "Номер водительского удостоверения ")]';
-        resOk = await WaitUntilElementIsPresentByXPath(25000,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(25000,page,xPath);
         if (!resOk) {
             await console.log('\x1b[38;5;2m', "     Не вижу (Номер водительского удостоверения )" , '\x1b[0m');
             throw `Отсутствует label(Номер водительского удостоверения )`;//<--специальный вызов ошибки!
@@ -224,7 +227,7 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
             throw 'WaitUntilPageLoads("Сохранить водителя")';//<--специальный вызов ошибки!
         }
         //Ждём Успешно сохранено
-        resOk = await WaitUntilElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
         if (!resOk) {
             await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено(Сохранить водителя))`;//<--специальный вызов ошибки!
@@ -266,7 +269,7 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
-        returnResult = true;
+        DriverData.returnResult = true;
 
     } catch (err) {
         await console.log('\x1b[38;5;1m', "!!!! Ошибка на странице Создание Контакта Водителя : ",err , '\x1b[0m');
@@ -274,11 +277,11 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         await g_FailedTests++;
         await console.log('\x1b[38;5;1m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
         g_StrOutLog+=`=> Ошибка ${err} => ${g_StatusCurrentTest} \n`;
-        returnResult = false;
+        DriverData.returnResult = false;
         //await page.waitFor(5001111);
     }
     await page.setViewport({width, height});
-    return returnResult;//<------------------EXIT !!!
+    return DriverData;//<------------------EXIT !!!
 
 };
 

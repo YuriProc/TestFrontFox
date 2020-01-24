@@ -36,7 +36,7 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
         }
 
         //Проверяем наличие на странице Характерных элементов (Транспортные стредства)
-        resOk = await WaitUntilElementIsPresentByXPath(1000, page,'//div[@class="head__title"][contains(text(), "Транспортные стредства")]');
+        resOk = await WaitForElementIsPresentByXPath(1000, page,'//div[@class="head__title"][contains(text(), "Транспортные стредства")]');
         if (!resOk) {
             throw 'Not ElementIsPresent(class="head__title""Транспортные стредства")';//<--специальный вызов ошибки!
         }
@@ -178,7 +178,7 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
         }
         // Проверяем есть ли валидируемые незаполненные поля
         xPath = '//span[@class="element__error"]';
-        resOk = await WaitUntilElementIsPresentByXPath(500,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
             await console.log('\x1b[38;5;2m', "     Вижу валидируемые незаполненные поля" ,linkHandlers.length,"шт" , '\x1b[0m');
@@ -192,7 +192,7 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
             throw 'WaitUntilPageLoads("СОХРАНИТЬ КОНТАКТ Водитель")';//<--специальный вызов ошибки!
         }
         //Ждём Успешно сохранено
-        resOk = await WaitUntilElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
         if (!resOk) {
             await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено)`;//<--специальный вызов ошибки!

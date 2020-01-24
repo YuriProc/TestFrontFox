@@ -10,11 +10,30 @@
 // if (Date.now() - startCallback < 10) {
 //     // ничего не делать
 // }
+//===================================================================================
+WaitUntilMessageExist = async function (page) {
+    let cssSelector = `div[class=noty_body]`;
+    let startTime = await Date.now();
+    try {
+        // Ждём селектор
+        await page.waitForSelector(cssSelector, { timeout: 200});
+        // Теперь ждём пока не пропадёт селектор
+        while (await page.$(cssSelector) !== null){
+            // Если прошло больше 65 сек то выход!!!
+            if(await Date.now() - startTime > 65000) {
+                return false;
+            }
+        }
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
 //-----------------------------------------------------------------------------------
 WaitUntilPageLoads  = async function (page) {
     let cssSelector = `html[class=nprogress-busy]`;
 
-    let startTime = Date.now();
+    let startTime = await Date.now();
     try {
         // Ждём селектор (html[class=nprogress-busy])
         await page.waitForSelector(cssSelector, { timeout: 2000});
@@ -22,8 +41,8 @@ WaitUntilPageLoads  = async function (page) {
         // Теперь ждём пока не пропадёт селектор (html[class=nprogress-busy])
         while (await page.$(cssSelector) !== null){
             // Если прошло больше 35 сек то выход!!!
-            if(Date.now() - startTime > 65000) {
-                await console.log('page NOT load > 65 sec');
+            if(await Date.now() - startTime > 65000) {
+                await console.log('page NOT load > 65 sec !!!');
                 return false;
             }
         }
@@ -33,24 +52,27 @@ WaitUntilPageLoads  = async function (page) {
         //await console.log('\x1b[38;5;2m', "WaitUntilPageLoads => error=>",e, '\x1b[0m');
         return false;
     }
-}
+};
 //-----------------------------------------------------------------------------------
-WaitUntilElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
-    let startTime = Date.now();
+WaitForElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
+    let startTime = await Date.now();
     let linkHandlers;
-    while (true) {
-        await page.waitFor(100);
-        linkHandlers = await page.$x(MyXPath);
-        if (linkHandlers.length > 0) {
-            return true;
+    try {
+        while (true) {
+            await page.waitFor(100);
+            linkHandlers = await page.$x(MyXPath);
+            if (linkHandlers.length > 0) {
+                return true;
+            }
+            if ((await Date.now() - startTime) > timeMS) {
+                //await console.log('Element:',MyXPath,' Not Present >', timeMS, 'ms');
+                return false;
+            }
         }
-        if( (Date.now() - startTime) > timeMS ) {
-            //await console.log('Element:',MyXPath,' Not Present >', timeMS, 'ms');
-            return false;
-        }
+    }catch (e) {
+        return false;
     }
-}
-
+};
 //-----------------------------------------------------------------------------------
 ElementIsPresent = async function (page , MyXPath) {
     const linkHandlers = await page.$x(MyXPath);
@@ -306,12 +328,12 @@ EnterDealPointLoading = async  function( page , strEnter){
 
         await TypeByXPath(page, '//div[@name="point_loadings"]/div/input[@class="select__input"]', strEnter);
 
-        await WaitUntilElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        await WaitForElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
 
         await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
 
         let xP = `//div[@name="point_loadings"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
-        await WaitUntilElementIsPresentByXPath(5000, page, xP);
+        await WaitForElementIsPresentByXPath(5000, page, xP);
 
         let sT = await ElementGetInnerText(page , 0, xP);
 
@@ -335,12 +357,12 @@ EnterDealPointUnLoading = async  function( page , strEnter){
 
         await TypeByXPath(page, '//div[@name="point_unloading"]/div/input[@class="select__input"]', strEnter);
 
-        await WaitUntilElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        await WaitForElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
 
         await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
 
         let xP = `//div[@name="point_unloading"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
-        await WaitUntilElementIsPresentByXPath(5000, page, xP);
+        await WaitForElementIsPresentByXPath(5000, page, xP);
 
         let sT = await ElementGetInnerText(page , 0, xP);
 

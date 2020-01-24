@@ -151,7 +151,7 @@ let DriverCreateNew = async (browser, page, typeWork,strLastName, strFirstName, 
         }
         // Проверяем есть ли валидируемые незаполненные поля
         xPath = '//span[@class="element__error"]';
-        resOk = await WaitUntilElementIsPresentByXPath(500,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
             await console.log('\x1b[38;5;2m', "     Вижу валидируемые незаполненные поля" ,linkHandlers.length,"шт" , '\x1b[0m');
@@ -165,7 +165,7 @@ let DriverCreateNew = async (browser, page, typeWork,strLastName, strFirstName, 
             throw 'WaitUntilPageLoads("СОХРАНИТЬ КОНТАКТ Водитель")';//<--специальный вызов ошибки!
         }
         //Ждём Успешно сохранено
-        resOk = await WaitUntilElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
         if (!resOk) {
             await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено)`;//<--специальный вызов ошибки!
@@ -173,7 +173,7 @@ let DriverCreateNew = async (browser, page, typeWork,strLastName, strFirstName, 
 
         //Ждём label (Номер водительского удостоверения )
         xPath = '//label[@class="element__label"][contains(text(), "Номер водительского удостоверения ")]';
-        resOk = await WaitUntilElementIsPresentByXPath(25000,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(25000,page,xPath);
         if (!resOk) {
             await console.log('\x1b[38;5;2m', "     Не вижу (Номер водительского удостоверения )" , '\x1b[0m');
             throw `Отсутствует label(Номер водительского удостоверения )`;//<--специальный вызов ошибки!
@@ -219,7 +219,7 @@ let DriverCreateNew = async (browser, page, typeWork,strLastName, strFirstName, 
             throw 'WaitUntilPageLoads("Сохранить водителя")';//<--специальный вызов ошибки!
         }
         //Ждём Успешно сохранено
-        resOk = await WaitUntilElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
         if (!resOk) {
             await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено(Сохранить водителя))`;//<--специальный вызов ошибки!

@@ -42,7 +42,7 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
         //await console.log('\x1b[38;5;2m', "WaitUntilPageLoads" ,resOk , '\x1b[0m');
         //Проверяем наличие на странице Характерных элементов (Водители)
         //await page.waitFor(12000);
-        resOk = await WaitUntilElementIsPresentByXPath(1000, page,'//div[@class="head__title"][contains(text(), "Водители")]');
+        resOk = await WaitForElementIsPresentByXPath(1000, page,'//div[@class="head__title"][contains(text(), "Водители")]');
         if (!resOk) {
             throw 'Not ElementIsPresent(class="head__title""Водители")';//<--специальный вызов ошибки!
         }
@@ -61,7 +61,7 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
             throw `TypeByXPath(${xpFindDriver})`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
+        resOk = await WaitForElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
         if (resOk) {//Надпись "Ничего не найдено " присутствует
             await console.log('\x1b[38;5;1m', "       Вижу ->  ",strNotFind, '\x1b[0m');
             throw `Только что созданный водитель не Найден !!! ${strNotFind}`;
@@ -178,7 +178,7 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
-        returnResult = true;
+        DriverData.returnResult = true;
 
     } catch (err) {
         await console.log('\x1b[38;5;1m', "!!!! Ошибка на странице Редактирование Контакта Водителя : ",err , '\x1b[0m');
@@ -186,13 +186,13 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
         await g_FailedTests++;
         await console.log('\x1b[38;5;1m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
         g_StrOutLog+=`\n=> Ошибка ${err} => ${g_StatusCurrentTest} \n`;
-        returnResult = false;
+        DriverData.returnResult = false;
         //await page.waitFor(5001111);
     }
     //Клик по LOGO
     await page.click("div[class=logo__icon]");
     await page.setViewport({width, height});
-    return returnResult;//<------------------EXIT !!!
+    return DriverData;//<------------------EXIT !!!
 
 };
 

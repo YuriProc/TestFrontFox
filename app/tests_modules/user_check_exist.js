@@ -41,7 +41,7 @@ let CheckUserExist = async (page, strSearchUser) => {
             throw 'ClickByXPath(//div[@class="logo__icon"])';//<--специальный вызов ошибки!
         }
         //Ждём "Вітаємо вас в системі FOX CRM"
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,'//div[contains(text(), "Вітаємо вас в системі FOX CRM")]');
+        resOk = await WaitForElementIsPresentByXPath(1000,page,'//div[contains(text(), "Вітаємо вас в системі FOX CRM")]');
         if (!resOk) {
             throw 'Не вижу "Вітаємо вас в системі FOX CRM"';//<--специальный вызов ошибки!
         }
@@ -52,7 +52,7 @@ let CheckUserExist = async (page, strSearchUser) => {
         }
 
         //Ждём появление пункта 'Добавить данные'
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,'//div[contains(text(), "Добавить данные")]');
+        resOk = await WaitForElementIsPresentByXPath(1000,page,'//div[contains(text(), "Добавить данные")]');
         if (!resOk) {
             throw 'Не вижу "Добавить данные"';//<--специальный вызов ошибки!
         }
@@ -64,7 +64,7 @@ let CheckUserExist = async (page, strSearchUser) => {
         }
 
         //Ждём появление пункта 'Пользователи'
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,'//a[contains(text(), "Пользователи")]');
+        resOk = await WaitForElementIsPresentByXPath(1000,page,'//a[contains(text(), "Пользователи")]');
         if (!resOk) {
             throw 'Не вижу "Добавить данные -> Пользователи"';//<--специальный вызов ошибки!
         }
@@ -75,7 +75,7 @@ let CheckUserExist = async (page, strSearchUser) => {
         }
         //Ждём открытие страницы 'Пользователи'
         await WaitUntilPageLoads(page);
-        resOk = await WaitUntilElementIsPresentByXPath(12000,page,'//div[contains(text(), "Пользователи")]');
+        resOk = await WaitForElementIsPresentByXPath(12000,page,'//div[contains(text(), "Пользователи")]');
         if (!resOk) {
             throw 'Не вижу //div[contains(text(), "Пользователи")]';//<--специальный вызов ошибки!
         }
@@ -94,7 +94,7 @@ let CheckUserExist = async (page, strSearchUser) => {
         }
         await WaitUntilPageLoads(page);
         //Ждём появление пункта "Ничего не найдено"
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
+        resOk = await WaitForElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
         if (!resOk) {
             throw 'Не вижу "Ничего не найдено"';//<--специальный вызов ошибки!
         }
@@ -120,12 +120,12 @@ let CheckUserExist = async (page, strSearchUser) => {
         await WaitUntilPageLoads(page);
         // Теперь Должна быть найдена фмиилия strSearchUser
         //проверим есть ли Надпись "Ничего не найдено"
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
+        resOk = await WaitForElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
         if (resOk) {//Надпись "Ничего не найдено " присутствует
             await console.log('\x1b[38;5;1m', "       Вижу ->  ",strNotFind, '\x1b[0m');
         }else{
             //Ждём появление кнопки редактировать
-            resOk = await WaitUntilElementIsPresentByXPath(1000,page,'//a[@class="table__option"]');
+            resOk = await WaitForElementIsPresentByXPath(1000,page,'//a[@class="table__option"]');
             if (!resOk) {
                 throw 'Не вижу кнопки редактировать -> //a[@class="table__option"]';//<--специальный вызов ошибки!
             }

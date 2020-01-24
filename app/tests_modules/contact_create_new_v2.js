@@ -1,4 +1,4 @@
-let ContactCreateNew = async (page, typeWork,strLastName, strFirstName, MyFilePath) => {
+let ContactCreateNewV2 = async (page, typeWork,strLastName, strFirstName, MyFilePath) => {
     const nameTest = NameFunction()+'->"' + strLastName + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
@@ -192,4 +192,4 @@ let ContactCreateNew = async (page, typeWork,strLastName, strFirstName, MyFilePa
 
 };
 
-module.exports.ContactCreateNew = ContactCreateNew;
+module.exports.ContactCreateNewV2 = ContactCreateNewV2;

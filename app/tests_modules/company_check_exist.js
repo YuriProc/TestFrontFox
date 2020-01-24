@@ -47,7 +47,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
         //await page.waitForXPath('//a[@class="table__option"]', {timeout: 12000});
         //Кнопка РЕДАКТИРОВАТЬ => '//a[@class="table__option"]'
         //Ждём появление кнопки редактировать
-        ElPresent1 = await WaitUntilElementIsPresentByXPath(5000,page,'//a[@class="table__option"]');
+        ElPresent1 = await WaitForElementIsPresentByXPath(5000,page,'//a[@class="table__option"]');
         if (ElPresent1) {// кнопка редактировать есть
             await console.log('\x1b[38;5;2m', "     Вижу => Шото нашли!!! ", '\x1b[0m');
             g_StatusCurrentTest = 'Пройден';
@@ -58,7 +58,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
             return findExistCompanyOk;// <----------------------------- EXIT OK!!!
         }else{// кнопки редактировать НЕТ
             // ищем надпись "Ничего не найдено"
-            ElPresent2 = await WaitUntilElementIsPresentByXPath(2000,page,'//b[contains(text(), "Ничего не найдено")]');
+            ElPresent2 = await WaitForElementIsPresentByXPath(2000,page,'//b[contains(text(), "Ничего не найдено")]');
             if (ElPresent2) { //надпись "Ничего не найдено" есть
                 await console.log('\x1b[38;5;1m', "     Вижу => Ничего не найдено", '\x1b[0m');
                 g_StatusCurrentTest = 'Пройден';

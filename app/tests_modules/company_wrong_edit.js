@@ -21,7 +21,7 @@ ScrollAndClickSave = async function (page) {
             if (await ElementIsPresent(page, `//html[@class="nprogress-busy"]`) ){
                 await WaitUntilPageLoads(page);
                 const OkXPath = '//div[@class="noty_body"][contains(text(), "Успешно сохранено")]';
-                if (await WaitUntilElementIsPresentByXPath(5000, page, OkXPath)) {
+                if (await WaitForElementIsPresentByXPath(5000, page, OkXPath)) {
                     return true;
                 }
             }else {

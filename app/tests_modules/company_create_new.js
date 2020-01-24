@@ -179,10 +179,10 @@ let CompanyCreateNew = async (page, strCodeCompany) => {
 
             //Ждём начала прогрузки страницы
             //await page.waitForSelector(`html[class=nprogress-busy]`, { timeout: 2000});
-            await WaitUntilElementIsPresentByXPath(1000, page, '//html[@class="nprogress-busy"]');
+            await WaitForElementIsPresentByXPath(1000, page, '//html[@class="nprogress-busy"]');
             //Ждём и проверяем Успешно сохранено //Успешно сохранено
             xPath = '//div[@class="noty_body"][contains(text(), "Успешно сохранено")]';
-            ElPresent = await WaitUntilElementIsPresentByXPath(11000, page, xPath);
+            ElPresent = await WaitForElementIsPresentByXPath(11000, page, xPath);
             if (ElPresent) {
                 await console.log('\x1b[38;5;2m', "Вижу =>", xPath, '\x1b[0m');
 

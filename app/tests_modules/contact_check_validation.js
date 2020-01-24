@@ -62,7 +62,7 @@ let ContactCheckValidation = async (page, strLastName) => {
             throw 'ClickByXPath([....] "Создать контакт")';//<--специальный вызов ошибки!
         }
         xPath = '//span[@class="element__error"]';
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(1000,page,xPath);
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
             await console.log('\x1b[38;5;2m', "     Вижу валидируемые поля" ,linkHandlers.length,"шт" , '\x1b[0m');
@@ -81,7 +81,7 @@ let ContactCheckValidation = async (page, strLastName) => {
             throw 'ClickByXPath([....] "Создать контакт")';//<--специальный вызов ошибки!
         }
         xPath = '//span[@class="element__error"]';
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(1000,page,xPath);
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
             await console.log('\x1b[38;5;2m', "     Вижу валидируемые поля" ,linkHandlers.length,"шт" , '\x1b[0m');
@@ -102,7 +102,7 @@ let ContactCheckValidation = async (page, strLastName) => {
             throw 'ClickByXPath([....] "Создать контакт")';//<--специальный вызов ошибки!
         }
         xPath = '//span[@class="element__error"]';
-        resOk = await WaitUntilElementIsPresentByXPath(1000,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(1000,page,xPath);
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
             await console.log('\x1b[38;5;2m', "     Вижу валидируемые поля" ,linkHandlers.length,"шт" , '\x1b[0m');

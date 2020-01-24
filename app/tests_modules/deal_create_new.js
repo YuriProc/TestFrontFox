@@ -318,7 +318,7 @@ let DealCreateNew = async (browser, page, DealData) => {
         }
         // Проверяем есть ли валидируемые незаполненные поля
         xPath = '//span[@class="element__error"]';
-        resOk = await WaitUntilElementIsPresentByXPath(500,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
             //await console.log('\x1b[38;5;2m', "     Вижу валидируемые незаполненные поля" ,linkHandlers.length,"шт" , '\x1b[0m');
@@ -326,7 +326,7 @@ let DealCreateNew = async (browser, page, DealData) => {
         }
         //Ждём и проверяем Успешно сохранено //Успешно сохранено
         xPath = '//div[@class="noty_body"][contains(text(), "Успешно сохранено")]';
-        resOk = await WaitUntilElementIsPresentByXPath(5000, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
         if (!resOk) {
             throw `FAIL => Не Вижу(Успешно сохранено) `;//<--специальный вызов ошибки!
         }
@@ -336,7 +336,7 @@ let DealCreateNew = async (browser, page, DealData) => {
         await WaitUntilPageLoads(page);
         // Ждём появление таблицы сделки
         xPath = '//div[@class="head__title"][contains(text(), "Сделки")]';
-        resOk = await WaitUntilElementIsPresentByXPath(5000, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
         if (!resOk) {
             throw `FAIL => Не Вижу(//div[@class="head__title"][contains(text(), "Сделки")]) `;//<--специальный вызов ошибки!
         }
@@ -345,7 +345,7 @@ let DealCreateNew = async (browser, page, DealData) => {
         await WaitUntilPageLoads(page);
         //ElementGetInnerText
         xPath = `//div[@class="table"]/table/tbody/tr/td[2]`;
-        resOk = await WaitUntilElementIsPresentByXPath(5000, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
         if (!resOk) {
             throw `FAIL => Не Вижу(//div[@class="table"]/table/tbody/tr/td[2]`;//<--специальный вызов ошибки!
         }

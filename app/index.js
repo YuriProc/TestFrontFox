@@ -19,9 +19,9 @@ require('./global_functions').global;
 let OpenConfig = require('./open_config');
 
 const fs_log = require('fs');
-let SBrowser = require('./tests_modules/login.js');
+
 let LPage = require('./tests_modules/login.js');
-let RL = require('./tests_modules/re_login_toster');
+
 
 let UCNPage = require('./tests_modules/user_create_new');
 let UCEPage = require('./tests_modules/user_check_exist');
@@ -31,6 +31,9 @@ let CWEPage = require('./tests_modules/company_wrong_edit');
 
 let ContactCVPage = require('./tests_modules/contact_check_validation');
 let ContactCNPage = require('./tests_modules/contact_create_new');
+let ContactCNV2Page = require('./tests_modules/contact_create_new_v2');
+
+
 let DriverCNPage = require('./tests_modules/driver_create_new');
 let DriverCNV2Page = require('./tests_modules/driver_create_new_v2');
 let DriverCheckNV2Page = require('./tests_modules/driver_check_new_v2');
@@ -53,6 +56,7 @@ let RNum;
 let strLastName,strFirstName,strMiddleName;
 let strLicensePlate;
 let VehicleData;
+let ContactData;
 
 let OpenFox = async () => {
     try {
@@ -66,124 +70,82 @@ let OpenFox = async () => {
             throw 'Ошибка OpenConfig !!!';//<--специальный вызов ошибки!
         }
         g_StrOutLog+=`Тесты ========================================\n`;
-        browser = await SBrowser.StartBrowser();
-        page = await SBrowser.BrowserGetPage(browser);
+        browser = await LPage.StartBrowser();
+        page = await LPage.BrowserGetPage(browser);
         g_NumberCurrentTest = 1;
 
+        let LoginDataR = {
+            strUserLastName : 'root',
+            strEmail : 'root@root.com',
+            strPassword : 'root1234567',
+        };
+        let LoginDataT = {
+            strUserLastName : 'Тостер',
+            strEmail : 'test@test.com',
+            strPassword : 'test1234567890',
+        };
+
         //------------START Для тестов--------------------------------------------------------------
-/*
-                returnResult = await LPage.LoginPage(page);
-                // 2) Проверяем наличие Тостера
-                let strUserLastNameT = 'Тостер';//Тостер
-                returnResult = await UCEPage.CheckUserExist(page, strUserLastNameT);
 
-                if (!returnResult) {    // если его нет то создаём
-                    returnResult = await UCNPage.CreateNewUser(page, strUserLastNameT);
+/*
+        returnResult = await LPage.Login(page, LoginDataT);
+        if (!returnResult){
+            returnResult = await LPage.Login(page, LoginDataR);
+            if (!returnResult){
+                throw ` FAIL => Login(${LoginDataR.strUserLastName}) !!!`;
+            }
+            returnResult = await UCEPage.CheckUserExist(page, LoginDataT.strUserLastName);
+            if (!returnResult) {    // если его нет то создаём
+                returnResult = await UCNPage.CreateNewUser(page, LoginDataT.strUserLastName);
+                if (!returnResult){
+                    throw ` FAIL => CreateNewUser(${LoginDataT.strUserLastName}) !!!`;
                 }
-*/
-//                returnResult = await RL.ReLoginToster(page);
-
-                // RNum = randomInt(1000, 9999);
-                // strLicensePlate = 'Тест '+ RNum + ' Ном';
-                //
-                // returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
-/*
-        let DealData = {
-            //strLicensePlate : 'TEST 3245 NUM',
-            // strPointLoading : 'Хреново', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
-            // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
-            strPointLoading : await GetFunnyRandomAddress('StrAddressFunny'),
-            strPointUnLoading : await GetFunnyRandomAddress('StrAddressFunny'),
-            strTypeLoad : 'Алкоголь',
-            strCargoCost : '100500',
-            strCompanyClient : 'ОСНОВА',
-            strOurCompanyClient : 'СТАВАНГЕР',
-            strCompanyTransporter : 'ЛЬВІВКУЛЬТТОВАРИ',
-            strOurCompanyTransporter : 'ТРАНСЛОЙД',
-            strDriverMiddleName : 'Курганов',
-            strLicensePlate1 : 'BC3082EE',//DAF BC3082EE
-            strLicensePlate2 : 'BC7519XO',// KRONE BC7519XO
-            strFoxResponsible : 'Тостер',
-            strLogistician : 'Тостер',
-            strDealID : '',
-            returnResult : false,
-        };
-
-        //await page.waitFor(11000);
-        DealData = await DealCNPage.DealCreateNew(browser,page,DealData);
-        if (DealData.returnResult) {
-            DealData = await DealCheckNPage.DealCheckNew(browser, page, DealData);
+            }else {
+                throw ` FAIL => User ${LoginDataT.strUserLastName} найден, а залогиниться под ним НЕ УДАЛОСЬ!!!`;
+            }
+            //Попытка Номер 2 !!!
+            returnResult = await LPage.Login(page, LoginDataT);
+            if (!returnResult){
+                throw ` FAIL !!! FAIL !!!=> Login(${LoginDataT.strUserLastName}) !!!`;
+            }
         }
-*/
-             //   if (!returnResult) {    // если не получилось перелогиниться то всё остальное будет пропущено
-             //       throw 'Не получилось DealCreateNew';//<--специальный вызов ошибки!
-             //   }
-                //
-                //
+        await console.log('LOGIN OK!!! Можно Дальше Тестить ...');
 
-    /*            // 8) Создаём нового Водителя V2
-               RNum = randomInt(1000, 9999);
-               RNum = 3546;
-        //let strDriverLicenseNumber = 'DLN' + randomInt(1000, 9999) + strLastName;
-               let tempStrLN = 'ВодФам'+ RNum;
-               let DriverData = {
-                   typeWork : 0,
-                   strLastName : tempStrLN,
-                   strFirstName : 'ВодИмя' + RNum,
-                   strMiddleName : 'ВодОтч' + RNum,
-                   strDriverLicenseNumber : 'DLN' + tempStrLN,
-                   strCompanyName : 'ТРАНСЛОЙД',
+        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 
-               };
+                ContactData = {
 
-                // strLastName = 'ВодФам'+ RNum;
-                // strFirstName = 'ВодИмя' + RNum;
-                // strMiddleName = 'ВодОтч' + RNum;
-  //              returnResult = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
-                returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser,page,DriverData);
+                };
+                // 5) Тест на создание Нового Контакта
 
-*/
-/*
+                //DriverFaceURL //TrollFaceURL //ManFaceURL //DriverDocURL
+                MyFilePath = await SaveTempPictureFromRandomURL(browser, 'TrollFaceURL');
+                RNum = randomInt(1000, 9999);
+                strLastName = 'Фамилия'+ RNum;
+                strFirstName = 'Имя' + RNum;
+                returnResult = await ContactCNV2Page.ContactCreateNewV2(page,0,strLastName,strFirstName, MyFilePath);
+                await DeleteTempPicture(MyFilePath);
 
-        // 10) Создаём Транспорт
-        RNum = randomInt(1000, 9999);
-        strLicensePlate = 'TEST '+ RNum + ' NUM';
-        VehicleData = {
-            strLicensePlate: strLicensePlate,
-            strCarType: 'Тягач',
-            strCarBrand: 'DAF',
-            strCompanyName : 'ТРАНСЛОЙД',
-        };
-        VehicleData = await VehicleCNV2Page.VehicleCreateNewV2(browser,page,VehicleData);
-        await console.log("returnResultObject",VehicleData);
-        if (VehicleData.returnResult) {
-            VehicleData = await VehicleCheckNV2Page.VehicleCheckNewV2(browser, page, VehicleData);
-        }
 
-                throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
-
-*/
-//        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+        */
         //------------END Для тестов------------------------------------------------------------------
 
         //  1) Логинимся под Рутом
-        returnResult = await LPage.LoginPage(page);
+        returnResult = await LPage.Login(page, LoginDataR);
         if (!returnResult){
             throw 'root LoginPage !!!';//<--специальный вызов ошибки!
         }
 
-
-        let strUserLastName = 'Тостер';//Тостер
-
         // 2) Проверяем наличие Тостера
-        returnResult = await UCEPage.CheckUserExist(page, strUserLastName);
+        returnResult = await UCEPage.CheckUserExist(page, LoginDataT.strUserLastName);
 
         if (!returnResult) {    // если его нет то создаём
-            returnResult = await UCNPage.CreateNewUser(page, strUserLastName);
+            returnResult = await UCNPage.CreateNewUser(page, LoginDataT.strUserLastName);
         }
 
         // 3) перелогиниваемся под Тостером
-        returnResult = await RL.ReLoginToster(page);
+        returnResult = await LPage.Login(page, LoginDataT);
         if (!returnResult) {    // если не получилось перелогиниться то всё остальное будет пропущено
             throw 'Не получилось перелогиниться под Тостером';//<--специальный вызов ошибки!
         }
@@ -230,9 +192,11 @@ let OpenFox = async () => {
             strCompanyName : 'ТРАНСЛОЙД',
 
         };
-        returnResult = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
+        DriverData.returnResult = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
         // 9) Проверяем нового водителя
-        returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser,page,DriverData);
+        if (DriverData.returnResult) {
+            DriverData.returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser, page, DriverData);
+        }
 /*
         // 10) Создаём Транспорт
         RNum = randomInt(1000, 9999);
