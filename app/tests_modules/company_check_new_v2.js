@@ -127,7 +127,7 @@ let CompanyCheckNewV2 = async (page, CompanyData) => {
             if((QLength > 1) && (i<QLength-1)){strCompanyTypesFromPage +=",";}
         }
         strCompanyTypesFromPage +="]";
-        await console.log(`     --> поле тип компании заполнено ${strCompanyTypesFromPage}`);
+        //await console.log(`     --> поле тип компании заполнено ${strCompanyTypesFromPage}`);
         // Проверим Наша компания
         // чек Наша компания
 

@@ -91,7 +91,6 @@ let OpenFox = async () => {
         let DriverData;
 
         //------------START Для тестов--------------------------------------------------------------
-
 /*
         returnResult = await LPage.Login(page, LoginDataT);
         if (!returnResult){
@@ -115,26 +114,12 @@ let OpenFox = async () => {
             }
         }
         await console.log('LOGIN OK!!! Можно Дальше Тестить ...');
-*/
+
       //  throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
-/*
-                ContactData = {
 
-                };
-                // 5) Тест на создание Нового Контакта
 
-                //DriverFaceURL //TrollFaceURL //ManFaceURL //DriverDocURL
-                MyFilePath = await SaveTempPictureFromRandomURL(browser, 'TrollFaceURL');
-                RNum = randomInt(1000, 9999);
-                strLastName = 'Фамилия'+ RNum;
-                strFirstName = 'Имя' + RNum;
-                returnResult = await ContactCNV2Page.ContactCreateNewV2(page,0,strLastName,strFirstName, MyFilePath);
-                await DeleteTempPicture(MyFilePath);
-
-*/
-/*
         // 6) проверяем наличие тестовой компании
-        CodeCompany = '40864216';//40686262 -//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
+        CodeCompany = '40465590';//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
 
         CompanyData = {
             strCodeCompany : CodeCompany,
@@ -170,8 +155,9 @@ let OpenFox = async () => {
 
             CompanyData = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData);
         }
-        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
-
+        */
+       // throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+/*
         // 8) Создаём нового Водителя V2
         RNum = randomInt(1000, 9999);
         // RNum = 3546;
@@ -231,7 +217,8 @@ let OpenFox = async () => {
 
         // 6) проверяем наличие тестовой компании
        // CodeCompany = '40720837';//40686262//40894612//40864216//40992677//40802689//33322524//33343916//33693475//26388251
-        CodeCompany = '40864216';//40686262 -//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
+        CodeCompany = '40465590';//40686262 -//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
+        //38462049//38977165//32603291//35898620//40465590
         returnResult = await CCEPage.CompanyCheckExist(page, CodeCompany);
         await console.log('\x1b[38;5;2m', "         CompanyCheckExist(",CodeCompany,")=>", returnResult , '\x1b[0m');
         //await page.waitFor(1000111);
@@ -253,7 +240,7 @@ let OpenFox = async () => {
             strCompanyTypes : [ 'Заказчик' , 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
             boolIsOurCompany : false,
             boolNeedCheck : false,
-            strManagers : [ LoginDataT.strUserLastName, 'Faker' , 'Гриневич'],
+            strManagers : [ LoginDataT.strUserLastName, 'Гриневич'],
             strDelayDays : '7',
             strPaymentCondition : 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
 

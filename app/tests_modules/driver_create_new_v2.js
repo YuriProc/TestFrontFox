@@ -166,7 +166,7 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         }
 
         //Ждём Успешно сохранено
-        resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        resOk = await WaitForElementIsPresentByXPath(5000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
         if (!resOk) {
             await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено(СОХРАНИТЬ КОНТАКТ))`;//<--специальный вызов ошибки!

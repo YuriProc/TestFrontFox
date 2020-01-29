@@ -154,17 +154,18 @@ let ContactCreateNew = async (page, typeWork,strLastName, strFirstName, MyFilePa
                 throw `Валидируемых незаполненных полей ${linkHandlers.length} < 3 `;//<--специальный вызов ошибки!
             }
         }
+        //Ждём Успешно сохранено
+        resOk = await WaitForElementIsPresentByXPath(5000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        if (!resOk) {
+            await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
+            throw `Отсутствует (Успешно сохранено)`;//<--специальный вызов ошибки!
+        }
         resOk = await WaitUntilPageLoads(page);
         //await page.waitFor(1111500);
         if (!resOk) {
             throw 'WaitUntilPageLoads("СОХРАНИТЬ КОНТАКТ")';//<--специальный вызов ошибки!
         }
-        //Ждём Успешно сохранено
-        resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
-        if (!resOk) {
-            await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
-            throw `Отсутствует (Успешно сохранено)`;//<--специальный вызов ошибки!
-        }
+
 
         //await page.waitFor(111500);
         // '//span[@class="element__error"]'
