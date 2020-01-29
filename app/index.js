@@ -26,6 +26,9 @@ let LPage = require('./tests_modules/login.js');
 let UCNPage = require('./tests_modules/user_create_new');
 let UCEPage = require('./tests_modules/user_check_exist');
 let CCNPage = require('./tests_modules/company_create_new');
+let CCNV2Page = require('./tests_modules/company_create_new_v2');
+let CCheckNV2Page = require('./tests_modules/company_check_new_v2');
+
 let CCEPage = require('./tests_modules/company_check_exist');
 let CWEPage = require('./tests_modules/company_wrong_edit');
 
@@ -55,6 +58,7 @@ let MyFilePath;
 let RNum;
 let strLastName,strFirstName,strMiddleName;
 let strLicensePlate;
+let CompanyData;
 let VehicleData;
 let ContactData;
 
@@ -84,6 +88,7 @@ let OpenFox = async () => {
             strEmail : 'test@test.com',
             strPassword : 'test1234567890',
         };
+        let DriverData;
 
         //------------START Для тестов--------------------------------------------------------------
 
@@ -110,9 +115,9 @@ let OpenFox = async () => {
             }
         }
         await console.log('LOGIN OK!!! Можно Дальше Тестить ...');
-
-        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
-
+*/
+      //  throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+/*
                 ContactData = {
 
                 };
@@ -126,9 +131,70 @@ let OpenFox = async () => {
                 returnResult = await ContactCNV2Page.ContactCreateNewV2(page,0,strLastName,strFirstName, MyFilePath);
                 await DeleteTempPicture(MyFilePath);
 
+*/
+/*
+        // 6) проверяем наличие тестовой компании
+        CodeCompany = '40864216';//40686262 -//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
+
+        CompanyData = {
+            strCodeCompany : CodeCompany,
+            strCompanyTypes : [ 'Заказчик' , 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
+            boolIsOurCompany : false,
+            boolNeedCheck : false,
+            strManagers : [ LoginDataT.strUserLastName, 'Faker' , 'Гриневич'],
+            strDelayDays : '7',
+            strPaymentCondition : 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
+
+            returnResult : false,
+        };
+
+        returnResult = await CCEPage.CompanyCheckExist(page, CodeCompany);
+        await console.log('\x1b[38;5;2m', "         CompanyCheckExist(",CodeCompany,")=>", returnResult , '\x1b[0m');
+        //await page.waitFor(1000111);
+        //if (!returnResult) { // компания не найдена создадим её
+        if (true) { // компания не найдена создадим её
+
+
+            CompanyData = await CCNV2Page.CompanyCreateNewV2(page, CompanyData);
+            await console.log("         CompanyCreateNew(",CodeCompany,")=>", CompanyData);
+            if (!CompanyData.returnResult) {
+                throw `Не получилось создать компанию (${CodeCompany})`;//<--специальный вызов ошибки!
+            }
+
+            // CompanyData.strCompanyTypes = ['Перевозчик','Экспедитор'];
+            // CompanyData.boolIsOurCompany = true;
+            // CompanyData.boolNeedCheck = true;
+            // CompanyData.strManagers = [ LoginDataT.strUserLastName, 'Faker' , 'Гриневич' , 'Коротицын'];
+            // CompanyData.strDelayDays = '1';
+            // CompanyData.strPaymentCondition = 'По оригиналам календарных дней';
+
+            CompanyData = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData);
+        }
+        throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+
+        // 8) Создаём нового Водителя V2
+        RNum = randomInt(1000, 9999);
+        // RNum = 3546;
+        //await GetFunnyStr('StrFirstNameFunny');
+
+        DriverData = {
+            typeWork : 0,
+            strLastName : await GetFunnyStr('StrLastNameFunny'),//Фамилия
+            strFirstName : await GetFunnyStr('StrFirstNameFunny'),//Имя
+            strMiddleName : await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+            strDriverLicenseNumber : 'DLN' + RNum,
+            strCompanyName : 'ТРАНСЛОЙД',
+
+        };
+        DriverData.returnResult = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
+        // 9) Проверяем нового водителя
+        if (DriverData.returnResult) {
+            DriverData.returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser, page, DriverData);
+        }
+
 
         throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
-        */
+*/
         //------------END Для тестов------------------------------------------------------------------
 
         //  1) Логинимся под Рутом
@@ -164,31 +230,58 @@ let OpenFox = async () => {
 
 
         // 6) проверяем наличие тестовой компании
-        CodeCompany = '40720837';//40686262//40894612//40864216//40992677//40802689//33322524//33343916//33693475//26388251
+       // CodeCompany = '40720837';//40686262//40894612//40864216//40992677//40802689//33322524//33343916//33693475//26388251
+        CodeCompany = '40864216';//40686262 -//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
         returnResult = await CCEPage.CompanyCheckExist(page, CodeCompany);
         await console.log('\x1b[38;5;2m', "         CompanyCheckExist(",CodeCompany,")=>", returnResult , '\x1b[0m');
         //await page.waitFor(1000111);
-        if (!returnResult) { // компания не найдена создадим её
-            returnResult = await CCNPage.CompanyCreateNew(page, CodeCompany);
-            await console.log('\x1b[38;5;2m', "         CompanyCreateNew(",CodeCompany,")=>", returnResult , '\x1b[0m');
-            if (!returnResult) {
-                throw `Не получилось создать компанию (${CodeCompany})`;//<--специальный вызов ошибки!
-            }
-        }
+        // if (!returnResult) { // компания не найдена создадим её
+        //     returnResult = await CCNPage.CompanyCreateNew(page, CodeCompany);
+        //     await console.log('\x1b[38;5;2m', "         CompanyCreateNew(",CodeCompany,")=>", returnResult , '\x1b[0m');
+        //     if (!returnResult) {
+        //         throw `Не получилось создать компанию (${CodeCompany})`;//<--специальный вызов ошибки!
+        //     }
+        // }
         // 7) Пробуем отредактировать и сохранить тестовую компанию без обязательных полей
-        returnResult = await CWEPage.CompanyWrongEdit(page, CodeCompany);
+        if (returnResult) {
+            returnResult = await CWEPage.CompanyWrongEdit(page, CodeCompany);
+        }
+
+
+        CompanyData = {
+            strCodeCompany : CodeCompany,
+            strCompanyTypes : [ 'Заказчик' , 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
+            boolIsOurCompany : false,
+            boolNeedCheck : false,
+            strManagers : [ LoginDataT.strUserLastName, 'Faker' , 'Гриневич'],
+            strDelayDays : '7',
+            strPaymentCondition : 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
+
+            returnResult : false,
+        };
+        CompanyData = await CCNV2Page.CompanyCreateNewV2(page, CompanyData);
+        await console.log("         CompanyCreateNew(",CodeCompany,")=>", CompanyData);
+        if (!CompanyData.returnResult) {
+
+            await console.log(`Не получилось создать компанию (${CodeCompany}) \n`, CompanyData);
+            //throw `Не получилось создать компанию (${CodeCompany})`;//<--специальный вызов ошибки!
+        }else {
+            CompanyData = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData);
+        }
+
+
 
         // 8) Создаём нового Водителя V2
         RNum = randomInt(1000, 9999);
        // RNum = 3546;
-
-        let tempStrLN = 'ВодФам'+ RNum;
-        let DriverData = {
+        //await GetFunnyStr('StrFirstNameFunny');
+        //let tempStrLN = 'ВодФам'+ RNum;
+        DriverData = {
             typeWork : 0,
-            strLastName : tempStrLN,
-            strFirstName : 'ВодИмя' + RNum,
-            strMiddleName : 'ВодОтч' + RNum,
-            strDriverLicenseNumber : 'DLN' + tempStrLN,
+            strLastName : await GetFunnyStr('StrLastNameFunny'),//Фамилия
+            strFirstName : await GetFunnyStr('StrFirstNameFunny'),//Имя
+            strMiddleName : await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+            strDriverLicenseNumber : 'DLN' + RNum,
             strCompanyName : 'ТРАНСЛОЙД',
 
         };
@@ -206,7 +299,7 @@ let OpenFox = async () => {
 */
         // 10) Создаём Транспорт
         RNum = randomInt(1000, 9999);
-        strLicensePlate = 'TEST '+ RNum + ' NUM'
+        strLicensePlate = 'TEST '+ RNum + ' NUM';
         VehicleData = {
             strLicensePlate: strLicensePlate,
             strCarType: 'Тягач',
@@ -226,8 +319,8 @@ let OpenFox = async () => {
             //strLicensePlate : 'TEST 3245 NUM',
             // strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
             // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
-            strPointLoading : await GetFunnyRandomAddress('StrAddressFunny'),
-            strPointUnLoading : await GetFunnyRandomAddress('StrAddressFunny'),
+            strPointLoading : await GetFunnyStr('StrAddressFunny'),
+            strPointUnLoading : await GetFunnyStr('StrAddressFunny'),
             strTypeLoad : 'Алкоголь',
             strCargoCost : '100500',
             strCompanyClient : 'ОСНОВА',

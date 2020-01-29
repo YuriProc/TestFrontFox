@@ -53,6 +53,7 @@ let VehicleCheckNewV2 = async (browser, page, VehicleData) => {
         }
         await page.waitFor(500);
         //Вводим Номер для поиска
+        //await TypeByXPath(page, xpFindVehicle, ' ');
         resOk = await TypeByXPath(page, xpFindVehicle, VehicleData.strLicensePlate);
         if (!resOk) {
             throw `TypeByXPath(${xpFindVehicle})`;//<--специальный вызов ошибки!

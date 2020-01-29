@@ -56,12 +56,15 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
         }
         await page.waitFor(500);
         //Вводим Фамилию для поиска
+        //resOk = await TypeByXPath(page, xpFindDriver, DriverData.strLastName);
+        await TypeByXPath(page, xpFindDriver, ' ');
+        //resOk = await TypeByXPath(page, xpFindDriver, 'Мартышко');
         resOk = await TypeByXPath(page, xpFindDriver, DriverData.strLastName);
         if (!resOk) {
             throw `TypeByXPath(${xpFindDriver})`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);
-        resOk = await WaitForElementIsPresentByXPath(1000,page,`//b[contains(text(), '${strNotFind}')]`);
+        resOk = await WaitForElementIsPresentByXPath(2000,page,`//b[contains(text(), '${strNotFind}')]`);
         if (resOk) {//Надпись "Ничего не найдено " присутствует
             await console.log('\x1b[38;5;1m', "       Вижу ->  ",strNotFind, '\x1b[0m');
             throw `Только что созданный водитель не Найден !!! ${strNotFind}`;
@@ -126,7 +129,7 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
         let DriverFirstName = await ElementGetValue(page, 0, '//input[@id="first_name"]');
         if (DriverFirstName !== DriverData.strFirstName ) {
             enableError = true;
-            tempStr = `=> Ошибка Имя(${DriverLastName})<>(${DriverData.strFirstName})`;
+            tempStr = `=> Ошибка Имя(${DriverFirstName})<>(${DriverData.strFirstName})`;
             await console.log('\x1b[38;5;1m', tempStr , '\x1b[0m');
             g_StrOutLog+= tempStr + `\n`;
         }

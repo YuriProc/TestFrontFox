@@ -174,7 +174,10 @@ ClickByXPath = async function (page , MyXPath) {
     try {
         if (await linkHandlers.length > 0) {
             //await linkHandlers[0].click({ clickCount:20, delay: 500 });
+            // await linkHandlers[0].hover();
+            // await page.waitFor(500);
             await linkHandlers[0].click();
+            //await linkHandlers[0]._scrollIntoViewIfNeeded()
             //await page.evaluate(el => el.click(), linkHandlers[0]);
             return true;
         } else {
@@ -226,7 +229,7 @@ ClickByXPathWithScroll = async function (timeMS, page , MyXPath) {
     }
 };
 //-----------------------------------------------------------------------------------
-ClickByXPathNumWithScroll = async function (timeMS, page ,Num , MyXPath) {
+ClickByXPathNumWithScroll = async function (timeMS, page ,Num , MyXPath) { // Num отсчёт с 1 !!!
     let startTime = await Date.now();
     const elHandle = await page.$x(MyXPath);
     try {
@@ -303,6 +306,46 @@ GetDataFromList = async function (page, xPath ) {
 TempStop = async function(page){
     await console.log('Временно СТОП');
     await page.waitFor(98765400);
+};
+//--------------------
+LogoClick = async function(page){
+  try {
+      await page.click("div[class=logo__icon]");
+      await page.waitFor(500);
+      return true;
+  }catch (e) {
+      return false;
+  }
+};
+//-----------------------
+SetInput = async function(page, Selector, strText){
+  try{
+
+      const input = await page.$(Selector);
+      await input.click({ clickCount: 3 })
+      await input.type(strText);
+
+      // await page.click(Selector);
+      // await page.type(Selector,strText);
+      return true;
+  }catch (e) {
+      return false;
+  }
+};
+//-----------------------
+SetInputByXPath = async function(page, xPath, strText){
+    try{
+
+        const input = await page.$x(xPath);
+        await input[0].click({ clickCount: 3 })
+        await input[0].type(strText);
+
+        // await page.click(Selector);
+        // await page.type(Selector,strText);
+        return true;
+    }catch (e) {
+        return false;
+    }
 };
 // DEAL --------------------------------------------------------------------------
 ClickDealCreateNewPlus = async  function( page ){
@@ -399,7 +442,7 @@ EnterDealPointUnLoading = async  function( page , strEnter){
 TypeByXPath = async function (page , MyXPath, MyText) {
     const linkHandlers = await page.$x(MyXPath);
     if (linkHandlers.length > 0) {
-        linkHandlers[0].type(MyText);
+        await linkHandlers[0].type(MyText);
         return true;
     }else{
         return false;
@@ -485,7 +528,7 @@ SaveTempPictureFromRandomURL = async function(browser, MyArrayName) {
     return MyFilePath;
 };
 //----------------------------------------------------------------------------------
-GetFunnyRandomAddress = async function(MyArrayName) {
+GetFunnyStr = async function(MyArrayName) {
 
     let RandNum = await randomInt(0, g_ArraySTR[MyArrayName].length - 1);
 
