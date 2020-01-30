@@ -286,7 +286,7 @@ let OpenFox = async () => {
 */
         // 10) Создаём Транспорт
         RNum = randomInt(1000, 9999);
-        strLicensePlate = 'TEST '+ RNum + ' NUM';
+        strLicensePlate = 'TEST'+ RNum + 'NUM';
         VehicleData = {
             strLicensePlate: strLicensePlate,
             strCarType: 'Тягач',

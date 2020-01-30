@@ -426,12 +426,12 @@ EnterDealPointLoading = async  function( page , strEnter){
         let sT = await ElementGetInnerText(page , 0, xP);
 
         if (!sT.includes(strEnter)) {
-            throw '';
+            throw ` InnerText:"${sT}" Not !sT.includes(${strEnter})`;
         }
 
         return true;
     }catch (e) {
-        await console.log('     Ошибка => EnterDealPointLoading =>(', e,')');
+        await console.log('     Ошибка => function EnterDealPointLoading =>(', e,')');
         return false;
     }
 };
@@ -455,12 +455,12 @@ EnterDealPointUnLoading = async  function( page , strEnter){
         let sT = await ElementGetInnerText(page , 0, xP);
 
         if (!sT.includes(strEnter)) {
-            throw '';
+            throw ` InnerText:"${sT}" Not !sT.includes(${strEnter})`;
         }
 
         return true;
     }catch (e) {
-        await console.log('     Ошибка => EnterDealPointUnLoading =>(', e,')');
+        await console.log('     Ошибка => function EnterDealPointUnLoading =>(', e,')');
         return false;
     }
 };
