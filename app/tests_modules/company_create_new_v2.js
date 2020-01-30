@@ -92,7 +92,7 @@ let CompanyCreateNewV2 = async (page, CompanyData) => {
         await WaitUntilPageLoads(page);
         // Проверим Наличие ИНПУТА (Тип компании)
         xPath = '//input[@name="company_types"]';
-        resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(1000,page,xPath);
         if (!resOk) {
             throw `FAIL => Не вижу (${xPath})`;//<--специальный вызов ошибки!
         }

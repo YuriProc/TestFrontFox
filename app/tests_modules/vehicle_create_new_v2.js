@@ -123,7 +123,7 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         //Вводим Марка автомобиля
         resOk = await TypeByXPath(page, xpCarBrand, VehicleData.strCarBrand);
         if (!resOk) {
-            throw `TypeByXPath(${xpLicensePlate})`;//<--специальный вызов ошибки!
+            throw `TypeByXPath(${xpCarBrand})`;//<--специальный вызов ошибки!
         }
         //Ждём пока найдёт марку автомобиля
         resOk = await WaitUntilPageLoads(page);
@@ -201,7 +201,7 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
             throw `ClickByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
         }
         await page.waitFor(500);
-        // 'ТРАНСЛОЙД'
+        // Вводим КОМПАНИЯ = VehicleData.strCompanyName 'ТРАНСЛОЙД'
         resOk = await TypeByXPath(page, xpCompanies, VehicleData.strCompanyName);
         if (!resOk) {
             throw `TypeByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
@@ -230,10 +230,16 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
         if (resOk) {
             let linkHandlers = await page.$x(xPath);
+            let strOut = '';
             await console.log('\x1b[38;5;2m', "     Вижу валидируемые незаполненные поля" ,linkHandlers.length,"шт" , '\x1b[0m');
-            if (linkHandlers.length < 3){
-                throw `Валидируемых незаполненных полей ${linkHandlers.length} < 3 `;//<--специальный вызов ошибки!
+            for (let i =0 ; i < linkHandlers.length ; i++ ){
+                strOut = await ElementGetInnerText(page, i, xPath);
+                g_StrOutLog+= ` => Error => ${strOut} \n`;
+                await console.log(`     ${strOut}`);
             }
+            g_StrOutLog+= ` => FAIL => Валидируемых незаполненных полей ${linkHandlers.length} шт. \n`;
+            throw `Валидируемых незаполненных полей ${linkHandlers.length} шт. `;//<--специальный вызов ошибки!
+
         }
 
         //Ждём Успешно сохранено
