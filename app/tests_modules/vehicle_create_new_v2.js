@@ -13,7 +13,11 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
     let xPath;
     let ElPresent, ElPresent1, ElPresent2, ElPresent3;
     let resOk;
+    let DropZoneOk = false;
     let MyFilePath = '';
+    let xpDriverLicensePhoto;
+    let PhotoURL;
+    let Href = '';
     VehicleData['returnResult'] = false;
     await page.setViewport({width, height});
 
@@ -95,9 +99,13 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
                 if (NumTryDropZone < 2){
                     await page.reload(); //<--------ПЕРЕЗАГРУЗКА страницы
                 }else {
-                    throw `ElementNotPresent(DropZone)('//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]'])`;//<--специальный вызов ошибки!
+                    DropZoneOk  = false;
+                    await console.log(`    Фото не будет загружено ElementNotPresent(DropZone)` );
+                    g_StrOutLog+=`=> Фото не будет загружено ElementNotPresent(DropZone) \n`;
+
+                    //throw `ElementNotPresent(DropZone)('//span[@class="tab__title"][contains(text(), "Тех. Паспорт")]'])`;//<--специальный вызов ошибки!
                 }
-            }
+            }else {DropZoneOk  = true;}
         }while (!resOk && (NumTryDropZone < 2) ); //повторяет пока истина не станет ложью &&<-AND ; ||<-OR
         //Проверяем наличие характерных элементов (Марка автомобиля )
         resOk = await ElementIsPresent(page,'//label[@class="search__label"][contains(text(), "Марка автомобиля ")]');
@@ -161,8 +169,10 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         }
 
         */
-        let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
-        let PhotoURL = await InsertPhoto(browser, page , 'DriverDocURL', xpDriverLicensePhoto);
+        if (DropZoneOk) {
+            xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
+            PhotoURL = await InsertPhoto(browser, page, 'DriverDocURL', xpDriverLicensePhoto);
+        }
 
 
 
@@ -244,13 +254,16 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         /*if (!resOk) {
             throw 'WaitUntilPageLoads("Редактировать КОНТАКТ Водитель")';//<--специальный вызов ошибки!
         }*/
-        let Href = await ElementGetHref(page,0, '//div[@class="dz-image"]/a');
-        //await console.log('PhotoURL(',Href,')');
 
+        if (DropZoneOk) {
+            Href = await ElementGetHref(page, 0, '//div[@class="dz-image"]/a');
+            //await console.log('PhotoURL(',Href,')');
+        }else {Href = '';}
         VehicleData['strHrefPhotoURL'] = Href;
         if (!resOk) {
             VehicleData['strFuck'] = Href;
         }
+
         g_StatusCurrentTest = 'Пройден';
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');

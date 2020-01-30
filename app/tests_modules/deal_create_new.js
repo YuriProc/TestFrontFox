@@ -325,8 +325,9 @@ let DealCreateNew = async (browser, page, DealData) => {
             g_StrOutLog+=`=> Вижу валидируемые незаполненные поля ${linkHandlers.length} шт. \n`;
         }
         //Ждём и проверяем Успешно сохранено //Успешно сохранено
-        xPath = '//div[@class="noty_body"][contains(text(), "Успешно сохранено")]';
-        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
+        // xPath = '//div[@class="noty_body"][contains(text(), "Успешно сохранено")]';
+        // resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
+        resOk = await WaitUntilPageLoadsAndReturnSuccessSave(page);
         if (!resOk) {
             throw `FAIL => Не Вижу(Успешно сохранено) `;//<--специальный вызов ошибки!
         }

@@ -111,12 +111,14 @@ let VehicleCheckNewV2 = async (browser, page, VehicleData) => {
 
 
         // Проверяем Фото тех пас
-        let strHrefPhotoURL = await ElementGetHref(page,0, '//div[@class="dz-image"]/a');
-        if (strHrefPhotoURL !== VehicleData.strHrefPhotoURL ) {
-            enableError = true;
-            tempStr = `=> Ошибка Другой файл (${strHrefPhotoURL})<>(${VehicleData.strHrefPhotoURL})`;
-            await console.log('\x1b[38;5;1m', tempStr , '\x1b[0m');
-            g_StrOutLog+= tempStr + `\n`;
+        if (VehicleData.strHrefPhotoURL !== '') {
+            let strHrefPhotoURL = await ElementGetHref(page, 0, '//div[@class="dz-image"]/a');
+            if (strHrefPhotoURL !== VehicleData.strHrefPhotoURL) {
+                enableError = true;
+                tempStr = `=> Ошибка Другой файл (${strHrefPhotoURL})<>(${VehicleData.strHrefPhotoURL})`;
+                await console.log('\x1b[38;5;1m', tempStr, '\x1b[0m');
+                g_StrOutLog += tempStr + `\n`;
+            }
         }
 
         // Тип (Тягач)

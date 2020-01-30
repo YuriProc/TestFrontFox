@@ -54,6 +54,51 @@ WaitUntilPageLoads  = async function (page) {
     }
 };
 //-----------------------------------------------------------------------------------
+WaitUntilPageLoadsAndReturnSuccessSave = async function (page) {
+    let xPathBusy = `//html[@class="nprogress-busy"]`;
+    let xPathSuccessSave = '//div[@class="noty_body"][contains(text(), "Успешно сохранено")]';
+    let PresentPBusy = false;
+    let PresentSSave = false;
+
+    let startTime = await Date.now();
+    try{
+        while (!PresentPBusy){ //Ждём появление "nprogress-busy" и проверяем наличие "Успешно сохранено"
+            await page.waitFor(100);
+            PresentPBusy = await ElementIsPresent(page, xPathBusy);
+            if (!PresentSSave) {
+                PresentSSave = await ElementIsPresent(page, xPathSuccessSave);
+            }
+            if(await Date.now() - startTime > 2000) {
+                break;// <- Выход из Цикла !!!
+            }
+        }
+        if (!PresentPBusy && PresentSSave){
+            return true;
+        }
+        if (!PresentPBusy && !PresentSSave){
+            return false;
+        }
+
+        while ( PresentPBusy ){ //Ждём пока грузится страница
+            await page.waitFor(100);
+            PresentPBusy = await ElementIsPresent(page, xPathBusy);
+            if (!PresentSSave) {
+                PresentSSave = await ElementIsPresent(page, xPathSuccessSave);
+            }
+            if(await Date.now() - startTime > 65000) {
+                await console.log('page NOT load > 65 sec !!!');
+                return PresentSSave;
+            }
+        }
+
+        return PresentSSave;
+
+
+    }catch (e) {
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
 WaitForElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
     let startTime = await Date.now();
     let linkHandlers;

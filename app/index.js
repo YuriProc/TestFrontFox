@@ -247,7 +247,7 @@ let OpenFox = async () => {
             returnResult : false,
         };
         CompanyData = await CCNV2Page.CompanyCreateNewV2(page, CompanyData);
-        await console.log("         CompanyCreateNew(",CodeCompany,")=>", CompanyData);
+        await console.log("CompanyData(",CodeCompany,")=>", CompanyData);
         if (!CompanyData.returnResult) {
 
             await console.log(`Не получилось создать компанию (${CodeCompany}) \n`, CompanyData);
