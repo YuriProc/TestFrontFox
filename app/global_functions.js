@@ -407,6 +407,7 @@ ClickDealCreateNewPlus = async  function( page ){
     }
 };
 EnterDealPointLoading = async  function( page , strEnter){
+    let resOk;
     try {
         await ClickByXPath(page, '//div[@name="point_loadings"]/div/div[@class="select__zone"]');
 
@@ -416,8 +417,13 @@ EnterDealPointLoading = async  function( page , strEnter){
 
         await TypeByXPath(page, '//div[@name="point_loadings"]/div/input[@class="select__input"]', strEnter);
 
-        await WaitForElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
-
+        resOk = await await WaitForElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        if (!resOk){
+            if(await ElementIsPresent(page, '//span[contains(text(), "Не вдається завантажити Карти Google на цій сторінці.")]')){
+                throw "Не вдається завантажити Карти Google на цій сторінці.";
+            }
+            throw ` Не Найдено ${strEnter}`;
+        }
         await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
 
         let xP = `//div[@name="point_loadings"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
@@ -432,10 +438,12 @@ EnterDealPointLoading = async  function( page , strEnter){
         return true;
     }catch (e) {
         await console.log('     Ошибка => function EnterDealPointLoading =>(', e,')');
+        g_StrOutLog+=`\n Ошибка => function EnterDealPointLoading =>(${e})\n`;
         return false;
     }
 };
 EnterDealPointUnLoading = async  function( page , strEnter){
+    let resOk;
     try {
         await ClickByXPath(page, '//div[@name="point_unloading"]/div/div[@class="select__zone"]');
 
@@ -445,7 +453,13 @@ EnterDealPointUnLoading = async  function( page , strEnter){
 
         await TypeByXPath(page, '//div[@name="point_unloading"]/div/input[@class="select__input"]', strEnter);
 
-        await WaitForElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        if (!resOk){
+            if(await ElementIsPresent(page, '//span[contains(text(), "Не вдається завантажити Карти Google на цій сторінці.")]')){
+                throw "Не вдається завантажити Карти Google на цій сторінці.";
+            }
+            throw ` Не Найдено ${strEnter}`;
+        }
 
         await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
 
@@ -461,6 +475,7 @@ EnterDealPointUnLoading = async  function( page , strEnter){
         return true;
     }catch (e) {
         await console.log('     Ошибка => function EnterDealPointUnLoading =>(', e,')');
+        g_StrOutLog+=`\n Ошибка => function EnterDealPointLoading =>(${e})\n`;
         return false;
     }
 };
