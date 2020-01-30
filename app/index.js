@@ -306,8 +306,8 @@ let OpenFox = async () => {
             //strLicensePlate : 'TEST 3245 NUM',
             // strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
             // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
-            strPointLoading : await GetFunnyStr('StrAddressFunny'),
-            strPointUnLoading : await GetFunnyStr('StrAddressFunny'),
+            strPointLoading : 'Подсосное', //await GetFunnyStr('StrAddressFunny'),
+            strPointUnLoading : 'Хреновое', //await GetFunnyStr('StrAddressFunny'),
             strTypeLoad : 'Алкоголь',
             strCargoCost : '100500',
             strCompanyClient : 'ОСНОВА',
