@@ -490,10 +490,18 @@ EnterDealPointLoading = async  function( page , strEnter){
             }
             throw ` Не Найдено ${strEnter}`;
         }
-        await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        resOk = await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        if (!resOk){
+            throw ` ClickByXPath(//span[@class="pac-matched"][contains(text(), "${strEnter}")])`;
+        }
+
+        await page.waitFor(500);
 
         let xP = `//div[@name="point_loadings"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
-        await WaitForElementIsPresentByXPath(5000, page, xP);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xP);
+        if (!resOk){
+            throw ` WaitForElementIsPresentByXPath(${xP})`;
+        }
 
         let sT = await ElementGetInnerText(page , 0, xP);
 
@@ -527,10 +535,18 @@ EnterDealPointUnLoading = async  function( page , strEnter){
             throw ` Не Найдено ${strEnter}`;
         }
 
-        await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        resOk = await ClickByXPath(page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        if (!resOk){
+            throw ` ClickByXPath(//span[@class="pac-matched"][contains(text(), "${strEnter}")])`;
+        }
+
+        await page.waitFor(500);
 
         let xP = `//div[@name="point_unloading"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
-        await WaitForElementIsPresentByXPath(5000, page, xP);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xP);
+        if (!resOk){
+            throw ` WaitForElementIsPresentByXPath(${xP})`;
+        }
 
         let sT = await ElementGetInnerText(page , 0, xP);
 
