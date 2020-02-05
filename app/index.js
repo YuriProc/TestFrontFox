@@ -58,10 +58,14 @@ let MyFilePath;
 let RNum;
 let strLastName,strFirstName,strMiddleName;
 let strLicensePlate;
-let CompanyData;
-let VehicleData;
+let CompanyData1, CompanyData2;
+let VehicleData1, VehicleData2;
 let DealData;
 let ContactData;
+let DriverData, DriverData_1, DriverData_2;
+
+let tempStr;
+
 
 let OpenFox = async () => {
     try {
@@ -88,27 +92,32 @@ let OpenFox = async () => {
             strUserLastName : 'Тостер',
             strEmail : 'test@test.com',
             strPassword : 'test1234567890',
+            //ResolvedFailLogin : true, // <- Можно или нельзя Фейлиться по Email или Пароль
+            // Если можно то в случае (Неверный e-mail или пароль) +1 g_SuccessfulTests
+            // Если нельзя то в случае (Неверный e-mail или пароль) +1 g_FailedTests
         };
-        let DriverData;
+
 
         //------------START Для тестов--------------------------------------------------------------
-        /*
+                // Логинимся под ТОСТЕРОМ
+                LoginDataT.ResolvedFailLogin = true;// <- Можно или нельзя Фейлиться по Email или Пароль
                 returnResult = await LPage.Login(page, LoginDataT);
-                if (!returnResult){
+                if (!returnResult){ // Если не получилось то логинимся под ROOT`ом
                     returnResult = await LPage.Login(page, LoginDataR);
-                    if (!returnResult){
+                    if (!returnResult){ //Если не получилось то FAIL  и выход!!!
                         throw ` FAIL => Login(${LoginDataR.strUserLastName}) !!!`;
                     }
                     returnResult = await UCEPage.CheckUserExist(page, LoginDataT.strUserLastName);
                     if (!returnResult) {    // если его нет то создаём
                         returnResult = await UCNPage.CreateNewUser(page, LoginDataT.strUserLastName);
-                        if (!returnResult){
+                        if (!returnResult){ // если не получилось то FAIL и выход !!!
                             throw ` FAIL => CreateNewUser(${LoginDataT.strUserLastName}) !!!`;
                         }
                     }else {
                         throw ` FAIL => User ${LoginDataT.strUserLastName} найден, а залогиниться под ним НЕ УДАЛОСЬ!!!`;
                     }
                     //Попытка Номер 2 !!!
+                    LoginDataT.ResolvedFailLogin = false;// <- Можно или нельзя Фейлиться по Email или Пароль
                     returnResult = await LPage.Login(page, LoginDataT);
                     if (!returnResult){
                         throw ` FAIL !!! FAIL !!!=> Login(${LoginDataT.strUserLastName}) !!!`;
@@ -116,172 +125,146 @@ let OpenFox = async () => {
                 }
                 await console.log('LOGIN OK!!! Можно Дальше Тестить ...');
 
-              //  throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+                //throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 
 
-                // 6) проверяем наличие тестовой компании
-                CodeCompany = '40465590';//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
 
-                CompanyData = {
-                    strCodeCompany : CodeCompany,
-                    strCompanyTypes : [ 'Заказчик' , 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
+                //CodeCompany = '40465590';//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
+
+                //tempStr = '38050' + await randomInt(1001010, 9989999);
+                //CodeCompany = await GetFunnyStr('StrCompanyCodeArray');
+                CompanyData1 = {
+                    strCodeCompany : await GetFunnyStr('StrCompanyCodeArray'),//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+                    strCompanyName : '',// <= Заполнится автоматически при создании Компании !!!
+                    strCompanyTypes : [ 'Заказчик', ], // Заказчик // Перевозчик // Экспедитор
                     boolIsOurCompany : false,
                     boolNeedCheck : false,
-                    strManagers : [ LoginDataT.strUserLastName, 'Faker' , 'Гриневич'],
+                    strManagers : [ LoginDataT.strUserLastName, 'Гриневич'],
                     strDelayDays : '7',
                     strPaymentCondition : 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
+                    strPhoneNumber : '38050' + await randomInt(1001010, 9989999),
+                    strUrl : await GetFunnyUrl('Funny_Page_URL'),//'https://natribu.org/',//Funny_Page_URL
+                    strContractOurCompany : 'ТРАНСЛОЙД',// СТАВАНГЕР // ТРАНСЛОЙД //
+                    strContractOurCompanyIs : 'Перевозчик',
 
                     returnResult : false,
                 };
 
-                returnResult = await CCEPage.CompanyCheckExist(page, CodeCompany);
-                await console.log('\x1b[38;5;2m', "         CompanyCheckExist(",CodeCompany,")=>", returnResult , '\x1b[0m');
-                //await page.waitFor(1000111);
-                //if (!returnResult) { // компания не найдена создадим её
-                if (true) { // компания не найдена создадим её
-
-
-                    CompanyData = await CCNV2Page.CompanyCreateNewV2(page, CompanyData);
-                    await console.log("         CompanyCreateNew(",CodeCompany,")=>", CompanyData);
-                    if (!CompanyData.returnResult) {
-                        throw `Не получилось создать компанию (${CodeCompany})`;//<--специальный вызов ошибки!
-                    }
-
-                    // CompanyData.strCompanyTypes = ['Перевозчик','Экспедитор'];
-                    // CompanyData.boolIsOurCompany = true;
-                    // CompanyData.boolNeedCheck = true;
-                    // CompanyData.strManagers = [ LoginDataT.strUserLastName, 'Faker' , 'Гриневич' , 'Коротицын'];
-                    // CompanyData.strDelayDays = '1';
-                    // CompanyData.strPaymentCondition = 'По оригиналам календарных дней';
-
-                    CompanyData = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData);
+        // X) проверяем наличие тестовой компании CompanyData1
+                returnResult = await CCEPage.CompanyCheckExist(page, CompanyData1.strCodeCompany);
+                await console.log('\x1b[38;5;2m', "         CompanyCheckExist(",CompanyData1.strCodeCompany,")=>", returnResult , '\x1b[0m');
+        // X) создаём тестовую компанию CompanyData1
+                CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData1);
+                if (!CompanyData1.returnResult) {
+                    throw `Не получилось создать компанию (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
                 }
-                */
-       // throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+                //await console.log(`Created => CompanyData1:`, CompanyData1);
+        // X) Проверяем созданную тестовую компанию CompanyData1
+                CompanyData1 = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData1);
+                if (!CompanyData1.returnResult) {
+                    throw `FAIL => CompanyCheckNewV2 (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
+                }
 
 
-
-     //   throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
-
-        //------------END Для тестов------------------------------------------------------------------
-
-        //  1) Логинимся под Рутом
-        returnResult = await LPage.Login(page, LoginDataR);
-        if (!returnResult){
-            throw 'root LoginPage !!!';//<--специальный вызов ошибки!
-        }
-
-        // 2) Проверяем наличие Тостера
-        returnResult = await UCEPage.CheckUserExist(page, LoginDataT.strUserLastName);
-
-        if (!returnResult) {    // если его нет то создаём
-            returnResult = await UCNPage.CreateNewUser(page, LoginDataT.strUserLastName);
-        }
-
-        // 3) перелогиниваемся под Тостером
-        returnResult = await LPage.Login(page, LoginDataT);
-        if (!returnResult) {    // если не получилось перелогиниться то всё остальное будет пропущено
-            throw 'Не получилось перелогиниться под Тостером';//<--специальный вызов ошибки!
-        }
-        // 4) проверяем валидацию при создании Контакта
-        returnResult = await ContactCVPage.ContactCheckValidation(page);
-
-        // 5) Тест на создание Нового Контакта
-
-        //DriverFaceURL //TrollFaceURL //ManFaceURL //DriverDocURL
-        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'TrollFaceURL');
-        RNum = randomInt(1000, 9999);
-        strLastName = 'Фамилия'+ RNum;
-        strFirstName = 'Имя' + RNum;
-        returnResult = await ContactCNPage.ContactCreateNew(page,0,strLastName,strFirstName, MyFilePath);
-        await DeleteTempPicture(MyFilePath);
-
-
-        // 6) проверяем наличие тестовой компании
-       // CodeCompany = '40720837';//40686262//40894612//40864216//40992677//40802689//33322524//33343916//33693475//26388251
-        CodeCompany = '40465590';//40686262 -//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
-        //38462049//38977165//32603291//35898620//40465590
-        returnResult = await CCEPage.CompanyCheckExist(page, CodeCompany);
-        await console.log('\x1b[38;5;2m', "         CompanyCheckExist(",CodeCompany,")=>", returnResult , '\x1b[0m');
-        //await page.waitFor(1000111);
-        // if (!returnResult) { // компания не найдена создадим её
-        //     returnResult = await CCNPage.CompanyCreateNew(page, CodeCompany);
-        //     await console.log('\x1b[38;5;2m', "         CompanyCreateNew(",CodeCompany,")=>", returnResult , '\x1b[0m');
-        //     if (!returnResult) {
-        //         throw `Не получилось создать компанию (${CodeCompany})`;//<--специальный вызов ошибки!
-        //     }
-        // }
-        // 7) Пробуем отредактировать и сохранить тестовую компанию без обязательных полей
-        if (returnResult) {
-            returnResult = await CWEPage.CompanyWrongEdit(page, CodeCompany);
-        }
-
-
-        CompanyData = {
-            strCodeCompany : CodeCompany,
-            strCompanyTypes : [ 'Заказчик' , 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
+        CompanyData2 = {
+            strCodeCompany : await GetFunnyStr('StrCompanyCodeArray'),//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+            strCompanyName : '',// <= Заполнится автоматически при создании Компании !!!
+            strCompanyTypes : [ 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
             boolIsOurCompany : false,
             boolNeedCheck : false,
             strManagers : [ LoginDataT.strUserLastName, 'Гриневич'],
             strDelayDays : '7',
             strPaymentCondition : 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
+            strPhoneNumber : '38050' + await randomInt(1001010, 9989999),
+            strUrl : await GetFunnyUrl('Funny_Page_URL'),//'https://natribu.org/',//Funny_Page_URL
+            strContractOurCompany : 'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
+            strContractOurCompanyIs : 'Заказчик',
 
             returnResult : false,
         };
-        CompanyData = await CCNV2Page.CompanyCreateNewV2(page, CompanyData);
-        await console.log("CompanyData(",CodeCompany,")=>", CompanyData);
-        if (!CompanyData.returnResult) {
+        // X) проверяем наличие тестовой компании CompanyData2
+                returnResult = await CCEPage.CompanyCheckExist(page, CompanyData2.strCodeCompany);
+                await console.log('\x1b[38;5;2m', "         CompanyCheckExist(",CompanyData2.strCodeCompany,")=>", returnResult , '\x1b[0m');
+        // X) создаём тестовую компанию CompanyData2
+                CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData2);
+                if (!CompanyData2.returnResult) {
+                    throw `Не получилось создать компанию (${CompanyData2.strCodeCompany})`;//<--специальный вызов ошибки!
+                }
+                //await console.log(`Created => CompanyData2:`, CompanyData2);
+        // X) Проверяем созданную тестовую компанию CompanyData2
+                CompanyData2 = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData2);
+                if (!CompanyData2.returnResult) {
+                    throw `FAIL => CompanyCheckNewV2 (${CodeCompany})`;//<--специальный вызов ошибки!
+                }
 
-            await console.log(`Не получилось создать компанию (${CodeCompany}) \n`, CompanyData);
-            //throw `Не получилось создать компанию (${CodeCompany})`;//<--специальный вызов ошибки!
-        }else {
-            CompanyData = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData);
-        }
 
+                    RNum = randomInt(1000, 9999);
 
+                    DriverData = {
+                        typeWork : 0,
+                        strLastName : await GetFunnyStr('StrLastNameFunny'),//Фамилия
+                        strFirstName : await GetFunnyStr('StrFirstNameFunny'),//Имя
+                        strMiddleName : await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+                        strDriverLicenseNumber : 'DLN' + RNum,
+                        strCompanyName : CompanyData2.strCompanyName, //'ТРАНСЛОЙД',
+                        strCodeCompany : CompanyData2.strCodeCompany,
+                    };
+        // X) Создаём нового Водителя V2
+                    DriverData = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
+                    if (!DriverData.returnResult) {
+                        throw `FAIL => DriverCreateNewV2 (${DriverData.strLastName})`;//<--специальный вызов ошибки!
+                    }
+        // X) Проверяем нового водителя
+                    if (DriverData.returnResult) {
+                        DriverData = await DriverCheckNV2Page.DriverCheckNewV2(browser, page, DriverData);
+                        if (!DriverData.returnResult) {
+                            throw `FAIL => DriverCheckNewV2 (${DriverData.strLastName})`;//<--специальный вызов ошибки!
+                        }
+                    }
 
-        // 8) Создаём нового Водителя V2
-        RNum = randomInt(1000, 9999);
-       // RNum = 3546;
-        //await GetFunnyStr('StrFirstNameFunny');
-        //let tempStrLN = 'ВодФам'+ RNum;
-        DriverData = {
-            typeWork : 0,
-            strLastName : await GetFunnyStr('StrLastNameFunny'),//Фамилия
-            strFirstName : await GetFunnyStr('StrFirstNameFunny'),//Имя
-            strMiddleName : await GetFunnyStr('StrMiddleNameFunny'),//Отчество
-            strDriverLicenseNumber : 'DLN' + RNum,
-            strCompanyName : 'ТРАНСЛОЙД',
+                    // Тягач
+                    VehicleData1 = {
+                        strLicensePlate: 'TEST'+ await randomInt(1000, 9999) + 'NUM',
+                        strCarType: 'Тягач',
+                        strCarBrand: 'DAF',
+                        CompanyData : CompanyData2,//'Перевозчик',
+                        DriverData: DriverData,
+                    };
+        // X) Создаём Транспорт_1 (Тягач)
+                    VehicleData1 = await VehicleCNV2Page.VehicleCreateNewV2(browser,page,VehicleData1);
+                    if (!VehicleData1.returnResult) {
+                        throw `FAIL => VehicleCreateNewV2 (${VehicleData1.strLicensePlate})`;//<--специальный вызов ошибки!
+                    }
 
-        };
-        DriverData.returnResult = await DriverCNV2Page.DriverCreateNewV2(browser,page,DriverData);
-        // 9) Проверяем нового водителя
-        if (DriverData.returnResult) {
-            DriverData.returnResult = await DriverCheckNV2Page.DriverCheckNewV2(browser, page, DriverData);
-        }
-/*
-        // 10) Создаём Транспорт
-        RNum = randomInt(1000, 9999);
-        strLicensePlate = 'Тест '+ RNum + ' Ном';
+        // X) Проверяем только что созданный Транспорт_1 (Тягач)
+                    if (VehicleData1.returnResult) {
+                        VehicleData1 = await VehicleCheckNV2Page.VehicleCheckNewV2(browser, page, VehicleData1);
+                        if (!VehicleData1.returnResult) {
+                            throw `FAIL => VehicleCheckNewV2 (${VehicleData1.strLicensePlate})`;//<--специальный вызов ошибки!
+                        }
+                    }
+                    // Прицеп
+                    VehicleData2 = {
+                        strLicensePlate: 'TEST'+ await randomInt(1000, 9999) + 'NUM',
+                        strCarType: 'Полуприцеп',
+                        strCarBrand: 'SCHMITZ',
+                        CompanyData : CompanyData2,//'Перевозчик',
+                        DriverData: DriverData,
+                    };
+        // X) Создаём Транспорт_2 (Прицеп)
+                    VehicleData2 = await VehicleCNV2Page.VehicleCreateNewV2(browser,page,VehicleData2);
+                    if (!VehicleData2.returnResult) {
+                        throw `FAIL => VehicleCreateNewV2 (${VehicleData2.strLicensePlate})`;//<--специальный вызов ошибки!
+                    }
 
-        returnResult = await VehicleCNPage.VehicleCreateNew(browser,page,strLicensePlate);
-*/
-        // 10) Создаём Транспорт
-        RNum = randomInt(1000, 9999);
-        strLicensePlate = 'TEST'+ RNum + 'NUM';
-        VehicleData = {
-            strLicensePlate: strLicensePlate,
-            strCarType: 'Тягач',
-            strCarBrand: 'DAF',
-            strCompanyName : 'ТРАНСЛОЙД',
-        };
-        VehicleData = await VehicleCNV2Page.VehicleCreateNewV2(browser,page,VehicleData);
-        //await console.log("returnResultObject",VehicleData);
-        // 11) Проверяем только что созданный Транспорт
-        if (VehicleData.returnResult) {
-            VehicleData = await VehicleCheckNV2Page.VehicleCheckNewV2(browser, page, VehicleData);
-        }
-        //await console.log("returnResultObject",VehicleData);
+        // X) Проверяем только что созданный Транспорт_1 (Прицеп)
+                    if (VehicleData2.returnResult) {
+                        VehicleData2 = await VehicleCheckNV2Page.VehicleCheckNewV2(browser, page, VehicleData2);
+                        if (!VehicleData2.returnResult) {
+                            throw `FAIL => VehicleCheckNewV2 (${VehicleData2.strLicensePlate})`;//<--специальный вызов ошибки!
+                        }
+                    }
+
 
         // 12) Создаём новую сделку
         DealData = {
@@ -292,13 +275,13 @@ let OpenFox = async () => {
             strPointUnLoading : await GetFunnyStr('StrAddressFunny'),
             strTypeLoad : 'Алкоголь',
             strCargoCost : '100500',
-            strCompanyClient : 'ОСНОВА',
-            strOurCompanyClient : 'СТАВАНГЕР',
-            strCompanyTransporter : 'ЛЬВІВКУЛЬТТОВАРИ',
-            strOurCompanyTransporter : 'ТРАНСЛОЙД',
-            strDriverMiddleName : 'Курганов',
-            strLicensePlate1 : 'BC3082EE',//DAF BC3082EE
-            strLicensePlate2 : 'BC7519XO',// KRONE BC7519XO
+            CompanyClient : CompanyData1,//'ОСНОВА',
+            strOurCompanyClient : CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
+            CompanyTransporter : CompanyData2,//'ЛЬВІВКУЛЬТТОВАРИ',
+            strOurCompanyTransporter : CompanyData2.strContractOurCompany,//'ТРАНСЛОЙД',
+            DriverFullData : DriverData,//'Курганов',
+            strLicensePlate1 : VehicleData1.strLicensePlate,//'BC3082EE',//DAF BC3082EE
+            strLicensePlate2 : VehicleData2.strLicensePlate,//'BC7519XO',// KRONE BC7519XO
             strFoxResponsible : 'Тостер',
             strLogistician : 'Тостер',
             strDealID : '',
@@ -312,6 +295,16 @@ let OpenFox = async () => {
             // 12.1) Проверяем новую сделку
             DealData = await DealCheckNPage.DealCheckNew(browser, page, DealData);
         }
+
+      // throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
+
+
+
+
+
+        //------------END Для тестов------------------------------------------------------------------
+
+
 
 
 

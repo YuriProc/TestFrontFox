@@ -171,7 +171,7 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         */
         if (DropZoneOk) {
             xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
-            PhotoURL = await InsertPhoto(browser, page, 'DriverDocURL', xpDriverLicensePhoto);
+            PhotoURL = await InsertPhoto(browser, page, 'DriverDocURL', -1, xpDriverLicensePhoto);
         }
 
 
@@ -189,22 +189,132 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         let xpItemType = '//div[./div[@class="multiselect__tags"][./input[@name="car_type"]]]';
         xpItemType = xpItemType + '/div[@class="multiselect__content-wrapper"]/ul/li/span/span[contains(text(), ';
         xpItemType = xpItemType + `"${VehicleData.strCarType}")]`;
-            resOk = await ClickByXPath(page, xpItemType);
+        resOk = await ClickByXPath(page, xpItemType);
         if (!resOk) {
             throw `ClickByXPath(${VehicleData.strCarType})`;//<--специальный вызов ошибки!
         }
-        await page.waitFor(1000);
-        //Клик по инпуту КОМПАНИЯ
+        await page.waitFor(500);
+        if (VehicleData.strCarType !== 'Тягач'){
+        // Если НЕ Тягач, то выбираем дополнитеоьные поля
+        // Субтип // (Цельномет)
+            //клик по селекту
+            xPath = `//div[@class="select"][./label[contains(text(), "Субтип")]]`;
+            xPath+= `/div[@class="select__area"]/div[@class="multiselect"]/div[@class="multiselect__tags"]`;
+            resOk = await ClickByXPath(page, xPath);
+            if (!resOk) {
+                throw `ClickByXPath(Субтип)`;//<--специальный вызов ошибки!
+            }
+            await page.waitFor(500);
+        //пишем, выбираем
+        xPath = `//div[@class="select"][./label[contains(text(), "Субтип")]]`;
+        xPath+= `/div[@class="select__area"]/div[@class="multiselect multiselect--active"]/div[@class="multiselect__tags"]`;
+        xPath+= `/input[@name="car_subtype"]`;
+        resOk = await TypeByXPath(page, xPath, 'Цельномет');
+        if (!resOk) {
+            throw `TypeByXPath(Цельномет)`;//<--специальный вызов ошибки!
+        }
+        await page.waitFor(500);
+        // class="multiselect__content-wrapper"
+        xPath = `//div[@class="select"][./label[contains(text(), "Субтип")]]`;
+        xPath+= `/div[@class="select__area"]/div[@class="multiselect multiselect--active"]/div[@class="multiselect__content-wrapper"]`;
+        xPath+= `/ul/li[1]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk) {
+            throw `ClickByXPath((Селект)Цельномет)`;//<--специальный вызов ошибки!
+        }
+        await page.waitFor(500);
+
+        // Тип загрузки
+        //клик по селекту
+        xPath = `//div[@class="select"][./label[contains(text(), "Тип загрузки")]]`;
+        xPath+= `/div[@class="select__area"]/div[@class="multiselect"]/div[@class="multiselect__tags"]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk) {
+            throw `ClickByXPath(Тип загрузки)`;//<--специальный вызов ошибки!
+        }
+        await page.waitFor(500);
+        //пишем, выбираем
+        xPath = `//div[@class="select"][./label[contains(text(), "Тип загрузки")]]`;
+        xPath+= `/div[@class="select__area"]/div[@class="multiselect multiselect--active"]/div[@class="multiselect__tags"]`;
+        xPath+= `/input[@name="loading_types"]`;
+        resOk = await TypeByXPath(page, xPath, 'Задняя');
+        if (!resOk) {
+            throw `TypeByXPath(Задняя)`;//<--специальный вызов ошибки!
+        }
+        await page.waitFor(500);
+        // class="multiselect__content-wrapper"
+        xPath = `//div[@class="select"][./label[contains(text(), "Тип загрузки")]]`;
+        xPath+= `/div[@class="select__area"]/div[@class="multiselect multiselect--active"]/div[@class="multiselect__content-wrapper"]`;
+        xPath+= `/ul/li[1]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk) {
+            throw `ClickByXPath((Селект)Задняя)`;//<--специальный вызов ошибки!
+        }
+        await page.waitFor(500);
+// Тоннаж
+        xPath = `//input[@id="max_capacity"]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `ClickByXPath(${xPath})`;
+        }
+        resOk = await TypeByXPath(page, xPath, '20');
+   // Объём
+        xPath = `//input[@id="volume"]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `ClickByXPath(${xPath})`;
+        }
+        resOk = await TypeByXPath(page, xPath, '86');
+        // Цвет
+        xPath = `//input[@id="color"]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `ClickByXPath(${xPath})`;
+        }
+        resOk = await TypeByXPath(page, xPath, 'СРАНЫЙ');
+
+        }// КОНЕЦ  {Если НЕ Тягач, то выбираем дополнитеоьные поля}
+
+
+
+
+
+        //Клик по инпуту ВОДИТЕЛИ
+        let xpDrivers = '//div[@class="multiselect__tags"][./input[@name="drivers"]]';
+        resOk = await ClickByXPath(page, xpDrivers);
+        if (!resOk) {
+            throw `(ВОДИТЕЛИ)ClickByXPath(${xpDrivers})`;//<--специальный вызов ошибки!
+        }
+        await page.waitFor(500);
+        // Вводим ВОДИТЕЛИ = VehicleData.DriverData.strLastName
+        resOk = await TypeByXPath(page, xpDrivers, VehicleData.DriverData.strLastName);
+        if (!resOk) {
+            throw `(ВОДИТЕЛИ)TypeByXPath(${xpDrivers})`;//<--специальный вызов ошибки!
+        }
+        resOk = await WaitUntilPageLoads(page);
+        await page.waitFor(500);
+        let xpItemDriver = `//div[@data-vv-as="Компания"]/div[@class="multiselect__content-wrapper"]/ul/li[@class="multiselect__element"][2]`;
+        let tempStrItemDriver = `${VehicleData.DriverData.strLastName} ${VehicleData.DriverData.strFirstName} ${VehicleData.DriverData.strMiddleName}`;
+        xpItemDriver = `//span[contains(text(), "${tempStrItemDriver}")]`;
+        resOk = await ClickByXPath(page, xpItemDriver);
+        if (!resOk) {
+            throw `ClickByXPath(${xpItemDriver})`;//<--специальный вызов ошибки!
+        }
+        await page.waitFor(500);
+
+
+
+            //Клик по инпуту КОМПАНИЯ
         let xpCompanies = '//div[@class="multiselect__tags"][./input[@name="companies"]]';
         resOk = await ClickByXPath(page, xpCompanies);
         if (!resOk) {
-            throw `ClickByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
+            throw `(КОМПАНИЯ)ClickByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
         }
         await page.waitFor(500);
-        // Вводим КОМПАНИЯ = VehicleData.strCompanyName 'ТРАНСЛОЙД'
-        resOk = await TypeByXPath(page, xpCompanies, VehicleData.strCompanyName);
+        // Вводим КОМПАНИЯ = VehicleData.CompanyData.strCompanyName //'ТРАНСЛОЙД'
+        resOk = await TypeByXPath(page, xpCompanies, VehicleData.CompanyData.strCompanyName);
         if (!resOk) {
-            throw `TypeByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
+            throw `(КОМПАНИЯ)TypeByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
         }
         resOk = await WaitUntilPageLoads(page);
         //await page.waitFor(1111500);
@@ -213,10 +323,10 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         }
         await page.waitFor(500);
 
-        let xpItemTransloyd = '//div[@data-vv-as="Компания"]/div[@class="multiselect__content-wrapper"]/ul/li[@class="multiselect__element"][2]';
-        resOk = await ClickByXPath(page, xpItemTransloyd);
+        let xpItemCompany = '//div[@data-vv-as="Компания"]/div[@class="multiselect__content-wrapper"]/ul/li[@class="multiselect__element"][2]';
+        resOk = await ClickByXPath(page, xpItemCompany);
         if (!resOk) {
-            throw `ClickByXPath(ТОВ ТРАНСЛОЙД)`;//<--специальный вызов ошибки!
+            throw `ClickByXPath(xpItemCompany)`;//<--специальный вызов ошибки!
         }
 
         //Жмём на кнопку Создать

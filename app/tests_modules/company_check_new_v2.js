@@ -22,24 +22,34 @@ let CompanyCheckNewV2 = async (page, CompanyData) => {
     await page.setViewport({width, height});
     try{
         //Клик по LOGO
-        await LogoClick(page);
+        resOk = await LogoClick(page);
+        if (!resOk) {
+            // await console.log(`FAIL => LogoClick Не вижу (Вітаємо вас в системі FOX CRM)`);
+            // await TempStop(page);
+            throw `FAIL => LogoClick Не вижу (Вітаємо вас в системі FOX CRM)`;//<--специальный вызов ошибки!
+        }
+
         // Клик по Компании
         xPath = '//a[@href="/company"]';
         resOk = await ClickByXPath(page, xPath);
         if (!resOk) {
+            // await console.log(`FAIL => Не вижу (${xPath})`);
+            // await TempStop(page);
             throw `FAIL => ClickByXPath(${xPath})`;//<--специальный вызов ошибки!
         }
         //Ждём загрузки страницы
         await WaitUntilPageLoads(page);
         //Ждём появления тайтла Создать компанию
         xPath = '//div[@class="head__title"][contains(text(), "Компании")]';
-        resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(2000,page,xPath);
         if (!resOk) {
+            await console.log(`FAIL => Не вижу (${xPath})`);
+            await TempStop(page);
             throw `FAIL => Не вижу (${xPath})`;
         }
         //Проверим наличие //input[@id="code"]
         xPath = '//input[@placeholder="ЕДРПОУ\\ИНН"]';
-        resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(2000,page,xPath);
         if (!resOk) {
             throw `FAIL => WaitForElementIsPresentByXPath(${xPath})`;
         }

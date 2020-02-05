@@ -115,6 +115,8 @@ WaitForElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
             }
         }
     }catch (e) {
+        await console.log(`catch Error => WaitForElementIsPresentByXPath(${MyXPath})`);
+        await console.log(`ERROR => ${e}`);
         return false;
     }
 };
@@ -204,6 +206,36 @@ ElementGetHref = async function (page , Num, MyXPath) {
         return '';
     }
 };
+ElementGetClass = async function (page , Num, MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        let PropInnerText;
+        if (Num > MaxL){
+            return '';
+        }else{
+            PropInnerText = await page.evaluate(elm => elm.class, linkHandlers[Num]);
+            return PropInnerText;
+        }
+    }catch (e) {
+        return '';
+    }
+};
+ElementSetTest = async function (page , Num, MyXPath) {//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        let PropInnerText;
+        if (Num > MaxL){
+            return '';
+        }else{
+            PropInnerText = await page.evaluate(elm => elm.aria-hidden, linkHandlers[Num]);
+            return PropInnerText;
+        }
+    }catch (e) {
+        return '';
+    }
+};
 ElementIsChecked = async function (page , Num, MyXPath) {
   try {
       const linkHandlers = await page.$x(MyXPath);
@@ -217,7 +249,7 @@ ElementIsChecked = async function (page , Num, MyXPath) {
 ClickByXPath = async function (page , MyXPath) {
     const linkHandlers = await page.$x(MyXPath);
     try {
-        if (await linkHandlers.length > 0) {
+        if ((await linkHandlers.length) > 0) {
             //await linkHandlers[0].click({ clickCount:20, delay: 500 });
             // await linkHandlers[0].hover();
             // await page.waitFor(500);
@@ -226,11 +258,29 @@ ClickByXPath = async function (page , MyXPath) {
             //await page.evaluate(el => el.click(), linkHandlers[0]);
             return true;
         } else {
-            //await console.log('Ошибка:(linkHandlers.length=',linkHandlers.length , ')','\n');
+            //await console.log('Ошибка внутр ClickByXPath:(linkHandlers.length=',linkHandlers.length , ')','\n');
             return false;
         }
     }catch (e) {
-        //await console.log('Ошибка:', e ,'\n');
+        //await console.log('Ошибка внутр ClickByXPath:', e ,'\n');
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
+HoverByXPath = async function (page , MyXPath) {
+    const linkHandlers = await page.$x(MyXPath);
+    try {
+        if ((await linkHandlers.length) > 0) {
+
+            await linkHandlers[0].hover();
+
+            return true;
+        } else {
+            await console.log('Ошибка внутр HoverByXPath:(linkHandlers.length=',linkHandlers.length , ')','\n');
+            return false;
+        }
+    }catch (e) {
+        await console.log('Ошибка внутр HoverByXPath:', e ,'\n');
         return false;
     }
 };
@@ -354,10 +404,26 @@ TempStop = async function(page){
 };
 //--------------------
 LogoClick = async function(page){
-  try {
-      await page.click("div[class=logo__icon]");
-      await page.waitFor(500);
+  let resOk;
+    try {
+        resOk = await ClickByXPath(page, '//div[@class="logo__icon"]');
+        if (!resOk){
+            await console.log('FAIL => ClickByXPath(//div[@class="logo__icon"])');
+            throw 'FAIL => ClickByXPath(//div[@class="logo__icon"])';
+
+        }
+      //await page.click("div[class=logo__icon]");
+      // //div[contains(text(), "Вітаємо вас в системі FOX CRM")]
+        resOk = await WaitForElementIsPresentByXPath(16000, page, '//div[contains(text(), "Вітаємо вас в системі FOX CRM")]');
+        if (!resOk){
+
+            await console.log('FAIL => WaitForElementIsPresentByXPath(//div[contains(text(), "Вітаємо вас в системі FOX CRM")])');
+            //await TempStop(page);
+            throw 'FAIL => WaitForElementIsPresentByXPath(//div[contains(text(), "Вітаємо вас в системі FOX CRM")])';
+        }
       return true;
+
+
   }catch (e) {
       return false;
   }
@@ -570,21 +636,26 @@ SaveTempPictureFromURL = async function(browser, strPicURL, MyFileName) {
 
     return filePath;
 };
-SaveTempPictureFromRandomURL = async function(browser, MyArrayName) {
+SaveTempPictureFromRandomURL = async function(browser, MyArrayName, Num) {// Num c 0 до Length -1 ; Num == -1 => Num = Rand
     let RandNum;
     let MyFilePath;
     let strPicURL;
     let NumTry = 0;
     let MaxTry = g_ArrayURL[MyArrayName].length;
+    if (Num > g_ArrayURL[MyArrayName].length - 1 ){ Num = g_ArrayURL[MyArrayName].length - 1;}
     do {
         NumTry++;
-        RandNum = await randomInt(0, g_ArrayURL[MyArrayName].length - 1);
+        if (Num === -1) {
+            RandNum = await randomInt(0, g_ArrayURL[MyArrayName].length - 1);
+        }else {
+            RandNum = Num;
+            NumTry = MaxTry;
+        }
         strPicURL = g_ArrayURL[MyArrayName][RandNum];
-        //strPicURL = g_ArrayURL[MyArrayName][0];
-        //await console.log('\x1b[38;5;2m', `         g_ArrayURL['TrollFaceUrl'][${RandNum}]`, strPicURL, '\x1b[0m');
+
         MyFilePath = await SaveTempPictureFromURL(browser, strPicURL, 'temp_picture.png');
     }while ((MyFilePath === '')&&(NumTry < MaxTry) );
-    //await console.log('MyFilePath:',MyFilePath,':');
+
     return MyFilePath;
 };
 //----------------------------------------------------------------------------------
@@ -594,9 +665,15 @@ GetFunnyStr = async function(MyArrayName) {
 
     return g_ArraySTR[MyArrayName][RandNum];
 };
+GetFunnyUrl = async function(MyArrayName) {
+
+    let RandNum = await randomInt(0, g_ArrayURL[MyArrayName].length - 1);
+
+    return g_ArrayURL[MyArrayName][RandNum];
+};
 //-----------------------------------------------------------------------------------
-InsertPhoto = async function(browser , page, MyArrayName, MyXPath) {
-    let MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL');
+InsertPhoto = async function(browser , page, MyArrayName, Num, MyXPath) {
+    let MyFilePath = await SaveTempPictureFromRandomURL(browser, MyArrayName, Num);
     if (MyFilePath !== '') {
         //let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
         //await ClickByXPath(page, MyXPath);
@@ -636,9 +713,18 @@ DeleteTempPicture = async function(MyFileName) {
 //-----------------------------------------------------------------------------------
 TrimCompanyName = async function(strCompanyName) {
     let pos;
-    pos = strCompanyName.indexOf(' ', 0);
-    strCompanyName = strCompanyName.slice(pos);
+    pos = strCompanyName.indexOf('"', 0);
+    if (pos>=0) {
+        strCompanyName = strCompanyName.slice(pos + 1);
+    }
     strCompanyName = strCompanyName.trim();
+
+    pos = strCompanyName.indexOf('"', 0);
+    if (pos>0){
+        strCompanyName = strCompanyName.slice(0,pos);
+    }
+    strCompanyName = strCompanyName.trim();
+
     return strCompanyName;
 };
 //-----------------------------------------------------------------------------------

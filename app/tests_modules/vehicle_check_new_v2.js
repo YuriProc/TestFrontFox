@@ -130,17 +130,32 @@ let VehicleCheckNewV2 = async (browser, page, VehicleData) => {
             await console.log('\x1b[38;5;1m', tempStr , '\x1b[0m');
             g_StrOutLog+= tempStr + `\n`;
         }
+        // Водители / Водитель( пока Один)
+        //xPath = '//a[@target="_blank"]/span[1]';
+        xPath = '//div[@data-vv-as="Водители"]';
+        xPath+= '/div[@class="multiselect__tags"]/div[@class="multiselect__tags-wrap"]/span[@class="multiselect__tag"]/a[@target="_blank"]/span[1]';
+        let strDriverFullNameInnerText = await ElementGetInnerText(page, 0, xPath);
+        let strDriverFullName = VehicleData.DriverData.strLastName + ' '
+                              + VehicleData.DriverData.strFirstName + ' '
+                              + VehicleData.DriverData.strMiddleName;
+        if (strDriverFullNameInnerText !== strDriverFullName) {
+            enableError = true;
+            tempStr = `=> Ошибка strDriverFullNameInnerText(${strDriverFullNameInnerText})<>(${strDriverFullName})`;
+            await console.log('\x1b[38;5;1m', tempStr , '\x1b[0m');
+            g_StrOutLog+= tempStr + `\n`;
 
-
+        }
         // Компания
-        xPath = '//a[@target="_blank"]/span[1]';
+        //xPath = '//a[@target="_blank"]/span[1]';
+        xPath = '//div[@data-vv-as="Компания"]';
+        xPath+= '/div[@class="multiselect__tags"]/div[@class="multiselect__tags-wrap"]/span[@class="multiselect__tag"]/a[@target="_blank"]/span[1]';
         let strCompanyName = await ElementGetInnerText(page, 0, xPath);
         // Выделим из строки только имя Компании
         //strCompanyName = await TrimCompanyName(strCompanyName);
 
-        if (strCompanyName !== VehicleData.strCompanyName ) {
+        if (strCompanyName !== VehicleData.CompanyData.strCompanyName ) {
             enableError = true;
-            tempStr = `=> Ошибка strCompanyName(${strCompanyName})<>(${VehicleData.strCompanyName})`;
+            tempStr = `=> Ошибка strCompanyName(${strCompanyName})<>(${VehicleData.CompanyData.strCompanyName})`;
             await console.log('\x1b[38;5;1m', tempStr , '\x1b[0m');
             g_StrOutLog+= tempStr + `\n`;
         }

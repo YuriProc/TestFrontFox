@@ -1,7 +1,8 @@
 let DriverCheckNewV2 = async (browser, page, DriverData) => {
     //NameFunction()
     //const nameTest = 'DriverCheckNewV2->"' + DriverData.strLastName + '"';
-    const nameTest = NameFunction()+'->"' + DriverData.strLastName + '"';
+    //const nameTest = NameFunction()+'->"' + DriverData.strLastName + '"';
+    const nameTest = NameFunction()+'->"' + DriverData.strLastName + ' ' + DriverData.strFirstName + ' ' + DriverData.strMiddleName +'"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
@@ -154,7 +155,9 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
         xPath = '//a[@target="_blank"]/span[1]';
         let strCompanyName = await ElementGetInnerText(page, 0, xPath);
         // Выделим из строки только имя Компании
-        strCompanyName = await TrimCompanyName(strCompanyName);
+        //await console.log(`strCompanyName:`, strCompanyName);
+        //strCompanyName = await TrimCompanyName(strCompanyName);
+        //await console.log(`strCompanyName:`, strCompanyName);
 
         if (strCompanyName !== DriverData.strCompanyName ) {
             enableError = true;

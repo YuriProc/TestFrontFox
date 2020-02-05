@@ -163,10 +163,10 @@ let DealCheckNew = async (browser, page, DealData) => {
 
         // Проверка "Компания замовника "
         GetTempStr = await ElementGetValue(page, 0,'//div[@data-vv-name="client"]/div/input');
-        if (!GetTempStr.includes(DealData.strCompanyClient)) {
+        if (!GetTempStr.includes(DealData.CompanyClient.strCompanyName)) {
             enableError = true;
-            g_StrOutLog+=`     FAIL => (Компания замовника)["${DealData.strCompanyClient}" Не найдено в =>"${GetTempStr}"]\n`;
-            //throw `     FAIL => (Компания замовника)["${DealData.strCompanyClient}" Не найдено в =>"${GetTempStr}"]`;//<--специальный вызов ошибки!
+            g_StrOutLog+=`     FAIL => (Компания замовника)["${DealData.CompanyClient.strCompanyName}" Не найдено в =>"${GetTempStr}"]\n`;
+            //throw `     FAIL => (Компания замовника)["${DealData.CompanyClient.strCompanyName}" Не найдено в =>"${GetTempStr}"]`;//<--специальный вызов ошибки!
         }
 
         // Проверка "(ЮР. ОСОБА З ЗАМОВНИКОМ )"
@@ -188,10 +188,10 @@ let DealCheckNew = async (browser, page, DealData) => {
         }
         // Проверка "КОМПАНИЯ ПЕРЕВІЗНИКА "
         GetTempStr = await ElementGetValue(page, 0,'//div[@data-vv-name="transporter"]/div/input');
-        if (!GetTempStr.includes(DealData.strCompanyTransporter)) {
+        if (!GetTempStr.includes(DealData.CompanyTransporter.strCompanyName)) {
             enableError = true;
-            g_StrOutLog+=`     FAIL => (КОМПАНИЯ ПЕРЕВІЗНИКА)["${DealData.strCompanyTransporter}" Не найдено в =>"${GetTempStr}"]\n`;
-            //throw `     FAIL => (КОМПАНИЯ ПЕРЕВІЗНИКА)["${DealData.strCompanyTransporter}" Не найдено в =>"${GetTempStr}"]`;//<--специальный вызов ошибки!
+            g_StrOutLog+=`     FAIL => (КОМПАНИЯ ПЕРЕВІЗНИКА)["${DealData.CompanyTransporter.strCompanyName}" Не найдено в =>"${GetTempStr}"]\n`;
+            //throw `     FAIL => (КОМПАНИЯ ПЕРЕВІЗНИКА)["${DealData.CompanyTransporter.strCompanyName}" Не найдено в =>"${GetTempStr}"]`;//<--специальный вызов ошибки!
         }
         // Проверка "(ЮР. ОСОБА З ПЕРЕВІЗНИКОМ )"
         GetTempStr = await ElementGetValue(page, 0,'//div[@data-vv-name="transporter_our_company"]/div/div/div/input');
@@ -204,10 +204,10 @@ let DealCheckNew = async (browser, page, DealData) => {
         //xPath = '//div[@data-vv-name="driver"]/div/div/div/input';
         xPath = '//div[@data-vv-name="driver"]/div/div/div/input';
         GetTempStr = await ElementGetValue(page, 0,xPath);
-        if (!GetTempStr.includes(DealData.strDriverMiddleName)) {
+        if (!GetTempStr.includes(DealData.DriverFullData.strMiddleName)) {
             enableError = true;
-            g_StrOutLog+=`       FAIL => (Данні про водія Фамилия)["${DealData.strDriverMiddleName}" Не найдено в =>"${GetTempStr}"]\n`;
-            //throw `       FAIL => (Данні про водія Фамилия)["${DealData.strDriverMiddleName}" Не найдено в =>"${GetTempStr}"]`;//<--специальный вызов ошибки!
+            g_StrOutLog+=`       FAIL => (Данні про водія Фамилия)["${DealData.DriverFullData.strMiddleName}" Не найдено в =>"${GetTempStr}"]\n`;
+            //throw `       FAIL => (Данні про водія Фамилия)["${DealData.DriverFullData.strMiddleName}" Не найдено в =>"${GetTempStr}"]`;//<--специальный вызов ошибки!
         }
         //Проверка ОБРАНИЙ АВТОМОБІЛЬ
         xPath = `//div[@class="select"][./label[starts-with(text(), "Обраний автомобіль")]]/div/div/div/span[@class="multiselect__single"]`;

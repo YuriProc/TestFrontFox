@@ -112,18 +112,20 @@ let DealCreateNew = async (browser, page, DealData) => {
         if (!resOk) {
             throw `FAIL => ClickByXPath(Дані про замовника => Компания замовника])`;//<--специальный вызов ошибки!
         }
-        resOk = await TypeByXPath(page, '//div[@data-vv-name="client"]/div/input', DealData.strCompanyClient);
+        resOk = await TypeByXPath(page, '//div[@data-vv-name="client"]/div/input', DealData.CompanyClient.strCompanyName);
         if (!resOk) {
-            throw `FAIL => TypeByXPath(Компания замовника => ${DealData.strCompanyClient}])`;//<--специальный вызов ошибки!
+            throw `FAIL => TypeByXPath(Компания замовника => ${DealData.CompanyClient.strCompanyName}])`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);
         // Выбор из меню
         xPath = '//div[@class="search__cnt has-active"]/div[@class="search__item"]';
         resOk = await ClickByXPathNum(page, 1, xPath);
         if (!resOk) {
-            throw `FAIL => Выбор из меню(Компания замовника => ${DealData.strCompanyClient}])`;//<--специальный вызов ошибки!
+            throw `FAIL => Выбор из меню(Компания замовника => ${DealData.CompanyClient.strCompanyName}])`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);
+
+
         // Вводим "(ЮР. ОСОБА З ЗАМОВНИКОМ )"
         await page.waitFor(500);
         let Data = await GetDataFromList(page, '//select[@id="client_our_company"]/option');
@@ -131,14 +133,31 @@ let DealCreateNew = async (browser, page, DealData) => {
             throw `FAIL => Траблы с меню(ЮР. ОСОБА З ЗАМОВНИКОМ)=>(${Data.returnError})`;
         }
         resOk = false;
-        Data.returnList.forEach(element => {
-            if (element.PropInnerText === DealData.strOurCompanyClient) {
-                DealData.valOurCompanyClient = element.PropValue;
+        // await Data.returnList.forEach(element => {
+        //     //if (element.PropInnerText === DealData.strOurCompanyClient) {
+        //     //----------- posComment = CurrentString.indexOf('#',0);
+        //     let tempStr = element.PropInnerText;
+        //     tempStr = TrimCompanyName(tempStr);
+        //
+        //     if (tempStr === DealData.CompanyClient.strContractOurCompany) {
+        //         DealData.valOurCompanyClient = element.PropValue;
+        //         resOk = true;
+        //     }
+        // });
+        let tempStr;
+
+        for (let i=0;i<Data.returnList.length;i++){
+            tempStr = Data.returnList[i].PropInnerText;
+            tempStr = await TrimCompanyName(tempStr);
+            await console.log(`tempStr: (${tempStr})`);
+            if (tempStr === DealData.CompanyClient.strContractOurCompany) {
+                DealData.valOurCompanyClient = Data.returnList[i].PropValue;
                 resOk = true;
             }
-        });
+        }
         if (!resOk){
-            await console.log('WARNING => Не найдено в Дроп Листе:', DealData.strOurCompanyClient);
+            //await console.log('WARNING => Не найдено в Дроп Листе:', DealData.strOurCompanyClient);
+            await console.log('WARNING => Не найдено в Дроп Листе:', DealData.CompanyClient.strContractOurCompany);
             await console.log('Data=>', Data);
             // Если не нашли ЗАДАННОЕ значение, МЕНЯЕМ!!! его на первое значение
             DealData.strOurCompanyClient = Data.returnList[0].PropInnerText;
@@ -169,9 +188,9 @@ let DealCreateNew = async (browser, page, DealData) => {
         if (!resOk) {
             throw `FAIL => ClickByXPath(ДАНІ ПРО ПЕРЕВІЗНИКА => КОМПАНИЯ ПЕРЕВІЗНИКА])`;//<--специальный вызов ошибки!
         }
-        resOk = await TypeByXPath(page, '//div[@data-vv-name="transporter"]/div/input', DealData.strCompanyTransporter);
+        resOk = await TypeByXPath(page, '//div[@data-vv-name="transporter"]/div/input', DealData.CompanyTransporter.strCompanyName);
         if (!resOk) {
-            throw `FAIL => TypeByXPath(Компания замовника => ${DealData.strCompanyTransporter}])`;//<--специальный вызов ошибки!
+            throw `FAIL => TypeByXPath(Компания замовника => ${DealData.CompanyTransporter.strCompanyName}])`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);
         await page.waitFor(500);
@@ -179,7 +198,7 @@ let DealCreateNew = async (browser, page, DealData) => {
         xPath = '//div[@class="search__cnt has-active"]/div[@class="search__item"]';
         resOk = await ClickByXPathNum(page, 1, xPath);
         if (!resOk) {
-            throw `FAIL => Выбор из меню(КОМПАНИЯ ПЕРЕВІЗНИКА => ${DealData.strCompanyTransporter}])`;//<--специальный вызов ошибки!
+            throw `FAIL => Выбор из меню(КОМПАНИЯ ПЕРЕВІЗНИКА => ${DealData.CompanyTransporter.strCompanyName}])`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);
         // Вводим "(ЮР. ОСОБА З ПЕРЕВІЗНИКОМ )"
@@ -189,14 +208,28 @@ let DealCreateNew = async (browser, page, DealData) => {
             throw `FAIL => Траблы с меню(ЮР. ОСОБА З ПЕРЕВІЗНИКОМ)=>(${Data2.returnError})`;
         }
         resOk = false;
-        Data2.returnList.forEach(element => {
-            if (element.PropInnerText === DealData.strOurCompanyTransporter) {
-                DealData.valOurCompanyTransporter = element.PropValue;
+        // await Data2.returnList.forEach(element => {
+        //     //if (element.PropInnerText === DealData.strOurCompanyTransporter) {
+        //     let tempStr = element.PropInnerText;
+        //     tempStr = TrimCompanyName(tempStr);
+        //     if (tempStr === DealData.CompanyTransporter.strContractOurCompany) {
+        //         DealData.valOurCompanyTransporter = element.PropValue;
+        //         resOk = true;
+        //     }
+        // });
+
+
+        for (let i=0;i<Data2.returnList.length;i++){
+            tempStr = Data2.returnList[i].PropInnerText;
+            tempStr = await TrimCompanyName(tempStr);
+            await console.log(`tempStr: (${tempStr})`);
+            if (tempStr === DealData.CompanyTransporter.strContractOurCompany) {
+                DealData.valOurCompanyTransporter = Data2.returnList[i].PropValue;
                 resOk = true;
             }
-        });
+        }
         if (!resOk){
-            await console.log('WARNING => Не найдено в меню(ЮР. ОСОБА З ПЕРЕВІЗНИКОМ):', DealData.strOurCompanyTransporter);
+            await console.log('WARNING => Не найдено в меню(ЮР. ОСОБА З ПЕРЕВІЗНИКОМ):', DealData.CompanyTransporter.strContractOurCompany);
             await console.log('Data2=>', Data2);
             // Если не нашли ЗАДАННОЕ значение, МЕНЯЕМ!!! его на первое значение
             DealData.strOurCompanyTransporter = Data2.returnList[0].PropInnerText;
@@ -221,19 +254,20 @@ let DealCreateNew = async (browser, page, DealData) => {
             throw `FAIL => клик по инпуту(Данні про водія)`;//<--специальный вызов ошибки!
         }
         // ВВОД
-        resOk = await TypeByXPath(page, xPath, DealData.strDriverMiddleName);
+        resOk = await TypeByXPath(page, xPath, DealData.DriverFullData.strLastName);
         if (!resOk) {
-            throw `FAIL => TypeByXPath(Данні про водія => ${DealData.strDriverMiddleName}])`;//<--специальный вызов ошибки!
+            throw `FAIL => TypeByXPath(Данні про водія => ${DealData.DriverFullData.strLastName}])`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);
         // ВЫБОР из списка
         //xPath = `//div[@class="search__item"][starts-with(text(), "${DealData.strDriverMiddleName}")]`;
         //xPath = `//div[@class="search__item"][contains(text(), "${DealData.strDriverMiddleName}")]`;
-        xPath = `//div[@class="search__item"][contains(text(), "${DealData.strDriverMiddleName}")]`;
+        let TempNameStr = `${DealData.DriverFullData.strLastName} ${DealData.DriverFullData.strFirstName} ${DealData.DriverFullData.strMiddleName}`;
+        xPath = `//div[@class="search__item"][contains(text(), "${TempNameStr}")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk) {
             //await TempStop(page);
-            throw `FAIL => клик по СПИСКУ(Данні про водія"${DealData.strDriverMiddleName}")`;//<--специальный вызов ошибки!
+            throw `FAIL => клик по СПИСКУ(Данні про водія"${TempNameStr}")`;//<--специальный вызов ошибки!
         }
         await WaitUntilPageLoads(page);
         //ОБРАНИЙ АВТОМОБІЛЬ

@@ -1,5 +1,5 @@
 let DriverCreateNewV2 = async (browser, page, DriverData) => {
-    const nameTest = NameFunction()+'->"' + DriverData.strLastName + '"';
+    const nameTest = NameFunction()+'->"' + DriverData.strLastName + ' ' + DriverData.strFirstName + ' ' + DriverData.strMiddleName +'"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
@@ -126,14 +126,14 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         //resOk = await ClickByXPath(page, '//span[contains(text(), "ТОВ ТРАНСЛОЙД")]');
         //await page.waitFor(1220334);
         //  //*[@id="app"]/div/main/div/div[2]/div/div/div[1]/div/div/div/div[3]/div[2]/div/div/div[3]/ul/li[2]/span/span
-
-        resOk = await ClickByXPathNum(page, 2,`//span[contains(text(), "${DriverData.strCompanyName}")]`);
+        let xpSelectCompany = `//span[@data-select="Press enter to select"]/span[contains(text(), '${DriverData.strCompanyName}')]`;
+        resOk = await ClickByXPathNum(page, 1,xpSelectCompany);
         if (!resOk) {
-            throw `ClickByXPath(${xpCompanies})`;//<--специальный вызов ошибки!
+            throw `ClickByXPathNum(${xpSelectCompany})`;//<--специальный вызов ошибки!
         }
         //Выбираем ФОТО
 
-        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverFaceURL');
+        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverFaceURL', -1);
         if (MyFilePath !== '') {
             let [fileChooser] = await Promise.all([
                 page.waitForFileChooser(),
@@ -165,17 +165,18 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
             }
         }
 
-        //Ждём Успешно сохранено
-        resOk = await WaitForElementIsPresentByXPath(5000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        //Ждём Успешно сохранено и Загрузки Страницы
+        //resOk = await WaitForElementIsPresentByXPath(5000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
+        resOk = await WaitUntilPageLoadsAndReturnSuccessSave(page);
         if (!resOk) {
-            await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
+            await console.log('\x1b[38;5;1m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено(СОХРАНИТЬ КОНТАКТ))`;//<--специальный вызов ошибки!
         }
-        resOk = await WaitUntilPageLoads(page);
-        //await page.waitFor(1111500);
-        if (!resOk) {
-            throw 'WaitUntilPageLoads("СОХРАНИТЬ КОНТАКТ Водитель")';//<--специальный вызов ошибки!
-        }
+        // resOk = await WaitUntilPageLoads(page);
+        // //await page.waitFor(1111500);
+        // if (!resOk) {
+        //     throw 'WaitUntilPageLoads("СОХРАНИТЬ КОНТАКТ Водитель")';//<--специальный вызов ошибки!
+        // }
         // Похоже есть разрыв в присутствии селектора (html[class=nprogress-busy])
         await WaitUntilPageLoads(page);
 
@@ -201,7 +202,7 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         await page.waitFor(500);
 
         // Вставляем Фото ВодУд
-        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL');
+        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL', -1);
         if (MyFilePath !== '') {
             let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Водительское удостоверение")]]/div[@id="dropzone"]';
             let [fileChooserDPhoto] = await Promise.all([
@@ -229,7 +230,7 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         //Ждём Успешно сохранено
         resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
         if (!resOk) {
-            await console.log('\x1b[38;5;2m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
+            await console.log('\x1b[38;5;1m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено(Сохранить водителя))`;//<--специальный вызов ошибки!
         }
         if(false) {

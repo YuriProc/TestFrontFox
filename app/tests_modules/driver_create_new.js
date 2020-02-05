@@ -128,7 +128,7 @@ let DriverCreateNew = async (browser, page, typeWork,strLastName, strFirstName, 
         }
         //Выбираем ФОТО
 
-        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverFaceURL');
+        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverFaceURL', -1);
         if (MyFilePath !== '') {
             let [fileChooser] = await Promise.all([
                 page.waitForFileChooser(),
@@ -193,7 +193,7 @@ let DriverCreateNew = async (browser, page, typeWork,strLastName, strFirstName, 
         await page.waitFor(500);
 
         // Вставляем Фото ВодУд
-        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL');
+        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL', -1);
         if (MyFilePath !== '') {
             let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Водительское удостоверение")]]/div[@id="dropzone"]';
             let [fileChooserDPhoto] = await Promise.all([

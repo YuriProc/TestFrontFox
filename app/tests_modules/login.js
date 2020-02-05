@@ -91,15 +91,25 @@ let Login = async (page, LoginData) => {
         //await page.waitFor(5000);
         //Проверим на наличие сообщения об ОШИБКАХ
         let myXPath = `//div[@class="noty_body"][contains(text(), "Неверный e-mail или пароль")]`;
-        ElPresent = await WaitForElementIsPresentByXPath(2000, page, myXPath);
+        ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
         if (ElPresent){
+            if (LoginData.ResolvedFailLogin){
+                await console.log('\x1b[38;5;2m', "         Вижу => (Неверный e-mail или пароль)", '\x1b[0m');
+                await console.log('\x1b[38;5;2m', "         Будем Логиниться под root'ом и пробовать снова", '\x1b[0m');
+                g_StatusCurrentTest = 'Пропущен';
+                await g_SuccessfulTests++;
+                await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
+                g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
+                return false; //<-------------EXIT !!!
+
+            }
             await console.log('     FAIL => "Неверный e-mail или пароль"');
             throw `FAIL => "Неверный e-mail или пароль"`;
         }
 
         //Проверим на наличие сообщения об УСПЕШНОМ ВХОДЕ (Выполнено!)
         myXPath = `//div[@class="noty_body"][contains(text(), "Выполнено!")]`;
-        ElPresent = await WaitForElementIsPresentByXPath(2000, page, myXPath);
+        ElPresent = await WaitForElementIsPresentByXPath(3000, page, myXPath);
         if (!ElPresent){
             await console.log('     FAIL => Не вижу "Выполнено!"');
             throw `FAIL => Не вижу "Выполнено!"`;
@@ -134,7 +144,7 @@ let Login = async (page, LoginData) => {
 
     }
 
-}
+};
 
 module.exports.StartBrowser = StartBrowser;
 module.exports.BrowserGetPage = BrowserGetPage;

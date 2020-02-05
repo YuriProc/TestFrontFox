@@ -111,7 +111,7 @@ let VehicleCreateNew = async (browser, page, strLicensePlate) => {
             throw `ClickByXPath(${xpItemCarBrand})`;//<--специальный вызов ошибки!
         }
         // Вставляем Фото тех пас
-        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL');
+        MyFilePath = await SaveTempPictureFromRandomURL(browser, 'DriverDocURL', -1);
         if (MyFilePath !== '') {
             let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
             //await ClickByXPath(page, xpDriverLicensePhoto);
