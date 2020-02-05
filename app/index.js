@@ -265,7 +265,6 @@ let OpenFox = async () => {
                         }
                     }
 
-
         // 12) Создаём новую сделку
         DealData = {
             //strLicensePlate : 'TEST 3245 NUM',
