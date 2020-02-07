@@ -670,6 +670,9 @@ SaveTempPictureFromRandomURL = async function(browser, MyArrayName, Num) {// Num
         strPicURL = g_ArrayURL[MyArrayName][RandNum];
 
         MyFilePath = await SaveTempPictureFromURL(browser, strPicURL, 'temp_picture.png');
+        if (MyFilePath === ''){
+            await console.log(`MyArrayName=${MyArrayName}[${RandNum}] <= FAIL!!!`);
+        }
     }while ((MyFilePath === '')&&(NumTry < MaxTry) );
 
     return MyFilePath;
