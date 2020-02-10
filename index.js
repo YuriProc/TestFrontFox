@@ -1,4 +1,5 @@
 // index.js
+
 require('./app/data/global_variables');
 console.log('-----------------','\x1b[38;5;2m',  'Start FOX TESTS', '\x1b[0m', '----------------');
 

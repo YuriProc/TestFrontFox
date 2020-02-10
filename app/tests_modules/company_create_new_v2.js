@@ -1,3 +1,4 @@
+
 let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
     const nameTest = NameFunction()+'->"' + CompanyData.strCodeCompany + '"';
     g_StatusCurrentTest = 'Запущен';
@@ -533,6 +534,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
     return CompanyData;//<------------------EXIT !!!
 };
 // LocalFunctions---------------------------------------------------------------------------------------------
+let AddNewContract;
 AddNewContract = async function( page , CompanyData){
 
     let xPath, resOk, result;
@@ -649,6 +651,7 @@ AddNewContract = async function( page , CompanyData){
 
     return result;
 };
+let ClickHeaderPlus;
 ClickHeaderPlus = async function(page , xPath){
     try {
         await ClickByXPathWithScroll(2000, page, xPath);
@@ -666,6 +669,7 @@ ClickHeaderPlus = async function(page , xPath){
 };
 //--------------------------------------------------------------
 
+let ClickCompanyCreateNewPlus;
 ClickCompanyCreateNewPlus = async  function( page ){
     try {
         await page.hover('a[href="/company"]');

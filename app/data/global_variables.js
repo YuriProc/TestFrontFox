@@ -1,4 +1,5 @@
 // in file config.config
+
 global.gname_FrontFoxURL = 'FRONT_FOX_URL';
 global.g_FrontFoxURL = '';
 
