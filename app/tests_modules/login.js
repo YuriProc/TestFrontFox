@@ -40,6 +40,7 @@ let BrowserGetPage = async (browser) => {
 };
 
 let Login = async (page, LoginData) => {
+    try {
     const nameTest = NameFunction() +'"'+ LoginData.strUserLastName+'"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
@@ -48,7 +49,7 @@ let Login = async (page, LoginData) => {
 
     let ElPresent;
     let resOk;
-    try {
+
         // Если есть (//div[@class="logo__icon"])
         ElPresent = await ElementIsPresent(page, '//div[@class="logo__icon"]');
         if (ElPresent) {
