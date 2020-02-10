@@ -31,7 +31,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         await WaitUntilPageLoads(page);
         //Ждём появления тайтла Создать компанию
         xPath = '//div[@class="head__title"][contains(text(), "Создать компанию")]';
-        resOk = await WaitForElementIsPresentByXPath(500, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5500, page, xPath);
         if (!resOk) {
             throw `FAIL => Не вижу (${xPath})`;
         }
