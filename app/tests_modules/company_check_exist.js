@@ -11,8 +11,9 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
 
     let findExistCompanyOk = false;
     let ElPresent1,ElPresent2,ElPresent3;
-    await page.setViewport({width, height});
     try{
+    await page.setViewport({width, height});
+
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);
