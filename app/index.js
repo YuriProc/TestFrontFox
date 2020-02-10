@@ -170,8 +170,8 @@ let OpenFox = async () => {
             strCodeCompany : await GetFunnyStr('StrCompanyCodeArray'),//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
             strCompanyName : '',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes : [ 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
-            boolIsOurCompany : false,
-            boolNeedCheck : false,
+           // boolIsOurCompany : false,
+          //  boolNeedCheck : false,
             strManagers : [ LoginDataT.strUserLastName, 'Гриневич'],
             strDelayDays : '7',
             strPaymentCondition : 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
