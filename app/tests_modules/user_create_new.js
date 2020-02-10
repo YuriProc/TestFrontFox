@@ -83,9 +83,9 @@ let CreateNewUser = async (page, strUserLastName) => {
         await page.waitForXPath("//span[contains(text(), 'Создать пользователя')]", {timeout: 12000});
 
         await page.click("input[id=name]");
-        await page.type("input[id=name]", 'test');
+        await page.type("input[id=name]", 'test_xxx');
         await page.click("input[id=email]");
-        await page.type("input[id=email]", 'test@test.com');
+        await page.type("input[id=email]", 'test_xxx@test.com');
 
         await page.click("input[name=password]");
         await page.type("input[name=password]", 'test1234567890');

@@ -52,15 +52,7 @@ global.g_ArrayURL = {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyaoP7p-hDi3jg-xmOoiDjkcYtkQjk1Bmv-gGdFhb25GUHyC6E5w&s',
         'https://i.dlpng.com/static/vector/596610_thumb.jpg',
         'https://st4.depositphotos.com/11953928/25111/v/450/depositphotos_251115372-stock-illustration-box-truck-man-delivery-shipping.jpg',
-        'https://lh3.googleusercontent.com/ebzamlRVVoWMgTpd3LLwvfmwaTAdE58clqKqTglf200U6dAfZncDInULnk0x7m9Re2Vl=s85',
-        'https://lh3.googleusercontent.com/sHs_ZFKZu5kZF6-SyZkMwbXGQCGp1XCkdqwFdt9Mlc4JK86qHmw_nw_jVIg7gL9A_a1nakg=s85',
-        'https://lh3.googleusercontent.com/0p-5i0NcYo0V0ImXGA6gkkvuJUWCY8gP2BXmZtikXskdHrJeUzDim0KhC6vUaAd5-wgKwA=s85',
-        'https://lh3.googleusercontent.com/zQNwmM2aWlfMj02youXtn8Gd758ImBbes-PPHZhl7J8OUXVal1U6NVMsTlmvZBAe7uV9SQ=s113',
-        'https://lh3.googleusercontent.com/nwY4ejwOei4kCDdQxMDDpUlc2MDYyOufoYYdhMOO6eytlTqpANR1Ohv4HehgYkqmFc6O2bc=s85',
-        'https://lh3.googleusercontent.com/N9UJXYci6KruoYlAReI_tVhroeJ41z91PGI8lL5KEr-1ww_SboNEd2Jk9-qsPJxvTrVcSHM=s88',
-        'https://lh3.googleusercontent.com/8rz1frhOd5f3JKSYVy5PY2_K3HmxEW3E4pyRP6Zc1PcoLJM92xBK2l5aZ4Gy7HezM6DjNiQ=s94',
-        'https://lh3.googleusercontent.com/p7FwCo-yEqCL-E5o__w8MRwWAXrummGMRldzf62HH0OzD40rkWY5iXuJKaEaypcA17qrqQ=s85',
-        'https://lh3.googleusercontent.com/vC2YtXyBLWUnOYZqFX45NPK3fpmZf6iF5_ILv6XQht13yGTskq2Klxv-jxls26GygISxFA=s85'
+
     ],
     'ManFaceURL': [
         //бородатый

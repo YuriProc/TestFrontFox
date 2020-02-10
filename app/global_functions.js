@@ -532,6 +532,9 @@ EnterDealPointUnLoading = async  function( page , strEnter){
             if(await ElementIsPresent(page, '//span[contains(text(), "Не вдається завантажити Карти Google на цій сторінці.")]')){
                 throw "Не вдається завантажити Карти Google на цій сторінці.";
             }
+            // TEMP!!!!!!!!!!
+            await console.log(` WaitForElementIsPresentByXPath(Не Найдено ${strEnter})`);
+            //await TempStop(page);
             throw ` Не Найдено ${strEnter}`;
         }
 
@@ -545,6 +548,9 @@ EnterDealPointUnLoading = async  function( page , strEnter){
         let xP = `//div[@name="point_unloading"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
         resOk = await WaitForElementIsPresentByXPath(5000, page, xP);
         if (!resOk){
+            // TEMP!!!!!!!!!!
+            await console.log(` WaitForElementIsPresentByXPath(${xP})`);
+            //await TempStop(page);
             throw ` WaitForElementIsPresentByXPath(${xP})`;
         }
 
@@ -557,7 +563,7 @@ EnterDealPointUnLoading = async  function( page , strEnter){
         return true;
     }catch (e) {
         await console.log('     Ошибка => function EnterDealPointUnLoading =>(', e,')');
-        g_StrOutLog+=`\n Ошибка => function EnterDealPointLoading =>(${e})\n`;
+        g_StrOutLog+=`\n Ошибка => function EnterDealPointUnLoading =>(${e})\n`;
         return false;
     }
 };
@@ -692,34 +698,37 @@ GetFunnyUrl = async function(MyArrayName) {
 };
 //-----------------------------------------------------------------------------------
 InsertPhoto = async function(browser , page, MyArrayName, Num, MyXPath) {
-    let MyFilePath = await SaveTempPictureFromRandomURL(browser, MyArrayName, Num);
-    if (MyFilePath !== '') {
-        //let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
-        //await ClickByXPath(page, MyXPath);
-        await page.waitFor(1000);
-        let [fileChooserDPhoto] = await Promise.all([
-            //ClickByXPath(page, MyXPath),
-            //page.waitFor(500),
-            page.waitForFileChooser(),
-            //page.waitFor(500),
-            ClickByXPathWithScroll(2000 ,page, MyXPath)
-            //page.waitFor(500),
-        ]);
-        //await ClickByXPath(page, MyXPath);
-        await fileChooserDPhoto.accept([MyFilePath]);
-        await page.waitFor(3000);
-        //await DeleteTempPicture(MyFilePath);
-        //await fileChooser.cancel();
-        //await page.waitFor(1111500);
-        //let Href = await ElementGetHref(page,0, '//div[@class="dz-image"]/a[@target="_blank"]');
-        //let Href = await ElementGetHref(page,0, '//a[@target="_blank"]');
+    try {
+        let MyFilePath = await SaveTempPictureFromRandomURL(browser, MyArrayName, Num);
+        if (MyFilePath !== '') {
+            //let xpDriverLicensePhoto = '//div[@class="zone"][./div[contains(text(), "Тех. Паспорт")]]/div[@id="dropzone"]';
+            //await ClickByXPath(page, MyXPath);
+            await page.waitFor(1000);
+            let [fileChooserDPhoto] = await Promise.all([
+                //ClickByXPath(page, MyXPath),
+                //page.waitFor(500),
+                page.waitForFileChooser(),
+                //page.waitFor(500),
+                ClickByXPathWithScroll(2000, page, MyXPath)
+                //page.waitFor(500),
+            ]);
+            //await ClickByXPath(page, MyXPath);
+            await fileChooserDPhoto.accept([MyFilePath]);
+            await page.waitFor(3000);
+            //await DeleteTempPicture(MyFilePath);
+            //await fileChooser.cancel();
+            //await page.waitFor(1111500);
+            //let Href = await ElementGetHref(page,0, '//div[@class="dz-image"]/a[@target="_blank"]');
+            //let Href = await ElementGetHref(page,0, '//a[@target="_blank"]');
 
 
-
-        return '';
+            return true;
+        }
+    }catch (e) {
+        await console.log(`Ошибка => ${e}`);
     }
 
-    return '';
+    return false;
 };
 //-----------------------------------------------------------------------------------
 DeleteTempPicture = async function(MyFileName) {

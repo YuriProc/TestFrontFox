@@ -90,7 +90,7 @@ let OpenFox = async () => {
         };
         let LoginDataT = {
             strUserLastName : 'Тостер',
-            strEmail : 'test@test.com',
+            strEmail : 'test_xxx@test.com',
             strPassword : 'test1234567890',
             //ResolvedFailLogin : true, // <- Можно или нельзя Фейлиться по Email или Пароль
             // Если можно то в случае (Неверный e-mail или пароль) +1 g_SuccessfulTests
@@ -134,7 +134,7 @@ let OpenFox = async () => {
                 //tempStr = '38050' + await randomInt(1001010, 9989999);
                 //CodeCompany = await GetFunnyStr('StrCompanyCodeArray');
                 CompanyData1 = {
-                    strCodeCompany : await GetFunnyStr('StrCompanyCodeArray'),//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+                    strCodeCompany : await GetFunnyStr('StrCompanyCodeArray'),// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
                     strCompanyName : '',// <= Заполнится автоматически при создании Компании !!!
                     strCompanyTypes : [ 'Заказчик', ], // Заказчик // Перевозчик // Экспедитор
                     boolIsOurCompany : false,
@@ -170,8 +170,8 @@ let OpenFox = async () => {
             strCodeCompany : await GetFunnyStr('StrCompanyCodeArray'),//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
             strCompanyName : '',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes : [ 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
-           // boolIsOurCompany : false,
-          //  boolNeedCheck : false,
+           boolIsOurCompany : false,
+           boolNeedCheck : false,
             strManagers : [ LoginDataT.strUserLastName, 'Гриневич'],
             strDelayDays : '7',
             strPaymentCondition : 'По оригиналам банковских дней', // 'По оригиналам календарных дней'

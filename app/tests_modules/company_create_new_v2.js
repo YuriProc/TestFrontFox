@@ -77,7 +77,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
                     g_StrOutLog += `=> FAIL =>${strInnerText} \n`;
                     CompanyData.returnResult = false;
 
-                    throw `${g_StrOutLog}`;//<--специальный вызов ошибки!
+                    throw `FAIL => Проверить в базе => Вижу => ${strInnerText}`;//<--специальный вызов ошибки!
                     break;
                 case strAlreadyCreated:
                     await console.log('\x1b[38;5;2m', `     Вижу => ${strInnerText}`, '\x1b[0m');
@@ -185,36 +185,36 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
 
         // чек Наша компания
 
-        // //xPath = '//label[@class="check"][./span[@class="check__label"][contains(text(), "Наша компания")]]/input[@name="is_our"]';
-        // xPath = '//input[@name="is_our"]';
-        // resOk = await ElementIsChecked(page, 0, xPath);
-        // //await console.log(`ElementIsChecked(${xPath}) = "${resOk}" `);
-        // if (resOk === undefined) {
-        //     throw `     Fail => ${resOk} => ElementIsChecked(${xPath})`;
-        // }
-        // xPath = '//label[@class="check"][./input[@name="is_our"]]/i[@class="check__icon"]';
-        // if ((CompanyData.boolIsOurCompany && !resOk) || (!CompanyData.boolIsOurCompany && resOk)) {
-        //     resOk = await ClickByXPath(page, xPath);
-        //     if (!resOk) {
-        //         throw `FAIL => (чек Наша компания)ClickByXPath(${xPath})`;//<--специальный вызов ошибки!
-        //     }
-        // }
+        //xPath = '//label[@class="check"][./span[@class="check__label"][contains(text(), "Наша компания")]]/input[@name="is_our"]';
+        xPath = '//input[@name="is_our"]';
+        resOk = await ElementIsChecked(page, 0, xPath);
+        //await console.log(`ElementIsChecked(${xPath}) = "${resOk}" `);
+        if (resOk === undefined) {
+            throw `     Fail => ${resOk} => ElementIsChecked(${xPath})`;
+        }
+        xPath = '//label[@class="check"][./input[@name="is_our"]]/i[@class="check__icon"]';
+        if ((CompanyData.boolIsOurCompany && !resOk) || (!CompanyData.boolIsOurCompany && resOk)) {
+            resOk = await ClickByXPath(page, xPath);
+            if (!resOk) {
+                throw `FAIL => (чек Наша компания)ClickByXPath(${xPath})`;//<--специальный вызов ошибки!
+            }
+        }
 
         // чек ТРЕБУЕТ ПРОВЕРКИ
-        // //xPath = '//label[@class="check"][./span[@class="check__label"][contains(text(), "ТРЕБУЕТ ПРОВЕРКИ")]]/input[@name="is_our"]';
-        // xPath = '//input[@name="isReviewRequired"]';
-        // resOk = await ElementIsChecked(page, 0, xPath);
-        // //await console.log(`ElementIsChecked(${xPath}) = "${resOk}" `);
-        // if (resOk === undefined) {
-        //     throw `     Fail => ${resOk} => ElementIsChecked(${xPath})`;
-        // }
-        // xPath = '//label[@class="check"][./input[@name="isReviewRequired"]]/i[@class="check__icon"]';
-        // if ((CompanyData.boolNeedCheck && !resOk) || (!CompanyData.boolNeedCheck && resOk)) {
-        //     resOk = await ClickByXPath(page, xPath);
-        //     if (!resOk) {
-        //         throw `FAIL => (чек ТРЕБУЕТ ПРОВЕРКИ)ClickByXPath(${xPath})`;//<--специальный вызов ошибки!
-        //     }
-        // }
+        //xPath = '//label[@class="check"][./span[@class="check__label"][contains(text(), "ТРЕБУЕТ ПРОВЕРКИ")]]/input[@name="is_our"]';
+        xPath = '//input[@name="isReviewRequired"]';
+        resOk = await ElementIsChecked(page, 0, xPath);
+        //await console.log(`ElementIsChecked(${xPath}) = "${resOk}" `);
+        if (resOk === undefined) {
+            throw `     Fail => ${resOk} => ElementIsChecked(${xPath})`;
+        }
+        xPath = '//label[@class="check"][./input[@name="isReviewRequired"]]/i[@class="check__icon"]';
+        if ((CompanyData.boolNeedCheck && !resOk) || (!CompanyData.boolNeedCheck && resOk)) {
+            resOk = await ClickByXPath(page, xPath);
+            if (!resOk) {
+                throw `FAIL => (чек ТРЕБУЕТ ПРОВЕРКИ)ClickByXPath(${xPath})`;//<--специальный вызов ошибки!
+            }
+        }
         // Поле Ответственный
         // Очищаем
         // иконка Крестик(Удалить)
