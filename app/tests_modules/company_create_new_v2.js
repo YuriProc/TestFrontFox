@@ -18,8 +18,9 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
     let Selector;
     let ElPresent,ElPresent1,ElPresent2,ElPresent3;
     let findCreatedCompanyOk = false;
-    await page.setViewport({width, height});
     try {
+    await page.setViewport({width, height});
+
         //Клик по LOGO
         //await console.log("LogoClick(page);");
         await LogoClick(page);
