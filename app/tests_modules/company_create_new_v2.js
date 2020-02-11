@@ -38,7 +38,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         }
         //Проверим наличие //input[@id="code"]
         xPath = '//input[@id="code"]';
-        resOk = await WaitForElementIsPresentByXPath(500, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5500, page, xPath);
         if (!resOk) {
             throw `FAIL => Не вижу (${xPath})`;
         }
