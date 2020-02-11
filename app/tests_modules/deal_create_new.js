@@ -321,7 +321,23 @@ let DealCreateNew = async (browser, page, DealData) => {
         xPath+=`/div/div/div[@class="multiselect__content-wrapper"]/ul/li/span/span[contains(text(), "${DealData.strFoxResponsible}")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk) {
-            throw `FAIL => Клик по пункту меню(ВІДПОВІДАЛЬНИЙ ПО ФОКСУ=${DealData.strFoxResponsible})`;//<--специальный вызов ошибки!
+            await console.log(`Warning => не получилось выбрать (ВІДПОВІДАЛЬНИЙ ПО ФОКСУ=${DealData.strFoxResponsible}`);
+            xPath = `//div[@class="select"][./label[starts-with(text(), "Відповідальний по Фоксу")]]`;
+            xPath+=`/div/div/div[@class="multiselect__select"]`;
+            let xPRM =`//input[@name="responsible_salesman"]`;
+            //Игнатейко
+            resOk = await TypeByXPath(page, xPRM, 'Игнатейко');
+            xPath = `//div[@class="select"][./label[starts-with(text(), "Відповідальний по Фоксу")]]`;
+            xPath+=`/div/div/div[@class="multiselect__content-wrapper"]/ul/li[1]`;
+            resOk = await ClickByXPath(page, xPath);
+            if(!resOk){
+                throw `FAIL => (ВІДПОВІДАЛЬНИЙ ПО ФОКСУ "Игнатейко")`;
+            }
+
+
+
+            await console.log(`Выбрано => (ВІДПОВІДАЛЬНИЙ ПО ФОКСУ="Игнатейко"`);
+            //throw `FAIL => Клик по пункту меню(ВІДПОВІДАЛЬНИЙ ПО ФОКСУ=${DealData.strFoxResponsible})`;//<--специальный вызов ошибки!
         }
 
 
@@ -338,7 +354,23 @@ let DealCreateNew = async (browser, page, DealData) => {
         xPath+=`/div/div/div[@class="multiselect__content-wrapper"]/ul/li/span/span[contains(text(), "${DealData.strLogistician}")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk) {
-            throw `FAIL => Клик по пункту меню(ЛОГІСТ=${DealData.strLogistician})`;//<--специальный вызов ошибки!
+            await console.log(`Warning => не получилось выбрать (ЛОГІСТ=${DealData.strFoxResponsible}`);
+            xPath = `//div[@class="select"][./label[starts-with(text(), "Логіст")]]`;
+            xPath+=`/div/div/div[@class="multiselect__select"]`;
+            let xPRM =`//input[@name="logistical"]`;
+            //Игнатейко
+            resOk = await TypeByXPath(page, xPRM, 'Игнатейко');
+            xPath = `//div[@class="select"][./label[starts-with(text(), "Логіст")]]`;
+            xPath+=`/div/div/div[@class="multiselect__content-wrapper"]/ul/li[1]`;
+            resOk = await ClickByXPath(page, xPath);
+            if(!resOk){
+                throw `FAIL => (ЛОГІСТ "Игнатейко")`;
+            }
+
+
+
+            await console.log(`Выбрано => (ЛОГІСТ="Игнатейко"`);
+            //throw `FAIL => Клик по пункту меню(ЛОГІСТ=${DealData.strLogistician})`;//<--специальный вызов ошибки!
         }
 
 

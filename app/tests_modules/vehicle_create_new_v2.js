@@ -286,7 +286,7 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         // ГОД
         xPath = `//input[@id="year"]`;
         resOk = await ClickByXPath(page, xPath);
-        if (!resOk){
+        if (!resOk) {
             throw `ClickByXPath(${xPath})`;
         }
         let SRN = randomInt(1900, 2099);
