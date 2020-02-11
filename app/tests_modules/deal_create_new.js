@@ -335,7 +335,7 @@ let DealCreateNew = async (browser, page, DealData) => {
             }
 
 
-
+            DealData.strFoxResponsible = `Игнатейко`;
             await console.log(`Выбрано => (ВІДПОВІДАЛЬНИЙ ПО ФОКСУ="Игнатейко"`);
             //throw `FAIL => Клик по пункту меню(ВІДПОВІДАЛЬНИЙ ПО ФОКСУ=${DealData.strFoxResponsible})`;//<--специальный вызов ошибки!
         }
@@ -354,7 +354,7 @@ let DealCreateNew = async (browser, page, DealData) => {
         xPath+=`/div/div/div[@class="multiselect__content-wrapper"]/ul/li/span/span[contains(text(), "${DealData.strLogistician}")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk) {
-            await console.log(`Warning => не получилось выбрать (ЛОГІСТ=${DealData.strFoxResponsible}`);
+            await console.log(`Warning => не получилось выбрать (ЛОГІСТ=${DealData.strLogistician}`);
             xPath = `//div[@class="select"][./label[starts-with(text(), "Логіст")]]`;
             xPath+=`/div/div/div[@class="multiselect__select"]`;
             let xPRM =`//input[@name="logistical"]`;
@@ -368,7 +368,7 @@ let DealCreateNew = async (browser, page, DealData) => {
             }
 
 
-
+            DealData.strLogistician = `Игнатейко`;
             await console.log(`Выбрано => (ЛОГІСТ="Игнатейко"`);
             //throw `FAIL => Клик по пункту меню(ЛОГІСТ=${DealData.strLogistician})`;//<--специальный вызов ошибки!
         }
