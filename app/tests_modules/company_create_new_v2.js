@@ -325,7 +325,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             // Клик по Телефон +
             xPath = `//div[@class="module__head"][./div[@class="module__title"][contains(text(), "Телефоны")]]`;
             xPath += `/div[@class="module__nav"]/div[@class="module__item"]/span[1]`;
-            resOk = await ClickByXPath(page, xPath);
+            resOk = await ClickByXPathWithScroll(2000, page, xPath);
             if (!resOk) {
                 throw ` FAIL => ClickByXPath(Телефоны + )`;
             }
