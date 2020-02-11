@@ -8,11 +8,14 @@ let CreateNewUser = async (page, strUserLastName) => {
     let width = 1200;
     let height = 880;
     let resOk;
-
-    await page.setViewport({width, height});
+    let xPath, xPathArrow ,xPathPerm;
 
 
     try{
+    await page.setViewport({width, height});
+
+
+
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);
@@ -103,6 +106,35 @@ let CreateNewUser = async (page, strUserLastName) => {
         await page.waitForXPath("//span[contains(text(), 'Логист')]", {timeout: 12000});
         let linkSelectLogist = await page.$x("//span[contains(text(), 'Логист')]");
         await linkSelectLogist[1].click();
+
+        //Пермишены
+        //Пермишены выбрать все
+        //Клик по стрелке вниз (Пермишены)
+        xPath = `//div[@class="select"][./label[@class="select__label"][contains(text(), "Пермишены")]]`;
+        xPath+= `/div[@class="select__area"]/div`;
+        xPathArrow=xPath + `/div[@class="multiselect__select"]`;
+        xPathPerm =xPath + `/div[@class="multiselect__content-wrapper"]/ul/li[@class="multiselect__element"]`;
+        xPathPerm+=`/span/span`;
+
+        let lengthPerm = await ElementGetLength(page,xPathPerm);
+        if (lengthPerm<1){
+            await console.log(`Warning => (Список Пермишенов длина ${lengthPerm})`);
+        }
+        for (let i=0; i<lengthPerm; i++){
+            resOk = await ClickByXPath(page, xPathArrow);
+            if (!resOk){
+                throw `FAIL => Клик по стрелке вниз (i=${i})`;
+            }
+            await page.waitFor(200);
+            resOk = await ClickByXPath(page, xPathPerm);
+            if (!resOk){
+                throw `FAIL => Клик по Список Пермишенов (i=${i})`;
+            }
+            await page.waitFor(200);
+
+        }
+
+
         //клик по баттон создать пользователя
         await page.waitFor(500);
         await page.click("button[class=btn]");
