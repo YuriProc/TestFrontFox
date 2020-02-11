@@ -271,10 +271,26 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         if (!resOk){
             throw `ClickByXPath(${xPath})`;
         }
-        resOk = await TypeByXPath(page, xPath, 'СРАНЫЙ');
+        resOk = await TypeByXPath(page, xPath, 'ДРАНЫЙ');
 
-        }// КОНЕЦ  {Если НЕ Тягач, то выбираем дополнитеоьные поля}
-
+        }else {
+            // Цвет
+            xPath = `//input[@id="color"]`;
+            resOk = await ClickByXPath(page, xPath);
+            if (!resOk){
+                throw `ClickByXPath(${xPath})`;
+            }
+            resOk = await TypeByXPath(page, xPath, 'Красная Кабина');
+        }
+        // КОНЕЦ  {Если НЕ Тягач, то выбираем дополнитеоьные поля}
+        // ГОД
+        xPath = `//input[@id="year"]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `ClickByXPath(${xPath})`;
+        }
+        let SRN = randomInt(1900, 2099);
+        resOk = await TypeByXPath(page, xPath, `${SRN}`);
 
 
 
