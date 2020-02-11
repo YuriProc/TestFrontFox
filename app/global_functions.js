@@ -104,7 +104,7 @@ WaitForElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
     let linkHandlers;
     try {
         while (true) {
-            await page.waitFor(100);
+            await page.waitFor(200);
             linkHandlers = await page.$x(MyXPath);
             if (linkHandlers.length > 0) {
                 return true;

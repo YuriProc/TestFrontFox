@@ -96,7 +96,7 @@ let CompanyCheckNewV2 = async (page, CompanyData) => {
         }
         // Проверим Наличие поля (ЕДРПОУ\ИНН)
         xPath = '//input[@name="code"]';
-        resOk = await WaitForElementIsPresentByXPath(500,page,xPath);
+        resOk = await WaitForElementIsPresentByXPath(2000,page,xPath);
         if (!resOk) {
             throw `FAIL => Не вижу (${xPath})`;//<--специальный вызов ошибки!
         }
