@@ -1,42 +1,57 @@
 let StartBrowser = async () => {
-    await console.log("StartBrowser");
-    const puppeteer = require('puppeteer');
-    let width = 1200;
-    let height = 1500;
-    let StartBrowserInHeadLessMode;
-    await console.log('\x1b[38;5;2m', "g_ShowActionInBrowser=>" ,g_ShowActionInBrowser , '\x1b[0m');
-    if (await g_ShowActionInBrowser) {
-        StartBrowserInHeadLessMode = false;
-        await console.log('\x1b[38;5;2m', "StartBrowserInHeadLessModeF=>" ,StartBrowserInHeadLessMode , '\x1b[0m');
-    }else {
-        StartBrowserInHeadLessMode = true;
-        await console.log('\x1b[38;5;2m', "StartBrowserInHeadLessModeT=>" ,StartBrowserInHeadLessMode , '\x1b[0m');
+    try {
+
+
+        await console.log("StartBrowser");
+        const puppeteer = require('puppeteer');
+        let width = 1200;
+        let height = 1500;
+        let StartBrowserInHeadLessMode;
+        await console.log('\x1b[38;5;2m', "g_ShowActionInBrowser=>", g_ShowActionInBrowser, '\x1b[0m');
+        if (await g_ShowActionInBrowser) {
+            StartBrowserInHeadLessMode = false;
+            await console.log('\x1b[38;5;2m', "StartBrowserInHeadLessModeF=>", StartBrowserInHeadLessMode, '\x1b[0m');
+        } else {
+            StartBrowserInHeadLessMode = true;
+            await console.log('\x1b[38;5;2m', "StartBrowserInHeadLessModeT=>", StartBrowserInHeadLessMode, '\x1b[0m');
+        }
+
+        let browser = await puppeteer.launch({
+            //headless: false,
+            //headless: true,
+            headless: StartBrowserInHeadLessMode,
+
+            slowMo: 0,
+            args: [`--window-size=${width},${height}`]
+        });
+        await console.log("puppeteer.launch");
+
+        return browser;
+    }catch (e) {
+        await console.log(`Ошибка в StartBrowser => ${e}`);
+        return false;
     }
-
-    let browser = await puppeteer.launch({
-        //headless: false,
-        //headless: true,
-        headless: StartBrowserInHeadLessMode,
-
-        slowMo: 0,
-        args: [`--window-size=${width},${height}`]
-    });
-    await console.log("puppeteer.launch");
-
-    return browser;
 };
 
 let BrowserGetPage = async (browser) => {
-    let strLoginURL = g_FrontFoxURL+'/login';
-    let page;
-    page = await browser.newPage();
-    //height = height - 120;
-    width = 1200;
-    height = 880;
-    await page.setViewport({width, height});
-    await page.goto(strLoginURL);
+    try {
 
-    return page;
+
+        let strLoginURL = g_FrontFoxURL + '/login';
+        let page;
+        page = await browser.newPage();
+        //height = height - 120;
+        width = 1200;
+        height = 880;
+        await page.setViewport({width, height});
+        await page.goto(strLoginURL);
+
+        return page;
+    }catch (e) {
+        await console.log(`Ошибка в BrowserGetPage=> ${e} `);
+        return false;
+
+    }
 };
 
 let Login = async (page, LoginData) => {
