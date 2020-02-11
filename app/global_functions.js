@@ -68,7 +68,7 @@ WaitUntilPageLoadsAndReturnSuccessSave = async function (page) {
             if (!PresentSSave) {
                 PresentSSave = await ElementIsPresent(page, xPathSuccessSave);
             }
-            if(await Date.now() - startTime > 2000) {
+            if(await Date.now() - startTime > 3000) {
                 break;// <- Выход из Цикла !!!
             }
         }

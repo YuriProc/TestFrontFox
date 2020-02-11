@@ -641,7 +641,7 @@ AddNewContract = async function( page , CompanyData){
     if (!resOk){
         throw ` FAIL => (Договора + (Клик по кнопке Создать)`;
     }
-
+    await page.waitFor(500);
     resOk = await WaitUntilPageLoadsAndReturnSuccessSave(page);
     if (!resOk){
         throw ` FAIL => (Договора + (Не вижу "Успешно сохранено")`;
