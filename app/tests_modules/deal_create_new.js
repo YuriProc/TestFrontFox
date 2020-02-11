@@ -410,6 +410,12 @@ let DealCreateNew = async (browser, page, DealData) => {
 
         // Ждём всей таблицы(Должна появиться таблица СДЕЛКИ)
         await WaitUntilPageLoads(page);
+
+        //клик по кнопке Все сделки
+        xPath = `//button[@class="btn btn--sm"][contains(text(), "Все сделки")]`;
+        resOk = await ClickByXPath(page, xPath);
+        await WaitUntilPageLoads(page);
+
         //ElementGetInnerText
         xPath = `//div[@class="table"]/table/tbody/tr/td[2]`;
         resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
