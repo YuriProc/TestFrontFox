@@ -44,6 +44,12 @@ let DealCheckNew = async (browser, page, DealData) => {
         if (!resOk) {
             throw `FAIL => Не Вижу(//div[@class="head__title"][contains(text(), "Сделки")]) `;//<--специальный вызов ошибки!
         }
+        //клик по кнопке Все сделки
+        xPath = `//button[@class="btn btn--sm"][contains(text(), "Все сделки")]`;
+        resOk = await ClickByXPath(page, xPath);
+        await WaitUntilPageLoads(page);
+
+
         //Клик по инпуту поиск по ID
         resOk = await ClickByXPath(page, '//input[@placeholder="ID сделки"]');
         if (!resOk) {
