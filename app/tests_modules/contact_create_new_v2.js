@@ -14,10 +14,11 @@ let ContactCreateNewV2 = async (page, typeWork,strLastName, strFirstName, MyFile
     let ElPresent, ElPresent1, ElPresent2, ElPresent3;
     let resOk;
     let returnResult = false;
+    try {
     await page.setViewport({width, height});
 
     //await page.setViewport({width2, height2});
-    try {
+
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);

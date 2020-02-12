@@ -1,6 +1,6 @@
 let SavePictureFromURL = async (browser, strPicURL) => {
-
-   // https://sapb1cloud.ru/files/komdir.png
+try {
+    // https://sapb1cloud.ru/files/komdir.png
 
     let page;
     page = await browser.newPage();
@@ -31,6 +31,11 @@ let SavePictureFromURL = async (browser, strPicURL) => {
     await page.close();
 
     return filePath;
+
+}catch (e) {
+    await console.log(`Ошибка:${e}`);
+    return '';
+}
 };
 
 module.exports.SavePictureFromURL = SavePictureFromURL;

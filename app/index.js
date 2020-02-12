@@ -81,7 +81,8 @@ let OpenFox = async () => {
         }
         g_StrOutLog+=`Тесты ========================================\n`;
         browser = await LPage.StartBrowser();
-        page = await LPage.BrowserGetPage(browser);
+        let strLoginCrmFoxURL = g_FrontCrmFoxURL + '/login';
+        page = await LPage.BrowserGetPage(browser, strLoginCrmFoxURL);
         g_NumberCurrentTest = 1;
 
         let LoginDataR = {

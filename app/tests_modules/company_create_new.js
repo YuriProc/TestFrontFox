@@ -11,8 +11,9 @@ let CompanyCreateNew = async (page, strCodeCompany) => {
     let xPath;
     let ElPresent,ElPresent1,ElPresent2,ElPresent3;
     let findCreatedCompanyOk = false;
-    await page.setViewport({width, height});
     try{
+    await page.setViewport({width, height});
+
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);

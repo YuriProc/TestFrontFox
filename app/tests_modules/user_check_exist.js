@@ -33,8 +33,9 @@ let CheckUserExist = async (page, strSearchUser) => {
     let ElPresent, ElPresent1, ElPresent2, ElPresent3;
     let resOk;
     let returnResult = false;
-    await page.setViewport({width, height});
     try {
+    await page.setViewport({width, height});
+
         //Клик по ЛОГО
         resOk = await ClickByXPath(page, '//div[@class="logo__icon"]');
         if (!resOk) {

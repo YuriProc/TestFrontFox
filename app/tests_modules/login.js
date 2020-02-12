@@ -33,22 +33,19 @@ let StartBrowser = async () => {
     }
 };
 
-let BrowserGetPage = async (browser) => {
+let BrowserGetPage = async (browser, strPageURL) => {
     try {
-
-
-        let strLoginURL = g_FrontCrmFoxURL + '/login';
         let page;
         page = await browser.newPage();
         //height = height - 120;
-        width = 1200;
-        height = 880;
+        let width = 1200;
+        let height = 880;
         await page.setViewport({width, height});
-        await page.goto(strLoginURL);
+        await page.goto(strPageURL);
 
         return page;
     }catch (e) {
-        await console.log(`Ошибка в BrowserGetPage=> ${e} `);
+        await console.log(`Ошибка в BrowserGetPage(${strPageURL})=> ${e} `);
         return false;
 
     }

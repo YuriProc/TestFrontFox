@@ -15,10 +15,11 @@ let DealCreateNew = async (browser, page, DealData) => {
     let resOk;
     let MyFilePath = '';
     let returnResult = false;
+    try {
     await page.setViewport({width, height});
 
     //await page.setViewport({width2, height2});
-    try {
+
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);

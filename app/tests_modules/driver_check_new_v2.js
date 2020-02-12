@@ -20,10 +20,11 @@ let DriverCheckNewV2 = async (browser, page, DriverData) => {
     let returnResult = false;
     let enableError = false;
     let tempStr = '';
+    try {
     await page.setViewport({width, height});
     let strNotFind = 'Ничего не найдено';
 
-    try {
+
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);
