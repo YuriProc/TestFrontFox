@@ -109,7 +109,7 @@ let DealSetStatus = async (browser, page, DealData) => {
         g_StrOutLog+=`\n Текущий Статус сделки:(${GetStrStatus}) \n`;
         // клик по стрелке (Статус Сделки)
         xPath = `//div[@class="select"][./label[contains(text(), "Статус")]]`;
-        xPath+= `/div[@class="select__area"]/div[@class="multiselect"]/div[@class="multiselect__select]`;
+        xPath+= `/div[@class="select__area"]/div[@class="multiselect"]/div[@class="multiselect__select"]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
             throw `     FAIL => клик по стрелке (Статус Сделки)`;

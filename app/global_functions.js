@@ -247,8 +247,9 @@ ElementIsChecked = async function (page , Num, MyXPath) {
 };
 //-----------------------------------------------------------------------------------
 ClickByXPath = async function (page , MyXPath) {
-    const linkHandlers = await page.$x(MyXPath);
     try {
+    const linkHandlers = await page.$x(MyXPath);
+
         if ((await linkHandlers.length) > 0) {
             //await linkHandlers[0].click({ clickCount:20, delay: 500 });
             // await linkHandlers[0].hover();
