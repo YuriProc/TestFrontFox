@@ -76,8 +76,8 @@ let CreateNewUser = async (page, strUserLastName) => {
         await page.waitFor(500);
 
         await page.click("div[class=multiselect__tags]");
-        await page.waitForXPath("//span[contains(text(), 'Логист')]", {timeout: 12000});
-        let linkSpanLogist = await page.$x("//span[contains(text(), 'Логист')]");
+        await page.waitForXPath("//span[contains(text(), 'Глава отдела продаж')]", {timeout: 12000});
+        let linkSpanLogist = await page.$x("//span[contains(text(), 'Глава отдела продаж')]");
         await linkSpanLogist[0].click();
         await page.waitFor(500);
 
@@ -103,8 +103,8 @@ let CreateNewUser = async (page, strUserLastName) => {
         await linkSelectSuperAdmin[0].click();
         //Логист
         await linkMultiselectTags[1].click();
-        await page.waitForXPath("//span[contains(text(), 'Логист')]", {timeout: 12000});
-        let linkSelectLogist = await page.$x("//span[contains(text(), 'Логист')]");
+        await page.waitForXPath("//span[contains(text(), 'Глава отдела продаж')]", {timeout: 12000});
+        let linkSelectLogist = await page.$x("//span[contains(text(), 'Глава отдела продаж')]");
         await linkSelectLogist[1].click();
 
         //Пермишены
