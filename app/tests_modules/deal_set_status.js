@@ -135,7 +135,7 @@ let DealSetStatus = async (browser, page, DealData) => {
         }
         //Клик по кнопке сохранить (Редагувати угоду)
         xPath = `//button[@class="btn"]/span[contains(text(), "Редагувати угоду")]`;
-        resOk = await ClickByXPathWithScroll(2000, page, xPath);
+        resOk = await ClickByXPathWithScroll(5000, page, xPath);
         if (!resOk){
             g_StrOutLog+=`FAIL => ClickByXPathWithScroll(Редагувати угоду)\n`;
             throw `     FAIL => ClickByXPathWithScroll(Редагувати угоду)`;
