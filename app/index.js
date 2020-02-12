@@ -47,6 +47,7 @@ let VehicleCheckNV2Page = require('./tests_modules/vehicle_check_new_v2');
 
 let DealCNPage = require('./tests_modules/deal_create_new');
 let DealCheckNPage = require('./tests_modules/deal_check_new');
+let DealSetStatusPage = require('./tests_modules/deal_set_status');
 
 
 let readPic = require('./tests_modules/test_save_picture');
@@ -283,6 +284,7 @@ let OpenFox = async () => {
             strFoxResponsible : 'Тостер',
             strLogistician : 'Тостер',
             strDealID : '',
+            strStatus : '',
             returnResult : false,
         };
 
@@ -292,6 +294,11 @@ let OpenFox = async () => {
 
             // 12.1) Проверяем новую сделку
             DealData = await DealCheckNPage.DealCheckNew(browser, page, DealData);
+        }
+        if(DealData.returnResult) {
+            // 12.2) Устанавливаем статус сделки
+            DealData.strStatus = 'Экспортировано в фокс';
+            DealData = await DealSetStatusPage.DealSetStatus(browser, page, DealData);
         }
 
       // throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';

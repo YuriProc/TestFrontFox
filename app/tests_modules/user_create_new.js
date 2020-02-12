@@ -68,13 +68,13 @@ let CreateNewUser = async (page, strUserLastName) => {
         await page.type("input[id=last_name]", strUserLastName);
         await page.click("input[id=middle_name]");
         await page.type("input[id=middle_name]", 'Тостерович');
-
+        // Админ
         await page.click("div[class=multiselect__tags]");
         await page.waitForXPath("//span[contains(text(), 'Админ')]", {timeout: 12000});
         let linkSpanAdmin = await page.$x("//span[contains(text(), 'Админ')]");
         await linkSpanAdmin[0].click();
         await page.waitFor(500);
-
+        // Глава отдела продаж //Логист
         await page.click("div[class=multiselect__tags]");
         await page.waitForXPath("//span[contains(text(), 'Глава отдела продаж')]", {timeout: 12000});
         let linkSpanLogist = await page.$x("//span[contains(text(), 'Глава отдела продаж')]");
@@ -101,7 +101,7 @@ let CreateNewUser = async (page, strUserLastName) => {
         await page.waitForXPath("//span[contains(text(), 'Супер админ')]", {timeout: 12000});
         let linkSelectSuperAdmin = await page.$x("//span[contains(text(), 'Супер админ')]");
         await linkSelectSuperAdmin[0].click();
-        //Логист
+        //Логист //Глава отдела продаж
         await linkMultiselectTags[1].click();
         await page.waitForXPath("//span[contains(text(), 'Глава отдела продаж')]", {timeout: 12000});
         let linkSelectLogist = await page.$x("//span[contains(text(), 'Глава отдела продаж')]");
