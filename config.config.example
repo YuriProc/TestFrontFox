@@ -1,9 +1,16 @@
 #start file
 
-FRONT_FOX_URL = http://localhost:8080
+FRONT_CRM_FOX_URL = http://localhost:8080
+#FRONT_CRM_FOX_URL = https://dev.new.f.tl.ee
+
+FRONT_CFO_FOX_URL = https://dev.cfo.tl.ee
+
 SHOW_ACTION_IN_BROWSER = true
+
 OUT_TO_LOG_FILE = true
+
 LOG_FILE_NAME = test1_log.log
+
 CHECK_FILE_NAME = test1_check.check
 
 # <- this is a comment

@@ -1,7 +1,10 @@
 // in file config.config
 
-global.gname_FrontFoxURL = 'FRONT_FOX_URL';
-global.g_FrontFoxURL = '';
+global.gname_FrontCrmFoxURL = 'FRONT_CRM_FOX_URL';
+global.g_FrontCrmFoxURL = '';
+
+global.gname_FrontCfoFoxURL = 'FRONT_CFO_FOX_URL';
+global.g_FrontCfoFoxURL = '';
 
 global.gname_ShowActionInBrowser = 'SHOW_ACTION_IN_BROWSER';
 global.g_ShowActionInBrowser = true;

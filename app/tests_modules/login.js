@@ -37,7 +37,7 @@ let BrowserGetPage = async (browser) => {
     try {
 
 
-        let strLoginURL = g_FrontFoxURL + '/login';
+        let strLoginURL = g_FrontCrmFoxURL + '/login';
         let page;
         page = await browser.newPage();
         //height = height - 120;

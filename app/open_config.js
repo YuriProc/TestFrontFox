@@ -29,7 +29,9 @@ let SetAllConfigConst = async () => {
         // await console.log(ContentFromConfigFile);
         // await console.log('End file config.config-------------');
 
-        global.g_FrontFoxURL = await GetConfigConst(ContentFromConfigFile, gname_FrontFoxURL);
+        global.g_FrontCrmFoxURL = await GetConfigConst(ContentFromConfigFile, gname_FrontCrmFoxURL);
+
+        global.g_FrontCfoFoxURL = await GetConfigConst(ContentFromConfigFile, gname_FrontCfoFoxURL);
 
         global.g_ShowActionInBrowser = await GetConfigConst(ContentFromConfigFile, gname_ShowActionInBrowser);
 
@@ -44,8 +46,11 @@ let SetAllConfigConst = async () => {
         await console.log("------------");
         g_StrOutLog+='----- Переменные из config.config -------\n';
 
-        await console.log("(",gname_FrontFoxURL,")=(",g_FrontFoxURL,")");
-        g_StrOutLog+=`(${gname_FrontFoxURL})=(${g_FrontFoxURL})\n`;
+        await console.log("(",gname_FrontCrmFoxURL,")=(",g_FrontCrmFoxURL,")");
+        g_StrOutLog+=`(${gname_FrontCrmFoxURL})=(${g_FrontCrmFoxURL})\n`;
+
+        await console.log("(",gname_FrontCfoFoxURL,")=(",g_FrontCfoFoxURL,")");
+        g_StrOutLog+=`(${gname_FrontCfoFoxURL})=(${g_FrontCfoFoxURL})\n`;
 
         await console.log("(",gname_ShowActionInBrowser,")=(",g_ShowActionInBrowser,")");
         g_StrOutLog+=`(${gname_ShowActionInBrowser})=(${g_ShowActionInBrowser})\n`;

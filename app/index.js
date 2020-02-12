@@ -340,7 +340,10 @@ let OpenFox = async () => {
             g_StrOutLog+=`--------------- Провалено: ${g_FailedTests}   -----------\n`;
 
             //g_StrOutLog+='----------------- END   FOX TESTS ----------------\n';
-            g_StrOutLog+='----------------- Во всём виноваты СракЕндеры ----------------\n';
+            if ( g_FailedTests > 0 ) {
+                g_StrOutLog+='----------------- Во всём виноваты СракЕндеры ----------------\n';
+            }
+
             g_StrOutLog+=`End Log File | Прошло времени: ${strDtAll}\n`;
 
             fs_log.writeFileSync(g_CheckFileName, `${g_FailedTests}`);
