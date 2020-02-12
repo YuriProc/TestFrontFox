@@ -101,14 +101,14 @@ let DealSetStatus = async (browser, page, DealData) => {
         }
         //------------------------Проверка ДАННЫХ----------------------------------
         // проверим Статус Сделки
-        xPath = `//div[@class="select"][./label[contains(text(), "")]]`;
+        xPath = `//div[@class="select"][./label[contains(text(), "Статус")]]`;
         xPath+= `/div[@class="select__area"]/div[@class="multiselect"]`;
         xPath+= `/div[@class="multiselect__tags"]/span[@class="multiselect__single"]`;
         let GetStrStatus  = await ElementGetInnerText(page, 0, xPath);
         await console.log(`     Текущий Статус сделки:(${GetStrStatus}) `);
         g_StrOutLog+=`\n Текущий Статус сделки:(${GetStrStatus}) \n`;
         // клик по стрелке (Статус Сделки)
-        xPath = `//div[@class="select"][./label[contains(text(), "")]]`;
+        xPath = `//div[@class="select"][./label[contains(text(), "Статус")]]`;
         xPath+= `/div[@class="select__area"]/div[@class="multiselect"]/div[@class="multiselect__select]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
@@ -123,7 +123,7 @@ let DealSetStatus = async (browser, page, DealData) => {
         }
         await page.waitFor(500);
         // проверим Статус Сделки
-        xPath = `//div[@class="select"][./label[contains(text(), "")]]`;
+        xPath = `//div[@class="select"][./label[contains(text(), "Статус")]]`;
         xPath+= `/div[@class="select__area"]/div[@class="multiselect"]`;
         xPath+= `/div[@class="multiselect__tags"]/span[@class="multiselect__single"]`;
         GetStrStatus  = await ElementGetInnerText(page, 0, xPath);
