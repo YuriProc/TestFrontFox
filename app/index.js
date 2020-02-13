@@ -2,9 +2,8 @@
 //console.log('-------- app/index.js  Hello from Node.js ----------------');
 
 let oConfig;
-let pageL;
-let pageC;
-let page;
+
+let page, pageCfo;
 let browser;
 
 
@@ -13,6 +12,7 @@ let height = 1000;
 
  //const puppeteer = require('puppeteer');
 require('./global_functions').global;
+require('./global_functions_cfo').global;
 
 
 
@@ -66,11 +66,11 @@ let ContactData;
 let DriverData, DriverData_1, DriverData_2;
 
 let tempStr;
-
+let returnResult = false;
 
 let OpenFox = async () => {
     try {
-        let returnResult = false;
+
         let CodeCompany;
         oConfig = await OpenConfig.SetAllConfigConst();
         if (oConfig === "OK") {
@@ -101,13 +101,14 @@ let OpenFox = async () => {
 
 
         //------------START Для тестов--------------------------------------------------------------
+
                 // Логинимся под ТОСТЕРОМ
                 LoginDataT.ResolvedFailLogin = true;// <- Можно или нельзя Фейлиться по Email или Пароль
-                returnResult = await LPage.Login(page, LoginDataT);
+                returnResult = await LPage.LoginCrm(page, LoginDataT);
                 if (!returnResult){ // Если не получилось то логинимся под ROOT`ом
-                    returnResult = await LPage.Login(page, LoginDataR);
+                    returnResult = await LPage.LoginCrm(page, LoginDataR);
                     if (!returnResult){ //Если не получилось то FAIL  и выход!!!
-                        throw ` FAIL => Login(${LoginDataR.strUserLastName}) !!!`;
+                        throw ` FAIL => LoginCrm(${LoginDataR.strUserLastName}) !!!`;
                     }
                     returnResult = await UCEPage.CheckUserExist(page, LoginDataT.strUserLastName);
                     if (!returnResult) {    // если его нет то создаём
@@ -120,9 +121,9 @@ let OpenFox = async () => {
                     }
                     //Попытка Номер 2 !!!
                     LoginDataT.ResolvedFailLogin = false;// <- Можно или нельзя Фейлиться по Email или Пароль
-                    returnResult = await LPage.Login(page, LoginDataT);
+                    returnResult = await LPage.LoginCrm(page, LoginDataT);
                     if (!returnResult){
-                        throw ` FAIL !!! FAIL !!!=> Login(${LoginDataT.strUserLastName}) !!!`;
+                        throw ` FAIL !!! FAIL !!!=> LoginCrm(${LoginDataT.strUserLastName}) !!!`;
                     }
                 }
                 await console.log('LOGIN OK!!! Можно Дальше Тестить ...');
@@ -304,7 +305,22 @@ let OpenFox = async () => {
 
       // throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 
+        //CFO Start -------------------------------------------------------------
+        //
+        // let strLoginCfoFoxURL = g_FrontCfoFoxURL + '/login';
+        // pageCfo = await LPage.BrowserGetPage(browser, strLoginCfoFoxURL);
+        // returnResult = await LPage.LoginCfo(pageCfo, LoginDataT);
+        // //await console.log(`LoginCfo returnResult=${returnResult}`);
+        // if (!returnResult) { // Если не получилось то логинимся под ROOT`ом
+        //     await console.log(`FAIL => LoginCfo ${LoginDataT.strEmail}`);
+        //     await TempStop(pageCfo);
+        //     throw `FAIL => LoginCfo ${LoginDataT.strEmail}`;
+        // }
 
+
+
+
+        //CFO END   -------------------------------------------------------------
 
 
 

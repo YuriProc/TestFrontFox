@@ -142,6 +142,12 @@ let DealSetStatus = async (browser, page, DealData) => {
             throw `     FAIL => ClickByXPathWithScroll(Редагувати угоду)`;
         }
 
+        resOk = await WaitUntilPageLoadsAndReturnSuccessSave(page);
+        if (!resOk){
+            g_StrOutLog+=`FAIL => WaitUntilPageLoadsAndReturnSuccessSave(Не вижу "Успешно сохранено")\n`;
+            throw `     FAIL => WaitUntilPageLoadsAndReturnSuccessSave(Не вижу "Успешно сохранено")`;
+        }
+
         //await TempStop(page);
         if (enableError){
             throw `При проверке Ранее Созданной Сделки Были Несоответствия Данных`;

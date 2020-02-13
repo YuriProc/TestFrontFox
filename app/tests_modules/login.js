@@ -51,9 +51,10 @@ let BrowserGetPage = async (browser, strPageURL) => {
     }
 };
 
-let Login = async (page, LoginData) => {
-    try {
+let LoginCrm = async (page, LoginData) => {
     const nameTest = NameFunction() +'"'+ LoginData.strUserLastName+'"';
+    try {
+
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
@@ -158,7 +159,114 @@ let Login = async (page, LoginData) => {
     }
 
 };
+//---------------------------------------------------------------------------------------------
+let LoginCfo = async (page, LoginData) => {
+    const nameTest = NameFunction() +'"'+ LoginData.strUserLastName+'"';
+    let ElPresent;
+    let nLength;
+    let xPath;
+    let xPathFeedBack;
+    let resOk;
+    let sText;
+    try {
+
+        g_StatusCurrentTest = 'Запущен';
+        g_LaunchedTests++;
+        await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
+        g_StrOutLog+=`Тест[ ${nameTest} ]=> ${g_StatusCurrentTest} `;
+
+        //Проверим На какой мы странице
+        xPath = `//div[@class="login-page"]`;
+        resOk = await ElementIsPresent(page, xPath);
+        if (!resOk) {
+           throw `FAIL => Не вижу ${xPath}`;
+        }
+
+        //Клик по Инпуту Логин
+        xPath = `//input[@id="__BVID__22"]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `FAIL => Клик по Инпуту Логин(${xPath})`;
+        }
+        resOk = await TypeByXPath(page, xPath, LoginData.strEmail);
+        if (!resOk){
+            throw `FAIL => TypeByXPath => Инпут Логин(${xPath})`;
+        }
+        await page.waitFor(500);
+
+        //Клик по Инпуту Пароль
+        xPath = `//input[@id="__BVID__27"]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `FAIL => Клик по Инпуту Пароль(${xPath})`;
+        }
+        resOk = await TypeByXPath(page, xPath, LoginData.strPassword);
+        if (!resOk){
+            throw `FAIL => TypeByXPath => Инпут Пароль(${xPath})`;
+        }
+        await page.waitFor(500);
+
+        //Проверить наличие предупреждений об ошибках
+
+        xPathFeedBack = `//span[@class="custom-invalid-feedback"]`;
+        nLength = await ElementGetLength(page, xPathFeedBack);
+        if (nLength > 0){
+            for (let i = 0; i < nLength; i++){
+                sText = await ElementGetInnerText(page, i, xPathFeedBack);
+                g_StrOutLog+=`\n => FAIL => "${sText}" `;
+                await console.log(`=> FAIL => "${sText}" `);
+            }
+            throw `Вижу предупреждения об ошибках !!!`;
+        }
+        //Проверим состояние кнопки
+        xPath = `//button[@type="submit"]`;
+        sText = await ElementGetDisabled(page, 0, xPath);
+        if (sText === 'disabled'){
+            throw `FAIL => Кнопка ${xPath} => ${sText}`;
+        }
+        //Жмём на кнопку
+        xPath+=`[contains(text(), "Авторизироваться")]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `FAIL => Клик по Кнопке(${xPath})`;
+        }
+        // //div[@class="notification-content"][contains(text(), "Неверный e-mail или пароль")]
+        xPath = `//div[@class="notification-content"][contains(text(), "Неверный e-mail или пароль")]`;
+        resOk = await WaitForElementIsPresentByXPath(2000, page, xPath);
+        if (resOk){
+            await console.log(` FAIL !!! => Вижу ("Неверный e-mail или пароль")`);
+        }
+        // //img[@class="logo-menu"]
+        xPath = `//img[@class="logo-menu"]`;
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
+        if (!resOk){
+            throw `FAIL !!! => Не вижу ЛОГО значит входа в систему НЕ ПРОИЗОШЛО !!! (наверно)`;
+        }
+
+
+
+        await console.log("         Вижу => ЛОГО FOX CFO");
+        g_StatusCurrentTest = 'Пройден';
+        await g_SuccessfulTests++;
+        await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
+        g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
+        return true; //<-------------EXIT !!!
+
+    }catch (err) {
+        await console.log('\x1b[38;5;1m', "На странице (login) произошла ошибка", err, '\x1b[0m');
+        g_StatusCurrentTest = 'Провален !!!';
+        await g_FailedTests++;
+        await console.log('\x1b[38;5;1m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
+        g_StrOutLog+=`"На странице (login) произошла ошибка" (${err}) \n`;
+        g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
+        return false; //<-------------EXIT !!!
+
+    }
+
+};
+//-----------------------------------------------------------------------------------------------
 
 module.exports.StartBrowser = StartBrowser;
 module.exports.BrowserGetPage = BrowserGetPage;
-module.exports.Login = Login;
+module.exports.LoginCrm = LoginCrm;
+module.exports.LoginCfo = LoginCfo;

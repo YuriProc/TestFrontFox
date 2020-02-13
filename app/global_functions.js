@@ -130,6 +130,15 @@ ElementIsPresent = async function (page , MyXPath) {
     }
 };
 //-----------------------------------------------------------------------------------
+ElementIsPresentNum = async function (page, Num, MyXPath) {
+    const linkHandlers = await page.$x(MyXPath);
+    if (linkHandlers.length > (Num + 1) ) {
+        return true;
+    }else{
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
 ElementGetLength = async function (page , MyXPath) {
     try {
         const linkHandlers = await page.$x(MyXPath);
@@ -200,6 +209,21 @@ ElementGetHref = async function (page , Num, MyXPath) {
             return '';
         }else{
             PropInnerText = await page.evaluate(elm => elm.href, linkHandlers[Num]);
+            return PropInnerText;
+        }
+    }catch (e) {
+        return '';
+    }
+};
+ElementGetDisabled = async function (page , Num, MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        let PropInnerText;
+        if (Num > MaxL){
+            return '';
+        }else{
+            PropInnerText = await page.evaluate(elm => elm.disabled, linkHandlers[Num]);
             return PropInnerText;
         }
     }catch (e) {

@@ -50,6 +50,7 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         if (!resOk) {
             throw 'WaitUntilPageLoads("Создание Контакта Водителя")';//<--специальный вызов ошибки!
         }
+        await page.waitFor(1000);
         //Проверяем наличие на странице Характерных элементов (Создание контакта)
         resOk = await ElementIsPresent(page,'//div[@class="head__title"][contains(text(), "Создание контакта")]');
         if (!resOk) {
