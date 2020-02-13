@@ -68,12 +68,16 @@ WaitUntilPageLoadsAndReturnSuccessSave = async function (page) {
             if (!PresentSSave) {
                 PresentSSave = await ElementIsPresent(page, xPathSuccessSave);
             }
-            if(await Date.now() - startTime > 3000) {
+            if(await Date.now() - startTime > 5000) {
                 break;// <- Выход из Цикла !!!
             }
         }
         if (!PresentPBusy && PresentSSave){
             return true;
+        }
+        if (!PresentSSave) {
+            PresentSSave = await WaitForElementIsPresentByXPath(3000, page, xPathSuccessSave);
+            PresentPBusy = await ElementIsPresent(page, xPathBusy);
         }
         if (!PresentPBusy && !PresentSSave){
             return false;
