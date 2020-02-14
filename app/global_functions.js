@@ -16,7 +16,7 @@ WaitUntilMessageExist = async function (page) {
     let startTime = await Date.now();
     try {
         // Ждём селектор
-        await page.waitForSelector(cssSelector, { timeout: 200});
+        await page.waitForSelector(cssSelector, { timeout: 500});
         // Теперь ждём пока не пропадёт селектор
         while (await page.$(cssSelector) !== null){
             // Если прошло больше 65 сек то выход!!!
