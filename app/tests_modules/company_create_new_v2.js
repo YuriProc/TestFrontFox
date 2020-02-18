@@ -11,7 +11,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
     let height = 880;
     let resOk;
     let xPath, MyXPath, xpLogoPhoto, PhotoURL, xPathPhones, xPathUrlS;
-    let strTT, strInnerText, strAlreadyCreated, strNotCorrect, strNotFind, strErrorActivity;
+    let tStr, strTT, strInnerText, strAlreadyCreated, strNotCorrect, strNotFind, strErrorActivity;
     let strCompanyTypesFromPage;
     let QLength;
     let strCheck;
@@ -99,9 +99,11 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         xPath = `//label[@class="select__label"][contains(text(), "Тип компании")]`;
         resOk = await WaitForElementIsPresentByXPath(12000, page, xPath);
         if (!resOk) {
-            await console.log(`FAIL => Не вижу (${xPath})`);
+            tStr = `\n FAIL => После нажатия на кнопку (ПРОВЕРИТЬ В БАЗЕ) не прогрузилась страница `;
+            tStr+= `\n FAIL => Не вижу (${xPath})`;
+            await console.log(tStr);
             //await TempStop(page);
-            throw `FAIL => Не вижу (${xPath})`;//<--специальный вызов ошибки!
+            throw tStr;//<--специальный вызов ошибки!
         }
         //Сука по этому XPath нельзя кликнуть , он перекрыт Span "Выберите"
         // Хитрый XPath выбрать родителя содержащего конкретного ребёнка
