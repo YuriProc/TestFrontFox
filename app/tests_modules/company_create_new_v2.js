@@ -95,7 +95,8 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         //Опять Ждём Загрузки Страницы (на всякий пожарный)
         await WaitUntilPageLoads(page);
         // Проверим Наличие ИНПУТА (Тип компании)
-        xPath = '//input[@name="company_types"]';
+        //xPath = '//input[@name="company_types"]';
+        xPath = `//label[@class="select__label"][contains(text(), "Тип компании")]`;
         resOk = await WaitForElementIsPresentByXPath(12000, page, xPath);
         if (!resOk) {
             throw `FAIL => Не вижу (${xPath})`;//<--специальный вызов ошибки!
