@@ -99,6 +99,8 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         xPath = `//label[@class="select__label"][contains(text(), "Тип компании")]`;
         resOk = await WaitForElementIsPresentByXPath(12000, page, xPath);
         if (!resOk) {
+            await console.log(`FAIL => Не вижу (${xPath})`);
+            await TempStop(page);
             throw `FAIL => Не вижу (${xPath})`;//<--специальный вызов ошибки!
         }
         //Сука по этому XPath нельзя кликнуть , он перекрыт Span "Выберите"
