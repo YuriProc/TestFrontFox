@@ -125,8 +125,9 @@ let LoginCrm = async (page, LoginData) => {
         myXPath = `//div[@class="noty_body"][contains(text(), "Выполнено!")]`;
         ElPresent = await WaitForElementIsPresentByXPath(3000, page, myXPath);
         if (!ElPresent){
-            await console.log('     FAIL => Не вижу "Выполнено!"');
-            throw `FAIL => Не вижу "Выполнено!"`;
+            await console.log('     Warning => Не вижу "Выполнено!"');
+            g_StrOutLog+=`\n => Warning => Не вижу "Выполнено!" \n`;
+            //throw `FAIL => Не вижу "Выполнено!"`;
         }
         //Дождёмся окончательной загрузки страницы
         let pLOk = await WaitUntilPageLoads(page);
@@ -136,6 +137,7 @@ let LoginCrm = async (page, LoginData) => {
         let xPath = '//div[@class="title _text-center"][contains(text(), "Вітаємо вас в системі FOX CRM")]';
         ElPresent = await WaitForElementIsPresentByXPath(2000, page, xPath);
         if (!ElPresent) {
+            await console.log('     FAIL => Не вижу "Вітаємо вас в системі FOX CRM"');
             throw `FAIL => Не вижу "Вітаємо вас в системі FOX CRM"`;
         }
 

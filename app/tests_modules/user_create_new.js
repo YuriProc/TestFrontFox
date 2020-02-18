@@ -9,7 +9,7 @@ let CreateNewUser = async (page, strUserLastName) => {
     let height = 880;
     let resOk;
     let xPath, xPathArrow ,xPathPerm;
-
+    let tStr;
 
     try{
     await page.setViewport({width, height});
@@ -80,8 +80,16 @@ let CreateNewUser = async (page, strUserLastName) => {
         let linkSpanLogist = await page.$x("//span[contains(text(), 'Глава отдела продаж')]");
         await linkSpanLogist[0].click();
         await page.waitFor(500);
-
-        await page.click("button[class=btn]");
+        xPath = `//button[@class="btn"]/span[contains(text(), "Создать контакт")]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            tStr = `FAIL => ClickByXPath(${xPath})`;
+            await console.log(tStr);
+            //await TempStop(page);
+            g_StrOutLog+= `\n ${tStr}`;
+            throw tStr;
+        }
+        //await page.click("button[class=btn]");
 
         await page.waitForXPath("//span[contains(text(), 'Создать пользователя')]", {timeout: 12000});
 

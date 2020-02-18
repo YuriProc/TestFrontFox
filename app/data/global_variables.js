@@ -89,9 +89,7 @@ global.g_ArrayURL = {
        */
     ],
     'LogoURL' : [
-        'https://lh3.googleusercontent.com/gB6Rd_cdej-B3jJcDEHKtnQSg7JozM0gj67TbQNOmZa2jzztzKrO4vpjmBDj8Rd-AtyqPQ=s91',
-        'https://lh3.googleusercontent.com/z_F1vU7ES0Wn2vNy1VjudkySYig5JmQVhxnVayr4ddyRL8anTNEmWNwLZ9blsTtrMJF_kQ=s117',
-        'https://lh3.googleusercontent.com/pwTuNRpHnd8q9SKhywpwSu9Uadbjnn-hbL98-i45_22sX1XKZiedWw8SluifNtATcHPr=s85',
+
         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTECLmmkCmxQguEJpQ9B_uLoT2FrnPx7ojsG9_QB-h334CTediI',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR43ANdL8QVdVT00tgJJr50i5t9PsoP2D0HlYPXvZsRUCFVu472',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRO42JjuwtTVQm23ZTJ3W4s38kDFPUs33CSSO_42YhvhOEkNtZs',

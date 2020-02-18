@@ -85,10 +85,15 @@ let OpenFox = async () => {
         page = await LPage.BrowserGetPage(browser, strLoginCrmFoxURL);
         g_NumberCurrentTest = 1;
 
+        // let LoginDataR = {
+        //     strUserLastName : 'root',
+        //     strEmail : 'root@root.com',
+        //     strPassword : 'root1234567',
+        // };
         let LoginDataR = {
-            strUserLastName : 'root',
-            strEmail : 'root@root.com',
-            strPassword : 'root1234567',
+            strUserLastName : 'Лютин',
+            strEmail : 'lutin.v@transloyd.com',
+            strPassword : 'GRSUv',
         };
         let LoginDataT = {
             strUserLastName : 'Тостер',
