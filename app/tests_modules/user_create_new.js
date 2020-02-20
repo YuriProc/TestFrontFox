@@ -145,45 +145,27 @@ let CreateNewUser = async (page, strUserLastName) => {
 
         //клик по баттон создать пользователя
         await page.waitFor(500);
-        await page.click("button[class=btn]");
-
-        try{
-            await page.waitForXPath('//div[contains(text(), "Пользователи")]', {timeout: 7000});
-            await console.log('\x1b[38;5;2m', "Пользователь Успешно Создан", '\x1b[0m');
-            g_StatusCurrentTest = 'Пройден';
-            await g_SuccessfulTests++;
-            await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
-            g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
-            return true;//<----------EXIT OK!!!!
-        }catch(err){
-
-            try {
-                await page.waitForXPath("//span[contains(text(), 'Такое значение уже существует.')]", {timeout: 3000});
-                await console.log('\x1b[38;5;1m', "Пользователь с таким ЛОГИНОМ или EMAIL уже существует !!!", '\x1b[0m');
-
-                await page.waitForXPath('//div[contains(text(), "Пользователи")]', {timeout: 7000});
-                await console.log('\x1b[38;5;2m', "Пользователи", '\x1b[0m');
-                g_StatusCurrentTest = 'Пройден';
-                await g_SuccessfulTests++;
-                await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
-                g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
-                return true;//<----------EXIT true!!!!
-                // !!!!!!!!!!!!!!!!!!!!
-            }catch (err2) {
-                await console.log('\x1b[38;5;1m', "При создании Нового Юзера ЧТО ТО ПОШЛО НЕ В ТУ ДА!!!\n", err2, '\x1b[0m');
-                g_StatusCurrentTest = 'Провален !!!';
-                await g_FailedTests++;
-                await console.log('\x1b[38;5;1m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
-                g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
-
-                //await page.waitFor(11111500);
-            }
-            //await console.log('\x1b[38;5;1m', "При создании Нового Юзера ЧТО ТО ПОШЛО НЕ В ТУ ДА!!!\n", err, '\x1b[0m');
-
+        //await page.click("button[class=btn]");
+        xPath = `//button[@class="btn"]/span[contains(text(), "Создать пользователя")]`;
+        resOk = await ClickByXPathWithScroll(2000, page, xPath);
+        if (!resOk){
+            throw ` FAIL! => ClickByXPathWithScroll(${xPath})`;
         }
 
+
+        await page.waitForXPath('//div[contains(text(), "Пользователи")]', {timeout: 7000});
+        await console.log('\x1b[38;5;2m', "Пользователь Успешно Создан", '\x1b[0m');
+        g_StatusCurrentTest = 'Пройден';
+        await g_SuccessfulTests++;
+        await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
+        g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
+        return true;//<----------EXIT OK!!!!
+
+
     }catch (err) {
+
         await console.log('\x1b[38;5;1m', "При создании Нового Юзера ЧТО ТО ПОШЛО НЕ В ТУ ДЫРКУ!!!\n", err, '\x1b[0m');
+        //await TempStop(page);
         g_StatusCurrentTest = 'Провален !!!';
         await g_FailedTests++;
         await console.log('\x1b[38;5;1m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
