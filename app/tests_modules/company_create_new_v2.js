@@ -544,7 +544,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
 let AddNewContract;
 AddNewContract = async function( page , CompanyData){
 
-    let xPath, resOk, result;
+    let xPath, resOk, qLenght, tStr ,ttStr,result;
     result = false;
     // Клик по Договора +
     //ёбаный /svg/path не кликается
@@ -648,6 +648,18 @@ AddNewContract = async function( page , CompanyData){
         throw ` FAIL => (Договора + (Клик по кнопке Создать)`;
     }
     await page.waitFor(500);
+    //проверим наличие ошибок заполнения полей
+    xPath = `//span[@class="element__error"]`;
+    qLenght = await ElementGetLength(page, xPath);
+    tStr = ``;
+
+    if (qLenght>0){
+        for (let i=0; i<qLenght; i++) {
+            ttStr = await ElementGetInnerText(page, i, xPath);
+            tStr += ` ${ttStr} \n`;
+        }
+        throw `Fail => Договора +(Вижу Ошибки заполнения полей => ${tStr}) `;
+    }
     resOk = await WaitUntilPageLoadsAndReturnSuccessSave(page);
     if (!resOk){
         throw ` FAIL => (Договора + (Не вижу "Успешно сохранено")`;
