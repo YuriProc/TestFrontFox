@@ -8,6 +8,9 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
     //await page.waitFor(500);
     let width = 1900;
     let height = 880;
+    let resOK;
+    let xPath;
+    let tStr;
 
     let findExistCompanyOk = false;
     let ElPresent1,ElPresent2,ElPresent3;
@@ -17,14 +20,30 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);
-        //await page.click("a[href='/company']");
-        let linkCompany = await page.$x('//a[@href="/company"]');
-        await linkCompany[0].click();
+
+        xPath = `//a[@href="/company"]`;
+        resOK = await WaitForElementIsPresentByXPath(5000, page, xPath);
+        resOK = await ClickByXPath(page, xPath);
+        if (!resOK){
+            throw `FAIL => Клик по кнопке КОМПАНИИ(${xPath})`;
+        }
+        await WaitUntilPageLoads(page);
         //Ждём появления тайтла компании
-        await page.waitForXPath('//div[@class="head__title"][contains(text(), \'Компании\')]', {visible: true, timeout: 20000});
-        //await console.log('\x1b[38;5;2m', "     Вижу => div[@class=\"head__title\"][contains(text(), \'Компании\')] ", '\x1b[0m');
+        xPath = `//div[@class="head__title"][contains(text(), "Компании")]`;
+        resOK = await WaitForElementIsPresentByXPath(20000, page, xPath);
+        if (!resOK){
+            throw `FAIL => НЕ Вижу (${xPath})`;
+        }
+
+
         //Ждём появление кнопки редактировать
-        await page.waitForXPath('//a[@class="table__option"]', {timeout: 25000});
+        xPath = `//a[@class="table__option"]`;
+        resOK = await WaitForElementIsPresentByXPath(35000, page ,xPath);
+        if (!resOK){
+            throw `FAIL => НЕ ВИЖУ НИ ОДНОЙ КОМПАНИИ (${xPath})`;
+        }
+
+
         // await page.click("input[placeholder=ЕДРПОУ\\ИНН]");
         // await page.type("input[placeholder=ЕДРПОУ\\ИНН]",strCodeCompany);
 
@@ -35,16 +54,21 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
         await page.waitFor(500);
         await page.keyboard.press('Enter',{delay: 100});
         await page.waitFor(500);
+        await WaitUntilPageLoads(page);
         //Ждём появление Надписи "Ничего не найдено"
-        await page.waitForXPath('//b[contains(text(), "Ничего не найдено")]', {visible: true, timeout: 20000});
-        //await console.log('\x1b[38;5;2m', '     Вижу => b[contains(text(), "Ничего не найдено")]', '\x1b[0m');
+        xPath = `//b[contains(text(), "Ничего не найдено")]`;
+        resOK = await WaitForElementIsPresentByXPath(20000, page, xPath);
+        if (!resOK){
+            throw `FAIL => НЕ ВИЖУ НАДПИСИ "Ничего не найдено"`;
+        }
+
         //Очищаем input поиска КОДА кликом по крестику
         await page.click("div[class=search__nav]");
         //Вводим правильные данные которые есть в реестре но мы хотим проверить их в нашей базе
         await linkSearchCodeCompany[0].click();
         await linkSearchCodeCompany[0].type(strCodeCompany);
         await page.keyboard.press('Enter',{delay: 100});
-
+        await WaitUntilPageLoads(page);
         //await page.waitForXPath('//a[@class="table__option"]', {timeout: 12000});
         //Кнопка РЕДАКТИРОВАТЬ => '//a[@class="table__option"]'
         //Ждём появление кнопки редактировать
@@ -69,6 +93,9 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
                 findExistCompanyOk = false;
                 return findExistCompanyOk;// <----------------------------- EXIT OK!!!
             }else { //надписи "Ничего не найдено" НЕТ это ошибка
+                tStr = `Компанию не нашли и надписи "Ничего не найдено" НЕТ - это ошибка`;
+                await console.log(`${tStr}`);
+                g_StrOutLog+=`\n ${tStr}`;
                 g_StatusCurrentTest = 'Провален !!!';
                 await g_FailedTests++;
                 await console.log('\x1b[38;5;1m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');

@@ -153,7 +153,7 @@ let CreateNewUser = async (page, strUserLastName) => {
         }
 
 
-        await page.waitForXPath('//div[contains(text(), "Пользователи")]', {timeout: 7000});
+        await page.waitForXPath('//div[contains(text(), "Пользователи")]', {timeout: 25000});
         await console.log('\x1b[38;5;2m', "Пользователь Успешно Создан", '\x1b[0m');
         g_StatusCurrentTest = 'Пройден';
         await g_SuccessfulTests++;
