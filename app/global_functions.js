@@ -512,7 +512,7 @@ EnterDealPointLoading = async  function( page , strEnter){
 
         await TypeByXPath(page, '//div[@name="point_loadings"]/div/input[@class="select__input"]', strEnter);
 
-        resOk = await await WaitForElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        resOk = await await WaitForElementIsPresentByXPath(15000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
         if (!resOk){
             if(await ElementIsPresent(page, '//span[contains(text(), "Не вдається завантажити Карти Google на цій сторінці.")]')){
                 throw "Не вдається завантажити Карти Google на цій сторінці.";
@@ -527,7 +527,7 @@ EnterDealPointLoading = async  function( page , strEnter){
         await page.waitFor(500);
 
         let xP = `//div[@name="point_loadings"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
-        resOk = await WaitForElementIsPresentByXPath(5000, page, xP);
+        resOk = await WaitForElementIsPresentByXPath(15000, page, xP);
         if (!resOk){
             throw ` WaitForElementIsPresentByXPath(${xP})`;
         }
@@ -556,7 +556,7 @@ EnterDealPointUnLoading = async  function( page , strEnter){
 
         await TypeByXPath(page, '//div[@name="point_unloading"]/div/input[@class="select__input"]', strEnter);
 
-        resOk = await WaitForElementIsPresentByXPath(5000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
+        resOk = await WaitForElementIsPresentByXPath(15000, page, `//span[@class="pac-matched"][contains(text(), "${strEnter}")]`);
         if (!resOk){
             if(await ElementIsPresent(page, '//span[contains(text(), "Не вдається завантажити Карти Google на цій сторінці.")]')){
                 throw "Не вдається завантажити Карти Google на цій сторінці.";
@@ -575,7 +575,7 @@ EnterDealPointUnLoading = async  function( page , strEnter){
         await page.waitFor(500);
 
         let xP = `//div[@name="point_unloading"]/div/div[@class="select__zone"]/div[@class="select__item"]/span`;
-        resOk = await WaitForElementIsPresentByXPath(5000, page, xP);
+        resOk = await WaitForElementIsPresentByXPath(15000, page, xP);
         if (!resOk){
             // TEMP!!!!!!!!!!
             await console.log(` WaitForElementIsPresentByXPath(${xP})`);

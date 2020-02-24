@@ -140,7 +140,7 @@ let OpenFox = async () => {
                 //tempStr = '38050' + await randomInt(1001010, 9989999);
                 //CodeCompany = await GetFunnyStr('StrCompanyCodeArray');
                 CompanyData1 = {
-                    strCodeCompany : await GetFunnyStr('StrCompanyCodeArray'),// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+                    strCodeCompany : await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
                     strCompanyName : '',// <= Заполнится автоматически при создании Компании !!!
                     strCompanyTypes : [ 'Заказчик', ], // Заказчик // Перевозчик // Экспедитор
                     boolIsOurCompany : false,
@@ -311,16 +311,16 @@ let OpenFox = async () => {
       // throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 
         //CFO Start -------------------------------------------------------------
-        //
-        // let strLoginCfoFoxURL = g_FrontCfoFoxURL + '/login';
-        // pageCfo = await LPage.BrowserGetPage(browser, strLoginCfoFoxURL);
-        // returnResult = await LPage.LoginCfo(pageCfo, LoginDataT);
-        // //await console.log(`LoginCfo returnResult=${returnResult}`);
-        // if (!returnResult) { // Если не получилось то логинимся под ROOT`ом
-        //     await console.log(`FAIL => LoginCfo ${LoginDataT.strEmail}`);
-        //     await TempStop(pageCfo);
-        //     throw `FAIL => LoginCfo ${LoginDataT.strEmail}`;
-        // }
+
+        let strLoginCfoFoxURL = g_FrontCfoFoxURL + '/login';
+        pageCfo = await LPage.BrowserGetPage(browser, strLoginCfoFoxURL);
+        returnResult = await LPage.LoginCfo(pageCfo, LoginDataT);
+        //await console.log(`LoginCfo returnResult=${returnResult}`);
+        if (!returnResult) { // Если не получилось то логинимся под ROOT`ом
+            await console.log(`FAIL => LoginCfo ${LoginDataT.strEmail}`);
+            await TempStop(pageCfo);
+            throw `FAIL => LoginCfo ${LoginDataT.strEmail}`;
+        }
 
 
 

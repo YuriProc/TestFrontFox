@@ -344,6 +344,7 @@ let DealCreateNew = async (browser, page, DealData) => {
 
 
         //ЛОГІСТ
+        let eLogist = false;
         // Клик по стрелке
         xPath = `//div[@class="select"][./label[starts-with(text(), "Логіст")]]/div/div/div[@class="multiselect__select"]`;
         resOk = await ClickByXPath(page, xPath);
@@ -356,6 +357,7 @@ let DealCreateNew = async (browser, page, DealData) => {
         resOk = await ClickByXPath(page, xPath);
         if (!resOk) {
             await console.log(`Warning => не получилось выбрать (ЛОГІСТ=${DealData.strLogistician}`);
+            eLogist = true;
             xPath = `//div[@class="select"][./label[starts-with(text(), "Логіст")]]`;
             xPath+=`/div/div/div[@class="multiselect__select"]`;
             let xPRM =`//input[@name="logistical"]`;
@@ -412,10 +414,12 @@ let DealCreateNew = async (browser, page, DealData) => {
         // Ждём всей таблицы(Должна появиться таблица СДЕЛКИ)
         await WaitUntilPageLoads(page);
 
-        //клик по кнопке Все сделки
-        xPath = `//button[@class="btn btn--sm"][contains(text(), "Все сделки")]`;
-        resOk = await ClickByXPath(page, xPath);
-        await WaitUntilPageLoads(page);
+        //клик по кнопке Все сделки если ошибка выбора ответственный логист
+        if(eLogist) {
+            xPath = `//button[@class="btn btn--sm"][contains(text(), "Все сделки")]`;
+            resOk = await ClickByXPath(page, xPath);
+            await WaitUntilPageLoads(page);
+        }
 
         //ElementGetInnerText
         xPath = `//div[@class="table"]/table/tbody/tr/td[2]`;
