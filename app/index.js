@@ -150,7 +150,7 @@ let OpenFox = async () => {
                     strPaymentCondition : 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
                     strPhoneNumber : '38050' + await randomInt(1001010, 9989999),
                     strUrl : await GetFunnyUrl('Funny_Page_URL'),//'https://natribu.org/',//Funny_Page_URL
-                    strContractOurCompany : 'ТРАНСЛОЙД',// СТАВАНГЕР // ТРАНСЛОЙД //
+                    strContractOurCompany : 'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
                     strContractOurCompanyIs : 'Перевозчик',
 
                     returnResult : false,

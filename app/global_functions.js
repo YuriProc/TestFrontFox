@@ -30,6 +30,34 @@ WaitUntilMessageExist = async function (page) {
     }
 };
 //-----------------------------------------------------------------------------------
+GetExceptions = async function (page) {
+    let cssSelector = `div[class=noty_body]`;
+    let xPath = `//div[@class="noty_body"]`;
+    let resOk;
+    let qLength;
+    let iText;
+    let tStr = ``;
+    try {
+        await WaitUntilPageLoads(page);
+        qLength = await ElementGetLength(page, xPath);
+        if (qLength>0){
+            //tStr = `\n`;
+            for (let i = 0; i < qLength; i++){
+                iText = await ElementGetInnerText(page, i, xPath);
+                tStr+= `${iText}\n`
+            }
+            await console.log(`GetExceptions => qLength=${qLength} `);
+            await console.log(`GetExceptions => iText="${iText}" `);
+            return tStr;
+        }
+
+
+        return ``;
+    } catch (e) {
+        return `Exception in GetExceptions(${e})`;
+    }
+};
+//-----------------------------------------------------------------------------------
 WaitUntilPageLoads  = async function (page) {
     let cssSelector = `html[class=nprogress-busy]`;
 
@@ -54,6 +82,7 @@ WaitUntilPageLoads  = async function (page) {
     }
 };
 //-----------------------------------------------------------------------------------
+
 WaitUntilPageLoadsAndReturnSuccessSave = async function (page) {
     let xPathBusy = `//html[@class="nprogress-busy"]`;
     let xPathSuccessSave = '//div[@class="noty_body"][contains(text(), "Успешно сохранено")]';
