@@ -660,17 +660,21 @@ AddNewContract = async function( page , CompanyData){
         }
         throw `Fail => Договора +(Вижу Ошибки заполнения полей => ${tStr}) `;
     }
+    // Проверим наличие Exceptions
+    //div[@class="noty_body"]
+    tStr = await GetExceptions(page);
+    if ((tStr!=='')&&(tStr!=='Успешно сохранено')){
+        tStr = `FAIL! => (Договора +)(` + tStr + ')';
+        g_StrOutLog+=tStr;
+        await console.log(tStr);
+    }
     //Проверим "Успешно сохранено"
     resOk = await WaitUntilPageLoadsAndReturnSuccessSave(page);
     if (!resOk){
-        // Проверим наличие Exceptions
-        //div[@class="noty_body"]
-        tStr = await GetExceptions(page);
+
         g_StrOutLog+=`FAIL => (Договора + (Не вижу "Успешно сохранено")`;
         await console.log(`FAIL => (Договора + (Не вижу "Успешно сохранено")`);
-        tStr = `FAIL! => ` + tStr;
-        g_StrOutLog+=`${tStr}`;
-        await console.log(tStr);
+
         throw ` FAIL => (Договора + (Не вижу "Успешно сохранено")`;
     }
 

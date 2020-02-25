@@ -61,10 +61,15 @@ GetExceptions = async function (page) {
             //tStr = `\n`;
             for (let i = 0; i < qLength; i++){
                 iText = await ElementGetInnerText(page, i, xPath);
-                tStr+= `${iText}\n`
+                if (i > 0){
+                    tStr+= `${iText}\n`;
+                }else {
+                    tStr+= `${iText}`;
+                }
+
             }
-            await console.log(`GetExceptions => qLength=${qLength} `);
-            await console.log(`GetExceptions => iText="${iText}" `);
+            // await console.log(`GetExceptions => qLength=${qLength} `);
+            // await console.log(`GetExceptions => iText="${iText}" `);
             return tStr;
         }
 
