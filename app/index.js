@@ -203,7 +203,7 @@ let OpenFox = async () => {
                 if (!CompanyData2.returnResult) {
                     throw `Не получилось создать компанию (${CompanyData2.strCodeCompany})`;//<--специальный вызов ошибки!
                 }
-                //await console.log(`Created => CompanyData2:`, CompanyData2);
+                //await console.log(`Created => CompanyData2:`,  CompanyData2);
         // X) Проверяем созданную тестовую компанию CompanyData2
                 CompanyData2 = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData2);
                 if (!CompanyData2.returnResult) {
