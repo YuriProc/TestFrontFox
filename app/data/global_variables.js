@@ -34,6 +34,10 @@ global.g_FailedTests = 0;
 // global.g_CountTest = 0;
 
 // Объект из массивов URL для фоток
+
+// бутылка в ...
+// https://s018.radikal.ru/i523/1712/1b/225524e93f9a.png
+
 global.g_ArrayURL = {
     'TrollFaceURL'  : [
         'https://i.pinimg.com/474x/b3/df/2d/b3df2d48524d4e18ac7041d1a463d533.jpg',
@@ -109,6 +113,10 @@ global.g_ArrayURL = {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4phOrz77RtihDocgkmyI0Syg6t2HdaIda7B6s_Ek2V01dpvAkwQ&s',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBgUYKqoSoL5zJzRaoQLZ2T9_gXdxr1cdvgt3c8j6_6S_s7mXKmg&s',
         'https://lh5.googleusercontent.com/proxy/LSgbkqzobsGF2VyTrIKx5pnKo5iFcriaDlvc6LIsL7nehS7CEeFCm_jMv0D4DxpEZavMCQU',
+        'https://lh5.googleusercontent.com/proxy/LSgbkqzobsGF2VyTrIKx5pnKo5iFcriaDlvc6LIsL7nehS7CEeFCm_jMv0D4DxpEZavMCQU',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQd_Wid7Af-dLWoEiWxJIP-qBp31w2j5or2Y5PPX8c4q8XHLjay',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTvRohBd-JHjsmH6ioF3QkN1rKymtYWdWBS1YzoZ_iGdHsAtd_r',
+        'http://patstalom.com/uploads/images/f/3/0/e/30/432f711aad.jpg',
 
 
 

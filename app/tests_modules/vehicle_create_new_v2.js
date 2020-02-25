@@ -83,6 +83,8 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
             if (!resOk) {
                 throw `ClickByXPath(${xpButtonCheckInBase})`;//<--специальный вызов ошибки!
             }
+
+            // Данная машина уже создана!
             // Ждём загрузки страницы
             resOk = await WaitUntilPageLoads(page);
             if (!resOk) {
@@ -114,17 +116,29 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
             throw 'ElementNotPresent(class="search__label""Марка автомобиля ")';//<--специальный вызов ошибки!
         }
 
-        //await page.waitFor(1111113000);
-        //Клик по инпуту Марка автомобиля
+
+        // await page.waitFor(3500);
+        // //await page.waitFor(1111113000);
+        // //Клик по инпуту Марка автомобиля // Дабл клик (два раза клик)
+        // // /html/body/div/div/main/div/div/div[2]/div/div/div[1]/div[2]/div[2]/div[1]/div/div/div[1]/div[2]/svg/path
+        // // //*[@id="app"]/div/main/div/div/div[2]/div/div/div[1]/div[2]/div[2]/div[1]/div/div/div[1]/div[2]/svg/path
+        // // //*[@id="app"]/div/main/div/div/div[2]/div/div/div[1]/div[2]/div[2]/div[1]/div/div/div[1]/div[2]/svg/path
+        // let xpCarBrandX = '//*[@id="app"]/div/main/div/div/div[2]/div/div/div[1]/div[2]/div[2]/div[1]/div/div/div[1]/div[2]/svg/path';
+        // //let xpCarBrandX = '//div[@class="search__area"][./div[@data-vv-name="car_brand"]]/div/svg/path';
+        // resOk = await ClickByXPath(page, xpCarBrandX);
+        // if (resOk) {
+        //     //throw `ClickByXPath(${xpCarBrandX})`;//<--специальный вызов ошибки!
+        //     await console.log(`Поле Марка автомобиля было непустым`);
+        // }else {
+        //     await console.log(`f=>xpCarBrandX=${xpCarBrandX}`);
+        // }
+        await page.waitFor(200);
+
+        //Вводим Марка автомобиля //SetInputByXPath
         let xpCarBrand = '//div[@data-vv-name="car_brand"]/div/input';
-        resOk = await ClickByXPath(page, xpCarBrand);
+        resOk = await SetInputByXPath(page, xpCarBrand, VehicleData.strCarBrand);
         if (!resOk) {
-            throw `ClickByXPath(${xpCarBrand})`;//<--специальный вызов ошибки!
-        }
-        //Вводим Марка автомобиля
-        resOk = await TypeByXPath(page, xpCarBrand, VehicleData.strCarBrand);
-        if (!resOk) {
-            throw `TypeByXPath(${xpCarBrand})`;//<--специальный вызов ошибки!
+            throw `SetInputByXPath(${xpCarBrand})`;//<--специальный вызов ошибки!
         }
         //Ждём пока найдёт марку автомобиля
         resOk = await WaitUntilPageLoads(page);
@@ -183,7 +197,7 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         if (!resOk) {
             throw `ClickByXPath(${xpSelectType})`;//<--специальный вызов ошибки!
         }
-        await page.waitFor(600);
+        await page.waitFor(1200);
         //Выбираем Тягач
 
         // VehicleData.strCarType
@@ -192,24 +206,26 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         xpItemType = xpItemType + `"${VehicleData.strCarType}")]`;
         resOk = await ClickByXPath(page, xpItemType);
         if (!resOk) {
-            throw `ClickByXPath(${VehicleData.strCarType})`;//<--специальный вызов ошибки!
+            throw `ClickByXPath(VehicleData.strCarType)(${VehicleData.strCarType})`;//<--специальный вызов ошибки!
         }
         await page.waitFor(500);
         if (VehicleData.strCarType !== 'Тягач'){
         // Если НЕ Тягач, то выбираем дополнитеоьные поля
         // Субтип // (Цельномет)
             //клик по селекту
-            xPath = `//div[@class="select"][./label[contains(text(), "Субтип")]]`;
-            xPath+= `/div[@class="select__area"]/div[@class="multiselect"]/div[@class="multiselect__tags"]`;
+            // xPath = `//div[@class="select"][./label[contains(text(), "Субтип")]]`;
+            // xPath+= `/div[@class="select__area"]/div[@class="multiselect"]/div[@class="multiselect__tags"]`;
+            xPath = `//div[@class="multiselect__tags"][./input[@name="car_subtype"]]`;
             resOk = await ClickByXPath(page, xPath);
             if (!resOk) {
                 throw `ClickByXPath(Субтип)`;//<--специальный вызов ошибки!
             }
             await page.waitFor(500);
         //пишем, выбираем
-        xPath = `//div[@class="select"][./label[contains(text(), "Субтип")]]`;
-        xPath+= `/div[@class="select__area"]/div[@class="multiselect multiselect--active"]/div[@class="multiselect__tags"]`;
-        xPath+= `/input[@name="car_subtype"]`;
+        // xPath = `//div[@class="select"][./label[contains(text(), "Субтип")]]`;
+        // xPath+= `/div[@class="select__area"]/div[@class="multiselect multiselect--active"]/div[@class="multiselect__tags"]`;
+        // xPath+= `/input[@name="car_subtype"]`;
+            xPath = `//input[@name="car_subtype"]`;
         resOk = await TypeByXPath(page, xPath, 'Цельномет');
         if (!resOk) {
             throw `TypeByXPath(Цельномет)`;//<--специальный вызов ошибки!

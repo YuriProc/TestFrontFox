@@ -104,7 +104,14 @@ let OpenFox = async () => {
             // Если нельзя то в случае (Неверный e-mail или пароль) +1 g_FailedTests
         };
 
-
+        // await console.log(`LoginDataR=>${LoginDataR}`);
+        //
+        // await console.log(LoginDataR);
+        // let LoginDataX = Object.assign({},LoginDataR);
+        // await console.log(LoginDataX);
+        // LoginDataR.strUserLastName = LoginDataR.strUserLastName+'XXX';
+        // await console.log(LoginDataR);
+        // await console.log(LoginDataX);
         //------------START Для тестов--------------------------------------------------------------
 
                 // Логинимся под ТОСТЕРОМ
@@ -230,7 +237,7 @@ let OpenFox = async () => {
 
                     // Тягач
                     VehicleData1 = {
-                        strLicensePlate: 'TEST'+ await randomInt(1000, 9999) + 'NUM',
+                        strLicensePlate: 'TE'+ await randomInt(1000, 9999) + 'NU',
                         strCarType: 'Тягач',
                         strCarBrand: 'DAF',
                         CompanyData : CompanyData2,//'Перевозчик',
@@ -251,7 +258,7 @@ let OpenFox = async () => {
                     }
                     // Прицеп
                     VehicleData2 = {
-                        strLicensePlate: 'TEST'+ await randomInt(1000, 9999) + 'NUM',
+                        strLicensePlate: 'TE'+ await randomInt(1000, 9999) + 'NU',
                         strCarType: 'Полуприцеп',
                         strCarBrand: 'SCHMITZ',
                         CompanyData : CompanyData2,//'Перевозчик',
@@ -283,9 +290,12 @@ let OpenFox = async () => {
             strCargoCost : '100500',
             CompanyClient : CompanyData1,//'ОСНОВА',
             strOurCompanyClient : CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
-            strClientFreights : [{Amount: '10500', Type_0 : 'Безготівково', Type_1: 'б/н с НДС', Currency : 'UAH', PaymentTerm : 'По оригиналам',},
-                                 {Amount: '10500', Type_0 : 'Безготівково', Type_1: 'б/н с НДС', Currency : 'UAH', PaymentTerm : 'По оригиналам',},
+            ClientFreights : [{Amount: '10500', Type_0 : 'Безготівково', Type_1: 'б/н с НДС', Currency : 'UAH', PaymentTerm : 'По оригиналам',},
+                                 {Amount: '2400', Type_0 : 'Готівкою', Type_1: 'софт', Currency : 'UAH', PaymentTerm : 'По выгрузке',},
                                 ],
+            TransporterFreights : [{Amount: '8400', Type_0 : 'Безготівково', Type_1: 'б/н с НДС', Currency : 'UAH', PaymentTerm : 'По оригиналам',},
+                {Amount: '2100', Type_0 : 'Готівкою', Type_1: 'софт', Currency : 'UAH', PaymentTerm : 'По выгрузке',},
+            ],
             CompanyTransporter : CompanyData2,//'ЛЬВІВКУЛЬТТОВАРИ',
             strOurCompanyTransporter : CompanyData2.strContractOurCompany,//'ТРАНСЛОЙД',
             DriverFullData : DriverData,//'Курганов',

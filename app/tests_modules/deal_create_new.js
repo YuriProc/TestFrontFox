@@ -175,15 +175,19 @@ let DealCreateNew = async (browser, page, DealData) => {
             throw `FAIL => Выбор из меню(ЮР. ОСОБА З ЗАМОВНИКОМ => ${DealData.strOurCompanyClient}])`;//<--специальный вызов ошибки!
         }
         // Ура!!! наконец-то выбрали из списка "(ЮР. ОСОБА З ЗАМОВНИКОМ )"
-        resOk = await AddNewFreightClient(page, 0, DealData);
-        if (resOk !== true) {
-            await console.log(`Out ${resOk}`);
-           // await TempStop(page);
-        }
-        resOk = await AddNewFreightClient(page, 0, DealData);
-        if (resOk !== true) {
-            await console.log(`Out ${resOk}`);
-            // await TempStop(page);
+        // resOk = await AddNewFreightClient(page, 0, DealData);
+        // if (resOk !== true) {
+        //     await console.log(`Out ${resOk}`);
+        //    // await TempStop(page);
+        // }
+        let LengthFreightClient = DealData.ClientFreights.length;
+        for (let i=0; i < LengthFreightClient;i++) {
+            resOk = await AddNewFreightClient(page, i, DealData);
+            if (resOk !== true) {
+                await console.log(`Out AddNewFreightClient[${i}]=>(${resOk})`);
+                // await TempStop(page);
+            }
+            await page.waitFor(1000);
         }
 
 
@@ -322,6 +326,16 @@ let DealCreateNew = async (browser, page, DealData) => {
             throw `FAIL => Клик по пункту меню(ОБРАНИЙ ПРИЦЕП=${DealData.strLicensePlate2})`;//<--специальный вызов ошибки!
         }
 
+        //ФРАХТ ПЕРЕВОЗЧИКА
+        let LengthFreightTransporter = DealData.TransporterFreights.length;
+        for (let i=0; i < LengthFreightTransporter;i++) {
+            resOk = await AddNewFreightTransporter(page, i, DealData);
+            if (resOk !== true) {
+                await console.log(`Out AddNewFreightTransporter[${i}]=>(${resOk})`);
+                // await TempStop(page);
+            }
+            await page.waitFor(1000);
+        }
 
 
         //ВІДПОВІДАЛЬНИЙ ПО ФОКСУ
@@ -474,7 +488,9 @@ let AddNewFreightClient;
 AddNewFreightClient = async function(page, NumFreight, DealData){
     let resOk, tql;
     let xPath = `//div[@class="form"][./div[contains(text(), "Дані про замовника")]]`;
-    xPath+=`/div[@class="form__grid"]/div[@class="form__coll form__coll--5"]/div[@class="form__block_2 has-sticky"]`;
+    // xPath+=`/div[@class="form__grid"]/div[@class="form__coll form__coll--5"]/div[@class="form__block_2 has-sticky"]`;
+    // xPath+=`/div[@class="freight"]/div[@class="freight__head freight__item"]/div[@class="freight__nav"]`;
+    xPath+=`/div[@class="form__grid"]/div/div`;
     xPath+=`/div[@class="freight"]/div[@class="freight__head freight__item"]/div[@class="freight__nav"]`;
     try {
         resOk = await ClickByXPath(page, xPath);
@@ -492,22 +508,22 @@ AddNewFreightClient = async function(page, NumFreight, DealData){
             throw `FAIL!!! => Не вижу Заголовка у Замовник (Добавить Фрахт)`;
         }
         //  DealData.strClientFreights[NumFreight].Type_0 = 'Безготівково'
-        xPath = `//span[contains(text(), "${DealData.strClientFreights[NumFreight].Type_0}")]`;
+        xPath = `//span[contains(text(), "${DealData.ClientFreights[NumFreight].Type_0}")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
-            throw `FAIL!!! => ClickByXPath(Замовник Модалка (Добавить Фрахт Кнопка "${DealData.strClientFreights[NumFreight].Type_0}"))`;
+            throw `FAIL!!! => ClickByXPath(Замовник Модалка (Добавить Фрахт Кнопка "${DealData.ClientFreights[NumFreight].Type_0}"))`;
         }
        // await page.waitFor(1000);
         //  DealData.strClientFreights[NumFreight].Type_1 = 'б/н с НДС'
-        xPath = `//label[@class="nav__item"]/span[contains(text(), "${DealData.strClientFreights[NumFreight].Type_1}")]`;
+        xPath = `//label[@class="nav__item"]/span[contains(text(), "${DealData.ClientFreights[NumFreight].Type_1}")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
-            throw `FAIL!!! => ClickByXPath(Замовник Модалка (Добавить Фрахт Кнопка "${DealData.strClientFreights[NumFreight].Type_1}"))`;
+            throw `FAIL!!! => ClickByXPath(Замовник Модалка (Добавить Фрахт Кнопка "${DealData.ClientFreights[NumFreight].Type_1}"))`;
         }
         //await page.waitFor(1000);
         xPath = `//div[@data-vv-name="amount"]/input[@class="form__area"]`;
         resOk = await ClickByXPath(page, xPath);
-        resOk = await TypeByXPath(page, xPath, DealData.strClientFreights[NumFreight].Amount);
+        resOk = await TypeByXPath(page, xPath, DealData.ClientFreights[NumFreight].Amount);
         if (!resOk){
             throw `FAIL !!! => (Замовник Модалка)Не получилось ввести сумму!`;
         }
@@ -523,25 +539,112 @@ AddNewFreightClient = async function(page, NumFreight, DealData){
         // await console.log(`Length=${tql} ; (${xPath})`);
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
-            await console.log(`in ClickByXPath(Додаткова умова оплати)`);
+            await console.log(`in Замовник ClickByXPath(Додаткова умова оплати)`);
            // await TempStop(page);
-            throw `Fail => ClickByXPath(Додаткова умова оплати)`;
+            throw `Fail => Замовник ClickByXPath(Додаткова умова оплати)`;
         }
         xPath = `//input[@name="payment_term"]`;
-        resOk = await TypeByXPath(page, xPath, DealData.strClientFreights[NumFreight].PaymentTerm);
+        resOk = await TypeByXPath(page, xPath, DealData.ClientFreights[NumFreight].PaymentTerm);
         await page.waitFor(500);
-        xPath = `//span[contains(text(), "${DealData.strClientFreights[NumFreight].PaymentTerm}")]`;
+        xPath = `//span[contains(text(), "${DealData.ClientFreights[NumFreight].PaymentTerm}")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
-            throw `Fail => (Замовник Модалка)"Додаткова умова оплати""${DealData.strClientFreights[NumFreight].PaymentTerm}"`;
+            throw `Fail => (Замовник Модалка)"Додаткова умова оплати""${DealData.ClientFreights[NumFreight].PaymentTerm}"`;
         }
         await page.waitFor(500);
         xPath = `//button[@class="btn"]/span[contains(text(),"Зберегти фрахт")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
-            throw `FAIL => Клик по кнопке "Зберегти фрахт"`;
+            throw `FAIL => Замовник Клик по кнопке "Зберегти фрахт"`;
+        }
+        resOk = await WaitUntilXPathExist(page, `//body[@class="v--modal-block-scroll"]`);
+        if (!resOk){
+            throw `FAIL!!! => Замовник Модалка (Добавить Фрахт) НЕ ЗАКРЫЛАСЬ !!!`;
         }
 
+        return true;
+    }catch (e) {
+        return e;
+    }
+};
+//--------------------------------------------------------------------------------------------
+let AddNewFreightTransporter;
+AddNewFreightTransporter = async function(page, NumFreight, DealData){
+    let resOk, tql;
+    let xPath = `//div[@class="form"][./div[contains(text(), "Дані про перевізника")]]`;
+    // xPath+=`/div[@class="form__grid"]/div[@class="form__coll form__coll--5"]/div[@class="form__block_2 has-sticky"]`;
+    // xPath+=`/div[@class="freight"]/div[@class="freight__head freight__item"]/div[@class="freight__nav"]`;
+    xPath+=`/div[@class="form__grid"]/div/div`;
+    xPath+=`/div[@class="freight"]/div[@class="freight__head freight__item"]/div[@class="freight__nav"]`;
+    try {
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `FAIL !!! => Клик по (Перевізник Фрахт +)`;
+        }
+        //await page.waitFor(1000);
+        resOk = await WaitForElementIsPresentByXPath(3000, page, `//body[@class="v--modal-block-scroll"]`);
+        if (!resOk){
+            throw `FAIL!!! => Не вижу загрузки Модалки Перевізник (Добавить фрахт)`;
+        }
+        xPath = `//div[@class="title  _text-center"][contains(text(), "Добавить Фрахт")]`;
+        resOk = await WaitForElementIsPresentByXPath(3000, page, xPath);
+        if (!resOk){
+            throw `FAIL!!! => Не вижу Заголовка у Перевізник (Добавить Фрахт)`;
+        }
+        //  DealData.strClientFreights[NumFreight].Type_0 = 'Безготівково'
+        xPath = `//span[contains(text(), "${DealData.TransporterFreights[NumFreight].Type_0}")]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `FAIL!!! => ClickByXPath(Перевізник Модалка (Добавить Фрахт Кнопка "${DealData.TransporterFreights[NumFreight].Type_0}"))`;
+        }
+        // await page.waitFor(1000);
+        //  DealData.strClientFreights[NumFreight].Type_1 = 'б/н с НДС'
+        xPath = `//label[@class="nav__item"]/span[contains(text(), "${DealData.TransporterFreights[NumFreight].Type_1}")]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `FAIL!!! => ClickByXPath(Перевізник Модалка (Добавить Фрахт Кнопка "${DealData.TransporterFreights[NumFreight].Type_1}"))`;
+        }
+        //await page.waitFor(1000);
+        xPath = `//div[@data-vv-name="amount"]/input[@class="form__area"]`;
+        resOk = await ClickByXPath(page, xPath);
+        resOk = await TypeByXPath(page, xPath, DealData.TransporterFreights[NumFreight].Amount);
+        if (!resOk){
+            throw `FAIL !!! => (Перевізник Модалка)Не получилось ввести сумму!`;
+        }
+        //await page.waitFor(15000);
+        xPath =`//div[@class="select"]`;
+        // tql = await ElementGetLength(page, xPath);
+        // await console.log(`Length=${tql} ; (${xPath})`);
+        xPath+=`[./label[contains(text(), "Додаткова умова оплати")]]`;
+        // tql = await ElementGetLength(page, xPath);
+        // await console.log(`Length=${tql} ; (${xPath})`);
+        xPath+=`/div[@class="select__area"]`;//  /div[@class="multiselect"]`;// /div[@class="multiselect__select"]`;
+        // tql = await ElementGetLength(page, xPath);
+        // await console.log(`Length=${tql} ; (${xPath})`);
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            await console.log(`in Перевізник ClickByXPath(Додаткова умова оплати)`);
+            // await TempStop(page);
+            throw `Fail => Перевізник ClickByXPath(Додаткова умова оплати)`;
+        }
+        xPath = `//input[@name="payment_term"]`;
+        resOk = await TypeByXPath(page, xPath, DealData.TransporterFreights[NumFreight].PaymentTerm);
+        await page.waitFor(500);
+        xPath = `//span[contains(text(), "${DealData.TransporterFreights[NumFreight].PaymentTerm}")]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `Fail => (Перевізник Модалка)"Додаткова умова оплати""${DealData.TransporterFreights[NumFreight].PaymentTerm}"`;
+        }
+        await page.waitFor(500);
+        xPath = `//button[@class="btn"]/span[contains(text(),"Зберегти фрахт")]`;
+        resOk = await ClickByXPath(page, xPath);
+        if (!resOk){
+            throw `FAIL => Перевізник Клик по кнопке "Зберегти фрахт"`;
+        }
+        resOk = await WaitUntilXPathExist(page, `//body[@class="v--modal-block-scroll"]`);
+        if (!resOk){
+            throw `FAIL!!! => Замовник Модалка (Добавить Фрахт) НЕ ЗАКРЫЛАСЬ !!!`;
+        }
 
         return true;
     }catch (e) {

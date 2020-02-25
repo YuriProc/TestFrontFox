@@ -30,6 +30,23 @@ WaitUntilMessageExist = async function (page) {
     }
 };
 //-----------------------------------------------------------------------------------
+WaitUntilXPathExist = async function (page, xPath) {
+    let resOk;
+    let startTime = await Date.now();
+    try {
+        // Ждём пока xPath присутствует
+        while (await ElementIsPresent(page, xPath)){
+            // Если прошло больше 65 сек то выход!!!
+            if(await Date.now() - startTime > 65000) {
+                return false;
+            }
+        }
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
 GetExceptions = async function (page) {
     let cssSelector = `div[class=noty_body]`;
     let xPath = `//div[@class="noty_body"]`;
@@ -506,7 +523,7 @@ SetInputByXPath = async function(page, xPath, strText){
     try{
 
         const input = await page.$x(xPath);
-        await input[0].click({ clickCount: 3 })
+        await input[0].click({ clickCount: 3 });
         await input[0].type(strText);
 
         // await page.click(Selector);
