@@ -331,7 +331,7 @@ let OpenFox = async () => {
         //await console.log(`LoginCfo returnResult=${returnResult}`);
         if (!returnResult) { // Если не получилось то логинимся под ROOT`ом
             await console.log(`FAIL => LoginCfo ${LoginDataT.strEmail}`);
-            await TempStop(pageCfo);
+            //await TempStop(pageCfo);
             throw `FAIL => LoginCfo ${LoginDataT.strEmail}`;
         }
 
