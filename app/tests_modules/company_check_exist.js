@@ -40,7 +40,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
         xPath = `//a[@class="table__option"]`;
         resOK = await WaitForElementIsPresentByXPath(35000, page ,xPath);
         if (!resOK){
-            throw `FAIL => НЕ ВИЖУ НИ ОДНОЙ КОМПАНИИ (${xPath})`;
+            throw `FAIL => После Клика по кнопке КОМПАНИИ => НЕ ВИЖУ НИ ОДНОЙ КОМПАНИИ (${xPath})`;
         }
 
 
