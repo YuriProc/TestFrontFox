@@ -33,14 +33,14 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         await WaitUntilPageLoads(page);
         //Ждём появления тайтла Создать компанию
         xPath = '//div[@class="head__title"][contains(text(), "Создать компанию")]';
-        resOk = await WaitForElementIsPresentByXPath(5500, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(25500, page, xPath);
         if (!resOk) {
             throw `FAIL => Не вижу (${xPath})`;
         }
         await WaitUntilPageLoads(page);
         //Проверим наличие //input[@id="code"]
         xPath = '//input[@id="code"]';
-        resOk = await WaitForElementIsPresentByXPath(8500, page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(28500, page, xPath);
         if (!resOk) {
             throw `FAIL => Не вижу (${xPath})`;
         }
