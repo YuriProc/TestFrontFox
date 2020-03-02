@@ -1,5 +1,5 @@
-let CreateNewUser = async (page, strUserLastName) => {
-    const nameTest = NameFunction()+'->"' + strUserLastName + '"';
+let CreateNewUser = async (page, LoginData) => {
+    const nameTest = NameFunction()+'->"' + LoginData.strUserLastName + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
@@ -63,11 +63,11 @@ let CreateNewUser = async (page, strUserLastName) => {
         await page.waitForXPath('//*[@id="first_name"]', {timeout: 12000});
 
         await page.click("input[id=first_name]");
-        await page.type("input[id=first_name]", 'Тест');
+        await page.type("input[id=first_name]", LoginData.strUserFirstName);
         await page.click("input[id=last_name]");
-        await page.type("input[id=last_name]", strUserLastName);
+        await page.type("input[id=last_name]", LoginData.strUserLastName);
         await page.click("input[id=middle_name]");
-        await page.type("input[id=middle_name]", 'Тостерович');
+        await page.type("input[id=middle_name]", LoginData.strUserMiddleName);
         // Админ
         await page.click("div[class=multiselect__tags]");
         await page.waitForXPath("//span[contains(text(), 'Админ')]", {timeout: 12000});
@@ -94,14 +94,14 @@ let CreateNewUser = async (page, strUserLastName) => {
         await page.waitForXPath("//span[contains(text(), 'Создать пользователя')]", {timeout: 12000});
 
         await page.click("input[id=name]");
-        await page.type("input[id=name]", 'test_xxx');
+        await page.type("input[id=name]", LoginData.strLogin);
         await page.click("input[id=email]");
-        await page.type("input[id=email]", 'test_xxx@test.com');
+        await page.type("input[id=email]", LoginData.strEmail);
 
         await page.click("input[name=password]");
-        await page.type("input[name=password]", 'test1234567890');
+        await page.type("input[name=password]", LoginData.strPassword);
         await page.click("input[name=confirm_password]");
-        await page.type("input[name=confirm_password]", 'test1234567890');
+        await page.type("input[name=confirm_password]", LoginData.strPassword);
 
         //Супер админ
         let linkMultiselectTags = await page.$x('//*[@class="multiselect__tags"]');
@@ -152,6 +152,11 @@ let CreateNewUser = async (page, strUserLastName) => {
             throw ` FAIL! => ClickByXPathWithScroll(${xPath})`;
         }
 
+        tStr = await GetExceptions(page);
+        if (tStr !== ''){
+            await console.log(`Warning => ${tStr}`);
+            g_StrOutLog+= `Warning => ${tStr}`;
+        }
 
         await page.waitForXPath('//div[contains(text(), "Пользователи")]', {timeout: 25000});
         await console.log('\x1b[38;5;2m', "Пользователь Успешно Создан", '\x1b[0m');

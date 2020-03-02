@@ -103,9 +103,9 @@ global.g_ArrayURL = {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTejWKSvyiSWrn9CViuurhwk9VCDGUgDtJbtQkh6Cz3DfztuFhC',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRhrqg0tDFP75PuBLo7o2UPoxzxRY85kuuOgvwlQokHY531MYdP',
         'https://images-na.ssl-images-amazon.com/images/I/61nGYc5e7tL._SL500_AA300_.png',
-        'https://lh3.googleusercontent.com/gWHM9svMSO6QvGjtrZo-o-b5rWRTeN0BOjhpKlGcStHBINsmiixJ72p2_vmLz8qiODcv=s85',
-        'https://lh3.googleusercontent.com/5RKVZTIk2MzhgJaQOePqHU6HC1SKQxOZXTIGkQWMYgqRjTV_RI_6X2lQv9yt-Y5uaxmkKw=s114',
-        'https://lh3.googleusercontent.com/gg-AVfudaL-gocHQ4aNSq2WkBCBDAuVCDTFC4ErEWyl9vJJkIwmEoteOKbW8Tb0tFOEK9u4=s85',
+
+
+
     ],
     'Contract_1_URL': [
         'https://lh6.googleusercontent.com/proxy/GGnRZL242s_hMJtmXqSObMmC8d9ffCw8omGNq2n-nXI8fppeu1yz6AFoywtsJo1W84CRJX3NKBlnfk9kmj6FlldBq7j2Ok12wQ6ZpEpYIUaf',

@@ -4,7 +4,7 @@ let StartBrowser = async () => {
 
         await console.log("StartBrowser");
         const puppeteer = require('puppeteer');
-        let width = 1200;
+        let width = 1500;
         let height = 1500;
         let StartBrowserInHeadLessMode;
         await console.log('\x1b[38;5;2m', "g_ShowActionInBrowser=>", g_ShowActionInBrowser, '\x1b[0m');
