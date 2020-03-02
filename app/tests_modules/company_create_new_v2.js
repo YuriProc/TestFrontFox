@@ -314,7 +314,9 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             ElPresent = await ElementIsPresent(page, '//div[@class="dz-image"]');
             if (!ElPresent) {
                 xpLogoPhoto = '//div[@class="zone"][./div[contains(text(), "Лого компании")]]/div[@id="dropzone"]';
+                await console.log(`InsertPhoto(begin)`);
                 PhotoURL = await InsertPhoto(browser, page, 'LogoURL', -1, xpLogoPhoto);
+                await console.log(`InsertPhoto(${PhotoURL})mb_OK`);
             }
         }else{
             await console.log('     Warning: Отсутствует (//div[@id="dropzone"])');

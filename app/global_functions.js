@@ -703,13 +703,14 @@ SaveTempPictureFromURL = async function(browser, strPicURL, MyFileName) {
     // https://sapb1cloud.ru/files/komdir.png
     let page;
     let filePath;
+    try {
     page = await browser.newPage();
 
     let width = 1200;
     let height = 880;
     await page.setViewport({width, height});
     const fs = require('fs');
-    try {
+
         let viewSource = await page.goto(strPicURL);
         let StatusX = await viewSource._status;
         //await console.log('StatusX:',StatusX,':');
