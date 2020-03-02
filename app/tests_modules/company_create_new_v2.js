@@ -24,7 +24,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         //Клик по LOGO
         //await console.log("LogoClick(page);");
         await LogoClick(page);
-        // hover КОМПАНИИ hover +  and click
+        // hover КОМПАНИИ hover + and click
         resOk = await ClickCompanyCreateNewPlus(page);
         if (!resOk) {
             throw 'ClickCompanyCreateNewPlus(page); = FAIL!"';//<--специальный вызов ошибки!
