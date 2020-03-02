@@ -462,6 +462,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             document.querySelector("div[class=form__footer]").scrollIntoView();
         });
         await page.waitFor(1000);
+        //await page.waitFor(20000);//<-Были Траблы
         //Клик по кнопке  (Сохранить компанию)
         //await console.log('\x1b[38;5;2m', "     --> Клик по кнопке  (Сохранить компанию)  =>", '\x1b[0m');
         await ClickByXPath(page, "//span[contains(text(), 'Сохранить компанию')]");
@@ -680,6 +681,7 @@ AddNewContract = async function( page , CompanyData){
 
 
     result = true;
+
 
     return result;
 };

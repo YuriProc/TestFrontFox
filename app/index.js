@@ -290,7 +290,15 @@ let OpenFox = async () => {
             throw `FAIL => CompanyCheckNewV2 (${CodeCompany})`;//<--специальный вызов ошибки!
         }
 
-
+        DriverData = {
+            typeWork: 0,
+            strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
+            strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
+            strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+            strDriverLicenseNumber: 'DLN' + RNum,
+            strCompanyName: CompanyData2.strCompanyName, //'ТРАНСЛОЙД',
+            strCodeCompany: CompanyData2.strCodeCompany,
+        };
 
         // X) Создаём нового Водителя V2
         DriverData = await DriverCNV2Page.DriverCreateNewV2(browser, page, DriverData);
@@ -305,7 +313,14 @@ let OpenFox = async () => {
             }
         }
 
-
+        // Тягач
+        VehicleData1 = {
+            strLicensePlate: 'TE' + await randomInt(1000, 9999) + 'NU',
+            strCarType: 'Тягач',
+            strCarBrand: 'DAF',
+            CompanyData: CompanyData2,//'Перевозчик',
+            DriverData: DriverData,
+        };
         // X) Создаём Транспорт_1 (Тягач)
         VehicleData1 = await VehicleCNV2Page.VehicleCreateNewV2(browser, page, VehicleData1);
         if (!VehicleData1.returnResult) {
@@ -319,7 +334,14 @@ let OpenFox = async () => {
                 throw `FAIL => VehicleCheckNewV2 (${VehicleData1.strLicensePlate})`;//<--специальный вызов ошибки!
             }
         }
-
+        // Прицеп
+        VehicleData2 = {
+            strLicensePlate: 'TE' + await randomInt(1000, 9999) + 'NU',
+            strCarType: 'Полуприцеп',
+            strCarBrand: 'SCHMITZ',
+            CompanyData: CompanyData2,//'Перевозчик',
+            DriverData: DriverData,
+        };
         // X) Создаём Транспорт_2 (Прицеп)
         VehicleData2 = await VehicleCNV2Page.VehicleCreateNewV2(browser, page, VehicleData2);
         if (!VehicleData2.returnResult) {
@@ -337,7 +359,46 @@ let OpenFox = async () => {
 
         // 12) Создаём новую сделку
 
-
+        DealData = {
+            //strLicensePlate : 'TEST 3245 NUM',
+            // strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
+            // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
+            strPointLoading: await GetFunnyStr('StrAddress'), //StrAddress //StrAddressFunny
+            strPointUnLoading: await GetFunnyStr('StrAddress'), //StrAddress //StrAddressFunny
+            strTypeLoad: 'Алкоголь',
+            strCargoCost: '100500',
+            CompanyClient: CompanyData1,//'ОСНОВА',
+            strOurCompanyClient: CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
+            ClientFreights: [{
+                Amount: '10500',
+                Type_0: 'Безготівково',
+                Type_1: 'б/н с НДС',
+                Currency: 'UAH',
+                PaymentTerm: 'По оригиналам',
+            },
+                {Amount: '2400', Type_0: 'Готівкою', Type_1: 'софт', Currency: 'UAH', PaymentTerm: 'По выгрузке',},
+            ],
+            TransporterFreights: [{
+                Amount: '8400',
+                Type_0: 'Безготівково',
+                Type_1: 'б/н с НДС',
+                Currency: 'UAH',
+                PaymentTerm: 'По оригиналам',
+            },
+                {Amount: '2100', Type_0: 'Готівкою', Type_1: 'софт', Currency: 'UAH', PaymentTerm: 'По выгрузке',},
+            ],
+            CompanyTransporter: CompanyData2,//'ЛЬВІВКУЛЬТТОВАРИ',
+            strOurCompanyTransporter: CompanyData2.strContractOurCompany,//'ТРАНСЛОЙД',
+            DriverFullData: DriverData,//'Курганов',
+            strLicensePlate1: VehicleData1.strLicensePlate,//'BC3082EE',//DAF BC3082EE
+            strLicensePlate2: VehicleData2.strLicensePlate,//'BC7519XO',// KRONE BC7519XO
+            strFoxResponsible: 'Тостер',
+            strLogistician: 'Тостер',
+            strDealID: '',
+            strStatus: '',
+            returnResult: false,
+            returnStr: '',
+        };
         //await page.waitFor(11000);
         DealData = await DealCNPage.DealCreateNew(browser, page, DealData);
         if (DealData.returnResult) {
