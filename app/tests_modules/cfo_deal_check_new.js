@@ -38,10 +38,12 @@ let CfoDealCheckNew = async (browser, page, DealData) => {
         }
 
         await WaitUntilTableLoadsCfo(page);
+        await console.log(`WaitUntilTableLoadsCfo 1`);
 
         await page.waitFor(1000);
         // жмём кнопку обновить таблицу
         await RefreshTableCfo(page);
+        await console.log(`RefreshTableCfo 1`);
 
         // проверка таблицы
         resOk = await WaitUntilTableLoadsCfo(page);
@@ -54,6 +56,7 @@ let CfoDealCheckNew = async (browser, page, DealData) => {
             //await TempStop(page);
             throw tStr;
         }
+        await console.log(`WaitUntilTableLoadsCfo 2`);
         //
         xPath = `//div[@class="notification-content"]`;
         resOk = await WaitForElementIsPresentByXPath(1000, page, xPath);
@@ -61,13 +64,13 @@ let CfoDealCheckNew = async (browser, page, DealData) => {
             tStr = await ElementGetInnerText(page, 0, xPath);
             await console.log(tStr);
         }
-
+        await console.log(`3)   ${xPath}`);
         await page.waitFor(1000);
 
         xPath = `//div[contains(@class, "navigation__search")]`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
-            await console.log();
+            await console.log(`Fail!!! => ClickByXPath(${xPath})`);
         }
 
 
