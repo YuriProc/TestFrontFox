@@ -122,15 +122,15 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         }
 
         await console.log(`TypeByXPath:"${DriverData.strCompanyName}"`);
-        await page.waitFor(20000);
+        //await page.waitFor(20000);
         resOk = await WaitUntilPageLoads(page);
         //await page.waitFor(1111500);
         if (!resOk) {
 
-            await console.log('WaitUntilPageLoads_---------');
-            await page.waitFor(20000);
-
-            throw 'WaitUntilPageLoads("поиск ТРАНСЛОЙД")';//<--специальный вызов ошибки!
+            await console.log(`FAIL! => WaitUntilPageLoads("поиск ${DriverData.strCompanyName}")`);
+            //await page.waitFor(20000);
+            g_StrOutLog+= `FAIL! => WaitUntilPageLoads("поиск ${DriverData.strCompanyName}")`;
+            throw `FAIL! => WaitUntilPageLoads("поиск ${DriverData.strCompanyName}")`;//<--специальный вызов ошибки!
         }
        // await console.log('(',`//span[contains(text(), "${DriverData.strCompanyName}")]`,')');
         //resOk = await ClickByXPath(page, '//span[contains(text(), "ТОВ ТРАНСЛОЙД")]');
