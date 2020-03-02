@@ -100,7 +100,7 @@ WaitUntilPageLoads  = async function (page) {
         return true;
     } catch (e) {
         //await console.log('\x1b[38;5;2m', "WaitUntilPageLoads => error=>",e, '\x1b[0m');
-        return false;
+        return true;
     }
 };
 //-----------------------------------------------------------------------------------
