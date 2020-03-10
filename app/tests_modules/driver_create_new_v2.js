@@ -239,7 +239,8 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
         }
         //Ждём Успешно сохранено
         resOk = await WaitForElementIsPresentByXPath(2000,page,'//div[@class="noty_body"][contains(text(), "Успешно сохранено")]');
-        if (!resOk) {
+        //if (!resOk) {
+        if (false) {
             await console.log('\x1b[38;5;1m', "     Не вижу (Успешно сохранено)" , '\x1b[0m');
             throw `Отсутствует (Успешно сохранено(Сохранить водителя))`;//<--специальный вызов ошибки!
         }

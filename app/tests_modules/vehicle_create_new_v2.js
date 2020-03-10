@@ -297,7 +297,7 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
             if (!resOk){
                 throw `ClickByXPath(${xPath})`;
             }
-            resOk = await TypeByXPath(page, xPath, 'Красная Кабина');
+            resOk = await TypeByXPath(page, xPath, 'РОЗОВЫЙ');
         }
         // КОНЕЦ  {Если НЕ Тягач, то выбираем дополнитеоьные поля}
         // ГОД
@@ -306,7 +306,7 @@ let VehicleCreateNewV2 = async (browser, page, VehicleData) => {
         if (!resOk) {
             throw `ClickByXPath(${xPath})`;
         }
-        let SRN = randomInt(1900, 2099);
+        let SRN = randomInt(1700, 2099);
         resOk = await TypeByXPath(page, xPath, `${SRN}`);
 
 
