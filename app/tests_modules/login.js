@@ -179,7 +179,7 @@ let LoginCfo = async (page, LoginData) => {
 
         //Проверим На какой мы странице
         xPath = `//div[@class="login-page"]`;
-        resOk = await ElementIsPresent(page, xPath);
+        resOk = await WaitForElementIsPresentByXPath(5000, page, xPath);
         if (!resOk) {
            throw `FAIL => Не вижу ${xPath}`;
         }
