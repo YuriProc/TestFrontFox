@@ -185,7 +185,10 @@ let LoginCfo = async (page, LoginData) => {
         }
 
         //Клик по Инпуту Логин
-        xPath = `//input[@id="__BVID__22"]`;
+        // //*[@id="__BVID__51"]
+        //form/fieldset[1]/div/div/div/div/input
+        //xPath = `//input[@id="__BVID__22"]`;
+        xPath = `//form[@class="login-form"]/fieldset[1]/div/div/div/div/input`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
             throw `FAIL => Клик по Инпуту Логин(${xPath})`;
@@ -197,7 +200,8 @@ let LoginCfo = async (page, LoginData) => {
         await page.waitFor(500);
 
         //Клик по Инпуту Пароль
-        xPath = `//input[@id="__BVID__27"]`;
+        //xPath = `//input[@id="__BVID__27"]`;
+        xPath = `//form[@class="login-form"]/fieldset[2]/div/div/div/div/input`;
         resOk = await ClickByXPath(page, xPath);
         if (!resOk){
             throw `FAIL => Клик по Инпуту Пароль(${xPath})`;
