@@ -84,27 +84,35 @@ let LoginCrm = async (page, LoginData) => {
         // Если есть сообщения, подождём пока они пропадут
         await WaitUntilMessageExist(page);
         //Проверим Наличие (//input[@id="email"])
-        ElPresent = await WaitForElementIsPresentByXPath(5000, page, '//input[@id="email"]');
+        ElPresent = await WaitForElementIsPresentByXPath(5000, page, '//input[@name="Логин"]');
         if (!ElPresent){
-            throw '     FAIL => WaitForElementIsPresentByXPath(//input[@id="email"])\n';
+            throw '     FAIL => WaitForElementIsPresentByXPath(//input[@name="Логин""])\n';
         }
         // Клик по инпуту ВАШ EMAIL
-        await page.click("input[id=email]");
-        await page.$eval('input[id=email]', el => el.value = '');
-        await page.type("input[id=email]", LoginData.strEmail);
+        await page.click("input[name=Логин]");
+        await page.$eval('input[name=Логин]', el => el.value = '');
+        await page.type("input[name=Логин]", LoginData.strEmail);
 
         //Клик по инпуту ВАШ ПАРОЛЬ
-        await page.click("input[id=password]");
-        await page.$eval('input[id=password]', el => el.value = '');
-        await page.type("input[id=password]", LoginData.strPassword);
+        await page.click("input[name=Пароль]");
+        await page.$eval('input[name=Пароль]', el => el.value = '');
+        await page.type("input[name=Пароль]", LoginData.strPassword);
         //await page.waitFor(5000);
 
         //Клик по Кнопке ВОЙТИ //button[class=btn]
-        await ClickByXPath(page, "//button[@class='btn'][./span[contains(text(), 'Войти')]]");
+        //*[@id="app"]/div[2]/div/form/button
 
-        //await page.waitFor(5000);
+        ElPresent = await ClickByXPath(page, `//button[contains(text(), "Авторизироваться")]`);
+        //ElPresent = await ClickByXPath(page, `//*[@id="app"]/div[2]/div/form/button`);
+        if (!ElPresent){
+            throw '     FAIL => ClickByXPath(page, \'//button[contains(text(), "Авторизироваться")]\');\n';
+        }
+
+
+
+        //await page.waitFor(50000);
         //Проверим на наличие сообщения об ОШИБКАХ
-        let myXPath = `//div[@class="noty_body"][contains(text(), "Неверный e-mail или пароль")]`;
+        let myXPath = `//div[@class="notification-content"][contains(text(), "Неверный логин или пароль")]`;
         ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
         if (ElPresent){
             if (LoginData.ResolvedFailLogin){

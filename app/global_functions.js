@@ -342,7 +342,7 @@ ClickByXPath = async function (page , MyXPath) {
             return false;
         }
     }catch (e) {
-       // await console.log('Ошибка внутр ClickByXPath:', e ,'\n');
+        //await console.log('Ошибка внутр ClickByXPath:', e ,'\n');
         return false;
     }
 };
