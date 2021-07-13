@@ -88,7 +88,7 @@ let LoginCrm = async (page, LoginData) => {
         if (!ElPresent){
             throw '     FAIL => WaitForElementIsPresentByXPath(//input[@id="email"])\n';
         }
-        //Клик по инпуту ВАШ EMAIL
+        // Клик по инпуту ВАШ EMAIL
         await page.click("input[id=email]");
         await page.$eval('input[id=email]', el => el.value = '');
         await page.type("input[id=email]", LoginData.strEmail);
