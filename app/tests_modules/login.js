@@ -37,11 +37,19 @@ let BrowserGetPage = async (browser, strPageURL) => {
     try {
         let page;
         page = await browser.newPage();
+
+        page.on('dialog', async dialog => {
+            console.log(`АВТО_ПОДТВЕРЖДЕНИЕ:` + dialog.message())
+            //await dialog.dismiss()
+            await dialog.accept();
+        })
         //height = height - 120;
         let width = 1200;
         let height = 880;
         await page.setViewport({width, height});
         await page.goto(strPageURL);
+
+
 
         return page;
     }catch (e) {
@@ -61,96 +69,136 @@ let LoginCrm = async (page, LoginData) => {
     g_StrOutLog+=`Тест[ ${nameTest} ]=> ${g_StatusCurrentTest} `;
 
     let ElPresent;
+    let xPath;
     let resOk;
+    let NeedReLogin = true;
+    let CountLogin = 0;
+    let pLOk;
 
-        // Если есть (//div[@class="logo__icon"])
-        ElPresent = await ElementIsPresent(page, '//div[@class="logo__icon"]');
+        //На всякий случай подождём Загрузки Страницы
+        await WaitUntilPageLoads(page);
+        //Если залогинены, то разлогиниться
+        ElPresent = await ElementIsPresent(page, '//div[@class="crm-user-avatar"]');
         if (ElPresent) {
             //Клик по LOGO
-            await page.click("div[class=logo__icon]");
+
+            //await page.waitFor(500000);
+
+            await page.click("div[class=crm-user-avatar]");
             await page.waitFor(500);
             //Клик по ВЫЙТИ
-            resOk = await ClickByXPath(page, '//div[@class="logout__icon"]');
-            if (!resOk){
-                throw '     FAIL => ClickByXPath(//div[@class="logout__icon"])\n';
+            xPath = '//div[@class="links__item"][contains(text(), "Выход")]';
+            ElPresent = await ElementIsPresent(page, xPath);
+            if (ElPresent) {
+               resOk = await ClickByXPath(page, xPath);
+               if (!resOk){
+
+                   //await page.waitFor(500000);
+
+
+                   throw `     FAIL => ClickByXPath(${xPath})])\n`;
+               }
+            }else{
+                throw `     FAIL => Пункт "Выход не найден" ElementIsPresent(${xPath})])\n`;
             }
             await console.log(`     LogOut => LogIn=> "${LoginData.strUserLastName}"`);
             g_StrOutLog+=`\n => LogOut => LogIn=> "${LoginData.strUserLastName}" `;
         }
 
-        //На всякий случай подождём Загрузки Страницы
-        //await WaitUntilPageLoads(page);
+        while (CountLogin<2 && NeedReLogin) {
 
-        // Если есть сообщения, подождём пока они пропадут
-        await WaitUntilMessageExist(page);
-        //Проверим Наличие (//input[@id="email"])
-        ElPresent = await WaitForElementIsPresentByXPath(5000, page, '//input[@name="Логин"]');
-        if (!ElPresent){
-            throw '     FAIL => WaitForElementIsPresentByXPath(//input[@name="Логин""])\n';
-        }
-        // Клик по инпуту ВАШ EMAIL
-        await page.click("input[name=Логин]");
-        await page.$eval('input[name=Логин]', el => el.value = '');
-        await page.type("input[name=Логин]", LoginData.strEmail);
-
-        //Клик по инпуту ВАШ ПАРОЛЬ
-        await page.click("input[name=Пароль]");
-        await page.$eval('input[name=Пароль]', el => el.value = '');
-        await page.type("input[name=Пароль]", LoginData.strPassword);
-        //await page.waitFor(5000);
-
-        //Клик по Кнопке ВОЙТИ //button[class=btn]
-        //*[@id="app"]/div[2]/div/form/button
-
-        ElPresent = await ClickByXPath(page, `//button[contains(text(), "Авторизироваться")]`);
-        //ElPresent = await ClickByXPath(page, `//*[@id="app"]/div[2]/div/form/button`);
-        if (!ElPresent){
-            throw '     FAIL => ClickByXPath(page, \'//button[contains(text(), "Авторизироваться")]\');\n';
-        }
+            //На всякий случай подождём Загрузки Страницы
+            await WaitUntilPageLoads(page);
 
 
-
-        //await page.waitFor(50000);
-        //Проверим на наличие сообщения об ОШИБКАХ
-        let myXPath = `//div[@class="notification-content"][contains(text(), "Неверный логин или пароль")]`;
-        ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
-        if (ElPresent){
-            if (LoginData.ResolvedFailLogin){
-                await console.log('\x1b[38;5;2m', "         Вижу => (Неверный e-mail или пароль)", '\x1b[0m');
-                await console.log('\x1b[38;5;2m', "         Будем Логиниться под root'ом и пробовать снова", '\x1b[0m');
-                g_StatusCurrentTest = 'Пропущен';
-                await g_SuccessfulTests++;
-                await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
-                g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
-                return false; //<-------------EXIT !!!
-
+            ElPresent = await WaitForElementIsPresentByXPath(5000, page, '//input[@name="Логин"]');
+            if (!ElPresent) {
+                throw '     FAIL => WaitForElementIsPresentByXPath(//input[@name="Логин""])\n';
             }
-            await console.log('     FAIL => "Неверный e-mail или пароль"');
-            throw `FAIL => "Неверный e-mail или пароль"`;
-        }
+            // Клик по инпуту ВАШ EMAIL
+            await page.click("input[name=Логин]");
+            await page.$eval('input[name=Логин]', el => el.value = '');
+            await page.type("input[name=Логин]", LoginData.strEmail);
 
-        //Проверим на наличие сообщения об УСПЕШНОМ ВХОДЕ (Выполнено!)
-        myXPath = `//div[@class="noty_body"][contains(text(), "Выполнено!")]`;
-        ElPresent = await WaitForElementIsPresentByXPath(3000, page, myXPath);
-        if (!ElPresent){
-            await console.log('     Warning => Не вижу "Выполнено!"');
-            g_StrOutLog+=`\n => Warning => Не вижу "Выполнено!" \n`;
-            //throw `FAIL => Не вижу "Выполнено!"`;
-        }
-        //Дождёмся окончательной загрузки страницы
-        let pLOk = await WaitUntilPageLoads(page);
-        //await page.waitForXPath('//div[contains(text(), "Вітаємо вас в системі FOX CRM")]', {timeout: 25000});
+            //Клик по инпуту ВАШ ПАРОЛЬ
+            await page.click("input[name=Пароль]");
+            await page.$eval('input[name=Пароль]', el => el.value = '');
+            await page.type("input[name=Пароль]", LoginData.strPassword);
+            //await page.waitFor(5000);
 
-        //Проверим на наличие "Вітаємо вас в системі FOX CRM"
-        let xPath = '//div[@class="title _text-center"][contains(text(), "Вітаємо вас в системі FOX CRM")]';
-        ElPresent = await WaitForElementIsPresentByXPath(2000, page, xPath);
+            //Клик по Кнопке Авторизироваться //button[class=btn]
+            ElPresent = await ClickByXPath(page, `//button[contains(text(), "Авторизироваться")]`);
+
+            if (!ElPresent) {
+                throw '     FAIL => ClickByXPath(page, \'//button[contains(text(), "Авторизироваться")]\');\n';
+            }
+
+            //await page.evaluate(() => alert('This message is inside an alert box'))
+
+            //await page.waitFor(50000);
+            //Проверим на наличие сообщения об ОШИБКАХ
+            let myXPath = `//div[@class="notification-content"][contains(text(), "Неверный логин или пароль")]`;
+            ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
+            if (ElPresent) {
+                if (LoginData.ResolvedFailLogin) {
+                    await console.log('\x1b[38;5;2m', "         Вижу => (Неверный e-mail или пароль)", '\x1b[0m');
+                    await console.log('\x1b[38;5;2m', "         Будем Логиниться под root'ом и пробовать снова", '\x1b[0m');
+                    g_StatusCurrentTest = 'Пропущен';
+                    await g_SuccessfulTests++;
+                    await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
+                    g_StrOutLog += `=> ${g_StatusCurrentTest} \n`;
+                    return false; //<-------------EXIT !!!
+
+                }
+                await console.log('     FAIL => "Неверный e-mail или пароль"');
+                throw `FAIL => "Неверный e-mail или пароль"`;
+            }
+
+            //Проверим наличие иконки ФОКСА = УСПЕШНЫЙ ВХОД)
+
+            myXPath = `//img[@src="/img/LogoFoXTop.0890cee9.svg"][@class="logo-menu"]`;
+            ElPresent = await WaitForElementIsPresentByXPath(3000, page, myXPath);
+            if (!ElPresent) {
+                await console.log('     Warning => Не вижу class="logo-menu"');
+                g_StrOutLog += `\n => Warning => Не вижу class="logo-menu" \n`;
+                throw `FAIL => Не вижу "Не вижу class="logo-menu""`;
+            }
+            CountLogin++;
+
+            //Дождёмся окончательной загрузки страницы
+            pLOk = await WaitUntilPageLoads(page);
+
+
+            NeedReLogin = await ClickIfExistsUpdated(page);
+
+
+        }//end while (CountLogin<2 && NeedReLogin)
+
+        //Проверим на наличие "Аватарки"
+        ElPresent = await ElementIsPresent(page, '//div[@class="crm-user-avatar"]');
         if (!ElPresent) {
-            await console.log('     FAIL => Не вижу "Вітаємо вас в системі FOX CRM"');
-            throw `FAIL => Не вижу "Вітаємо вас в системі FOX CRM"`;
+
+            throw '     FAIL => После Логина нет аватарки: ElementIsPresent(page, \'//div[@class="crm-user-avatar"]\');\n';
+
         }
 
+        xPath = '//div[@class="user-block"]/span[@class="name"]';
+        ElPresent = await ElementIsPresent(page, xPath);
+        if (!ElPresent) {
 
-        await console.log('\x1b[38;5;2m', "         Вижу => Вітаємо вас в системі FOX CRM", '\x1b[0m');
+            throw '     FAIL => После Логина нет Имени и Фамилии: //div[@class="user-block"]/span[@class="name"]\n';
+
+        }
+
+        let TextName = await ElementGetInnerText(page, 0, xPath);
+        let DataName = LoginData.strUserFirstName + ' ' + LoginData.strUserLastName;
+        if(TextName !== DataName) {
+            throw `     FAIL => После Логина ${TextName} !== ${DataName} \n`;
+        }
+
+        //await page.waitFor(500000);
+
+        //await console.log('\x1b[38;5;2m', `         Вижу => ${TextName}`, '\x1b[0m');
         g_StatusCurrentTest = 'Пройден';
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');

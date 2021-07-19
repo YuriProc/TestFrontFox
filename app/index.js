@@ -85,6 +85,7 @@ let OpenFox = async () => {
         browser = await LPage.StartBrowser();
         let strLoginCrmFoxURL = g_FrontCrmFoxURL + '/login';
         page = await LPage.BrowserGetPage(browser, strLoginCrmFoxURL);
+
         g_NumberCurrentTest = 1;
 
 
@@ -96,17 +97,19 @@ let OpenFox = async () => {
         //     strPassword : 'root1234567',
         // };
         let LoginDataR = {
-            strUserLastName: 'Лютин',
-            strEmail: 'lutin.v@transloyd.com',
-            strPassword: 'GRSUv',
+            strUserLastName: 'Ярін',
+            strUserFirstName: 'Кирило',
+            strUserMiddleName: 'Олександрович',
+            strEmail: 'yarin.k@transloyd.com',
+            strPassword: 'e5oF7',
         };
         let LoginDataT = {
             strUserFirstName: 'Тест',
             strUserLastName: 'Тостер',
             strUserMiddleName: 'Тостерович',
-            strLogin: 'test_123',
-            strEmail: 'test_123@test.com',
-            strPassword: 'test1234567890',
+            strLogin: 'test',
+            strEmail: 'test@test.com',
+            strPassword: '12345',
             //ResolvedFailLogin : true, // <- Можно или нельзя Фейлиться по Email или Пароль
             // Если можно то в случае (Неверный e-mail или пароль) +1 g_SuccessfulTests
             // Если нельзя то в случае (Неверный e-mail или пароль) +1 g_FailedTests
@@ -251,6 +254,13 @@ let OpenFox = async () => {
             }
         }
         await console.log('LOGIN OK!!! Можно Дальше Тестить ...');
+        // //дебильный второй логин после ПОНЯТНО
+        // returnResult = await LPage.LoginCrm(page, LoginDataT);
+        // if (!returnResult) {
+        //     throw ` FAIL !!! FAIL !!!=> LoginCrm(${LoginDataT.strUserLastName}) !!!`;
+        // }
+        // await console.log('DOUBLE LOGIN OK!!! Можно Дальше Тестить ...');
+
 
         //throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 

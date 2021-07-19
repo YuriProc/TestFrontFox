@@ -61,7 +61,18 @@ await page.waitFor(2000);
 
 //await fileChooser.cancel();
 
+//==========================
+//get the xpath of the element
+const getXpathOfRecordLabel = await page.$x('//div');
 
+//get the property of textContent
+const getTheProperty = await getXpathOfRecordLabel[0].getProperty(
+    'textContent'
+);
+
+//get the value
+const getRecordName = getTheProperty._remoteObject.value;
+console.log(getRecordName);
 //===========================
     await page.evaluate( async() => {
         await window.scrollBy(0, window.innerHeight);
@@ -264,3 +275,18 @@ for ( linkF of linkTextUser) { // Проходимся в цикле по каж
     await console.log('\x1b[38;5;2m', "TextF[",i,"]:",TextF, '\x1b[0m');
 }
 //await page.click("a[class=table__option]");
+//------------------
+await console.log('111111111111');
+
+await page.waitForNavigation();
+
+await console.log('2222222222222');
+//---------
+let linkSearchCodeCompany = await page.$x('//input[@placeholder="ЕДРПОУ\\ИНН"]');
+//Вводим неправильные данные которых гарантированно не в базе
+await linkSearchCodeCompany[0].click();
+await linkSearchCodeCompany[0].type('077584765812442390485743843275830011');
+await page.waitFor(500);
+await page.keyboard.press('Enter',{delay: 100});
+await page.waitFor(500);
+//============================

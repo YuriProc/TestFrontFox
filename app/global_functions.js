@@ -47,6 +47,8 @@ WaitUntilXPathExist = async function (page, xPath) {
     }
 };
 //-----------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------------
 GetExceptions = async function (page) {
     let cssSelector = `div[class=noty_body]`;
     let xPath = `//div[@class="noty_body"]`;
@@ -80,27 +82,77 @@ GetExceptions = async function (page) {
     }
 };
 //-----------------------------------------------------------------------------------
+// WaitUntilPageLoads  = async function (page) {
+//     // span[class=spinner-border]
+//     //let cssSelector = `html[class=nprogress-busy]`;
+//     let cssSelector = `span[class=spinner-border]`;
+//
+//     let startTime = await Date.now();
+//     try {
+//         // Ждём селектор (html[class=nprogress-busy])
+//         await page.waitForSelector(cssSelector, { timeout: 2000});
+//
+//         // Теперь ждём пока не пропадёт селектор (html[class=nprogress-busy])
+//         while (await page.$(cssSelector) !== null){
+//             // Если прошло больше 35 сек то выход!!!
+//             if(await Date.now() - startTime > 65000) {
+//                 await console.log('page NOT load > 65 sec !!!');
+//                 return false;
+//             }
+//         }
+//         await console.log('page load');
+//         return true;
+//     } catch (e) {
+//         //await console.log('\x1b[38;5;2m', "WaitUntilPageLoads => error=>",e, '\x1b[0m');
+//         return true;
+//     }
+// };
+
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
 WaitUntilPageLoads  = async function (page) {
-    let cssSelector = `html[class=nprogress-busy]`;
 
-    let startTime = await Date.now();
     try {
-        // Ждём селектор (html[class=nprogress-busy])
-        await page.waitForSelector(cssSelector, { timeout: 2000});
 
-        // Теперь ждём пока не пропадёт селектор (html[class=nprogress-busy])
-        while (await page.$(cssSelector) !== null){
-            // Если прошло больше 35 сек то выход!!!
-            if(await Date.now() - startTime > 65000) {
-                await console.log('page NOT load > 65 sec !!!');
-                return false;
-            }
-        }
+        let data = await page.evaluate(
+            () =>  Array.from(document.querySelectorAll('*'))
+                .map(elem => elem.tagName)
+        );
+        await page.waitFor(500);
+        let data1 = await page.evaluate(
+            () =>  Array.from(document.querySelectorAll('*'))
+                .map(elem => elem.tagName)
+        );
+
+        //console.log(data);
         //await console.log('page load');
         return true;
     } catch (e) {
         //await console.log('\x1b[38;5;2m', "WaitUntilPageLoads => error=>",e, '\x1b[0m');
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
+ClickIfExistsUpdated  = async function (page) {
+
+    try {
+
+        let xPath = '//button[@type="button"][contains(text(),"Понятно")]';
+        let ResOK= await WaitForElementIsPresentByXPath(1000, page, xPath);
+        if (ResOK) {
+            ResOK = await ClickByXPath(page, xPath);
+            if (!ResOK) {
+                throw `Fail -> ClickByXPath(contains(text(),"Понятно")`;
+            }
+        }else{
+            return false;
+        }
+
+        //await console.log('          ClickIfExistsUpdated -> Кнопка "Понятно"');
         return true;
+    } catch (e) {
+        //await console.log('\x1b[38;5;2m', "WaitUntilPageLoads => error=>",e, '\x1b[0m');
+        return false;
     }
 };
 //-----------------------------------------------------------------------------------
@@ -159,8 +211,10 @@ WaitForElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
     let linkHandlers;
     try {
         while (true) {
-            await page.waitFor(200);
+            await page.waitFor(300);
+            //await console.log(`1`);
             linkHandlers = await page.$x(MyXPath);
+            //await console.log(`2`);
             if (linkHandlers.length > 0) {
                 return true;
             }
@@ -177,10 +231,16 @@ WaitForElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
 };
 //-----------------------------------------------------------------------------------
 ElementIsPresent = async function (page , MyXPath) {
-    const linkHandlers = await page.$x(MyXPath);
-    if (linkHandlers.length > 0) {
-        return true;
-    }else{
+    try {
+         const linkHandlers = await page.$x(MyXPath);
+         if (linkHandlers.length > 0) {
+            return true;
+         }else{
+           return false;
+         }
+    }catch (e) {
+        await console.log(`catch Error => WaitForElementIsPresentByXPath(${MyXPath})`);
+        await console.log(`ERROR => ${e}`);
         return false;
     }
 };
@@ -244,6 +304,7 @@ ElementGetInnerText = async function (page , Num, MyXPath) {
     try {
         const linkHandlers = await page.$x(MyXPath);
         const MaxL = linkHandlers.length -1 ;
+        //await console.log(`     MaxL ${MaxL}`);
         let PropInnerText;
         if (Num > MaxL){
             return '';
@@ -255,6 +316,7 @@ ElementGetInnerText = async function (page , Num, MyXPath) {
         return '';
     }
 };
+
 ElementGetHref = async function (page , Num, MyXPath) {
     try {
         const linkHandlers = await page.$x(MyXPath);
@@ -334,6 +396,28 @@ ClickByXPath = async function (page , MyXPath) {
             // await linkHandlers[0].hover();
             // await page.waitFor(500);
             await linkHandlers[0].click();
+            //await linkHandlers[0]._scrollIntoViewIfNeeded()
+            //await page.evaluate(el => el.click(), linkHandlers[0]);
+            return true;
+        } else {
+            //await console.log('Ошибка внутр ClickByXPath:(linkHandlers.length=',linkHandlers.length , ')','\n');
+            return false;
+        }
+    }catch (e) {
+        //await console.log('Ошибка внутр ClickByXPath:', e ,'\n');
+        return false;
+    }
+};
+//----------------------------------------------------------------------------------- ({ clickCount: 2 });
+DoubleClickByXPath = async function (page , MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+
+        if ((await linkHandlers.length) > 0) {
+            //await linkHandlers[0].click({ clickCount:20, delay: 500 });
+            // await linkHandlers[0].hover();
+            // await page.waitFor(500);
+            await linkHandlers[0].click({ clickCount: 2 });
             //await linkHandlers[0]._scrollIntoViewIfNeeded()
             //await page.evaluate(el => el.click(), linkHandlers[0]);
             return true;
