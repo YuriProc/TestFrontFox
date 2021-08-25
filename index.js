@@ -1,10 +1,12 @@
 // index.js
 
 require('./app/data/global_variables');
+
 console.log('-----------------','\x1b[38;5;2m',  'Start FOX TESTS', '\x1b[0m', '----------------');
 
 let strDT = 'DT:'+ g_StrStartTime;
 console.log( strDT );
+
 // при возникновении необработанных ошибок/исключений выводить их в консоль, программа не будет падать
 //process.on(`uncaughtException`, console.error);
 // new console.Console(process.stdout, process.stderr)

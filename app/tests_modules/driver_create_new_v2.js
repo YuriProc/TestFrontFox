@@ -18,7 +18,6 @@ let DriverCreateNewV2 = async (browser, page, DriverData) => {
     try {
     await page.setViewport({width, height});
 
-
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
         await page.waitFor(500);

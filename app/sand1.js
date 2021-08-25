@@ -290,3 +290,38 @@ await page.waitFor(500);
 await page.keyboard.press('Enter',{delay: 100});
 await page.waitFor(500);
 //============================
+
+
+//ЧАСТИЧНЫЙ НЕЙМИНГ , поиск по части класса
+xPath = `//div[@title="Заказчик"][contains(@class, "crm-select__tag--first")]`;
+
+//============================
+// прример Классов в модулях
+//'use strict';
+let method = Animal.prototype;
+
+function Animal(age) {
+    this._age = age;
+}
+
+method.getAge = function() {
+    return this._age;
+};
+class Jack{
+    constructor(name) {
+        this.name = name;
+    }
+    speak() {
+        console.log(`${this.name} пердит !!!`);
+    }
+}
+module.exports = {Animal, Jack};//
+// использование в другом модуле
+var {Jack: personJack, Animal} = require("../tests_modules/sub_objects/contract_obj.js");
+
+var john = new Animal(3);
+console.log(`john.getAge()=`,john.getAge(),`\n`);
+
+let chlen = new personJack('Митци');
+chlen.speak();
+//=====================================================

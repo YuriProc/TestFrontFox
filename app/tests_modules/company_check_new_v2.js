@@ -1,4 +1,4 @@
-let CompanyCheckNewV2 = async (page, CompanyData) => {
+let CompanyCheckNewV2 = async (browser, page, CompanyData) => {
     const nameTest = NameFunction()+'->"' + CompanyData.strCodeCompany + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
@@ -6,8 +6,8 @@ let CompanyCheckNewV2 = async (page, CompanyData) => {
     g_StrOutLog+=`Тест[ ${nameTest} ]=> ${g_StatusCurrentTest} `;
 
     //await page.waitFor(500);
-    let width = 1200;
-    let height = 880;
+    let width = 1700;
+    let height = 950;
     let resOk;
     let xPath, MyXPath;
     let strTT, strInnerText, strAlreadyCreated, strNotCorrect, strNotFind, strErrorActivity;
@@ -25,10 +25,43 @@ let CompanyCheckNewV2 = async (page, CompanyData) => {
         //Клик по LOGO
         resOk = await LogoClick(page);
         if (!resOk) {
-            // await console.log(`FAIL => LogoClick Не вижу (Вітаємо вас в системі FOX CRM)`);
-            // await TempStop(page);
-            throw `FAIL => LogoClick Не вижу (Вітаємо вас в системі FOX CRM)`;//<--специальный вызов ошибки!
+            throw `FAIL => LogoClick `;//<--специальный вызов ошибки!
         }
+        var {Company} = require("../tests_modules/sub_objects/company_obj.js");
+        let NewCompany = new Company(browser, page , CompanyData);
+
+        var {CompanyTable} = require("../tests_modules/sub_objects/company_table_obj.js");
+        let NewCompanyTable = new CompanyTable( page , CompanyData);
+
+        // Клик по Компании
+        resOk = await NewCompanyTable.ClickMenuCompanies();
+        if (!resOk) {
+            throw `FAIL => NewCompanyTable.ClickMenuCompanies`;//<--специальный вызов ошибки!
+        }
+
+        //await TempStop(page);
+        // Отфильтровать по ЕДРПОУ
+        resOk = await NewCompanyTable.FilterInTableEDRPOU(CompanyData.strCodeCompany);
+        if (!resOk) {
+            throw `FAIL => NewCompanyTable.FilterInTableEDRPOU(${CompanyData.strCodeCompany})`;//<--специальный вызов ошибки!
+        }
+        //Проверить, что в Таблице ТОЛЬКО одна строка с таким ЕДРПОУ
+        resOk = await NewCompanyTable.CheckInTableEDRPOU(CompanyData.strCodeCompany);
+        if (!resOk) {
+            throw `FAIL => NewCompanyTable.CheckInTableEDRPOU(${CompanyData.strCodeCompany})`;//<--специальный вызов ошибки!
+        }
+        // Открыть карточку Компании (клик на карандаш)
+        resOk = await NewCompanyTable.OpenAndCheckCompany(CompanyData.strCodeCompany);
+        if (!resOk) {
+            throw `FAIL => NewCompanyTable.OpenAndCheckCompany(${CompanyData.strCodeCompany})`;//<--специальный вызов ошибки!
+        }
+
+        await console.log(`CheckInTableEDRPOU ${CompanyData.strID}`);
+        await TempStop(page);
+
+
+
+
 
         // Клик по Компании
         xPath = '//a[@href="/company"]';

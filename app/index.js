@@ -1,22 +1,21 @@
 // app/index.js
 //console.log('-------- app/index.js  Hello from Node.js ----------------');
 
-let oConfig;
+let oConfig, oDataVariables;
 
 let page, pageCfo;
 let browser;
 
 
-let width = 1200;
-let height = 1000;
+let width = 1700;
+let height = 950;
 
  //const puppeteer = require('puppeteer');
 require('./global_functions').global;
 require('./global_functions_cfo').global;
 
-
-
 let OpenConfig = require('./open_config');
+let OpenVariables = require('./data/data_for_tests.js');
 
 const fs_log = require('fs');
 
@@ -61,20 +60,18 @@ let MyFilePath;
 let RNum;
 let strLastName,strFirstName,strMiddleName;
 let strLicensePlate;
-let CompanyData1, CompanyData2;
-let VehicleData1, VehicleData2;
-let DealData;
-let ContactData;
-let DriverData, DriverData_1, DriverData_2;
+
 
 let tempStr;
 let returnResult = false;
 
+
 let OpenFox = async () => {
     try {
-
         let CodeCompany;
         oConfig = await OpenConfig.SetAllConfigConst();
+        oDataVariables = await OpenVariables.SetAllDataVariables();
+
         if (oConfig === "OK") {
             await console.log('\x1b[38;5;2m', "Load Config", oConfig, '\x1b[0m');
             fs_log.writeFileSync(g_CheckFileName, `-1`);
@@ -89,142 +86,9 @@ let OpenFox = async () => {
         g_NumberCurrentTest = 1;
 
 
-
-
-        // let LoginDataR = {
-        //     strUserLastName : 'root',
-        //     strEmail : 'root@root.com',
-        //     strPassword : 'root1234567',
-        // };
-        let LoginDataR = {
-            strUserLastName: 'Ярін',
-            strUserFirstName: 'Кирило',
-            strUserMiddleName: 'Олександрович',
-            strEmail: 'yarin.k@transloyd.com',
-            strPassword: 'e5oF7',
-        };
-        let LoginDataT = {
-            strUserFirstName: 'Тест',
-            strUserLastName: 'Тостер',
-            strUserMiddleName: 'Тостерович',
-            strLogin: 'test',
-            strEmail: 'test@test.com',
-            strPassword: '12345',
-            //ResolvedFailLogin : true, // <- Можно или нельзя Фейлиться по Email или Пароль
-            // Если можно то в случае (Неверный e-mail или пароль) +1 g_SuccessfulTests
-            // Если нельзя то в случае (Неверный e-mail или пароль) +1 g_FailedTests
-        };
-
-        // await console.log(`LoginDataR=>${LoginDataR}`);
-        //
-        // await console.log(LoginDataR);
-        // let LoginDataX = Object.assign({},LoginDataR);
-        // await console.log(LoginDataX);
-        // LoginDataR.strUserLastName = LoginDataR.strUserLastName+'XXX';
-        // await console.log(LoginDataR);
-        // await console.log(LoginDataX);
-
-        //tempStr = '38050' + await randomInt(1001010, 9989999);
-        //CodeCompany = await GetFunnyStr('StrCompanyCodeArray');
-        CompanyData1 = {
-            strCodeCompany: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
-            strCompanyName: '',// <= Заполнится автоматически при создании Компании !!!
-            strCompanyTypes: ['Заказчик',], // Заказчик // Перевозчик // Экспедитор
-            boolIsOurCompany: false,
-            boolNeedCheck: false,
-            strManagers: [LoginDataT.strUserLastName, 'Гриневич'],
-            strDelayDays: '7',
-            strPaymentCondition: 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
-            strPhoneNumber: '38050' + await randomInt(1001010, 9989999),
-            strUrl: await GetFunnyUrl('Funny_Page_URL'),//'https://natribu.org/',//Funny_Page_URL
-            strContractOurCompany: 'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
-            strContractOurCompanyIs: 'Перевозчик',
-
-            returnResult: false,
-        };
-        CompanyData2 = {
-            strCodeCompany: await GetFunnyStr('StrCompanyCodeArray'),//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
-            strCompanyName: '',// <= Заполнится автоматически при создании Компании !!!
-            strCompanyTypes: ['Перевозчик',], // Заказчик // Перевозчик // Экспедитор
-            boolIsOurCompany: false,
-            boolNeedCheck: false,
-            strManagers: [LoginDataT.strUserLastName, 'Гриневич'],
-            strDelayDays: '7',
-            strPaymentCondition: 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
-            strPhoneNumber: '38050' + await randomInt(1001010, 9989999),
-            strUrl: await GetFunnyUrl('Funny_Page_URL'),//'https://natribu.org/',//Funny_Page_URL
-            strContractOurCompany: 'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
-            strContractOurCompanyIs: 'Заказчик',
-
-            returnResult: false,
-        };
         RNum = randomInt(1000, 9999);
 
-        DriverData = {
-            typeWork: 0,
-            strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
-            strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
-            strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
-            strDriverLicenseNumber: 'DLN' + RNum,
-            strCompanyName: CompanyData2.strCompanyName, //'ТРАНСЛОЙД',
-            strCodeCompany: CompanyData2.strCodeCompany,
-        };
-        // Тягач
-        VehicleData1 = {
-            strLicensePlate: 'TE' + await randomInt(1000, 9999) + 'NU',
-            strCarType: 'Тягач',
-            strCarBrand: 'DAF',
-            CompanyData: CompanyData2,//'Перевозчик',
-            DriverData: DriverData,
-        };
-        // Прицеп
-        VehicleData2 = {
-            strLicensePlate: 'TE' + await randomInt(1000, 9999) + 'NU',
-            strCarType: 'Полуприцеп',
-            strCarBrand: 'SCHMITZ',
-            CompanyData: CompanyData2,//'Перевозчик',
-            DriverData: DriverData,
-        };
-        DealData = {
-            //strLicensePlate : 'TEST 3245 NUM',
-            // strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
-            // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
-            strPointLoading: await GetFunnyStr('StrAddress'), //StrAddress //StrAddressFunny
-            strPointUnLoading: await GetFunnyStr('StrAddress'), //StrAddress //StrAddressFunny
-            strTypeLoad: 'Алкоголь',
-            strCargoCost: '100500',
-            CompanyClient: CompanyData1,//'ОСНОВА',
-            strOurCompanyClient: CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
-            ClientFreights: [{
-                Amount: '10500',
-                Type_0: 'Безготівково',
-                Type_1: 'б/н с НДС',
-                Currency: 'UAH',
-                PaymentTerm: 'По оригиналам',
-            },
-                {Amount: '2400', Type_0: 'Готівкою', Type_1: 'софт', Currency: 'UAH', PaymentTerm: 'По выгрузке',},
-            ],
-            TransporterFreights: [{
-                Amount: '8400',
-                Type_0: 'Безготівково',
-                Type_1: 'б/н с НДС',
-                Currency: 'UAH',
-                PaymentTerm: 'По оригиналам',
-            },
-                {Amount: '2100', Type_0: 'Готівкою', Type_1: 'софт', Currency: 'UAH', PaymentTerm: 'По выгрузке',},
-            ],
-            CompanyTransporter: CompanyData2,//'ЛЬВІВКУЛЬТТОВАРИ',
-            strOurCompanyTransporter: CompanyData2.strContractOurCompany,//'ТРАНСЛОЙД',
-            DriverFullData: DriverData,//'Курганов',
-            strLicensePlate1: VehicleData1.strLicensePlate,//'BC3082EE',//DAF BC3082EE
-            strLicensePlate2: VehicleData2.strLicensePlate,//'BC7519XO',// KRONE BC7519XO
-            strFoxResponsible: 'Тостер',
-            strLogistician: 'Тостер',
-            strDealID: '',
-            strStatus: '',
-            returnResult: false,
-            returnStr: '',
-        };
+
 
     if(true){    // <-temp!!!!!
         //------------START Для тестов--------------------------------------------------------------
@@ -254,12 +118,7 @@ let OpenFox = async () => {
             }
         }
         await console.log('LOGIN OK!!! Можно Дальше Тестить ...');
-        // //дебильный второй логин после ПОНЯТНО
-        // returnResult = await LPage.LoginCrm(page, LoginDataT);
-        // if (!returnResult) {
-        //     throw ` FAIL !!! FAIL !!!=> LoginCrm(${LoginDataT.strUserLastName}) !!!`;
-        // }
-        // await console.log('DOUBLE LOGIN OK!!! Можно Дальше Тестить ...');
+
 
 
         //throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
@@ -269,16 +128,20 @@ let OpenFox = async () => {
 
 
         // X) проверяем наличие тестовой компании CompanyData1
-        returnResult = await CCEPage.CompanyCheckExist(page, CompanyData1.strCodeCompany);
-        await console.log('\x1b[38;5;2m', "         CompanyCheckExist(", CompanyData1.strCodeCompany, ")=>", returnResult, '\x1b[0m');
-        // X) создаём тестовую компанию CompanyData1
+       // returnResult = await CCEPage.CompanyCheckExist(page, CompanyData1.strCodeCompany);
+       // await console.log('\x1b[38;5;2m', "         CompanyCheckExist(", CompanyData1.strCodeCompany, ")=>", returnResult, '\x1b[0m');
+        // X) создаём тестовую компанию CompanyData1 43257059
+        CompanyData1.strCodeCompany = '14180856';
+
         CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData1);
         if (!CompanyData1.returnResult) {
             throw `Не получилось создать компанию (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
         }
+
+
         //await console.log(`Created => CompanyData1:`, CompanyData1);
         // X) Проверяем созданную тестовую компанию CompanyData1
-        CompanyData1 = await CCheckNV2Page.CompanyCheckNewV2(page, CompanyData1);
+        CompanyData1 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, CompanyData1);
         if (!CompanyData1.returnResult) {
             throw `FAIL => CompanyCheckNewV2 (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
         }
@@ -300,15 +163,6 @@ let OpenFox = async () => {
             throw `FAIL => CompanyCheckNewV2 (${CodeCompany})`;//<--специальный вызов ошибки!
         }
 
-        DriverData = {
-            typeWork: 0,
-            strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
-            strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
-            strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
-            strDriverLicenseNumber: 'DLN' + RNum,
-            strCompanyName: CompanyData2.strCompanyName, //'ТРАНСЛОЙД',
-            strCodeCompany: CompanyData2.strCodeCompany,
-        };
 
         // X) Создаём нового Водителя V2
         DriverData = await DriverCNV2Page.DriverCreateNewV2(browser, page, DriverData);
@@ -323,14 +177,7 @@ let OpenFox = async () => {
             }
         }
 
-        // Тягач
-        VehicleData1 = {
-            strLicensePlate: 'TE' + await randomInt(1000, 9999) + 'NU',
-            strCarType: 'Тягач',
-            strCarBrand: 'DAF',
-            CompanyData: CompanyData2,//'Перевозчик',
-            DriverData: DriverData,
-        };
+
         // X) Создаём Транспорт_1 (Тягач)
         VehicleData1 = await VehicleCNV2Page.VehicleCreateNewV2(browser, page, VehicleData1);
         if (!VehicleData1.returnResult) {
@@ -344,14 +191,7 @@ let OpenFox = async () => {
                 throw `FAIL => VehicleCheckNewV2 (${VehicleData1.strLicensePlate})`;//<--специальный вызов ошибки!
             }
         }
-        // Прицеп
-        VehicleData2 = {
-            strLicensePlate: 'TE' + await randomInt(1000, 9999) + 'NU',
-            strCarType: 'Полуприцеп',
-            strCarBrand: 'SCHMITZ',
-            CompanyData: CompanyData2,//'Перевозчик',
-            DriverData: DriverData,
-        };
+
         // X) Создаём Транспорт_2 (Прицеп)
         VehicleData2 = await VehicleCNV2Page.VehicleCreateNewV2(browser, page, VehicleData2);
         if (!VehicleData2.returnResult) {
@@ -369,46 +209,7 @@ let OpenFox = async () => {
 
         // 12) Создаём новую сделку
 
-        DealData = {
-            //strLicensePlate : 'TEST 3245 NUM',
-            // strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
-            // strPointUnLoading : 'Дрочево', //Дрочево //Бухалово //Сискі //Сосуново //Сосунково //Матюково
-            strPointLoading: await GetFunnyStr('StrAddress'), //StrAddress //StrAddressFunny
-            strPointUnLoading: await GetFunnyStr('StrAddress'), //StrAddress //StrAddressFunny
-            strTypeLoad: 'Алкоголь',
-            strCargoCost: '100500',
-            CompanyClient: CompanyData1,//'ОСНОВА',
-            strOurCompanyClient: CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
-            ClientFreights: [{
-                Amount: '10500',
-                Type_0: 'Безготівково',
-                Type_1: 'б/н с НДС',
-                Currency: 'UAH',
-                PaymentTerm: 'По оригиналам',
-            },
-                {Amount: '2400', Type_0: 'Готівкою', Type_1: 'софт', Currency: 'UAH', PaymentTerm: 'По выгрузке',},
-            ],
-            TransporterFreights: [{
-                Amount: '8400',
-                Type_0: 'Безготівково',
-                Type_1: 'б/н с НДС',
-                Currency: 'UAH',
-                PaymentTerm: 'По оригиналам',
-            },
-                {Amount: '2100', Type_0: 'Готівкою', Type_1: 'софт', Currency: 'UAH', PaymentTerm: 'По выгрузке',},
-            ],
-            CompanyTransporter: CompanyData2,//'ЛЬВІВКУЛЬТТОВАРИ',
-            strOurCompanyTransporter: CompanyData2.strContractOurCompany,//'ТРАНСЛОЙД',
-            DriverFullData: DriverData,//'Курганов',
-            strLicensePlate1: VehicleData1.strLicensePlate,//'BC3082EE',//DAF BC3082EE
-            strLicensePlate2: VehicleData2.strLicensePlate,//'BC7519XO',// KRONE BC7519XO
-            strFoxResponsible: 'Тостер',
-            strLogistician: 'Тостер',
-            strDealID: '',
-            strStatus: '',
-            returnResult: false,
-            returnStr: '',
-        };
+
         //await page.waitFor(11000);
         DealData = await DealCNPage.DealCreateNew(browser, page, DealData);
         if (DealData.returnResult) {

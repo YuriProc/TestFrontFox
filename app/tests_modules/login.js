@@ -4,8 +4,8 @@ let StartBrowser = async () => {
 
         await console.log("StartBrowser");
         const puppeteer = require('puppeteer');
-        let width = 1500;
-        let height = 1500;
+        // let width = 1700;
+        // let height = 950;
         let StartBrowserInHeadLessMode;
         await console.log('\x1b[38;5;2m', "g_ShowActionInBrowser=>", g_ShowActionInBrowser, '\x1b[0m');
         if (await g_ShowActionInBrowser) {
@@ -20,9 +20,8 @@ let StartBrowser = async () => {
             //headless: false,
             //headless: true,
             headless: StartBrowserInHeadLessMode,
-
             slowMo: 0,
-            args: [`--window-size=${width},${height}`]
+            args: [`--window-size=${g_width},${g_height}`]
         });
         await console.log("puppeteer.launch");
 
@@ -44,9 +43,9 @@ let BrowserGetPage = async (browser, strPageURL) => {
             await dialog.accept();
         })
         //height = height - 120;
-        let width = 1200;
-        let height = 880;
-        await page.setViewport({width, height});
+        // let width = 1700;
+        // let height = 950;
+        await page.setViewport({width: g_width, height: g_height});
         await page.goto(strPageURL);
 
 
@@ -76,7 +75,8 @@ let LoginCrm = async (page, LoginData) => {
     let pLOk;
 
         //На всякий случай подождём Загрузки Страницы
-        await WaitUntilPageLoads(page);
+        await WaitRender(page);
+
         //Если залогинены, то разлогиниться
         ElPresent = await ElementIsPresent(page, '//div[@class="crm-user-avatar"]');
         if (ElPresent) {
@@ -106,9 +106,9 @@ let LoginCrm = async (page, LoginData) => {
         }
 
         while (CountLogin<2 && NeedReLogin) {
-
+            //await console.log(`CountLogin=${CountLogin} ; NeedReLogin=${NeedReLogin}`);
             //На всякий случай подождём Загрузки Страницы
-            await WaitUntilPageLoads(page);
+            //await WaitRender(page);
 
 
             ElPresent = await WaitForElementIsPresentByXPath(5000, page, '//input[@name="Логин"]');
@@ -126,6 +126,7 @@ let LoginCrm = async (page, LoginData) => {
             await page.type("input[name=Пароль]", LoginData.strPassword);
             //await page.waitFor(5000);
 
+            await WaitRender(page);
             //Клик по Кнопке Авторизироваться //button[class=btn]
             ElPresent = await ClickByXPath(page, `//button[contains(text(), "Авторизироваться")]`);
 
@@ -137,27 +138,52 @@ let LoginCrm = async (page, LoginData) => {
 
             //await page.waitFor(50000);
             //Проверим на наличие сообщения об ОШИБКАХ
-            let myXPath = `//div[@class="notification-content"][contains(text(), "Неверный логин или пароль")]`;
-            ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
-            if (ElPresent) {
+            //--------
+            // let myXPath = `//div[@class="notification-content"]`;
+            // ElPresent = await WaitForElementIsPresentByXPath(2000, page, myXPath);
+            // if (ElPresent) {
+            //     let strInnerText = await ElementGetInnerText(page, 0, myXPath);
+            //     await console.log('\x1b[38;5;1m', `         Вижу => (${strInnerText})`, '\x1b[0m');
+            //     if (LoginData.ResolvedFailLogin) {
+            //
+            //         return false; //<-------------EXIT !!!
+            //     }else{
+            //         throw `FAIL => "${strInnerText}"`;
+            //     }
+            // }//--------------
+            resOk = await WarningCheck(page);
+            if(resOk !== ''){
                 if (LoginData.ResolvedFailLogin) {
-                    await console.log('\x1b[38;5;2m', "         Вижу => (Неверный e-mail или пароль)", '\x1b[0m');
-                    await console.log('\x1b[38;5;2m', "         Будем Логиниться под root'ом и пробовать снова", '\x1b[0m');
-                    g_StatusCurrentTest = 'Пропущен';
-                    await g_SuccessfulTests++;
-                    await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
-                    g_StrOutLog += `=> ${g_StatusCurrentTest} \n`;
+
                     return false; //<-------------EXIT !!!
-
+                }else{
+                    throw `FAIL => Login WarningCheck"${resOk}"`;
                 }
-                await console.log('     FAIL => "Неверный e-mail или пароль"');
-                throw `FAIL => "Неверный e-mail или пароль"`;
+
             }
+            //--------------------------------------------
+            // myXPath = `//div[@class="notification-content"][contains(text(), "Неверный логин или пароль")]`;
+            // ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
+            // if (ElPresent) {
+            //     if (LoginData.ResolvedFailLogin) {
+            //         await console.log('\x1b[38;5;2m', "         Вижу => (Неверный e-mail или пароль)", '\x1b[0m');
+            //         await console.log('\x1b[38;5;2m', "         Будем Логиниться под root'ом и пробовать снова", '\x1b[0m');
+            //         g_StatusCurrentTest = 'Пропущен';
+            //         await g_SuccessfulTests++;
+            //         await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
+            //         g_StrOutLog += `=> ${g_StatusCurrentTest} \n`;
+            //         return false; //<-------------EXIT !!!
+            //
+            //     }
+            //     await console.log('     FAIL => "Неверный e-mail или пароль"');
+            //     throw `FAIL => "Неверный e-mail или пароль"`;
+            // }
+            //--------------------------------------------
 
+            //await TempStop(page);
             //Проверим наличие иконки ФОКСА = УСПЕШНЫЙ ВХОД)
-
-            myXPath = `//img[@src="/img/LogoFoXTop.0890cee9.svg"][@class="logo-menu"]`;
-            ElPresent = await WaitForElementIsPresentByXPath(3000, page, myXPath);
+            xPath = `//img[@src="/img/LogoFoXTop.0890cee9.svg"][@class="logo-menu"]`;
+            ElPresent = await WaitForElementIsPresentByXPath(4000, page, xPath);
             if (!ElPresent) {
                 await console.log('     Warning => Не вижу class="logo-menu"');
                 g_StrOutLog += `\n => Warning => Не вижу class="logo-menu" \n`;
@@ -166,20 +192,20 @@ let LoginCrm = async (page, LoginData) => {
             CountLogin++;
 
             //Дождёмся окончательной загрузки страницы
-            pLOk = await WaitUntilPageLoads(page);
-
+            //pLOk = await WaitUntilPageLoads(page);
+            await WaitRender(page);
 
             NeedReLogin = await ClickIfExistsUpdated(page);
+            //await page.waitFor(1000);
 
 
         }//end while (CountLogin<2 && NeedReLogin)
 
         //Проверим на наличие "Аватарки"
-        ElPresent = await ElementIsPresent(page, '//div[@class="crm-user-avatar"]');
+        xPath = `//div[@class="crm-user-avatar"]`;
+        ElPresent = await ElementIsPresent(page, xPath);
         if (!ElPresent) {
-
-            throw '     FAIL => После Логина нет аватарки: ElementIsPresent(page, \'//div[@class="crm-user-avatar"]\');\n';
-
+            throw `     FAIL => После Логина нет аватарки: ElementIsPresent(page, ${xPath}\n`;
         }
 
         xPath = '//div[@class="user-block"]/span[@class="name"]';
