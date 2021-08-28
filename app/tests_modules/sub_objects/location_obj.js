@@ -67,11 +67,17 @@ class Location {
         //`//span[contains(@class, "highlight")]/span[contains(text(), "Алкоголь")]`; ${LocationData.strIndustryType}
         this.xSelectIndustryType = `//fieldset[contains(@class, "form-group")][legend[contains(text(), "Вид промышленности")]]`;
         this.xSelectIndustryType+= `//span[contains(@class, "highlight")]/span`; // + [contains(text(), "${LocationData.strIndustryType}")]
-        // * Инпут "Контакты"
-        this.xInputContacts = ``;
+        // * Инпут ДропДаун "Контакты"
+        this.xInputContacts = `//fieldset[contains(@class, "form-group")][legend[contains(text(), "Контакты")]]//div[@class="multiselect__tags"]`;
+
         // Кнопка "Создать контакт"
-        this.xButtonCreateContact = ``;
-        // * Инпут "Компании"
+        this.xButtonCreateContact = `//div[contains(@class, "create-contact")][contains(text(), "Создать контакт")]`;
+
+        // Селект в ДропДауне "Контакты" ${LocationData.strContactName}
+        this.xSelectContacts = `//fieldset[contains(@class, "form-group")][legend[contains(text(), "Контакты")]]`;
+        this.xSelectContacts+= `//span[contains(@class, "highlight")]/span`; // + [contains(text(), "${LocationData.strContactName}")]
+
+        // * Инпут "Компании" //LocationData.strCompanyName
         this.xInputCompanies = ``;
         // Инпут "Название"
         this.xInputLocationName = ``;
@@ -253,12 +259,12 @@ class Location {
 
                 throw `FAIL => * ДропДаун "Тип локации" ClickByXPath(${this.xInputLocationType})`;
             }
-            await this.page.waitFor(200);
+            await this.pageTableLocations.waitFor(200);
             resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strLocationType,20);
             if (!resOk) {
                 throw `FAIL => * ДропДаун "Тип локации" TypeInPage(${this.xInputLocationType})`;
             }
-            await this.page.waitFor(200);
+            await this.pageTableLocations.waitFor(200);
 
             // Селект в ДропДауне "Тип локации"
             this.xSelectLocationType+= `[contains(text(), "${this.LocationData.strLocationType}")]`;
@@ -273,12 +279,12 @@ class Location {
             if (!resOk) {
                 throw `FAIL => * ДропДаун "Вид промышленности" ClickByXPath(${this.xInputIndustryType})`;
             }
-            await this.page.waitFor(200);
+            await this.pageTableLocations.waitFor(200);
             resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strIndustryType,20);
             if (!resOk) {
                 throw `FAIL => * ДропДаун "Вид промышленности" TypeInPage(${this.xInputIndustryType})`;
             }
-            await this.page.waitFor(200);
+            await this.pageTableLocations.waitFor(200);
 
             // Селект в ДропДауне "Вид промышленности"
             this.xSelectIndustryType+= `[contains(text(), "${this.LocationData.strIndustryType}")]`;
@@ -286,6 +292,56 @@ class Location {
             if (!resOk) {
                 throw `FAIL => Селект в ДропДауне "Вид промышленности" ClickByXPath(${this.xSelectIndustryType})`;
             }
+            await this.pageTableLocations.waitFor(200);
+            //Создаём НОВЫЙ Контакт через Локацию
+            // Кнопка "Создать контакт"
+            resOk = await ClickByXPath(this.pageTableLocations, this.xButtonCreateContact);
+            if (!resOk) {
+                throw `FAIL => Кнопка "Создать контакт" ClickByXPath(${this.xButtonCreateContact})`;
+            }
+            await WaitRender(this.pageTableLocations);
+
+            var {Contact} = require("../sub_objects/contact_obj.js");
+            let NewContact = new Contact(this.browser, this.pageTableLocations , this.LocationData.ContactData);
+            resOk = await NewContact.CheckModalCreateContact();
+            if (!resOk){
+                throw `FAIL => NewContact.CheckModalCreateContact`;
+            }
+
+            resOk = await NewContact.MCCEnterPhoneNumber();
+            if (!resOk){
+                throw `FAIL => NewContact.MCCEnterPhoneNumber`;
+            }
+            resOk = await NewContact.MCCEnterINN();
+            if (!resOk){
+                throw `FAIL => NewContact.MCCEnterINN`;
+            }
+            resOk = await NewContact.MCCClickCheckInBase();
+            if (!resOk){
+                throw `FAIL => NewContact.MCCClickCheckInBase`;
+            }
+            // Мы на Форме Создания НОВОГО Контакта
+            // Проверим наличие Валидации
+            resOk = await NewContact.CheckValidationModalContactFromLocation();
+            if (!resOk){
+                throw `FAIL => NewContact.CheckValidationModalContactFromLocation`;
+            }
+            // Введём данные в блок "Ключевые данные"
+            resOk = await NewContact.EnterContactKeyData();
+            if (!resOk){
+                throw `FAIL => NewContact.EnterContactKeyData`;
+            }
+            // Заполним "Работает на"
+            resOk = await NewContact.EnterContactWorkWith();
+            if (!resOk){
+                throw `FAIL => NewContact.EnterContactWorkWith`;
+            }
+
+
+            // * Инпут "Контакты" ${LocationData.strContactName}
+            // this.xInputContacts = `//fieldset[contains(@class, "form-group")][legend[contains(text(), "Контакты")]]`;
+            // this.xInputContacts+= `//span[contains(@class, "highlight")]/span`; // + [contains(text(), "${LocationData.strContactName}")]
+
 
 
 

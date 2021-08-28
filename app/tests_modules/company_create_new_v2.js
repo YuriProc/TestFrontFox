@@ -73,6 +73,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         //     throw `FAIL => AddNewContract`;
         // }
 
+
         resOk = await NewCompany.AddNewLocation();
         if (!resOk){
             throw `FAIL => AddNewLocation`;

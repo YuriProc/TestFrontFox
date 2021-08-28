@@ -158,7 +158,7 @@ class Company{
             await WaitRender(this.page);
 
             // Хеадер "Данные о компании"
-            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xHeaderDataCompany);
+            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xHeaderDataCompany);
             if (!resOk) {
 
                 //await TempStop(this.page);
@@ -178,7 +178,7 @@ class Company{
             this.CompanyData.strCompanyName = await ElementGetInnerText(this.page, 0, this.xHeaderCompanyName);
             if (this.CompanyData.strCompanyName === '') {
                 await console.log(`ElementGetInnerText = ""`);
-                await TempStop(this.page);
+                //await TempStop(this.page);
                 throw `FAIL => Не вижу (Название Компании(ElementGetInnerText = "")) \n ${this.xHeaderCompanyName}`;
             }
             // Статус Компании

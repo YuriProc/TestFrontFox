@@ -94,9 +94,10 @@ let OpenFox = async () => {
         //------------START Для тестов--------------------------------------------------------------
 
         // Логинимся под ТОСТЕРОМ
-        LoginDataT.ResolvedFailLogin = true;// <- Можно или нельзя Фейлиться по Email или Пароль
+        LoginDataT.ResolvedFailLogin = false;//true;// <- Можно или нельзя Фейлиться по Email или Пароль
         returnResult = await LPage.LoginCrm(page, LoginDataT);
         if (!returnResult) { // Если не получилось то логинимся под ROOT`ом
+            if(LoginDataT.ResolvedFailLogin){
             returnResult = await LPage.LoginCrm(page, LoginDataR);
             if (!returnResult) { //Если не получилось то FAIL  и выход!!!
                 throw ` FAIL => LoginCrm(${LoginDataR.strUserLastName}) !!!`;
@@ -114,6 +115,10 @@ let OpenFox = async () => {
             LoginDataT.ResolvedFailLogin = false;// <- Можно или нельзя Фейлиться по Email или Пароль
             returnResult = await LPage.LoginCrm(page, LoginDataT);
             if (!returnResult) {
+                throw ` FAIL !!! FAIL !!!=> LoginCrm(${LoginDataT.strUserLastName}) !!!`;
+            }
+
+            }else{
                 throw ` FAIL !!! FAIL !!!=> LoginCrm(${LoginDataT.strUserLastName}) !!!`;
             }
         }

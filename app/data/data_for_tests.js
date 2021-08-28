@@ -56,6 +56,28 @@ CompanyData1 = {
         strUnLoadingTime: '3',
         strLocationType: 'Склад',
         strIndustryType: 'Алкоголь',
+        strContactName: 'АА Джамшут ББ',
+        strCompanyName: 'ЧЛЕН',//CompanyData1.strCompanyName,//'',
+        ContactData: {
+            PhoneData: {
+                strPhoneNumber: '38067' + await randomInt(1001010, 9989999),
+                isTelegram: true,
+                isViber : true,
+                isSkype : true,
+                isWhatsApp : true,
+                isToplyvo : false,
+                isRouming : false,
+                isDefault : true,
+                isFormer : false,
+            },
+            strINN: '' + await randomInt(1001001001, 9991999199),
+            strContactType: `Кладовщик`,
+            strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
+            strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
+            strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+
+
+        },
 
     },
     strPhoneNumber: '38050' + await randomInt(1001010, 9989999),

@@ -186,6 +186,7 @@ let LoginCrm = async (page, LoginData) => {
             ElPresent = await WaitForElementIsPresentByXPath(4000, page, xPath);
             if (!ElPresent) {
                 await console.log('     Warning => Не вижу class="logo-menu"');
+                await TempStop(page);
                 g_StrOutLog += `\n => Warning => Не вижу class="logo-menu" \n`;
                 throw `FAIL => Не вижу "Не вижу class="logo-menu""`;
             }
