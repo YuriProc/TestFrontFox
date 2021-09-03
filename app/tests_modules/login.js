@@ -21,7 +21,7 @@ let StartBrowser = async () => {
             //headless: true,
             headless: StartBrowserInHeadLessMode,
             slowMo: 0,
-            args: [`--window-size=${g_width},${g_height}`]
+            args: [`--window-size=${g_width},${g_height+250}`]
         });
         await console.log("puppeteer.launch");
 
@@ -38,7 +38,8 @@ let BrowserGetPage = async (browser, strPageURL) => {
         page = await browser.newPage();
 
         page.on('dialog', async dialog => {
-            console.log(`АВТО_ПОДТВЕРЖДЕНИЕ:` + dialog.message())
+            strDialogMessage = dialog.message();
+            await console.log(`АВТО_ПОДТВЕРЖДЕНИЕ:` + dialog.message());
             //await dialog.dismiss()
             await dialog.accept();
         })
@@ -115,16 +116,27 @@ let LoginCrm = async (page, LoginData) => {
             if (!ElPresent) {
                 throw '     FAIL => WaitForElementIsPresentByXPath(//input[@name="Логин""])\n';
             }
+            await WaitRender(page);
             // Клик по инпуту ВАШ EMAIL
-            await page.click("input[name=Логин]");
-            await page.$eval('input[name=Логин]', el => el.value = '');
-            await page.type("input[name=Логин]", LoginData.strEmail);
+            // await page.click("input[name=Логин]");
+            // await page.$eval('input[name=Логин]', el => el.value = '');
+            // await page.type("input[name=Логин]", LoginData.strEmail);
+
+            //resOk = await ClickByXPath(page, `//input[@name="Логин"]`);
+
+            resOk = await TypeByXPath(page,`//input[@name="Логин"]`, LoginData.strEmail );
+
+
 
             //Клик по инпуту ВАШ ПАРОЛЬ
-            await page.click("input[name=Пароль]");
-            await page.$eval('input[name=Пароль]', el => el.value = '');
-            await page.type("input[name=Пароль]", LoginData.strPassword);
+            // await page.click("input[name=Пароль]");
+            // await page.$eval('input[name=Пароль]', el => el.value = '');
+            // await page.type("input[name=Пароль]", LoginData.strPassword);
             //await page.waitFor(5000);
+
+            //resOk = await ClickByXPath(page, `//input[@name="Пароль"]`);
+
+            resOk = await TypeByXPath(page, `//input[@name="Пароль"]`, LoginData.strPassword);
 
             await WaitRender(page);
             //Клик по Кнопке Авторизироваться //button[class=btn]
@@ -151,6 +163,8 @@ let LoginCrm = async (page, LoginData) => {
             //         throw `FAIL => "${strInnerText}"`;
             //     }
             // }//--------------
+
+            await WaitRender(page);
             resOk = await WarningCheck(page);
             if(resOk !== ''){
                 if (LoginData.ResolvedFailLogin) {

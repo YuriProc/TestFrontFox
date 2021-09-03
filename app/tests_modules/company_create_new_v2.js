@@ -47,6 +47,16 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         // if (!resOk) {
         //     throw 'NewCompany.CheckBossPresent(); = FAIL!"';//<--специальный вызов ошибки!
         // }
+        CompanyData.LocationData1.strCompanyName = CompanyData.strCompanyName;
+        CompanyData.LocationData1.strCodeCompany = CompanyData.strCodeCompany;
+
+        CompanyData.LocationData1.ContactData.strWorkOnCompany = CompanyData.strCompanyName;
+        CompanyData.LocationData1.ContactData.strWorkOnCompanyEDRPOU = CompanyData.strCodeCompany;
+        resOk = await NewCompany.CreateNewContactForLocation();
+        if (!resOk) {
+            throw 'NewCompany.CreateNewContactForLocation(); = FAIL!"';//<--специальный вызов ошибки!
+        }
+
         //
         // resOk = await NewCompany.AddNewCargoTypes();
         // if (!resOk) {
@@ -55,29 +65,34 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         //
         // resOk = await NewCompany.AddNewPhoneNumber();
         // if (!resOk){
-        //     throw `FAIL => AddNewPhoneNumber`;
+        //     throw `FAIL => NewCompany.AddNewPhoneNumber`;
         // }
         //
         // resOk = await NewCompany.AddNewEmail();
         // if (!resOk){
-        //     throw `FAIL => AddNewEmail`;
+        //     throw `FAIL => NewCompany.AddNewEmail`;
         // }
         //
         // resOk = await NewCompany.AddNewLink();
         // if (!resOk){
-        //     throw `FAIL => AddNewLink`;
+        //     throw `FAIL => NewCompany.AddNewLink`;
         // }
         //
         // resOk = await NewCompany.AddNewContract();
         // if (!resOk){
-        //     throw `FAIL => AddNewContract`;
+        //     throw `FAIL => NewCompany.AddNewContract`;
         // }
 
 
         resOk = await NewCompany.AddNewLocation();
         if (!resOk){
-            throw `FAIL => AddNewLocation`;
+            throw `FAIL => NewCompany.AddNewLocation`;
         }
+
+        // resOk = await NewCompany.AddExistsLocation();
+        // if (!resOk){
+        //     throw `FAIL => NewCompany.AddExistsLocation`;
+        // }
 
 // СОХРАНИТЬ КОМПАНИЮ ---------------------------------------
 
@@ -94,8 +109,12 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
 
 // Компания успешно сохранена!
 
-        let WarningText = await WarningCheck(page);
-        if(WarningText === 'Компания успешно сохранена!'){
+        let WarningText = await WarningCheck(page, 5000);
+        if (WarningText === '') {
+            WarningText = await WarningCheck(page);
+        }
+
+        if(await SubStrIsPresent('Компания успешно сохранена!', WarningText)){
             resOk = true;
         }else{
             resOk = false;
@@ -103,14 +122,14 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
 
         if (resOk) {
             //await console.log('\x1b[38;5;2m', "Вижу =>", xPath, '\x1b[0m');
-
+            await console.log('\x1b[38;5;2m', `WarningText = ${WarningText}` , '\x1b[0m');
             g_StatusCurrentTest = 'Пройден';
             await g_SuccessfulTests++;
             await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
             g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
             CompanyData.returnResult = true;
             //await page.waitFor(11000);
-            return CompanyData;//<------------------EXIT !!!
+            //return CompanyData;//<------------------EXIT !!!
         }else {
             //await console.log('\x1b[38;5;1m', "Не Вижу =>", xPath, '\x1b[0m');
             await console.log('\x1b[38;5;1m', "!!!! На странице Компании что то пошло не так !!!" , '\x1b[0m');
@@ -121,7 +140,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
             CompanyData.returnResult = false;
             //await page.waitFor(11000);
-            return CompanyData;//<------------------EXIT !!!
+            //return CompanyData;//<------------------EXIT !!!
         }
 
     }catch (err) {
@@ -133,7 +152,9 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         CompanyData.returnResult = false;
         //await page.waitFor(5001111);
     }
-
+    if(!CompanyData.returnResult){
+        await page.screenshot({path: PathSS + 'screenshot_CompanyCreateNewV2.png'});
+    }
     return CompanyData;//<------------------EXIT !!!
 };// End Test CompanyCreateNewV2
 

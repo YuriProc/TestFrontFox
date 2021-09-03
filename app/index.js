@@ -136,9 +136,30 @@ let OpenFox = async () => {
        // returnResult = await CCEPage.CompanyCheckExist(page, CompanyData1.strCodeCompany);
        // await console.log('\x1b[38;5;2m', "         CompanyCheckExist(", CompanyData1.strCodeCompany, ")=>", returnResult, '\x1b[0m');
         // X) создаём тестовую компанию CompanyData1 43257059
-        CompanyData1.strCodeCompany = '14180856';
+        CompanyData1.strCodeCompany = '14180856';//'43092634';//'14180856';
+        for(let i=1;100;i++) {
 
-        CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData1);
+
+            CompanyData1.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
+            CompanyData1.EmailData.strEmail = 'mail' + await randomInt(1001010, 9989999) + '@test.gmail';
+            CompanyData1.LinkData.strLink = await GetFunnyUrl('Funny_Page_URL') + '/x='+ await randomInt(1001010, 9989999);
+            CompanyData1.LocationData2.strAddressFOX = await GetFunnyStr('StrAddressFunny');
+            CompanyData1.LocationData2.ContactData.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
+            CompanyData1.LocationData2.ContactData.strINN = '' + await randomInt(1001001001, 9991999199);
+            CompanyData1.LocationData2.ContactData.strLastName = await GetFunnyStr('StrLastNameFunny');//Фамилия
+            CompanyData1.LocationData2.ContactData.strFirstName = await GetFunnyStr('StrFirstNameFunny');//Имя
+            CompanyData1.LocationData2.ContactData.strMiddleName = await GetFunnyStr('StrMiddleNameFunny');//Отчество
+
+
+
+
+
+            CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData1);
+            if (!CompanyData1.returnResult) {
+                throw `Не получилось создать компанию (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
+            }
+            await WaitRender(page);
+        }
         if (!CompanyData1.returnResult) {
             throw `Не получилось создать компанию (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
         }

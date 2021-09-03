@@ -79,12 +79,19 @@ class Email {
                 throw `FAIL => Заголовок в Модалке "E-mail адрес"  WaitForElementIsPresentByXPath (${this.xModalTitleEmailAddress})`;
             }
             // Инпут "E-mail адрес"
-            resOk = await ClickByXPath(this.page, this.xInputEmailAddress);
+            // resOk = await ClickByXPath(this.page, this.xInputEmailAddress);
+            // if (!resOk){
+            //     throw `FAIL => Инпут "E-mail адрес" ClickByXPath(${this.xInputEmailAddress})`;
+            // }
+            // await this.page.waitFor(200);
+            // await this.page.keyboard.type(this.EmailData.strEmail, {delay: 20});
+
+
+            resOk = await SetTextByXPath(this.page, this.xInputEmailAddress, this.EmailData.strEmail);
             if (!resOk){
-                throw `FAIL => Инпут "E-mail адрес" ClickByXPath(${this.xInputEmailAddress})`;
-            }
-            await this.page.waitFor(200);
-            await this.page.keyboard.type(this.EmailData.strEmail, {delay: 20});
+                    throw `FAIL => Инпут "E-mail адрес" ClickByXPath(${this.xInputEmailAddress})`;
+                }
+            //await TempStop(this.page);
 
             // Чек Бокс "Skype"
             if (this.EmailData.isSkype) {

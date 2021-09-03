@@ -112,20 +112,21 @@ GetExceptions = async function (page) {
 // };
 
 //-----------------------------------------------------------------------------------
-WarningCheck = async function (page) {
+WarningCheck = async function (page, timeout = 1000) {
 
     try {
         let myXPath = `//div[@class="notification-content"]`;
         let ResOk;
         let strInnerText;
         let qLength;
-        ResOk = await WaitForElementIsPresentByXPath(1000, page, myXPath );
+
+        ResOk = await WaitForElementIsPresentByXPath(timeout, page, myXPath );
         if (!ResOk){
             return '';
         }else {
             qLength = await ElementGetLength(page, myXPath);
             strInnerText = await ElementGetInnerText(page, qLength-1, myXPath);
-            await console.log('\x1b[38;5;2m', `         WarningCheck => (${strInnerText})`, '\x1b[0m');
+            await console.log('\x1b[38;5;3m', `         WarningCheck => (${strInnerText})`, '\x1b[0m');
             ResOk = await ClickByXPathNum(page, qLength-1, myXPath);
             await WaitUntilPageLoads(page);
             qLength = await ElementGetLength(page, myXPath);
@@ -139,7 +140,7 @@ WarningCheck = async function (page) {
         }
 
     }catch (e) {
-        await console.log('\x1b[38;5;2m', "WarningCheck => error=>",e, '\x1b[0m');
+        await console.log('\x1b[38;5;1m', "WarningCheck => error=>",e, '\x1b[0m');
         return false;
     }
 }
@@ -213,6 +214,7 @@ WaitRender = async function (page, timeout = 30000) {
     let checkCounts = 1;
     let countStableSizeIterations = 0;
     const minStableSizeIterations = 3;
+    await page.waitFor(checkDurationMsecs);
 
     while(checkCounts++ <= maxChecks){
         let html = await page.content();
@@ -446,6 +448,7 @@ ElementGetInnerText = async function (page , Num, MyXPath) {
             return PropInnerText;
         }
     }catch (e) {
+        await console.log('\x1b[38;5;1m', `FAIL -> ElementGetInnerText Num:${Num}; MyXPath:(${MyXPath})\n ${e} \n`, '\x1b[0m');
         return '';
     }
 };
@@ -547,6 +550,7 @@ ElementIsChecked = async function (page , Num, MyXPath) {
   }
 };
 //-----------------------------------------------------------------------------------
+//
 ClickByXPath = async function (page , MyXPath) {
     try {let resOk;
        //  resOk = await WaitForElementIsPresentByXPath(4000, page, MyXPath);
@@ -583,6 +587,49 @@ ClickByXPath = async function (page , MyXPath) {
         return false;
     }
 };
+//-------------------------
+ClickByXPath_PromiseAll = async function (page , MyXPath) {
+    try {let resOk;
+        //  resOk = await WaitForElementIsPresentByXPath(4000, page, MyXPath);
+        //  //https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagewaitforxpathxpath-options
+        //  // let resOk = await page.waitForXPath(MyXPath, {
+        //  //     visible: true, timeout: 4000
+        //  // }); // Возвращает ошибку в консоли, если не дождался или не видим
+        // if (!resOk) {
+        //     await console.log(`Ошибка внутр ClickByXPath/WaitForElementIsPresentByXPath:${MyXPath}`,'\n');
+        //     return false;
+        // }
+        resOk = await ElementIsVisible(page, MyXPath);
+        if (!resOk) {
+            //await console.log(`Ошибка внутр ClickByXPath/ElementIsVisible:${MyXPath}`,'\n');
+            return false;
+        }
+        //await console.log(`ElementIsVisible${resOk}`,'\n');
+        const linkHandlers = await page.$x(MyXPath);
+
+        if ((await linkHandlers.length) === 1) {
+            //await linkHandlers[0].click({ clickCount:20, delay: 500 });
+            // await linkHandlers[0].hover();
+            // await page.waitFor(500);
+            await Promise.all([
+                //page.click('#submit_button'),
+                linkHandlers[0].click(),
+                page.waitForNavigation({ waitUntil: 'networkidle0' })
+            ]);
+            //await linkHandlers[0].click({waitUntil: networkidle0});
+            //await linkHandlers[0]._scrollIntoViewIfNeeded()
+            //await page.evaluate(el => el.click(), linkHandlers[0]);
+            return true;
+        } else {
+            await console.log('Ошибка внутр ClickByXPath:( linkHandlers.length=',linkHandlers.length , ')','\n',`XPath=`,MyXPath,'\n');
+            return false;
+        }
+    }catch (e) {
+        await console.log(`Ошибка внутр ClickByXPath:${MyXPath}`, e ,'\n');
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------- ({ clickCount: 2 });
 DoubleClickByXPath = async function (page , MyXPath) {
     try {
@@ -645,6 +692,8 @@ ClickByXPathWithScroll = async function (timeMS, page , MyXPath) {
     try {
         if (await elHandle.length > 0) {
 
+            await page.evaluate(el => el.scrollIntoView(), elHandle[0]);
+            await page.waitFor(500);
             await page.evaluate(el => el.scrollIntoView(), elHandle[0]);
             await page.waitFor(500);
             while (!await ClickByXPath(page, MyXPath)) {
@@ -923,6 +972,72 @@ TypeByXPath = async function (page , MyXPath, MyText) {
     const linkHandlers = await page.$x(MyXPath);
     if (linkHandlers.length === 1) {
         await linkHandlers[0].type(MyText);
+        return true;
+    }else{
+        return false;
+    }
+}
+// Дождаться появления
+
+//-----------------------------------------------------------------------------------
+TypeByXPath__PromiseAll = async function (page , MyXPath, MyText) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        if (linkHandlers.length === 1) {
+            //await linkHandlers[0].type(MyText);
+            // const res = await Promise.all([
+            //     linkHandlers[0].type(MyText),
+            //     //linkHandlers[0].click(),
+            //      page.waitForNavigation({ waitUntil: 'networkidle2' })
+            //     //page.waitForNavigation({waitUntil: 'domcontentloaded'})
+            //
+            // ]);
+
+            // const waitforNav = page.waitForNavigation({ waitUntil: 'networkidle0' ,timeout: 5000});
+            // await linkHandlers[0].type(MyText);
+            // await waitforNav;
+            const [response] = await Promise.all([
+
+                page.waitForNavigation({
+                    waitUntil: 'load'
+                }),
+                linkHandlers[0].type(MyText)
+            ]);
+
+            return true;
+        } else {
+            return false;
+        }
+    }catch (e) {
+        return false;
+    }
+}
+//-----------------------------------------------------------------------------------
+SetTextByXPath = async function (page , MyXPath, MyText) {
+    const linkHandlers = await page.$x(MyXPath);
+    let TempText = await MyText.substr(0, MyText.length - 1);
+    let LastText = await MyText.substr(MyText.length - 1, 1);
+    if (linkHandlers.length === 1) {
+
+        //await linkHandlers[0].click();
+
+        // await console.log(`SetTextByXPath:(${MyText})`);
+        // await console.log(`TempText:(${TempText})`);
+        // await console.log(`LastText:(${LastText})`);
+
+        await page.evaluate((el, value) => el.value = value, linkHandlers[0], TempText);
+        //await TypeByXPath(page , MyXPath, ' ');
+
+        // await page.keyboard.sendCharacter(String.fromCharCode(32)); //32 - пробел; 13 - enter; 8 - Del
+        // await page.waitFor(1000);
+        // await page.keyboard.sendCharacter(String.fromCharCode(8));
+        // await page.keyboard.press('Space');
+        // await page.waitFor(50);
+        // await page.keyboard.press('Backspace');
+        await linkHandlers[0].type(LastText);
+
+        //await console.log(`SetTextByXPath:(${MyText})`);
+
         return true;
     }else{
         return false;

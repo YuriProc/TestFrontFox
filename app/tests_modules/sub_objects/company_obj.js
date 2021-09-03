@@ -12,6 +12,10 @@ class Company{
         this.xInputINN = '//input[@type="number"][@placeholder="Введите ЕДРПОУ/ИНН"]';
         // Кнопка "Проверить в базе"
         this.xButtonCheckInBase = `//button[@type="submit"][contains(text(), "Проверить в базе")]`;
+        // Плашка блокировки одновременного редаетирования Кнопка "Хочу быть первым"
+        this.xBlockButtonWantFirst = `//div[@class="lock-button"][contains(text(), "Хочу быть первым")]`;
+        // Плашка блокировки одновременного редаетирования Кнопка "Кикнуть первого"
+        this.xBlockButtonKickFirst = `//div[@class="lock-button"][contains(text(), "Кикнуть первого")]`;
         // Хеадер "Данные о компании"
         this.xHeaderDataCompany = `//h5[contains(text(), "Данные о компании")]`;
         // Хеадер "Контактные данные"
@@ -31,6 +35,10 @@ class Company{
         this.xTypesCompanyDel = `//div[@class="crm-select__delete-tag-btn"]/i[@class="icon-cancel"]`;
         // Контактные данные -> Контакты
         this.ContactDataContacts = `//div[@class="relations__item"]/label[contains(text(),"Контакты")]`;
+        // Контактные данные -> Контакты "Plus"
+        this.ContactDataContactsPlus = `//div[@class="relations__item"][label[contains(text(),"Контакты")]]`;
+        this.ContactDataContactsPlus+= `//div[@class="add-button"][i[@class="icon-plus"]]`;
+
         //Проверка открытия ТАБА Контакты
         this.xTabContacts = `//li[@role="presentation"]/a[@role="tab"][@aria-selected="true"][contains(text(),"Контакты")]`;
         //Табличное редактирование, строка с типом Директор
@@ -106,7 +114,7 @@ class Company{
                 throw `FAIL => Вводим код ЕДРПОУ SetInputByXPath (${this.xInputINN})`;
             }
             // Жмём Кнопка "Проверить в базе"
-            resOk = await ClickByXPath(this.page, this.xButtonCheckInBase);
+            resOk = await ClickByXPath_PromiseAll(this.page, this.xButtonCheckInBase);
             if (!resOk) {
                 throw `FAIL => Жмём Кнопка "Проверить в базе" ClickByXPath(${this.xButtonCheckInBase})`;
             }
@@ -145,20 +153,20 @@ class Company{
 
             return true;
         }catch (e) {
-
-            await console.log(`FAIL in ClickCompanyCreateNewPlus ${e} \n`);
+            await console.log(`${e} \n FAIL in ClickCompanyCreateNewPlus\n`);
             return false;
         }
-    }
+    } // async ClickCompanyCreateNewPlus(){
     //-------------------
     async CheckCompanyForm(){
         try{
             let resOk;
+            let elPresent;
             await WaitRender(this.page);
             await WaitRender(this.page);
 
             // Хеадер "Данные о компании"
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xHeaderDataCompany);
+            resOk = await WaitForElementIsPresentByXPath(5000, this.page, this.xHeaderDataCompany);
             if (!resOk) {
 
                 //await TempStop(this.page);
@@ -179,6 +187,7 @@ class Company{
             if (this.CompanyData.strCompanyName === '') {
                 await console.log(`ElementGetInnerText = ""`);
                 //await TempStop(this.page);
+                await this.page.screenshot({path: PathSS + 'screenshot_strCompanyName.png'});
                 throw `FAIL => Не вижу (Название Компании(ElementGetInnerText = "")) \n ${this.xHeaderCompanyName}`;
             }
             // Статус Компании
@@ -201,10 +210,34 @@ class Company{
                 throw `Warning!!! => Попалась Компания со Статусом "${this.CompanyData.strStatusCompany}"`;
             }
 
+            // Плашка блокировки одновременного редаетирования Кнопка "Кикнуть первого"
+            elPresent = await WaitForElementIsPresentByXPath(0, this.page, this.xBlockButtonKickFirst);
+            let i= 10;
+            while (elPresent && i>0) {
+
+                await ClickByXPath(this.page, this.xBlockButtonKickFirst);
+
+                await this.page.screenshot({path: PathSS + `screenshot_block${i}.png`});
+                i--;
+                await WaitRender(this.page);
+                await WaitRender(this.page);
+                await WaitRender(this.page);
+                elPresent = await WaitForElementIsPresentByXPath(0, this.page, this.xBlockButtonKickFirst);
+                if (!elPresent) {
+                    await WaitRender(this.page);
+                    await WaitRender(this.page);
+                    await WaitRender(this.page);
+
+                }
+            }
+
+
+            await console.log('\x1b[38;5;2m',`      OK => CheckCompanyForm`,'\x1b[0m');
+
         return true;
 
         }catch (e) {
-            await console.log(`FAIL in CheckCompanyForm ${e} \n`);
+            await console.log(`${e} \n FAIL in CheckCompanyForm\n`);
             return false;
         }
     }//async CheckCompanyForm()
@@ -241,12 +274,17 @@ class Company{
                 throw tStr;//<--специальный вызов ошибки!
             }
             // Удаляем все типы Компании
+            //await console.log(`StrAllTypesCompany[${StrAllTypesCompany}]`);
             let TypesCount = 0;
             for (let i = 0; i < 4; i++) {
                 if (TypesCompPres[i]) {
                     TypesCount++;
+                    //await console.log(`TypesCompPres[${i}]`);
                     resOk = await ClickByXPath(this.page, this.xTypesCompanyDel);
                     if (!resOk) {
+                        await this.page.screenshot({path: PathSS + `screenshot_del_company_type.png`});
+                        await console.log(`FAIL => Del "Тип Компании" крестик`);
+                        //await TempStop(this.page);
                         throw `FAIL => Del "Тип Компании" крестик (${this.xTypesCompanyDel})`;
                     }
                 }
@@ -264,6 +302,7 @@ class Company{
                 xPathTypes = `//span[contains(@class, "multiselect__option")]/span[contains(text(), "${this.CompanyData.strCompanyTypes[i]}")]`;
                 resOk = await ClickByXPath(this.page, xPathTypes);
                 if (!resOk) {
+                    await this.page.screenshot({path: PathSS + 'screenshot_add_company_type.png'});
                     await console.log(`FAIL => Добавить "Тип Компании" (${xPathTypes}) `);
                     //await TempStop(page);
                     throw `FAIL => Добавить "Тип Компании" (${xPathTypes})`;
@@ -271,7 +310,7 @@ class Company{
             }
             return true;
         }catch (e) {
-            await console.log(`FAIL in AddNewCompanyTypes ${e} \n`);
+            await console.log(`${e} \n FAIL in AddNewCompanyTypes\n`);
             return false;
         }
     }//async AddNewCompanyTypes()
@@ -307,10 +346,36 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in CheckBossPresent ${e} \n`);
+            await console.log(`${e} \n FAIL in CheckBossPresent\n`);
             return false;
         }
     }//async CheckBossPresent()
+    //--------------------------------------------------------------------
+    async CreateNewContactForLocation(){ // Создадим новый контакт, который будет добавлен в локацию
+        try{
+            let xPath, resOk;
+            await WaitRender(this.page);
+            // Контактные данные -> Контакты "Plus"
+            resOk = await ClickByXPath(this.page, this.ContactDataContactsPlus);
+            if (!resOk){
+                throw `FAIL => Контактные данные -> Контакты "Plus" ClickByXPath(${this.ContactDataContactsPlus})`;
+            }
+            var {Contact} = require("../sub_objects/contact_obj.js");
+            let NewContact = new Contact(this.browser, this.page, this.CompanyData.LocationData1.ContactData);
+
+            resOk = await NewContact.CreateNewContactFromCompanies();
+            if (!resOk){
+                throw `FAIL => NewContact.CreateNewContactFromCompanies`;
+            }
+
+            await WaitRender(this.page);
+
+            return true;
+        }catch (e) {
+            await console.log(`${e} \n FAIL in CreateNewContactForLocation\n`);
+            return false;
+        }
+    }//async CreateNewContactForLocation()
     //------------------
     async AddNewCargoTypes(){
         try{
@@ -337,7 +402,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in AddNewCargoTypes ${e} \n`);
+            await console.log(`${e} \n FAIL in AddNewCargoTypes\n`);
             return false;
         }
     }//async AddNewCargoTypes()
@@ -360,7 +425,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in OpenModalTableCargoTypes ${e} \n`);
+            await console.log(`${e} \n FAIL in OpenModalTableCargoTypes\n`);
             return false;
         }
     }//async OpenModalTableCargoTypes()
@@ -378,9 +443,10 @@ class Company{
             }
             while(QElem>0) {
                 // Типы Грузов Корзина Удалить
+                await console.log(` DeleteAllPresentCargoTypes ${QElem}`);
                 resOk = await ClickByXPathNum(this.page, 0, this.xDelCargoTypes);
                 if (!resOk) {
-                    //await console.log(`сука бля DeleteAllPresentCargoTypes`);
+                    //await console.log(` DeleteAllPresentCargoTypes`);
                     //await TempStop(page);
 
                     throw `FAIL => Клик по корзине DeleteAllPresentCargoTypes (${this.xDelCargoTypes})`;
@@ -391,7 +457,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in DeleteAllPresentCargoTypes ${e} \n`);
+            await console.log(`${e} \n FAIL in DeleteAllPresentCargoTypes\n`);
             return false;
         }
     }//async DeleteAllPresentCargoTypes()
@@ -433,6 +499,7 @@ class Company{
             await WaitRender(this.page);
             resOk = await ClickByXPath(this.page, this.xDropDownCargoType);
             if (!resOk){
+                await this.page.screenshot({path: PathSS + `screenshot_cargo_type_dropdown.png`});
                 throw `FAIL => Модалка инпут Тип груза Клик "Выбор в дропдауне"  (${this.xDropDownCargoType})`;
             }
             // Модалка Тип Груза инпут "Цена"
@@ -495,7 +562,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in AddOneCargoType ${e} \n`);
+            await console.log(`${e} \n FAIL in AddOneCargoType\n`);
             return false;
         }
     }//async AddOneCargoType()
@@ -512,7 +579,7 @@ class Company{
             await WaitRender(this.page);
             return true;
         }catch (e) {
-            await console.log(`FAIL in CloseModalTableCargoTypes ${e} \n`);
+            await console.log(`${e} \n FAIL in CloseModalTableCargoTypes\n`);
             return false;
         }
     }//async CloseModalTableCargoTypes()
@@ -542,7 +609,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in AddNewPhoneNumber ${e} \n`);
+            await console.log(`${e} \n FAIL in AddNewPhoneNumber\n`);
             return false;
         }
     }//async AddNewPhoneNumber()
@@ -572,7 +639,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in AddNewEmail ${e} \n`);
+            await console.log(`${e} \n FAIL in AddNewEmail\n`);
             return false;
         }
     }//async AddNewEmail()
@@ -602,7 +669,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in AddNewLink ${e} \n`);
+            await console.log(`${e} \n FAIL in AddNewLink\n`);
             return false;
         }
     }//async AddNewLink()
@@ -631,7 +698,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in AddNewContract ${e} \n`);
+            await console.log(`${e} \n FAIL in AddNewContract\n`);
             return false;
         }
     }//async AddNewContract()
@@ -640,7 +707,13 @@ class Company{
         try{let resOk;
 
             var {Location} = require("../sub_objects/location_obj.js");
-            let NewLocation = new Location(this.browser, this.page , this.CompanyData.LocationData);
+            // this.CompanyData.LocationData1.strCompanyName = this.CompanyData.strCompanyName;
+            // this.CompanyData.LocationData1.strCodeCompany = this.CompanyData.strCodeCompany;
+            //
+            // this.CompanyData.LocationData1.ContactData.strWorkOnCompany = this.CompanyData.strCompanyName;
+            // this.CompanyData.LocationData1.ContactData.strWorkOnCompanyEDRPOU = this.CompanyData.strCodeCompany;
+
+            let NewLocation = new Location(this.browser, this.page , this.CompanyData.LocationData1);
             resOk = await NewLocation.clickLocation();
             if (!resOk){
                 throw `FAIL => NewLocation.clickLocation`;
@@ -676,13 +749,70 @@ class Company{
             }
             return true;
         }catch (e) {
-            await console.log(`FAIL in AddNewLocation ${e} \n`);
+            await console.log(`${e} \n FAIL in AddNewLocation\n`);
             return false;
         }
     }//async AddNewLocation()
+    //------------------------------------------------------------------------------------
+    async AddExistsLocation(){
+        try{let resOk;
+
+            var {Location} = require("../sub_objects/location_obj.js");
+            this.CompanyData.LocationData2.strCompanyName = this.CompanyData.strCompanyName;
+            this.CompanyData.LocationData2.strCodeCompany = this.CompanyData.strCodeCompany;
+
+            this.CompanyData.LocationData2.ContactData.strWorkOnCompany = this.CompanyData.strCompanyName;
+            this.CompanyData.LocationData2.ContactData.strWorkOnCompanyEDRPOU = this.CompanyData.strCodeCompany;
+
+            let NewLocation = new Location(this.browser, this.page , this.CompanyData.LocationData2);
+            resOk = await NewLocation.clickLocation();
+            if (!resOk){
+                throw `FAIL => NewLocation.clickLocation`;
+            }
+
+            resOk = await NewLocation.deleteAllLocations();
+            if (!resOk){
+                throw `FAIL => NewLocation.deleteAllLocations`;
+            }
+
+            resOk = await NewLocation.clickPlusAddLocations();
+            if (!resOk){
+                throw `FAIL => NewLocation.clickPlusAddLocations`;
+            }
+
+            this.CompanyData.LocationData2.strAddressFOX = `Херсон`;
+            resOk = await NewLocation.EnterExistsAddressAndPressAdd();
+            if (!resOk){
+                throw `FAIL => NewLocation.EnterExistsAddressAndPressAdd`;
+            }
+            // NewLocation.pageTableLocations = this.page;
+            resOk = await NewLocation.EnterDataInExistsLocation();
+            if (!resOk){
+                throw `FAIL => NewLocation.EnterDataInExistsLocation`;
+            }
+
+            resOk = await NewLocation.clickSaveLocation();
+            if (!resOk){
+                throw `FAIL => NewLocation.clickSaveLocation`;
+            }
 
 
-    //------------------
+
+
+            resOk = await NewLocation.clickCloseLocationTable();
+            if (!resOk){
+                throw `FAIL => NewLocation.clickCloseLocationTable`;
+            }
+
+            return true;
+        }catch (e) {
+            await console.log(`${e} \n FAIL in AddExistsLocation\n`);
+            return false;
+        }
+    }//async AddExistsLocation()
+
+
+    //------------------------------------------------------------------------------------
     async TemplateTemp(){
         try{let resOk;
 
@@ -693,8 +823,7 @@ class Company{
         }
     }//async TemplateTemp()
 
-    //-------------------
-
+    //------------------------------------------------------------------------------------
 
 }
 

@@ -92,12 +92,18 @@ class Phone {
                 throw `FAIL => Заголовок в Модалке "Номер телефона"  WaitForElementIsPresentByXPath (${this.xModalTitlePhoneNumber})`;
             }
             // Инпут "Введите номер телефона"
-            resOk = await ClickByXPath(this.page, this.xInputPhoneNumber);
+            // resOk = await ClickByXPath(this.page, this.xInputPhoneNumber);
+            // if (!resOk){
+            //     throw `FAIL => Инпут "Введите номер телефона" ClickByXPath(${this.xInputPhoneNumber})`;
+            // }
+            // await this.page.waitFor(200);
+            // await this.page.keyboard.type(this.PhoneData.strPhoneNumber, {delay: 20});
+
+
+            resOk = await SetTextByXPath(this.page, this.xInputPhoneNumber, this.PhoneData.strPhoneNumber);
             if (!resOk){
                 throw `FAIL => Инпут "Введите номер телефона" ClickByXPath(${this.xInputPhoneNumber})`;
             }
-            await this.page.waitFor(200);
-            await this.page.keyboard.type(this.PhoneData.strPhoneNumber, {delay: 20});
 
             // Чек Бокс "Telegram"
             if (this.PhoneData.isTelegram) {

@@ -105,12 +105,16 @@ class Contract{
     async deleteAllContracts(){
         try {
             let resOk, QElem;
-            await WaitUntilPageLoads(this.page);
+            await WaitRender(this.page);
             //Табличное редактирование, вкладка "Договора", первая кнопка "Корзина" (Удаление Договора - первого в таблице)
             QElem = await ElementGetLength(this.page, this.xDelete);
             while(QElem>0) {
+                await console.log(`deleteAllContracts ${QElem}`);
                 resOk = await ClickByXPathNum(this.page, 0, this.xDelete);
                 if (!resOk){
+                    await this.page.screenshot({path: PathSS + `screenshot_del_contract.png`});
+                    await console.log(PathSS + `screenshot_del_contract.png`);
+                    await TempStop(this.page);
                     throw `FAIL => Табличное редактирование, вкладка "Договора", первая кнопка "Корзина" (Удаление Договора - первого в таблице)(${this.xDelete})`;
                 }
                 await WaitUntilPageLoads(this.page);
@@ -180,7 +184,7 @@ class Contract{
             await WaitUntilXPathExist(this.page, 4000, this.xButtonCreateContractDisabled);
             resOk = await WarningCheck(this.page);
             if (resOk !== '') {
-                if (resOk === 'Договор успешно создан') {
+                if ( await SubStrIsPresent('Договор успешно создан', resOk) ) {
 
                 } else {
                 throw ` FAIL => После Содания Договора есть Ошибка:(${resOk})`;

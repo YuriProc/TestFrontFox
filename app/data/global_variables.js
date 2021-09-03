@@ -1,5 +1,5 @@
 global.g_width = 1700;
-global.g_height = 950;
+global.g_height = 1000;
 
 // in file config.config
 
@@ -322,6 +322,12 @@ global.g_ArraySTR = {
         'Карачун',
         'Трахтенберг',
         'Гендальф',
+        'Педрищенко',
+        'Мух',
+        'Засос',
+        'Отсос',
+        'Шелудивый',
+
 
     ],
     'StrMiddleNameFunny' : [ //Отчество
@@ -353,6 +359,7 @@ global.g_ArraySTR = {
         'Луиджиевич',
         'Тараканович',
         'Водилович',
+
     ],
 };
 

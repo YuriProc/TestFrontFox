@@ -20,7 +20,7 @@ class Link {
         this.xInputLinkTypeDropDown+= `//input[@type="search"]`;
         // Дропдаун "Тип ссылки" Выбранный тип
         this.xInputLinkTypeDropDownSelected = `//fieldset[contains(@class,"form-group")][legend[contains(text(), "Тип ссылки")]]`;
-        this.xInputLinkTypeDropDownSelected+= `//ul[@role="listbox"]/li[@role="option"][@id="vs1__option-0"]`;
+        this.xInputLinkTypeDropDownSelected+= `//ul[@role="listbox"]/li[@role="option"][contains(@id, "option-0")]`;
         // Описаниие
         this.xLinkDescription = `//fieldset[contains(@class,"form-group")][legend[contains(text(), "Описание")]]`;
         this.xLinkDescription+= `//textarea[@wrap="soft"][@class="form-control"]`;
@@ -82,19 +82,26 @@ class Link {
                 throw `FAIL => Заголовок в Модалке "Ссылки"  WaitForElementIsPresentByXPath (${this.xModalTitleLink})`;
             }
             // Инпут "Ссылка"
-            resOk = await ClickByXPath(this.page, this.xInputLink);
+            // resOk = await ClickByXPath(this.page, this.xInputLink);
+            // if (!resOk){
+            //     throw `FAIL => Инпут "Ссылка" ClickByXPath(${this.xInputLink})`;
+            // }
+            resOk = await SetTextByXPath(this.page, this.xInputLink, this.LinkData.strLink);
             if (!resOk){
-                throw `FAIL => Инпут "Ссылка" ClickByXPath(${this.xInputLink})`;
+                throw `FAIL => Инпут "Ссылка" TypeByXPath(${this.xInputLink})`;
             }
-            await this.page.waitFor(200);
-            await this.page.keyboard.type(this.LinkData.strLink, {delay: 20});
+
+            //await this.page.waitFor(4000);
+            // await this.page.waitFor(200);
+            // await this.page.keyboard.type(this.LinkData.strLink, {delay: 20});
+            // await this.page.waitFor(200);
             // Дропдаун "Тип ссылки"
             resOk = await ClickByXPath(this.page, this.xInputLinkTypeDropDown);
             if (!resOk){
                 throw `FAIL => Клик по Дропдаун "Тип ссылки"(${this.xInputLinkTypeDropDown})`;
             }
             await this.page.waitFor(200);
-            await this.page.keyboard.type(this.LinkData.strLinkType, {delay: 20});
+            await this.page.keyboard.type(this.LinkData.strLinkType, {delay: 30});
             await WaitRender(this.page);
             // Дропдаун "Тип ссылки" Выбранный тип
             resOk = await ClickByXPath(this.page, this.xInputLinkTypeDropDownSelected);
@@ -103,9 +110,9 @@ class Link {
             }
             await WaitRender(this.page);
             // Описаниие
-            resOk = await TypeByXPath(this.page, this.xLinkDescription, this.LinkData.strDescription);
+            resOk = await SetTextByXPath(this.page, this.xLinkDescription, this.LinkData.strDescription);
             if (!resOk){
-                throw `FAIL => Модалка "Ссылки" Описаниие TypeByXPath(${this.xLinkDescription})`;
+                throw `FAIL => Модалка "Ссылки" Описаниие SetTextByXPath(${this.xLinkDescription})`;
             }
             // Кнопка "Сохранить"
             resOk = await ClickByXPath(this.page, this.xButtonSave);
@@ -126,6 +133,7 @@ class Link {
             // Закрыть Таблицу Ссылки
             resOk = await ClickByXPath(this.page, this.xCloseTable);
             if (!resOk) {
+                await TempStop(this.page);
                 throw `FAIL => Клик Закрываем Модалку Таблицы Ссылки(${this.xCloseTable})`;
             }
 

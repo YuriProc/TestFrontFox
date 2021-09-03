@@ -2,14 +2,18 @@
 // require('../app/global_functions_cfo').global;
 let SetAllDataVariables = async () => {
     try {
+        //
+        strDialogMessage = ``;
+// путь к папке скриншотов
+        PathSS = `screenshots/`;
 
 // Юзер 1 Данные для логина
 LoginDataT = {
-    strUserFirstName: 'Тест',
-    strUserLastName: 'Тостер',
-    strUserMiddleName: 'Тостерович',
+    strUserFirstName: 'Тест',//'Валентин',// 'Тест', Синицький Валентин Петрович
+    strUserLastName: 'Тостер',//'Синицький',// 'Тостер',
+    strUserMiddleName: 'Тостерович',//'Петрович',// 'Тостерович',
     strLogin: 'test',
-    strEmail: 'test@test.com',
+    strEmail: 'test@test.com',//'sinickiy.v@transpower.app',//'test@test.com',
     strPassword: '12345',
     //ResolvedFailLogin : true, // <- Можно или нельзя Фейлиться по Email или Пароль
     // Если можно то в случае (Неверный e-mail или пароль) +1 g_SuccessfulTests
@@ -48,16 +52,18 @@ CompanyData1 = {
         strDelayDays: '7',
         strPaymentCondition: 'По банковским', // 'По банковским', 'По календарным'
     },
-    LocationData: {
-        strAddressFOX: 'Дрочево',
-        strAddressTTN: 'Юридический адрес (Для ТТН и заявок) Дрочево',
+    LocationData1: {
+        strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', 'StrAddress'
+        strAddressTTN: `Юридический адрес (Для ТТН и заявок) ${(this.strAddressFOX)} Дрочево`,
         strCategory: ['Грузополучатель','Грузоотправитель','Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
         strLoadingTime: '2',
         strUnLoadingTime: '3',
         strLocationType: 'Склад',
         strIndustryType: 'Алкоголь',
         strContactName: 'АА Джамшут ББ',
-        strCompanyName: 'ЧЛЕН',//CompanyData1.strCompanyName,//'',
+        strCompanyName: 'ЧЛЕН',// Заполнить в AddNewLocation из CompanyData !!!
+        strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+        strLocationName: `Название Локации1`,
         ContactData: {
             PhoneData: {
                 strPhoneNumber: '38067' + await randomInt(1001010, 9989999),
@@ -75,6 +81,45 @@ CompanyData1 = {
             strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
             strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
             strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+            strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
+            strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
+
+
+        },
+
+    },
+    LocationData2: {
+        strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', 'StrAddress'
+        strAddressFOXfromGoogle: ``,
+        strAddressTTN: `Юридический адрес (Для ТТН и заявок) ${(this.strAddressFOX)} Дрочево`,
+        strCategory: ['Грузополучатель','Грузоотправитель','Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
+        strLoadingTime: '2',
+        strUnLoadingTime: '3',
+        strLocationType: 'Склад',
+        strIndustryType: 'Алкоголь',
+        strContactName: 'АА Джамшут ББ',
+        strCompanyName: 'ЧЛЕН',// Заполнить в AddNewLocation из CompanyData !!!
+        strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+        strLocationName: `Название Локации2`,
+        ContactData: {
+            PhoneData: {
+                strPhoneNumber: '38067' + await randomInt(1001010, 9989999),
+                isTelegram: true,
+                isViber : true,
+                isSkype : true,
+                isWhatsApp : true,
+                isToplyvo : false,
+                isRouming : false,
+                isDefault : true,
+                isFormer : false,
+            },
+            strINN: '' + await randomInt(1001001001, 9991999199),
+            strContactType: `Кладовщик`,
+            strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
+            strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
+            strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+            strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
+            strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
 
 
         },
