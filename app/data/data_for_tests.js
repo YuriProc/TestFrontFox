@@ -9,11 +9,11 @@ let SetAllDataVariables = async () => {
 
 // Юзер 1 Данные для логина
 LoginDataT = {
-    strUserFirstName: 'Тест',//'Валентин',// 'Тест', Синицький Валентин Петрович
-    strUserLastName: 'Тостер',//'Синицький',// 'Тостер',
-    strUserMiddleName: 'Тостерович',//'Петрович',// 'Тостерович',
+    strUserFirstName: 'Валентин',//'Валентин',// 'Тест', Синицький Валентин Петрович
+    strUserLastName: 'Синицький',//'Синицький',// 'Тостер',
+    strUserMiddleName: 'Петрович',//'Петрович',// 'Тостерович',
     strLogin: 'test',
-    strEmail: 'test@test.com',//'sinickiy.v@transpower.app',//'test@test.com',
+    strEmail: 'sinickiy.v@transpower.app',//'sinickiy.v@transpower.app',//'test@test.com',
     strPassword: '12345',
     //ResolvedFailLogin : true, // <- Можно или нельзя Фейлиться по Email или Пароль
     // Если можно то в случае (Неверный e-mail или пароль) +1 g_SuccessfulTests
@@ -43,8 +43,6 @@ CompanyData1 = {
     boolIsOurCompany: false,
     boolNeedCheck: false,
     strManagers: [LoginDataT.strUserLastName, 'Гриневич'],
-    strDelayDays: '7',
-    strPaymentCondition: 'По банковским', // 'По календарным'
     ContractData: {
         strContractOurCompany: 'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
         strTransportationType: 'По Украине', // 'По Украине', 'Международная'
@@ -54,14 +52,15 @@ CompanyData1 = {
     },
     LocationData1: {
         strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', 'StrAddress'
-        strAddressTTN: `Юридический адрес (Для ТТН и заявок) ${(this.strAddressFOX)} Дрочево`,
+        strAddressFOXfromGoogle: ``,
+        strAddressTTN: `Юридический адрес (Для ТТН и заявок)`,
         strCategory: ['Грузополучатель','Грузоотправитель','Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
         strLoadingTime: '2',
         strUnLoadingTime: '3',
         strLocationType: 'Склад',
         strIndustryType: 'Алкоголь',
         strContactName: 'АА Джамшут ББ',
-        strCompanyName: 'ЧЛЕН',// Заполнить в AddNewLocation из CompanyData !!!
+        strCompanyName: 'ЧЛЕН',// Заполнить перед AddNewLocation из CompanyData !!!
         strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
         strLocationName: `Название Локации1`,
         ContactData: {
@@ -77,21 +76,18 @@ CompanyData1 = {
                 isFormer : false,
             },
             strINN: '' + await randomInt(1001001001, 9991999199),
-            strContactType: `Кладовщик`,
+            strContactType: `Логист`, // `Логист`,//`Кладовщик`, `Хозяин`, //
             strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
             strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
             strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
             strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
             strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
-
-
         },
-
     },
     LocationData2: {
         strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', 'StrAddress'
         strAddressFOXfromGoogle: ``,
-        strAddressTTN: `Юридический адрес (Для ТТН и заявок) ${(this.strAddressFOX)} Дрочево`,
+        strAddressTTN: `Юридический адрес (Для ТТН и заявок)`,
         strCategory: ['Грузополучатель','Грузоотправитель','Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
         strLoadingTime: '2',
         strUnLoadingTime: '3',
@@ -114,16 +110,13 @@ CompanyData1 = {
                 isFormer : false,
             },
             strINN: '' + await randomInt(1001001001, 9991999199),
-            strContactType: `Кладовщик`,
+            strContactType: `Логист`, // `Логист`,//`Кладовщик`, // `Хозяин`,
             strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
             strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
             strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
             strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
             strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
-
-
         },
-
     },
     strPhoneNumber: '38050' + await randomInt(1001010, 9989999),
     PhoneData: {
@@ -154,24 +147,167 @@ CompanyData1 = {
     strContractOurCompanyIs: 'Перевозчик',
 
     returnResult: false,
-}; //  CompanyData1
+} //  CompanyData1
 //---------------------------------------------------------------------------------------------------------------------
 CompanyData2 = {
-    strCodeCompany: await GetFunnyStr('StrCompanyCodeArray'),//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
-    strCompanyName: '',// <= Заполнится автоматически при создании Компании !!!
-    strCompanyTypes: ['Перевозчик',], // Заказчик // Перевозчик // Экспедитор
+    strCodeCompany: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+    strCompanyID: '', // <= Заполнится автоматически при проверке Компании !!!
+    strHref: '', // <= Заполнится автоматически при проверке Компании !!!
+    strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
+    strCompanyTypes: ['Перевозчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
+    strCargoType: 'Пляшка',//'Запчастини',
+    strCargoPrice: '100100',
+    strCargoVehicleType: `Тент`,
+    strCargoVehicleCapacity0: `20`,
+    strCargoVehicleCapacity1: `22`,
+    strCargoVehicleVolume0: `85`,
+    strCargoVehicleVolume1: `86`,
+    strCargoLoadingTypes: ['Бокова', 'Задня',],
     boolIsOurCompany: false,
     boolNeedCheck: false,
     strManagers: [LoginDataT.strUserLastName, 'Гриневич'],
-    strDelayDays: '7',
-    strPaymentCondition: 'По оригиналам банковских дней', // 'По оригиналам календарных дней'
+    ContractData: {
+        strContractOurCompany: 'ПЕРЕВОЗ',//'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
+        strTransportationType: 'По Украине', // 'По Украине', 'Международная'
+        strContractOurCompanyIs: 'Заказчик', // 'Заказчик' , 'Перевозчик'
+        strDelayDays: '3',
+        strPaymentCondition: 'По календарным', // 'По банковским', 'По календарным'
+    },
+    DriverData: { // Водила <------- !!!!!!
+        PhoneData: {
+            strPhoneNumber: '38067' + await randomInt(1001010, 9989999),
+            isTelegram: true,
+            isViber: true,
+            isSkype: true,
+            isWhatsApp: true,
+            isToplyvo: false,
+            isRouming: false,
+            isDefault: true,
+            isFormer: false,
+        },
+        strINN: '' + await randomInt(1001001001, 9991999199),
+        strContactType: `Водитель`, // `Логист`,//`Кладовщик`, // `Хозяин`,
+        strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
+        strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
+        strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+        strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
+        strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
+        strDriverLicenseNumber: `ПРВ` + await randomInt(100001, 999999),
+        Vehicles:[
+            {
+                VehicleData: {
+                    strLicensePlate : 'FF9876KK',
+                    strRegistrationCertificateNumber: `XXX123456`,
+                    strVehicleType: 'Тягач',
+                }
+            },
+            {
+                VehicleData: {
+                    strLicensePlate : 'FF9876KK',
+                    strRegistrationCertificateNumber: `XXX123456`,
+                    strVehicleType: 'Полуприцеп',
+                }
+            },
+        ],
+    },// Водила <------- !!!!!!
+    LocationData1: {
+        strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', 'StrAddress'
+        strAddressFOXfromGoogle: ``,
+        strAddressTTN: `Юридический адрес (Для ТТН и заявок)`,
+        strCategory: ['Грузополучатель', 'Грузоотправитель', 'Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
+        strLoadingTime: '2',
+        strUnLoadingTime: '3',
+        strLocationType: 'Склад',
+        strIndustryType: 'Алкоголь',
+        strContactName: 'АА Джамшут ББ',
+        strCompanyName: 'ЧЛЕН',// Заполнить перед AddNewLocation из CompanyData !!!
+        strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+        strLocationName: `Название Локации1`,
+        ContactData: {
+            PhoneData: {
+                strPhoneNumber: '38067' + await randomInt(1001010, 9989999),
+                isTelegram: true,
+                isViber: true,
+                isSkype: true,
+                isWhatsApp: true,
+                isToplyvo: false,
+                isRouming: false,
+                isDefault: true,
+                isFormer: false,
+            },
+            strINN: '' + await randomInt(1001001001, 9991999199),
+            strContactType: `Логист`, // `Логист`,//`Кладовщик`, `Хозяин`, //
+            strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
+            strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
+            strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+            strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
+            strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
+        },
+    },
+    LocationData2: {
+        strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', 'StrAddress'
+        strAddressFOXfromGoogle: ``,
+        strAddressTTN: `Юридический адрес (Для ТТН и заявок)`,
+        strCategory: ['Грузополучатель', 'Грузоотправитель', 'Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
+        strLoadingTime: '2',
+        strUnLoadingTime: '3',
+        strLocationType: 'Склад',
+        strIndustryType: 'Алкоголь',
+        strContactName: 'АА Джамшут ББ',
+        strCompanyName: 'ЧЛЕН',// Заполнить в AddNewLocation из CompanyData !!!
+        strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+        strLocationName: `Название Локации2`,
+        ContactData: {
+            PhoneData: {
+                strPhoneNumber: '38067' + await randomInt(1001010, 9989999),
+                isTelegram: true,
+                isViber: true,
+                isSkype: true,
+                isWhatsApp: true,
+                isToplyvo: false,
+                isRouming: false,
+                isDefault: true,
+                isFormer: false,
+            },
+            strINN: '' + await randomInt(1001001001, 9991999199),
+            strContactType: `Логист`, // `Логист`,//`Кладовщик`, // `Хозяин`,
+            strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
+            strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
+            strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+            strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
+            strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
+        },
+    },
     strPhoneNumber: '38050' + await randomInt(1001010, 9989999),
+    PhoneData: {
+        strPhoneNumber: '38067' + await randomInt(1001010, 9989999),
+        isTelegram: true,
+        isViber: true,
+        isSkype: true,
+        isWhatsApp: true,
+        isToplyvo: false,
+        isRouming: false,
+        isDefault: true,
+        isFormer: false,
+    },
+    strEmail: 'mail' + await randomInt(1001010, 9989999) + '@test.gmail',
+    EmailData: {
+        strEmail: 'mail' + await randomInt(1001010, 9989999) + '@test.gmail',
+        isSkype: true,
+        isDefault: true,
+    },
     strUrl: await GetFunnyUrl('Funny_Page_URL'),//'https://natribu.org/',//Funny_Page_URL
+    strLink: await GetFunnyUrl('Funny_Page_URL') + '/x=' + await randomInt(1001010, 9989999),
+    LinkData: {
+        strLink: await GetFunnyUrl('Funny_Page_URL') + '/x=' + await randomInt(1001010, 9989999),
+        strLinkType: 'Lardi',
+        strDescription: 'Тест описания.',
+    },
     strContractOurCompany: 'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
-    strContractOurCompanyIs: 'Заказчик',
+    strContractOurCompanyIs: 'Перевозчик',
 
     returnResult: false,
-}; // CompanyData2
+} //  CompanyData2
 //---------------------------------------------------------------------------------------------------------------------
 DriverData = {
     typeWork: 0,
@@ -247,6 +383,8 @@ DealData = {
 
 }
 //---------------------------------------------------------------------------------------------------------------------
+
 //---------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 module.exports.SetAllDataVariables = SetAllDataVariables;
+

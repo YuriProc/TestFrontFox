@@ -325,3 +325,91 @@ console.log(`john.getAge()=`,john.getAge(),`\n`);
 let chlen = new personJack('Митци');
 chlen.speak();
 //=====================================================
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+await sleep(5000);
+//===============================
+// https://coderoad.ru/51866987/%D0%9A%D0%B0%D0%BA-%D0%B8%D0%BC%D0%B8%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-%D0%BF%D1%80%D0%BE%D0%BA%D1%80%D1%83%D1%82%D0%BA%D1%83-%D0%BC%D1%8B%D1%88%D0%B8-%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8-div-%D0%B2%D0%BE-%D0%B2%D1%81%D0%BF%D0%BB%D1%8B%D0%B2%D0%B0%D1%8E%D1%89%D0%B5%D0%BC-%D0%BE%D0%BA%D0%BD%D0%B5-%D1%81-%D0%BA%D1%83%D0%BA%D0%BB%D0%BE%D0%B2%D0%BE%D0%B4%D0%BE%D0%BC
+try {
+    const res = await page.$eval(`div._weirdo`,
+        e => {
+            e.scrollTop = e.scrollTop + 200
+            return e
+        }
+    )
+}
+catch (e) {
+    console.log(e)
+}
+//========================================
+// https://stackoverflow.com/questions/68417011/how-to-log-in-true-headless-mode-with-puppeteer
+const data = {
+    username: username, // from real registration
+    password: password, // from real registration
+    client_id: cliendId, // from your existing login URL
+    ux_id: 'com.nike.commerce.nikedotcom.web',
+    grant_type: 'password',
+    gzip: true
+}
+const headers = {
+    'DNT': '1',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+    'Accept': '*/*',
+    'Cache-Control': 'max-age=0',
+    'Connection': 'keep-alive',
+    'Content-type': 'application/json'
+}
+const options = {
+        method: 'POST',
+        url: 'https://unite.nike.com.br/login?appVersion=900&experienceVersion=900&uxid=com.nike.commerce.nikedotcom.web&locale=pt_BR&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=ec83f58d-0bd0-44a5-8ccd-a17f5efc3333',
+        json: data
+    }
+
+;(async () => {
+    const browser = await puppeteer.launch({ headless: true, devtools: true, args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security'] })
+    const page = await browser.newPage()
+    await page.goto('https://unite.nike.com.br/oauth.html?client_id=' + data.clientId)
+
+    await page.evaluate((options, headers) => {
+        fetch('/login?appVersion=900&experienceVersion=900&uxid=com.nike.commerce.nikedotcom.web&locale=pt_BR&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=ec83f58d-0bd0-44a5-8ccd-a17f5efc3333', {
+            method: 'POST',
+            postData: JSON.stringify(options),
+            headers: headers
+        })
+    }, options, headers);
+// refresh page
+//
+    //
+    //
+
+})()
+//=================================================================
+// Удалить Папку с Файлами !!!!!
+const fs = require('fs').promises;
+
+const directory = `Test`;
+
+fs.rmdir(directory, { recursive: true })
+    .then(() => console.log('directory removed!'));
+//=================================================================
+// Вывести в консоль все Типы Контактов
+let xPathTemp = `//li[@class="multiselect__element"]/span[contains(@class, "multiselect__option")]/span`;
+let strTemp;
+let tempLength = await ElementGetLength(this.page, xPathTemp);
+--tempLength;
+await console.log(`tempLength=${tempLength} -------------`);
+
+for( let i=0 ; i<=tempLength ; i++ ) {
+
+    strTemp = await ElementGetInnerText(this.page, i, xPathTemp);
+    await console.log(`'${strTemp}',`);
+}
+
+await console.log(`-------------`);
+await TempStop(this.page);
+//=================================================================

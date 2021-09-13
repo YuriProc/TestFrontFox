@@ -21,9 +21,61 @@ let StartBrowser = async () => {
             //headless: true,
             headless: StartBrowserInHeadLessMode,
             slowMo: 0,
-            args: [`--window-size=${g_width},${g_height+250}`]
+            //executablePath: 'node_modules/puppeteer/.local-chromium/mac-722234/chrome-mac/Chromium - copy.app/Contents/MacOS/Chromium',
+            executablePath: 'node_modules/puppeteer/.local-chromium/mac-722234/chrome-mac/Chromium.app/Contents/MacOS/Chromium',
+            ignoreHTTPSErrors: true,
+            //devtools: true,
+            //ignoreDefaultArgs: ['--disable-extensions'],
+            args: [`--window-size=${g_width},${g_height+250}`,
+                '--allow-running-insecure-content',
+                //'--disable-dev-shm-usage',
+                // '--proxy-server=https://10.10.10.230',
+               // '--user-agent="Mozilla/5.0 (Windows NT 6.1; rv:60.7) Gecko/20100101 Firefox/60.7"',
+                '--no-sandbox',
+                '--ignore-certificate-errors',
+                '--disable-setuid-sandbox',
+                //'--disable-dns-over-https',
+                '--disable-web-security',
+                //'--start-fullscreen',
+                //'--disable-web-security',
+                //'--disable-safe-dns'
+                //'--disable-notifications',
+                //'--profile-directory="Default"',
+                ],
+
         });
-        await console.log("puppeteer.launch");
+        // let tempBV = await browser.version();
+        // await console.log(`tempBV=${tempBV}`);
+
+// '--dns-prefetch-disable',
+//         '--no-sandbox',
+//             '--disable-setuid-sandbox',
+//
+//             '--ignore-certificate-errors',
+//             '--allow-running-insecure-content',
+        //args: [`--host-rules=MAP dev.cfo.tl.ee 123.456.789.012`],
+
+        // async function init(){
+        //     browser = await puppeteer.launch({
+        //         //headless: false,
+        //         ignoreHTTPSErrors: true,
+        //         executablePath: config.executablePath,
+        //         args: [
+        //             '--no-sandbox',
+        //             '--disable-gpu',
+        //             '--disable-extensions',
+        //             '--dns-prefetch-disable',
+        //             '--disable-dev-shm-usage',
+        //             '--ignore-certificate-errors',
+        //             '--allow-running-insecure-content',
+        //             '--enable-features=NetworkService',
+        //         ],
+        //     }).catch(e => console.error('Error!', e.message));
+        // }
+
+
+        // await console.log("puppeteer.launch");
+        // await console.log(browser);
 
         return browser;
     }catch (e) {
@@ -34,8 +86,37 @@ let StartBrowser = async () => {
 
 let BrowserGetPage = async (browser, strPageURL) => {
     try {
-        let page;
-        page = await browser.newPage();
+        let page,page0,resOk;
+        // function sleep(ms) {
+        //     return new Promise((resolve) => {
+        //         setTimeout(resolve, ms);
+        //     });
+        // }
+        // await sleep(5000);
+
+        // page0 = await browser.newPage();
+        // await page0.setViewport({width: g_width, height: g_height});
+        // // await page0.goto(`chrome://settings/security?search=dns`);
+        // await page0.goto(`chrome://settings/security#:~:text=%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D1%8B%D0%B9%20DNS-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80`);
+        //
+        // await console.log(`Хуйня0000`);
+         //await page0.waitFor(5000);
+        // let xDNS = `//cr-toggle[@id="control"][@aria-label="Помочь сделать Интернет безопасным для всех"]//span[@id="knob"]`;
+        // //let xDNS = `/html/body/settings-ui//div[2]/settings-main//settings-basic-page//div[1]/settings-section[4]/settings-privacy-page//settings-animated-pages/settings-subpage[3]/settings-security-page//div[1]/settings-radio-group/settings-collapse-radio-button[2]/div[2]/settings-toggle-button[1]//div/cr-toggle//span[1]`;
+        // //  /html/body/settings-ui//div[2]/settings-main//settings-basic-page//div[1]/settings-section[4]/settings-privacy-page//settings-animated-pages/settings-subpage[3]/settings-security-page//div[1]/settings-radio-group/settings-collapse-radio-button[2]/div[2]/settings-toggle-button[1]//div/cr-toggle//span[1]
+        //
+        // resOk = await ClickByXPath(page0,xDNS);
+        // if (!resOk){
+        //     await console.log(`Хуйня`);
+        // }
+        // await page0.waitFor(6000);
+        // await page0.close();
+//await console.log(`----------------------------------------------------------------------------------`);
+//await console.log(browser);
+        //page = await browser.newPage();
+        page = (await browser.pages())[0];
+        //await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36');
+        //await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36');
 
         page.on('dialog', async dialog => {
             strDialogMessage = dialog.message();
@@ -46,9 +127,10 @@ let BrowserGetPage = async (browser, strPageURL) => {
         //height = height - 120;
         // let width = 1700;
         // let height = 950;
-        await page.setViewport({width: g_width, height: g_height});
+        //await page.waitFor(6000);
+         await page.setViewport({width: g_width, height: g_height});
         await page.goto(strPageURL);
-
+        // await page.setViewport({width: g_width, height: g_height});
 
 
         return page;
@@ -59,7 +141,7 @@ let BrowserGetPage = async (browser, strPageURL) => {
     }
 };
 
-let LoginCrm = async (page, LoginData) => {
+let LoginCrm = async (page, browser, LoginData) => {
     const nameTest = NameFunction() +'"'+ LoginData.strUserLastName+'"';
     try {
 
@@ -69,42 +151,14 @@ let LoginCrm = async (page, LoginData) => {
     g_StrOutLog+=`Тест[ ${nameTest} ]=> ${g_StatusCurrentTest} `;
 
     let ElPresent;
-    let xPath;
+    let xPath,xButtonAuthorize,xButtonAuthorizeSpinner;
     let resOk;
     let NeedReLogin = true;
     let CountLogin = 0;
     let pLOk;
 
         //На всякий случай подождём Загрузки Страницы
-        await WaitRender(page);
 
-        //Если залогинены, то разлогиниться
-        ElPresent = await ElementIsPresent(page, '//div[@class="crm-user-avatar"]');
-        if (ElPresent) {
-            //Клик по LOGO
-
-            //await page.waitFor(500000);
-
-            await page.click("div[class=crm-user-avatar]");
-            await page.waitFor(500);
-            //Клик по ВЫЙТИ
-            xPath = '//div[@class="links__item"][contains(text(), "Выход")]';
-            ElPresent = await ElementIsPresent(page, xPath);
-            if (ElPresent) {
-               resOk = await ClickByXPath(page, xPath);
-               if (!resOk){
-
-                   //await page.waitFor(500000);
-
-
-                   throw `     FAIL => ClickByXPath(${xPath})])\n`;
-               }
-            }else{
-                throw `     FAIL => Пункт "Выход не найден" ElementIsPresent(${xPath})])\n`;
-            }
-            await console.log(`     LogOut => LogIn=> "${LoginData.strUserLastName}"`);
-            g_StrOutLog+=`\n => LogOut => LogIn=> "${LoginData.strUserLastName}" `;
-        }
 
         while (CountLogin<2 && NeedReLogin) {
             //await console.log(`CountLogin=${CountLogin} ; NeedReLogin=${NeedReLogin}`);
@@ -116,65 +170,62 @@ let LoginCrm = async (page, LoginData) => {
             if (!ElPresent) {
                 throw '     FAIL => WaitForElementIsPresentByXPath(//input[@name="Логин""])\n';
             }
-            await WaitRender(page);
+            //await page.waitFor(500);
+            //await WaitRender(page);
             // Клик по инпуту ВАШ EMAIL
             // await page.click("input[name=Логин]");
+            // //await page.waitFor(200);
             // await page.$eval('input[name=Логин]', el => el.value = '');
             // await page.type("input[name=Логин]", LoginData.strEmail);
+            //await page.keyboard.type(LoginData.strEmail, {delay: 30});
+            resOk = await SetTextByXPath(page,`//input[@name="Логин"]`,LoginData.strEmail);
 
             //resOk = await ClickByXPath(page, `//input[@name="Логин"]`);
 
-            resOk = await TypeByXPath(page,`//input[@name="Логин"]`, LoginData.strEmail );
-
+            //resOk = await TypeByXPath(page,`//input[@name="Логин"]`, LoginData.strEmail );
+           //await page.waitFor(500);
 
 
             //Клик по инпуту ВАШ ПАРОЛЬ
             // await page.click("input[name=Пароль]");
+            // //await page.waitFor(200);
             // await page.$eval('input[name=Пароль]', el => el.value = '');
             // await page.type("input[name=Пароль]", LoginData.strPassword);
+            //await page.keyboard.type(LoginData.strPassword, {delay: 30});
+            resOk = await SetTextByXPath(page,`//input[@name="Пароль"]`,LoginData.strPassword);
+
             //await page.waitFor(5000);
 
             //resOk = await ClickByXPath(page, `//input[@name="Пароль"]`);
 
-            resOk = await TypeByXPath(page, `//input[@name="Пароль"]`, LoginData.strPassword);
+            //resOk = await TypeByXPath(page, `//input[@name="Пароль"]`, LoginData.strPassword);
+            //await page.waitFor(500);
 
-            await WaitRender(page);
+            //await WaitRender(page);
             //Клик по Кнопке Авторизироваться //button[class=btn]
-            ElPresent = await ClickByXPath(page, `//button[contains(text(), "Авторизироваться")]`);
-
+            xButtonAuthorize = `//button[contains(text(), "Авторизироваться")]`;
+            xButtonAuthorizeSpinner = xButtonAuthorize + `[div[@class="fox-spinner"]]`;
+            ElPresent = await ClickByXPath(page, xButtonAuthorize);
             if (!ElPresent) {
                 throw '     FAIL => ClickByXPath(page, \'//button[contains(text(), "Авторизироваться")]\');\n';
             }
 
-            //await page.evaluate(() => alert('This message is inside an alert box'))
-
-            //await page.waitFor(50000);
-            //Проверим на наличие сообщения об ОШИБКАХ
-            //--------
-            // let myXPath = `//div[@class="notification-content"]`;
-            // ElPresent = await WaitForElementIsPresentByXPath(2000, page, myXPath);
-            // if (ElPresent) {
-            //     let strInnerText = await ElementGetInnerText(page, 0, myXPath);
-            //     await console.log('\x1b[38;5;1m', `         Вижу => (${strInnerText})`, '\x1b[0m');
+            // await WaitRender(page);
+            // resOk = await WarningCheck(page);
+            // if(resOk !== ''){
             //     if (LoginData.ResolvedFailLogin) {
-            //
             //         return false; //<-------------EXIT !!!
             //     }else{
-            //         throw `FAIL => "${strInnerText}"`;
+            //         throw `FAIL => Login WarningCheck"${resOk}"`;
             //     }
-            // }//--------------
+            // }
 
-            await WaitRender(page);
-            resOk = await WarningCheck(page);
-            if(resOk !== ''){
-                if (LoginData.ResolvedFailLogin) {
-
-                    return false; //<-------------EXIT !!!
-                }else{
-                    throw `FAIL => Login WarningCheck"${resOk}"`;
-                }
-
+            // Подождём пока не пропадёт спиннер на кнопке "Авторизоваться"
+            resOk = await WaitUntilXPathExist(page, 10500, xButtonAuthorizeSpinner);
+            if (!resOk) {
+                throw `     FAIL => не пропал спиннер на кнопке "Авторизоваться" \n WaitUntilXPathExist(page, 10500, ${xButtonAuthorizeSpinner});\n`;
             }
+
             //--------------------------------------------
             // myXPath = `//div[@class="notification-content"][contains(text(), "Неверный логин или пароль")]`;
             // ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
@@ -236,6 +287,14 @@ let LoginCrm = async (page, LoginData) => {
         if(TextName !== DataName) {
             throw `     FAIL => После Логина ${TextName} !== ${DataName} \n`;
         }
+
+        // await page.waitFor(3000);
+        // await console.log(`await page.keyboard.press('F12');`);
+        // //await page.keyboard.sendCharacter(String.fromCharCode(123)); //123 - F12; 32 - пробел; 13 - enter; 8 - Del
+        // await page.keyboard.press('F12');
+        // await page.keyboard.type('Hello World!');
+        // const context = await browser.defaultBrowserContext();
+        // await context.overridePermissions(g_FrontCrmFoxURL, ["notifications"]);
 
         //await page.waitFor(500000);
 

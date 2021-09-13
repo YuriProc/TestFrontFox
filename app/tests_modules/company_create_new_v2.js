@@ -38,56 +38,90 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             throw 'NewCompany.CheckCompanyForm(); = FAIL!"';//<--специальный вызов ошибки!
         }
 
-        // resOk = await NewCompany.AddNewCompanyTypes();
-        // if (!resOk) {
-        //     throw 'NewCompany.AddNewCompanyTypes(); = FAIL!"';//<--специальный вызов ошибки!
-        // }
-        //
-        // resOk = await NewCompany.CheckBossPresent();
-        // if (!resOk) {
-        //     throw 'NewCompany.CheckBossPresent(); = FAIL!"';//<--специальный вызов ошибки!
-        // }
-        CompanyData.LocationData1.strCompanyName = CompanyData.strCompanyName;
-        CompanyData.LocationData1.strCodeCompany = CompanyData.strCodeCompany;
-
-        CompanyData.LocationData1.ContactData.strWorkOnCompany = CompanyData.strCompanyName;
-        CompanyData.LocationData1.ContactData.strWorkOnCompanyEDRPOU = CompanyData.strCodeCompany;
-        resOk = await NewCompany.CreateNewContactForLocation();
+        resOk = await NewCompany.AddNewCompanyTypes();
         if (!resOk) {
-            throw 'NewCompany.CreateNewContactForLocation(); = FAIL!"';//<--специальный вызов ошибки!
+            throw 'NewCompany.AddNewCompanyTypes(); = FAIL!"';//<--специальный вызов ошибки!
         }
 
-        //
-        // resOk = await NewCompany.AddNewCargoTypes();
-        // if (!resOk) {
-        //     throw 'NewCompany.AddNewCargoTypes(); = FAIL!"';//<--специальный вызов ошибки!
-        // }
-        //
-        // resOk = await NewCompany.AddNewPhoneNumber();
-        // if (!resOk){
-        //     throw `FAIL => NewCompany.AddNewPhoneNumber`;
-        // }
-        //
-        // resOk = await NewCompany.AddNewEmail();
-        // if (!resOk){
-        //     throw `FAIL => NewCompany.AddNewEmail`;
-        // }
-        //
-        // resOk = await NewCompany.AddNewLink();
-        // if (!resOk){
-        //     throw `FAIL => NewCompany.AddNewLink`;
-        // }
-        //
-        // resOk = await NewCompany.AddNewContract();
-        // if (!resOk){
-        //     throw `FAIL => NewCompany.AddNewContract`;
-        // }
+        // ------------------------------------------------
+        // Если есть Заказчик, то очищаем и даём один тип груза, иначе только очищаем
+        if (await NewCompany.CheckCompanyType('Заказчик')) {
+            resOk = await NewCompany.AddNewCargoTypes();
+            if (!resOk) {
+                throw 'NewCompany.AddNewCargoTypes(); = FAIL!"';//<--специальный вызов ошибки!
+            }
+        }else {
+            resOk = await NewCompany.DeleteAllPresentCargoTypes();
+            if (!resOk) {
+                throw 'NewCompany.DeleteAllPresentCargoTypes(); = FAIL!"';//<--специальный вызов ошибки!
+            }
+        }// ------------------------------------------------
 
-
-        resOk = await NewCompany.AddNewLocation();
+        resOk = await NewCompany.CheckBossPresent();
+        if (!resOk) {
+            throw 'NewCompany.CheckBossPresent(); = FAIL!"';//<--специальный вызов ошибки!
+        }
+        resOk = await NewCompany.AddNewPhoneNumber();
         if (!resOk){
-            throw `FAIL => NewCompany.AddNewLocation`;
+            throw `FAIL => NewCompany.AddNewPhoneNumber`;
         }
+        resOk = await NewCompany.AddNewEmail();
+        if (!resOk){
+            throw `FAIL => NewCompany.AddNewEmail`;
+        }
+        resOk = await NewCompany.AddNewLink();
+        if (!resOk){
+            throw `FAIL => NewCompany.AddNewLink`;
+        }
+
+        resOk = await NewCompany.AddNewContract();
+        if (!resOk){
+            throw `FAIL => NewCompany.AddNewContract`;
+        }
+        //----------------------------------------
+// Если есть тип Заказчик, то создать ДВЕ локации с контактами
+        if (await NewCompany.CheckCompanyType('Заказчик')) {
+
+            CompanyData.LocationData1.strCompanyName = CompanyData.strCompanyName;
+            CompanyData.LocationData1.strCodeCompany = CompanyData.strCodeCompany;
+            CompanyData.LocationData1.ContactData.strWorkOnCompany = CompanyData.LocationData1.strCompanyName;
+            CompanyData.LocationData1.ContactData.strWorkOnCompanyEDRPOU = CompanyData.LocationData1.strCodeCompany;
+            resOk = await NewCompany.CreateNewContactForLocation(CompanyData.LocationData1.ContactData);
+            if (!resOk) {
+                throw 'NewCompany.CreateNewContactForLocation( N 1 ); = FAIL!"';//<--специальный вызов ошибки!
+            }
+            resOk = await NewCompany.AddNewLocation(CompanyData.LocationData1);
+            if (!resOk) {
+                throw `FAIL => NewCompany.AddNewLocation(CompanyData.LocationData1);`;
+            }
+
+            CompanyData.LocationData2.strCompanyName = CompanyData.strCompanyName;
+            CompanyData.LocationData2.strCodeCompany = CompanyData.strCodeCompany;
+            CompanyData.LocationData2.ContactData.strWorkOnCompany = CompanyData.LocationData2.strCompanyName;
+            CompanyData.LocationData2.ContactData.strWorkOnCompanyEDRPOU = CompanyData.LocationData2.strCodeCompany;
+            resOk = await NewCompany.CreateNewContactForLocation(CompanyData.LocationData2.ContactData);
+            if (!resOk) {
+                throw 'NewCompany.CreateNewContactForLocation( N 2 ); = FAIL!"';//<--специальный вызов ошибки!
+            }
+            resOk = await NewCompany.AddNewLocation(CompanyData.LocationData2);
+            if (!resOk) {
+                throw `FAIL => NewCompany.AddNewLocation(CompanyData.LocationData2);`;
+            }
+        }//----------------------------------
+        // Если есть тип Перевозчик, то создать Водилу и Тягач и Прицеп
+        if (await NewCompany.CheckCompanyType( 'Перевозчик')) {
+            CompanyData.DriverData.strWorkOnCompany = CompanyData.strCompanyName;
+            resOk = await NewCompany.CreateNewDriverWithVehiclesFromCompanies(CompanyData.DriverData);
+            if (!resOk) {
+                throw 'NewCompany.CreateNewDriverWithVehicles( X ); = FAIL!"';//<--специальный вызов ошибки!
+            }
+
+        }else{
+            await console.log(`НЕ (Перевозчик)`);
+        }
+
+
+
 
         // resOk = await NewCompany.AddExistsLocation();
         // if (!resOk){
@@ -103,16 +137,14 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             throw `FAIL => Клик СОХРАНИТЬ КОМПАНИЮ (${xPath})`;
         }
 
-        await WaitRender(page);
+        //await WaitRender(page);
         // await console.log('СОХРАНИТЬ КОМПАНИЮ');
         // await TempStop(page);
 
 // Компания успешно сохранена!
 
-        let WarningText = await WarningCheck(page, 5000);
-        if (WarningText === '') {
-            WarningText = await WarningCheck(page);
-        }
+        let WarningText = await WarningsRead(page, 5000);
+
 
         if(await SubStrIsPresent('Компания успешно сохранена!', WarningText)){
             resOk = true;
@@ -153,8 +185,11 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         //await page.waitFor(5001111);
     }
     if(!CompanyData.returnResult){
-        await page.screenshot({path: PathSS + 'screenshot_CompanyCreateNewV2.png'});
+        await page.screenshot({path: PathSS + 'screenshot_CompanyCreateNewV2.png', fullPage: true });
     }
+    //await WaitRender(page);
+    await WarningsRemove(page);
+    await WaitRender(page);
     return CompanyData;//<------------------EXIT !!!
 };// End Test CompanyCreateNewV2
 

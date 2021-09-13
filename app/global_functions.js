@@ -30,12 +30,18 @@ WaitUntilMessageExist = async function (page) {
     }
 };
 //-----------------------------------------------------------------------------------
-WaitUntilXPathExist = async function (page, mSec, xPath) {
+WaitUntilXPathExist = async function (page, mSec, xPath, print = false) {
     let resOk;
     let startTime = await Date.now();
     try {
         if (!await WaitForElementIsPresentByXPath(500, page, xPath)){
-            await console.log(`не вижу (${xPath})`);
+            if (print) {
+                await console.log(`WaitUntilXPathExist - не вижу (${xPath})`);
+            }
+        }else{
+            if (print) {
+                await console.log(`WaitUntilXPathExist - ВИЖУ ОК (${xPath})`);
+            }
         }
         // Ждём пока xPath присутствует
         while (await ElementIsPresent(page, xPath)){
@@ -112,7 +118,7 @@ GetExceptions = async function (page) {
 // };
 
 //-----------------------------------------------------------------------------------
-WarningCheck = async function (page, timeout = 1000) {
+WarningsClick = async function (page, timeout = 1000) {
 
     try {
         let myXPath = `//div[@class="notification-content"]`;
@@ -126,7 +132,7 @@ WarningCheck = async function (page, timeout = 1000) {
         }else {
             qLength = await ElementGetLength(page, myXPath);
             strInnerText = await ElementGetInnerText(page, qLength-1, myXPath);
-            await console.log('\x1b[38;5;3m', `         WarningCheck => (${strInnerText})`, '\x1b[0m');
+            await console.log('\x1b[38;5;3m', `         WarningsClick => (${strInnerText})`, '\x1b[0m');
             ResOk = await ClickByXPathNum(page, qLength-1, myXPath);
             await WaitUntilPageLoads(page);
             qLength = await ElementGetLength(page, myXPath);
@@ -140,10 +146,79 @@ WarningCheck = async function (page, timeout = 1000) {
         }
 
     }catch (e) {
-        await console.log('\x1b[38;5;1m', "WarningCheck => error=>",e, '\x1b[0m');
+        await console.log('\x1b[38;5;1m', "WarningsClick => error=>",e, '\x1b[0m');
         return false;
     }
 }
+//-----------------------------------------------------------------------------------
+WarningsRead = async function (page, timeout = 1000) {
+
+    try {
+        // class="vue-notification-template vue-notification error"
+        let myXPath = `//div[@class="notification-content"]`;
+        let ResOk;
+        let strInnerText = '';
+        let strWarningOutput = '';
+        let qLength;
+        let Num = 0;
+
+        ResOk = await WaitForElementIsPresentByXPath(timeout, page, myXPath );
+        if (!ResOk){
+            return '';
+        }else {
+            qLength = await ElementGetLength(page, myXPath);
+            Num = qLength;
+            while (Num>0){
+                strInnerText = await ElementGetInnerText(page, Num-1, myXPath);
+                if (strWarningOutput === ''){
+                    strWarningOutput = strInnerText;
+                }else{
+                    strWarningOutput+= ' ; '+ strInnerText;
+                }
+                await console.log('\x1b[38;5;3m', `         WarningsRead => (${strInnerText})`, '\x1b[0m');
+                --Num;
+            }
+            return strWarningOutput;
+        }
+    }catch (e) {
+        await console.log('\x1b[38;5;1m', "WarningsRead => error=>",e, '\x1b[0m');
+        return false;
+    }
+}
+//-----------------------------------------------------------------------------------
+WarningsRemove = async function (page, timeout = 1000) {
+
+    try {
+        let myXPath = `//div[@class="notification-content"]`;
+        let ResOk;
+        let strInnerText;
+        let qLength;
+
+        ResOk = await WaitForElementIsPresentByXPath(timeout, page, myXPath );
+        if (!ResOk){
+            return '';
+        }else {
+            qLength = await ElementGetLength(page, myXPath);
+            strInnerText = await ElementGetInnerText(page, qLength-1, myXPath);
+            //await console.log('\x1b[38;5;3m', `         WarningsClick => (${strInnerText})`, '\x1b[0m');
+            ResOk = await ClickByXPathNum(page, qLength-1, myXPath);
+            //await WaitUntilPageLoads(page);
+            qLength = await ElementGetLength(page, myXPath);
+            while (qLength>0) {
+                strInnerText+= `; ${await ElementGetInnerText(page, qLength-1, myXPath)}`;
+                ResOk = await ClickByXPathNum(page, qLength-1, myXPath);
+                //await WaitUntilPageLoads(page);
+                qLength = await ElementGetLength(page, myXPath);
+            }
+            return strInnerText;
+        }
+
+    }catch (e) {
+        await console.log('\x1b[38;5;1m', "WarningsRemove => error=>",e, '\x1b[0m');
+        return false;
+    }
+}
+//-----------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------
 WaitUntilPageLoads  = async function (page) {
@@ -1188,14 +1263,7 @@ InsertPhoto = async function(browser , page, MyArrayName, Num, MyXPath) {
 
     return false;
 };
-//-----------------------------------------------------------------------------------
-DeleteTempPicture = async function(MyFileName) {
-    const fs = require('fs');
-    if (fs.existsSync(MyFileName)) {
-        fs.unlinkSync(MyFileName);
-    }
 
-};
 //-----------------------------------------------------------------------------------
 TrimCompanyName = async function(strCompanyName) {
     let pos;
@@ -1225,10 +1293,38 @@ String.prototype.toHHMMSS = function () {
     return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
 }
 //-----------------------------------------------------------------------------------
-// const linkHandlers = await page.$x("//a[contains(text(), 'Some text')]");
-//
-// if (linkHandlers.length > 0) {
-//     await linkHandlers[0].click();
-// } else {
-//     throw new Error("Link not found");
-// }
+//-----------------------------------------------------------------------------------
+DeleteTempPicture = async function(MyFileName) {
+    const fs = require('fs');
+    if (fs.existsSync(MyFileName)) {
+        fs.unlinkSync(MyFileName);
+    }
+
+};
+//--------------------------------------------------------------
+// const rimraf = require('rimraf');
+// rimraf('./log/*', function () { console.log('done'); });
+
+//-----------------------------------------------------------------------------------
+DeleteAllScreenshots = async function(directory = 'test') {
+    try {
+        const fs = require('fs');
+
+        const path = require('path');
+
+        fs.readdir(directory, (err, files) => {
+            if (err) throw err;
+
+            for (const file of files) {
+                fs.unlink(path.join(directory, file), err => {
+                    if (err) throw err;
+                });
+            }
+        });
+        return true;
+    }catch (e) {
+        await console.log(`ERROR => DeleteAllScreenshots(${e}) `);
+        return false;
+    }
+}
+//-----------------------------------------------------------------------------------

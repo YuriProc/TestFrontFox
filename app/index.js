@@ -67,11 +67,16 @@ let returnResult = false;
 
 
 let OpenFox = async () => {
-    try {
+    try { let resOk;
         let CodeCompany;
         oConfig = await OpenConfig.SetAllConfigConst();
         oDataVariables = await OpenVariables.SetAllDataVariables();
-
+        resOk = await DeleteAllScreenshots(PathSS);
+        if(!resOk){
+            await console.log('\x1b[38;5;1m', `Ошибка удаления файлов Скринов (${PathSS})`, '\x1b[0m');
+        }else {
+            await console.log('\x1b[38;5;2m', `OK все файлы скринов удалены (${PathSS})`, '\x1b[0m');
+        }
         if (oConfig === "OK") {
             await console.log('\x1b[38;5;2m', "Load Config", oConfig, '\x1b[0m');
             fs_log.writeFileSync(g_CheckFileName, `-1`);
@@ -80,8 +85,11 @@ let OpenFox = async () => {
         }
         g_StrOutLog += `Тесты ========================================\n`;
         browser = await LPage.StartBrowser();
-        let strLoginCrmFoxURL = g_FrontCrmFoxURL + '/login';
+
+        //let strLoginCrmFoxURL = g_FrontCrmFoxURL + '/login';
+        let strLoginCrmFoxURL = g_FrontCrmFoxURL;
         page = await LPage.BrowserGetPage(browser, strLoginCrmFoxURL);
+
 
         g_NumberCurrentTest = 1;
 
@@ -92,13 +100,14 @@ let OpenFox = async () => {
 
     if(true){    // <-temp!!!!!
         //------------START Для тестов--------------------------------------------------------------
+        // https://blog.listratenkov.com/webstorm-ide-hot-keys/
 
         // Логинимся под ТОСТЕРОМ
         LoginDataT.ResolvedFailLogin = false;//true;// <- Можно или нельзя Фейлиться по Email или Пароль
-        returnResult = await LPage.LoginCrm(page, LoginDataT);
+        returnResult = await LPage.LoginCrm(page, browser, LoginDataT);
         if (!returnResult) { // Если не получилось то логинимся под ROOT`ом
             if(LoginDataT.ResolvedFailLogin){
-            returnResult = await LPage.LoginCrm(page, LoginDataR);
+            returnResult = await LPage.LoginCrm(page, browser, LoginDataR);
             if (!returnResult) { //Если не получилось то FAIL  и выход!!!
                 throw ` FAIL => LoginCrm(${LoginDataR.strUserLastName}) !!!`;
             }
@@ -136,33 +145,42 @@ let OpenFox = async () => {
        // returnResult = await CCEPage.CompanyCheckExist(page, CompanyData1.strCodeCompany);
        // await console.log('\x1b[38;5;2m', "         CompanyCheckExist(", CompanyData1.strCodeCompany, ")=>", returnResult, '\x1b[0m');
         // X) создаём тестовую компанию CompanyData1 43257059
-        CompanyData1.strCodeCompany = '14180856';//'43092634';//'14180856';
-        for(let i=1;100;i++) {
+
+        for(let i=1;i<=1000;i++) {
+
+            // oDataVariables = await OpenVariables.SetAllDataVariables();
+            //
+            // CompanyData1.strCodeCompany = '14180856';//'43092634';//'14180856';
+            // CompanyData1.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
+            // CompanyData1.EmailData.strEmail = 'mail' + await randomInt(1001010, 9989999) + '@test.gmail';
+            // CompanyData1.LinkData.strLink = await GetFunnyUrl('Funny_Page_URL') + '/x='+ await randomInt(1001010, 9989999);
+            // CompanyData1.LocationData2.strAddressFOX = await GetFunnyStr('StrAddressFunny');
+            // CompanyData1.LocationData2.ContactData.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
+            // CompanyData1.LocationData2.ContactData.strINN = '' + await randomInt(1001001001, 9991999199);
+            // CompanyData1.LocationData2.ContactData.strLastName = await GetFunnyStr('StrLastNameFunny');//Фамилия
+            // CompanyData1.LocationData2.ContactData.strFirstName = await GetFunnyStr('StrFirstNameFunny');//Имя
+            // CompanyData1.LocationData2.ContactData.strMiddleName = await GetFunnyStr('StrMiddleNameFunny');//Отчество
 
 
-            CompanyData1.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
-            CompanyData1.EmailData.strEmail = 'mail' + await randomInt(1001010, 9989999) + '@test.gmail';
-            CompanyData1.LinkData.strLink = await GetFunnyUrl('Funny_Page_URL') + '/x='+ await randomInt(1001010, 9989999);
-            CompanyData1.LocationData2.strAddressFOX = await GetFunnyStr('StrAddressFunny');
-            CompanyData1.LocationData2.ContactData.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
-            CompanyData1.LocationData2.ContactData.strINN = '' + await randomInt(1001001001, 9991999199);
-            CompanyData1.LocationData2.ContactData.strLastName = await GetFunnyStr('StrLastNameFunny');//Фамилия
-            CompanyData1.LocationData2.ContactData.strFirstName = await GetFunnyStr('StrFirstNameFunny');//Имя
-            CompanyData1.LocationData2.ContactData.strMiddleName = await GetFunnyStr('StrMiddleNameFunny');//Отчество
 
 
+await console.log(`NumTests=${i}`);
+            // CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData1);
+            // if (!CompanyData1.returnResult) {
+            //     throw `Не получилось создать компанию (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
+            // }
+            // await WaitRender(page);
+            CompanyData2.strCodeCompany = '00190928';//'14180856';//'43092634';//'14180856';
 
-
-
-            CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData1);
-            if (!CompanyData1.returnResult) {
-                throw `Не получилось создать компанию (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
+            // X) создаём тестовую компанию CompanyData2
+            CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData2);
+            if (!CompanyData2.returnResult) {
+                throw `Не получилось создать компанию (${CompanyData2.strCodeCompany})`;//<--специальный вызов ошибки!
             }
-            await WaitRender(page);
-        }
-        if (!CompanyData1.returnResult) {
-            throw `Не получилось создать компанию (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
-        }
+
+await TempStop(page);
+        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
+
 
 
         //await console.log(`Created => CompanyData1:`, CompanyData1);
