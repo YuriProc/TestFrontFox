@@ -308,7 +308,7 @@ await TempStop(page);
 
 
     //await page.waitFor(5000);
-    browser.close();
+    await browser.close();
 
     dtEnd = new Date(Date.now());
     dtAll = dtEnd - dtStart;

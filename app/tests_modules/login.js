@@ -22,7 +22,7 @@ let StartBrowser = async () => {
             headless: StartBrowserInHeadLessMode,
             slowMo: 0,
             //executablePath: 'node_modules/puppeteer/.local-chromium/mac-722234/chrome-mac/Chromium.app/Contents/MacOS/Chromium',
-            executablePath: 'node_modules/puppeteer/.local-chromium/mac-722234/chrome-mac/Chromium-copy2.app/Contents/MacOS/Chromium',
+           // executablePath: 'node_modules/puppeteer/.local-chromium/mac-722234/chrome-mac/Chromium-copy2.app/Contents/MacOS/Chromium',
             ignoreHTTPSErrors: true,
             //devtools: true,
             //ignoreDefaultArgs: ['--disable-extensions'],
@@ -44,8 +44,8 @@ let StartBrowser = async () => {
                 ],
 
         });
-        // let tempBV = await browser.version();
-        // await console.log(`tempBV=${tempBV}`);
+        let tempBV = await browser.version();
+        await console.log(`tempBV=${tempBV}`);
 
 // '--dns-prefetch-disable',
 //         '--no-sandbox',

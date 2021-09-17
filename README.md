@@ -2,6 +2,10 @@
 Тестирование Fox через фронт:
 1) brew install node.
 2) npm i puppeteer.
+   
+   npm i puppeteer@2.0.0 - для правильной работы загрузки файлов на странице
+   
+    await fileChooserDocs.accept([MyFilePath]);
 3) переименовать файл config.config.example в config.config
 4) в файле config.config:
     * FRONT_FOX_URL = http://localhost:8080 <-прописать актуальный URL фронта.

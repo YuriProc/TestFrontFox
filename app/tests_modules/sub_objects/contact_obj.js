@@ -477,92 +477,21 @@ class Contact {
 
             this.ContactData.Vehicles[Num].VehicleData.strSubjectOwner = this.ContactData.strWorkOnCompany;
             let NewVehicle = new Vehicle(this.browser, this.page, this.ContactData.Vehicles[Num].VehicleData);
-            //проверка Формы (Тех паспорт)
-            resOk = await NewVehicle.CheckRegistrationCertificateNumberForm();
-            if (!resOk) {
-                throw `FAIL => проверка Формы (Тех паспорт) NewVehicle.CheckRegistrationCertificateNumberForm();`;
-            }
-            // Ввод тех паспорта и нажатие кнопки
-            resOk = await NewVehicle.EnterRegistrationCertificateNumber();
-            if (!resOk) {
-                throw `FAIL => Ввод тех паспорта и нажатие кнопки NewVehicle.EnterRegistrationCertificateNumber();`;
-            }
-            // !!!! Потом написать условие для проверки - мы на "ВВОД Гос номера" или уже нашло и вернуло существующую тачку
-            //проверка Формы (Гос. номер)
-            resOk = await NewVehicle.CheckLicensePlateForm();
-            if (!resOk) {
-                throw `FAIL => проверка Формы (Гос. номер) NewVehicle.CheckLicensePlateForm();`;
-            }
-            // Ввод гос номера и нажатие кнопки
-            resOk = await NewVehicle.EnterLicensePlateNumber();
-            if (!resOk) {
-                throw `FAIL => Ввод гос номера и нажатие кнопки NewVehicle.EnterLicensePlateNumber();`;
-            }
-            // Проверка Формы (Транспорта)
-            resOk = await NewVehicle.CheckVehicleForm();
-            if (!resOk) {
-                throw `FAIL => проверка Формы (Транспорта) NewVehicle.CheckVehicleForm();`;
-            }
-            // Ввод и выбор "Тип транспорта"
-            resOk = await NewVehicle.EnterVehicleType();
-            if (!resOk) {
-                throw `FAIL => Ввод и выбор "Тип транспорта" NewVehicle.EnterVehicleType();`;
-            }
-            //-----------------------------------------------------------------------
-            // Если "Тягач" , то одна логика заполнения - иначе - другая
-            if (this.ContactData.Vehicles[Num].VehicleData.strVehicleType === 'Тягач'){
 
-            }else{ // НЕ "Тягач"  - другая логика заполнения ------------------------
-
-            }//----------------------------------------------------------------------
-            // Марка
-            resOk = await NewVehicle.EnterCarBrand();
+            resOk = await NewVehicle.CreateNewVehicle(Num);
             if (!resOk) {
-                throw `FAIL => Ввод и выбор "Марка" NewVehicle.EnterCarBrand();`;
-            }
-
-            //Модель
-            resOk = await NewVehicle.EnterModel();
-            if (!resOk) {
-                throw `FAIL => Ввод "Модель" NewVehicle.EnterModel();`;
-            }
-            // Количество осей
-            resOk = await NewVehicle.SetQuantityAxles();
-            if (!resOk) {
-                throw `FAIL => Ввод "Модель" NewVehicle.SetQuantityAxles();`;
-            }
-            // Владелец транспорта Кнопки "Компания/Контакт"
-            resOk = await NewVehicle.SetOwnerType();
-            if (!resOk) {
-                throw `FAIL => Ввод "Модель" NewVehicle.SetOwnerType();`;
-            }
-            // Документ
-            resOk = await NewVehicle.EnterDocumentType();
-            if (!resOk) {
-                throw `FAIL => Ввод "Модель" NewVehicle.EnterDocumentType();`;
-            }
-            // "Компания/Контакт владельца"
-
-            resOk = await NewVehicle.EnterSubjectOwner();
-            if (!resOk) {
-                throw `FAIL => Ввод "Модель" NewVehicle.EnterSubjectOwner();`;
-            }
-
-            resOk = await NewVehicle.LoadNewFileInVehicle();
-            if (!resOk) {
-                throw `FAIL => Ввод "Модель" NewVehicle.LoadNewFileInVehicle();`;
+                throw `FAIL => Создание Нового Транспорта NewVehicle.CreateNewVehicle( ${Num} );`;
             }
 
 
-
-        await console.log(`TempStop --- AddVehicleFromDriver`);
-await TempStop(this.page);
+//         await console.log(`TempStop --- AddVehicleFromDriver`);
+// await TempStop(this.page);
 
 
 
             return true;
         } catch (e) {
-            await console.log(`${e} \n FAIL in AddVehicleFromDriver`);
+            await console.log(`${e} \n FAIL in AddVehicleFromDriver( ${Num} )`);
             return false;
         }
     }//async AddVehicleFromDriver()
@@ -687,7 +616,7 @@ await TempStop(this.page);
         }
     }//async CheckEnterContactWorkWith()
     //----------------------------------------
-    async ModalCreateContactSaveContact() {
+    async CreateContactSaveContact() {
         let returnResult = false;
         try {
             let resOk,WarningText;
@@ -699,7 +628,8 @@ await TempStop(this.page);
             if (!resOk) {
                 throw `FAIL => ModalCreateContactSaveContact => в Контакт Кнопка "Сохранить и остаться" WaitForElementIsPresentByXPath(${this.xButtonSaveAndStayContact})`;
             }
-
+            // Чистим Варнинги
+            await WarningsRemove(this.page);
             // в Контакт Кнопка "Сохранить"
             //this.xButtonSaveContact = `//button[@type="button"][contains(@class, "primary")][contains(text(), "Сохранить")]`;
             await console.log(`Сохраняем контакт ${this.ContactData.strLastName} ${this.ContactData.strFirstName} ${this.ContactData.strMiddleName}`); // !!!!!!!
@@ -716,7 +646,10 @@ await TempStop(this.page);
             if (WarningText !== ``){
                 // await console.log(`в Контакт Кнопка "Сохранить"`);
                 // await console.log(`WarningText=(${WarningText})`);
-                if(await SubStrIsPresent('Контакт успешно сохранен!', WarningText)){
+
+                if(await SubStrIsPresent('Контакт успешно сохранен!', WarningText) ||
+                   await SubStrIsPresent('Успешно создана/обновлена!', WarningText)
+                ){
                     returnResult = true;
                 }else{
                     returnResult = false;
@@ -781,7 +714,7 @@ await TempStop(this.page);
                 throw `FAIL => this.CheckEnterContactWorkWith`;
             }
             // Сохраним Контакт
-            resOk = await this.ModalCreateContactSaveContact();
+            resOk = await this.CreateContactSaveContact();
             if (!resOk){
                 throw `FAIL => this.ModalCreateContactSaveContact`;
             }
@@ -852,19 +785,17 @@ await TempStop(this.page);
             if (!resOk){
                 throw `FAIL => this.AddVehicleFromDriver(0)`;
             }
-
-
-            await console.log(`TEMP________ CreateNewDriverWithVehicles`);
-            await TempStop(this.page);
+            await WaitRender(this.page);
             // Добавим Прицеп
             resOk = await this.AddVehicleFromDriver(1);
             if (!resOk){
                 throw `FAIL => this.AddVehicleFromDriver(1)`;
             }
-
-
+            await WaitRender(this.page);
+            // await console.log(`TEMP________ CreateNewDriverWithVehicles`);
+            // await TempStop(this.page);
             // Сохраним Контакт
-            resOk = await this.ModalCreateContactSaveContact();
+            resOk = await this.CreateContactSaveContact();
             if (!resOk){
                 throw `FAIL => this.ModalCreateContactSaveContact`;
             }
@@ -914,7 +845,7 @@ await TempStop(this.page);
                 throw `FAIL => this.EnterContactWorkWith`;
             }
             // Сохраним Контакт
-            resOk = await this.ModalCreateContactSaveContact();
+            resOk = await this.CreateContactSaveContact();
             if (!resOk){
                 throw `FAIL => this.ModalCreateContactSaveContact`;
             }

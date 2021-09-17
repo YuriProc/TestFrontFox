@@ -6,7 +6,8 @@ class Vehicle {
 
         this.VehicleData = VehicleData;
         // Заголовок ВСЕЙ Модалки "Создание нового автомобиля"
-        this.xModalHeader = `//div[contains(@id, "add-vehicle-modal")]/header/h5[contains(text(), "Создание нового автомобиля")]`;
+        this.xModalHeader0 = `//div[contains(@id, "add-vehicle-modal")]/header/h5[contains(text(), "Создание нового автомобиля")]`;
+        this.xModalHeader1 = `//div[contains(@id, "add-vehicle-modal")]/header/h5[contains(text(), "Создание нового прицепа")]`;
         // Чек "Не стандарт"
         this.xCheckNotStandart = `//div[contains(@class, "check-license-plate")]//label[contains(text(), "Не стандарт")]`;
         // Инпут "Серия и номер тех. паспорта"
@@ -33,7 +34,29 @@ class Vehicle {
         // DropDown "Тип транспорта" с нужным Типом
         this.xDropDownVehicleType =`//li[@class="multiselect__element"]/span[contains(@class, "multiselect__option")]`;
         this.xDropDownVehicleType+=`/span[text()="${this.VehicleData.strVehicleType}"]`;
-        // CarBrand ---------------------
+        //--------------------
+        // ФилдСет "Субтип транспорта" *
+        this.xFieldSetVehicleSubType = `//fieldset[legend[contains(text(), "Субтип транспорта")][span[@class="required"][contains(text(), "*")]]]`;
+        // Селект "Субтип транспорта"
+        this.xSelectVehicleSubType = this.xFieldSetVehicleSubType + `//div[@class="multiselect__tags"]`;
+        // подождать пока будет активен Селект "Субтип транспорта"
+        this.xSelectVehicleSubTypeActive = this.xFieldSetVehicleSubType + `//div[@class="multiselect crm-select multiselect--active"]`;
+        // Инпут "Субтип транспорта" *
+        this.xInputVehicleSubType = this.xFieldSetVehicleSubType + `//input`;
+        // DropDown "Субтип транспорта" с нужным Типом
+        this.xDropDownVehicleSubType =`//li[@class="multiselect__element"]/span[contains(@class, "multiselect__option")]`;
+        this.xDropDownVehicleSubType+=`/span[text()="${this.VehicleData.strVehicleSubType}"]`;
+        // Инпут "Тоннаж"
+        this.xInputCapacity = `//fieldset[legend[contains(text(), "Тоннаж")]]//input`;
+        // Инпут "Обьем"
+        this.xInputVolume = `//fieldset[legend[contains(text(), "Обьем")]]//input`;
+        // Кнопки "Тип загрузки" + [span[contains(text(), "${this.VehicleData.strLoadingTypes[i]}")]]
+        this.xButtonsLoadingTypes = `//fieldset[legend[contains(text(),"Тип загрузки")]]//button[@type="button"]`;
+        // Кнопки "Тип контейнера" + [span[contains(text(), "${this.VehicleData.strContainerType}")]]
+        this.xButtonContainerType = `//fieldset[legend[contains(text(),"Тип контейнера")]]//button[@type="button"]`;
+        this.xButtonContainerType+= `[span[contains(text(), "${this.VehicleData.strContainerType}")]]`;
+
+            // CarBrand ---------------------
         // ФилдСет "Марка" *
         this.xFieldSetCarBrand = `//fieldset[legend[contains(text(), "Марка")][span[@class="required"][contains(text(), "*")]]]`;
         // Селект "Марка"
@@ -95,18 +118,37 @@ class Vehicle {
         this.xFileManagerVehicle = this.xDocumentsSection + `[//div[@class="files-manager__type"][contains(text(), "Тех. паспорт/Доверенность")]]`;
         // Кнопка "Добавить файл"
         this.xButtonAddFile = this.xFileManagerVehicle + `//button[contains(text(), "Добавить файл")]`;
+        // Кнопка "+ Добавить" Файл
+        this.xButtonAddFilePlus = this.xFileManagerVehicle + `//div[@class="files-manager__add-input-btn"][contains(text(), "+ Добавить")]`;
+        //---------------------
+        // Секция Vehicle
+        this.xSectionVehicle = `//section[@class="crm-view crm-view__vehicle"]`;
+        // Кнопка "Сохранить" //normalize-space
+        this.xButtonSave = this.xSectionVehicle + `//button[contains(text(), "Сохранить") and not (contains(text(),"остаться"))]`;
+        // Спиннер формы
+        this.xSpinner = `//span[@class="spinner-border"]`;
+
+
         //----------------------
 
     }//constructor(browser, page, VehicleData)
     //----------------------------------------
-    async CheckRegistrationCertificateNumberForm() { // проверка , что мы на форме/модалке проверки тех паспорта
+    async CheckRegistrationCertificateNumberForm(Num) { // проверка , что мы на форме/модалке проверки тех паспорта
         let resOk;
         let resErrorText = ``;
         try {
-            // Заголовок ВСЕЙ Модалки "Создание нового автомобиля"
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xModalHeader);
-            if(!resOk){
-                resErrorText+= `FAIL => Заголовок ВСЕЙ Модалки "Создание нового автомобиля" ${this.xModalHeader} \n`;
+            if (Num === 0) {
+                // Заголовок ВСЕЙ Модалки "Создание нового автомобиля"
+                resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xModalHeader0);
+                if (!resOk) {
+                    resErrorText += `FAIL => Заголовок ВСЕЙ Модалки "Создание нового автомобиля" ${this.xModalHeader0} \n`;
+                }
+            }else{
+                // Заголовок ВСЕЙ Модалки "Создание нового прицепа"
+                resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xModalHeader1);
+                if (!resOk) {
+                    resErrorText += `FAIL => Заголовок ВСЕЙ Модалки "Создание нового прицепа" ${this.xModalHeader1} \n`;
+                }
             }
             // Чек "Не стандарт"
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xCheckNotStandart);
@@ -129,8 +171,8 @@ class Vehicle {
                 resErrorText+= `FAIL => Кнопка "Проверить в базе" Disabled ${this.xButtonCheckInBaseDisabled} \n`;
             }
             if(resErrorText !==``){
-                await this.page.screenshot({path: PathSS + 'screenshot_CheckRegistrationCertificateNumberForm.png', fullPage: true });
-                await console.log(` Скриншот: (screenshot_CheckRegistrationCertificateNumberForm.png)`);
+                await this.page.screenshot({path: PathSS + `screenshot_CheckRegistrationCertificateNumberForm${Num}.png`, fullPage: true });
+                await console.log(` Скриншот: (screenshot_CheckRegistrationCertificateNumberForm${Num}.png)`);
                 //await console.log(`${resErrorText}`);
                 throw resErrorText; // Ошибки => ВЫХОД
             }
@@ -138,10 +180,10 @@ class Vehicle {
 
             return true;
         } catch (e) {
-            await console.log(`${e} \n FAIL in CheckRegistrationCertificateNumberForm`);
+            await console.log(`${e} \n FAIL in CheckRegistrationCertificateNumberForm( ${Num})`);
             return false;
         }
-    }//async CheckRegistrationCertificateNumberForm()
+    }//async CheckRegistrationCertificateNumberForm(Num)
     //----------------------------------------
     async EnterRegistrationCertificateNumber() { // ТЕХ ПАСПОРТ
         let resOk;
@@ -171,15 +213,24 @@ class Vehicle {
         }
     }//async EnterRegistrationCertificateNumber()
      //----------------------------------------
-    async CheckLicensePlateForm() { // проверка , что мы на форме/модалке проверки Гос. номера
+    async CheckLicensePlateForm(Num) { // проверка , что мы на форме/модалке проверки Гос. номера
         let resOk;
         let resErrorText = ``;
         try {
-            // Заголовок ВСЕЙ Модалки "Создание нового автомобиля"
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xModalHeader);
-            if(!resOk){
-                resErrorText+= `FAIL => Заголовок ВСЕЙ Модалки "Создание нового автомобиля" ${this.xModalHeader} \n`;
+            if (Num === 0) {
+                // Заголовок ВСЕЙ Модалки "Создание нового автомобиля"
+                resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xModalHeader0);
+                if (!resOk) {
+                    resErrorText += `FAIL => Заголовок ВСЕЙ Модалки "Создание нового автомобиля" ${this.xModalHeader0} \n`;
+                }
+            }else{
+                // Заголовок ВСЕЙ Модалки "Создание нового прицепа"
+                resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xModalHeader1);
+                if (!resOk) {
+                    resErrorText += `FAIL => Заголовок ВСЕЙ Модалки "Создание нового прицепа" ${this.xModalHeader1} \n`;
+                }
             }
+
             // Инпут "Гос. номера"
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xInputLicensePlate);
             if(!resOk){
@@ -196,18 +247,18 @@ class Vehicle {
                 resErrorText+= `FAIL => Кнопка "Проверить в базе" Disabled ${this.xButtonCheckInBaseActive} \n`;
             }
             if(resErrorText !==``){
-                await this.page.screenshot({path: PathSS + 'screenshot_CheckLicensePlateForm.png', fullPage: true });
-                await console.log(` Скриншот: (screenshot_CheckLicensePlateForm.png)`);
+                await this.page.screenshot({path: PathSS + `screenshot_CheckLicensePlateForm${Num}.png`, fullPage: true });
+                await console.log(` Скриншот: (screenshot_CheckLicensePlateForm${Num}.png)`);
                 //await console.log(`${resErrorText}`);
                 throw resErrorText; // Ошибки => ВЫХОД
             }
 
             return true;
         } catch (e) {
-            await console.log(`${e} \n FAIL in CheckLicensePlateForm`);
+            await console.log(`${e} \n FAIL in CheckLicensePlateForm( ${Num} )`);
             return false;
         }
-    }//async CheckLicensePlateForm()
+    }//async CheckLicensePlateForm(Num)
     //----------------------------------------
     async EnterLicensePlateNumber() {// ГОС НОМЕР
         let resOk;
@@ -309,6 +360,104 @@ class Vehicle {
             return false;
         }
     }//async EnterVehicleType()
+    //----------------------------------------
+    async EnterVehicleSubType() {
+        try { let resOk;
+
+            // Инпут "Субтип транспорта"
+            await WaitForElementIsPresentByXPath(4000, this.page, this.xSelectVehicleSubType);
+            //await WaitRender(this.page);
+            resOk = await ClickByXPath(this.page, this.xSelectVehicleSubType);
+            if (!resOk) {
+                throw `FAIL => Инпут "Субтип транспорта" ClickByXPath(${this.xSelectVehicleSubType})`;
+            }
+            // подождать пока будет активен Селект "Субтип транспорта"
+            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xSelectVehicleSubTypeActive);
+            if (!resOk) {
+                throw `FAIL => НЕ активен Селект "Субтип транспорта" ClickByXPath(${this.xSelectVehicleSubType})`;
+            }
+            //await WaitRender(this.page);
+
+            resOk = await SetTextByXPath(this.page, this.xInputVehicleSubType, this.VehicleData.strVehicleSubType);
+            if (!resOk) {
+                throw `FAIL => Инпут "Субтип транспорта" SetTextByXPath(${this.xInputVehicleSubType})`;
+            }
+            //await this.page.waitFor(200);
+            // DropDown "Тип транспорта" с нужным Типом
+            await WaitForElementIsPresentByXPath(4000, this.page, this.xDropDownVehicleSubType);
+            resOk = await ClickByXPath(this.page, this.xDropDownVehicleSubType);
+            if (!resOk) {
+                throw `FAIL => DropDown "Субтип транспорта" с нужным Типом ClickByXPath(${this.xDropDownVehicleSubType})`;
+            }
+            // await WaitRender(this.page);
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterVehicleSubType`);
+            return false;
+        }
+    }//async EnterVehicleSubType()
+     //----------------------------------------
+    async EnterCapacityAndVolume() {
+        try { let resOk;
+            //await WaitRender(this.page);
+
+            // Инпут "Тоннаж"
+            resOk = await SetTextByXPath(this.page, this.xInputCapacity, this.VehicleData.strVehicleCapacity);
+            if (!resOk) {
+                throw `FAIL => Инпут "Тоннаж" SetTextByXPath(${this.xInputModel})`;
+            }
+            // Инпут "Обьем"
+            resOk = await SetTextByXPath(this.page, this.xInputVolume, this.VehicleData.strVehicleVolume);
+            if (!resOk) {
+                throw `FAIL => Инпут "Обьем" SetTextByXPath(${this.xInputModel})`;
+            }
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterCapacityAndVolume`);
+            return false;
+        }
+    }//async EnterCapacityAndVolume()
+    //----------------------------------------
+    async SelectLoadingTypes() {
+        try { let resOk;
+            //await WaitRender(this.page);
+
+            // Кнопки "Тип загрузки"
+            for(let i=0 ; i<this.VehicleData.strLoadingTypes.length; i++ ) {
+                let xPathTemp = this.xButtonsLoadingTypes + `[span[contains(text(), "${this.VehicleData.strLoadingTypes[i]}")]]`;
+                resOk = await ClickByXPath(this.page, xPathTemp);
+                if (!resOk) {
+                    throw `FAIL => Кнопки "Тип загрузки" ClickByXPath(${this.VehicleData.strLoadingTypes[i]})  (${xPathTemp})`;
+                }
+            }
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in SelectLoadingTypes`);
+            return false;
+        }
+    }//async SelectLoadingTypes()
+    //----------------------------------------
+    async SelectContainerType() {
+        try { let resOk;
+            //await WaitRender(this.page);
+
+            // Кнопки "Тип контейнера"
+            // Кнопки "Тип контейнера" + [span[contains(text(), "${this.VehicleData.strContainerType}")]]
+            resOk = await ClickByXPath(this.page, this.xButtonContainerType);
+            if (!resOk) {
+                throw `FAIL => Кнопки "Тип контейнера" ClickByXPath(${this.xButtonContainerType})`;
+            }
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in SelectContainerType`);
+            return false;
+        }
+    }//async SelectContainerType()
     //----------------------------------------
     async EnterCarBrand() {
         try { let resOk;
@@ -493,7 +642,7 @@ class Vehicle {
         try {
             // Загружаем и сохраняем на диск Фото ВодУд
             MyFilePath = await SaveTempPictureFromRandomURL(this.browser, 'DriverDocURL', -1);
-            await console.log(`Путь:(${MyFilePath})`);
+            //await console.log(`Путь:(${MyFilePath})`);
 
             // Кнопка "Добавить файл"
             // resOk = await ClickByXPath(this.page, this.xButtonAddFile);
@@ -502,38 +651,23 @@ class Vehicle {
             // }
 
 
-            await console.log(`Клик`);
-            await this.page.waitFor(6000);
-            await console.log(`Старт Промис`);
-            const [fileChooserDocs] =await Promise.all([
-                this.page.waitForFileChooser(),
-                ClickByXPath(this.page, this.xButtonAddFile)
-
-            ]);
-            await console.log(`Сер Промис`);
-            await this.page.waitFor(6000);
-
-            await fileChooserDocs.accept([MyFilePath]);
-            await console.log(`End Промис`);
-
-
-
-            await TempStop(this.page);
+            // await console.log(`Клик`);
+            // await this.page.waitFor(6000);
+            // await console.log(`Старт Промис`);
             if (MyFilePath !== '') {
-
-                let [fileChooserDocs] = await Promise.all([
+                const [fileChooserDocs] = await Promise.all([
                     this.page.waitForFileChooser(),
-                    // Кнопка "Добавить файл"
-                    ClickByXPath(this.page, this.xButtonAddFile),
+                    ClickByXPath(this.page, this.xButtonAddFile)
 
                 ]);
-                await this.page.waitFor(3000);
+                // await console.log(`Сер Промис`);
+                // await this.page.waitFor(6000);
+
                 await fileChooserDocs.accept([MyFilePath]);
-                await this.page.waitFor(3000);
-                //await DeleteTempPicture(MyFilePath);
-                //await fileChooser.cancel();
-                //await page.waitFor(1111500);
+            }else{
+                throw `FAIL => SaveTempPictureFromRandomURL(DriverDocURL)`;
             }
+           // await console.log(`End Промис`);
 
 
             return true;
@@ -543,6 +677,152 @@ class Vehicle {
         }
     }//async LoadNewFileInVehicle()
 
+    //----------------------------------------
+    async SaveVehicle() {
+        let resOk;
+        try {
+            resOk = await WaitForElementIsPresentByXPath(6000, this.page, this.xButtonSave);
+            if (!resOk) {
+                throw `FAIL => SaveVehicle WaitForElementIsPresentByXPath(${this.xButtonSave})`;
+            }
+            await WaitRender(this.page);
+            // Кнопка "Сохранить"
+            resOk = await ClickByXPath(this.page, this.xButtonSave);
+            if (!resOk) {
+                throw `FAIL => SaveVehicle ClickByXPath(${this.xButtonSave})`;
+            }
+            //span[@class="spinner-border"]
+            // Спиннер формы
+
+            await WaitUntilXPathExist(this.page, 5000, this.xSpinner, true);
+            await WaitRender(this.page);
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in SaveVehicle`);
+            return false;
+        }
+    }//async SaveVehicle()
+    //----------------------------------------
+    async CreateNewVehicle(Num) {
+        let resOk;
+        try {
+
+            //проверка Формы (Тех паспорт)
+            resOk = await this.CheckRegistrationCertificateNumberForm(Num);
+            if (!resOk) {
+                throw `FAIL => проверка Формы (Тех паспорт) this.CheckRegistrationCertificateNumberForm( ${Num} );`;
+            }
+            // Ввод тех паспорта и нажатие кнопки
+            resOk = await this.EnterRegistrationCertificateNumber();
+            if (!resOk) {
+                throw `FAIL => Ввод тех паспорта и нажатие кнопки this.EnterRegistrationCertificateNumber();`;
+            }
+            await WarningsRemove(this.page);
+            // !!!! Потом написать условие для проверки - мы на "ВВОД Гос номера" или уже нашло и вернуло существующую тачку
+            //проверка Формы (Гос. номер)
+            resOk = await this.CheckLicensePlateForm(Num);
+            if (!resOk) {
+                throw `FAIL => проверка Формы (Гос. номер) this.CheckLicensePlateForm( ${Num} );`;
+            }
+            // Ввод гос номера и нажатие кнопки
+            resOk = await this.EnterLicensePlateNumber();
+            if (!resOk) {
+                throw `FAIL => Ввод гос номера и нажатие кнопки this.EnterLicensePlateNumber();`;
+            }
+            await WarningsRemove(this.page);
+            // Проверка Формы (Транспорта)
+            resOk = await this.CheckVehicleForm();
+            if (!resOk) {
+                throw `FAIL => проверка Формы (Транспорта) this.CheckVehicleForm();`;
+            }
+            // Ввод и выбор "Тип транспорта"
+            resOk = await this.EnterVehicleType();
+            if (!resOk) {
+                throw `FAIL => Ввод и выбор "Тип транспорта" this.EnterVehicleType();`;
+            }
+            //-----------------------------------------------------------------------
+            // Если "Тягач" , то одна логика заполнения - иначе - другая
+            if (this.VehicleData.strVehicleType === 'Тягач'){
+
+            }else{ // НЕ "Тягач"  - другая логика заполнения ------------------------
+
+                // Ввод Тоннажа и Объёма
+                resOk = await this.EnterCapacityAndVolume();
+                if (!resOk) {
+                    throw `FAIL => Ввод Тоннажа и Объёма this.EnterCapacityAndVolume();`;
+                }
+                // Ввод и выбор "Суб тип транспорта"
+                resOk = await this.EnterVehicleSubType();
+                if (!resOk) {
+                    throw `FAIL => Ввод и выбор "Суб тип транспорта" this.EnterVehicleSubType();`;
+                }
+                // Если "Контейнеровоз" , то одна логика заполнения - иначе - другая
+                if (this.VehicleData.strVehicleSubType === 'Контейнеровоз'){
+                    // Выбор "Тип контейнера"
+                    resOk = await this.SelectContainerType();
+                    if (!resOk) {
+                        throw `FAIL => Выбор "Тип контейнера" this.SelectContainerType();`;
+                    }
+
+                }else {// НЕ "Контейнеровоз"  - другая логика заполнения ------------------------
+                    // Выбор Кнопки "Тип загрузки"
+                    resOk = await this.SelectLoadingTypes();
+                    if (!resOk) {
+                        throw `FAIL => Выбор Кнопки "Тип загрузки" this.SelectLoadingTypes();`;
+                    }
+                }
+            }//  End НЕ "Тягач"  - другая логика заполнения ------------------------
+            // Марка
+            resOk = await this.EnterCarBrand();
+            if (!resOk) {
+                throw `FAIL => Ввод и выбор "Марка" this.EnterCarBrand();`;
+            }
+
+            //Модель
+            resOk = await this.EnterModel();
+            if (!resOk) {
+                throw `FAIL => Ввод "Модель" this.EnterModel();`;
+            }
+            // Количество осей
+            resOk = await this.SetQuantityAxles();
+            if (!resOk) {
+                throw `FAIL => Ввод "Количество осей" this.SetQuantityAxles();`;
+            }
+            // Владелец транспорта Кнопки "Компания/Контакт"
+            resOk = await this.SetOwnerType();
+            if (!resOk) {
+                throw `FAIL => Кнопки "Компания/Контакт" this.SetOwnerType();`;
+            }
+            // Документ
+            resOk = await this.EnterDocumentType();
+            if (!resOk) {
+                throw `FAIL => Ввод "Документ" this.EnterDocumentType();`;
+            }
+            // "Компания/Контакт владельца"
+
+            resOk = await this.EnterSubjectOwner();
+            if (!resOk) {
+                throw `FAIL => Ввод "Компания/Контакт владельца" this.EnterSubjectOwner();`;
+            }
+
+            resOk = await this.LoadNewFileInVehicle();
+            if (!resOk) {
+                throw `FAIL => Загрузка Файла this.LoadNewFileInVehicle();`;
+            }
+
+            resOk = await this.SaveVehicle();
+            if (!resOk) {
+                throw `FAIL => Сохранить Транспорт this.SaveVehicle();`;
+            }
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in CreateNewVehicle ( ${Num})`);
+            return false;
+        }
+    }//async CreateNewVehicle()
     //----------------------------------------
 
 

@@ -191,7 +191,7 @@ CompanyData2 = {
         strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
         strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
         strWorkOnCompany: ``, // Заполнить в перед созданием объекта из CompanyData !!!
-        strWorkOnCompanyEDRPOU: ``, // Заполнить в перед созданием объекта из CompanyData !!!
+        strWorkOnCompanyEDRPOU: ``, // Заполнить перед созданием объекта из CompanyData !!!
         strDriverLicenseNumber: `ПРВ` + await randomInt(100001, 999999),
         Vehicles:[
             {
@@ -204,14 +204,25 @@ CompanyData2 = {
                     strQuantityAxles: '2', // тягач, фургон 1-2 , прицепы 1-3 у остальных нет
                     strTypeOwner: 'Компания', // 'Контакт',
                     strDocument: 'Договор купли-продажи', // 'Неформально', 'По доверенности', 'По тех-пасспорту', 'Договор аренды нотариальный', '', '',
-                    strSubjectOwner: '', // Заполнить в перед созданием объекта из CompanyData !!!
+                    strSubjectOwner: '', // Заполнить перед созданием объекта из CompanyData !!!
                 }
             },
             {
                 VehicleData: {
-                    strLicensePlate : 'FF9876KK',
-                    strRegistrationCertificateNumber: `XXX123456`,
-                    strVehicleType: 'Полуприцеп',
+                    strLicensePlate : 'PP'+ await randomInt(1000, 9999) + 'TT',
+                    strRegistrationCertificateNumber: `ZZZ`+ await randomInt(100000, 999999), // 3+6 !!!!
+                    strVehicleType: 'Напівпричіп',
+                    strVehicleSubType: `Ізотерм`,//`Тент`, // `Реф`, `Ізотерм`, `Цільномет`, // `Контейнеровоз`,  (20,40,45 Футов)
+                    strContainerType: `40 футів`, // `20 футів`, `40 футів`, `45 футів`,
+                    strVehicleCapacity: `20`,
+                    strVehicleVolume: `86`,
+                    strLoadingTypes: ['Бокова','Задня',], // `Верхня`, `Повна`,
+                    strCarBrand: 'SCHMITZ', // 'TRAILOR', 'KOEGEL', 'KRONE', 'WIELTON', 'SCHWARZMULLER',
+                    strModel: 'XF ' + await randomInt(10, 99) + '.'+ await randomInt(100, 999), //'XF 95 430', // 'XF 105.460',
+                    strQuantityAxles: '2', // тягач, фургон 1-2 , прицепы 1-3 у остальных нет
+                    strTypeOwner: 'Компания', // 'Контакт',
+                    strDocument: 'Договор купли-продажи', // 'Неформально', 'По доверенности', 'По тех-пасспорту', 'Договор аренды нотариальный', '', '',
+                    strSubjectOwner: '', // Заполнить перед созданием объекта из CompanyData !!!
                 }
             },
         ],
