@@ -60,8 +60,8 @@ CompanyData1 = {
         strLocationType: 'Склад',
         strIndustryType: 'Алкоголь',
         strContactName: 'АА Джамшут ББ',
-        strCompanyName: 'ЧЛЕН',// Заполнить перед AddNewLocation из CompanyData !!!
-        strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+        strCompanyName: 'ЧЛЕН',// Заполнить в перед созданием объекта из CompanyData !!!
+        strCodeCompany: ``,// Заполнить в перед созданием объекта из CompanyData !!!
         strLocationName: `Название Локации1`,
         ContactData: {
             PhoneData: {
@@ -80,8 +80,8 @@ CompanyData1 = {
             strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
             strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
             strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
-            strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
-            strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
+            strWorkOnCompany: ``, // Заполнить в перед созданием объекта из CompanyData !!!
+            strWorkOnCompanyEDRPOU: ``, // Заполнить в перед созданием объекта из CompanyData !!!
         },
     },
     LocationData2: {
@@ -94,8 +94,8 @@ CompanyData1 = {
         strLocationType: 'Склад',
         strIndustryType: 'Алкоголь',
         strContactName: 'АА Джамшут ББ',
-        strCompanyName: 'ЧЛЕН',// Заполнить в AddNewLocation из CompanyData !!!
-        strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+        strCompanyName: 'ЧЛЕН',// Заполнить в перед созданием объекта из CompanyData !!!
+        strCodeCompany: ``,// Заполнить в перед созданием объекта из CompanyData !!!
         strLocationName: `Название Локации2`,
         ContactData: {
             PhoneData: {
@@ -114,8 +114,8 @@ CompanyData1 = {
             strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
             strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
             strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
-            strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
-            strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
+            strWorkOnCompany: ``, // Заполнить в перед созданием объекта из CompanyData !!!
+            strWorkOnCompanyEDRPOU: ``, // Заполнить в перед созданием объекта из CompanyData !!!
         },
     },
     strPhoneNumber: '38050' + await randomInt(1001010, 9989999),
@@ -190,15 +190,21 @@ CompanyData2 = {
         strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
         strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
         strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
-        strWorkOnCompany: ``, // Заполнить в AddNewLocation из CompanyData !!!
-        strWorkOnCompanyEDRPOU: ``, // Заполнить в AddNewLocation из CompanyData !!!
+        strWorkOnCompany: ``, // Заполнить в перед созданием объекта из CompanyData !!!
+        strWorkOnCompanyEDRPOU: ``, // Заполнить в перед созданием объекта из CompanyData !!!
         strDriverLicenseNumber: `ПРВ` + await randomInt(100001, 999999),
         Vehicles:[
             {
                 VehicleData: {
-                    strLicensePlate : 'FF9876KK',
-                    strRegistrationCertificateNumber: `XXX123456`,
+                    strLicensePlate : 'FF'+ await randomInt(1000, 9999) + 'KK',
+                    strRegistrationCertificateNumber: `XXX`+ await randomInt(100000, 999999), // 3+6 !!!!
                     strVehicleType: 'Тягач',
+                    strCarBrand: 'DAF', // 'MAN', 'VOLVO', 'IVECO', 'RENAULT', 'SCANIA',
+                    strModel: 'XF ' + await randomInt(10, 99) + '.'+ await randomInt(100, 999), //'XF 95 430', // 'XF 105.460',
+                    strQuantityAxles: '2', // тягач, фургон 1-2 , прицепы 1-3 у остальных нет
+                    strTypeOwner: 'Компания', // 'Контакт',
+                    strDocument: 'Договор купли-продажи', // 'Неформально', 'По доверенности', 'По тех-пасспорту', 'Договор аренды нотариальный', '', '',
+                    strSubjectOwner: '', // Заполнить в перед созданием объекта из CompanyData !!!
                 }
             },
             {

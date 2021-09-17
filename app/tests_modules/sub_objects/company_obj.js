@@ -172,7 +172,7 @@ class Company{
 //await console.log(`qqqqqqq`);
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in ClickCompanyCreateNewPlus\n`);
+            await console.log(`${e} \n FAIL in ClickCompanyCreateNewPlus`);
             return false;
         }
     } // async ClickCompanyCreateNewPlus(){
@@ -262,7 +262,7 @@ class Company{
         return true;
 
         }catch (e) {
-            await console.log(`${e} \n FAIL in CheckCompanyForm\n`);
+            await console.log(`${e} \n FAIL in CheckCompanyForm`);
             return false;
         }
     }//async CheckCompanyForm()
@@ -335,7 +335,7 @@ class Company{
             }
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in AddNewCompanyTypes\n`);
+            await console.log(`${e} \n FAIL in AddNewCompanyTypes`);
             return false;
         }
     }//async AddNewCompanyTypes()
@@ -371,7 +371,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in CheckBossPresent\n`);
+            await console.log(`${e} \n FAIL in CheckBossPresent`);
             return false;
         }
     }//async CheckBossPresent()
@@ -427,10 +427,10 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in CreateNewDriverWithVehicles`);
+            await console.log(`${e} \n FAIL in CreateNewDriverWithVehiclesFromCompanies`);
             return false;
         }
-    }//async CreateNewDriverWithVehicles()
+    }//async CreateNewDriverWithVehiclesFromCompanies()
     //------------------
     async AddNewCargoTypes(){
         try{
@@ -480,7 +480,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in OpenModalTableCargoTypes\n`);
+            await console.log(`${e} \n FAIL in OpenModalTableCargoTypes`);
             return false;
         }
     }//async OpenModalTableCargoTypes()
@@ -643,7 +643,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in AddOneCargoType\n`);
+            await console.log(`${e} \n FAIL in AddOneCargoType`);
             return false;
         }
     }//async AddOneCargoType()
@@ -660,7 +660,7 @@ class Company{
             await WaitRender(this.page);
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in CloseModalTableCargoTypes\n`);
+            await console.log(`${e} \n FAIL in CloseModalTableCargoTypes`);
             return false;
         }
     }//async CloseModalTableCargoTypes()
@@ -690,7 +690,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in AddNewPhoneNumber\n`);
+            await console.log(`${e} \n FAIL in AddNewPhoneNumber`);
             return false;
         }
     }//async AddNewPhoneNumber()
@@ -720,7 +720,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in AddNewEmail\n`);
+            await console.log(`${e} \n FAIL in AddNewEmail`);
             return false;
         }
     }//async AddNewEmail()
@@ -750,7 +750,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in AddNewLink\n`);
+            await console.log(`${e} \n FAIL in AddNewLink`);
             return false;
         }
     }//async AddNewLink()
@@ -779,7 +779,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in AddNewContract\n`);
+            await console.log(`${e} \n FAIL in AddNewContract`);
             return false;
         }
     }//async AddNewContract()
@@ -830,7 +830,7 @@ class Company{
             }
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in AddNewLocation\n`);
+            await console.log(`${e} \n FAIL in AddNewLocation`);
             return false;
         }
     }//async AddNewLocation()
@@ -887,7 +887,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in AddExistsLocation\n`);
+            await console.log(`${e} \n FAIL in AddExistsLocation`);
             return false;
         }
     }//async AddExistsLocation()
@@ -932,7 +932,7 @@ class Company{
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in TemplateTemp ${e} \n`);
+            await console.log(`${e} \n FAIL in TemplateTemp`);
             return false;
         }
     }//async TemplateTemp()

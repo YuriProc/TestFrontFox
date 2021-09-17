@@ -152,7 +152,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in clickLocation \n`);
+            await console.log(`${e} \n FAIL in clickLocation`);
             return false;
         }
     }//async clickLocation()
@@ -177,7 +177,7 @@ class Location {
             }
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in deleteAllLocations \n`);
+            await console.log(`${e} \n FAIL in deleteAllLocations`);
             return false;
         }
     }// async deleteAllLocations()
@@ -209,7 +209,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in clickPlusAddLocations\n`);
+            await console.log(`${e} \n FAIL in clickPlusAddLocations`);
             return false;
         }
     }//async clickPlusAddLocations()
@@ -252,7 +252,7 @@ class Location {
             //await TempStop(this.page);
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in EnterExistsAddressAndPressAdd\n`);
+            await console.log(`${e} \n FAIL in EnterExistsAddressAndPressAdd`);
             return false;
         }
     }//async EnterExistsAddressAndPressAdd()
@@ -423,7 +423,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in EnterDataInExistsLocation \n`);
+            await console.log(`${e} \n FAIL in EnterDataInExistsLocation`);
             return false;
         }
     }//async EnterDataInExistsLocation()
@@ -475,7 +475,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in clickGoToTableLocations ${e} \n`);
+            await console.log(`${e} \n FAIL in clickGoToTableLocations`);
             return false;
         }
     }//async clickGoToTableLocations()
@@ -512,7 +512,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in clickMenuLocationsPlus ${e} \n`);
+            await console.log(`${e} \n FAIL in clickMenuLocationsPlus`);
             return false;
         }
     }//async clickMenuLocationsPlus()
@@ -734,7 +734,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in EnterNewDataInLocation ${e} \n`);
+            await console.log(`${e} \n FAIL in EnterNewDataInLocation`);
             return false;
         }
     }//async EnterNewDataInLocation()
@@ -770,7 +770,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in clickSaveLocation ${e} \n`);
+            await console.log(`${e} \n FAIL in clickSaveLocation`);
             return false;
         }
     }//async clickSaveLocation()
@@ -787,7 +787,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in clickCloseLocationTable ${e} \n`);
+            await console.log(`${e} \n FAIL in clickCloseLocationTable`);
             return false;
         }
     }//async clickCloseLocationTable()
@@ -797,7 +797,7 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in TemplateTemp ${e} \n`);
+            await console.log(`${e} \n FAIL in TemplateTemp`);
             return false;
         }
     }//async TemplateTemp()
