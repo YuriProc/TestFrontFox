@@ -6,6 +6,12 @@
    npm i puppeteer@2.0.0 - для правильной работы загрузки файлов на странице
    
     await fileChooserDocs.accept([MyFilePath]);
+      
+
+      git add .
+      git commit -m "save end of the week"
+      git push origin
+
 3) переименовать файл config.config.example в config.config
 4) в файле config.config:
     * FRONT_FOX_URL = http://localhost:8080 <-прописать актуальный URL фронта.
