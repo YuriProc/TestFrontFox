@@ -9,7 +9,9 @@
       
 
       git add .
+
       git commit -m "save end of the week"
+
       git push origin
 
 3) переименовать файл config.config.example в config.config
