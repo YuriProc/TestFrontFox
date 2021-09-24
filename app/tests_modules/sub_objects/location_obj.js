@@ -167,8 +167,8 @@ class Location {
                 await console.log(`deleteAllLocations ${QElem}`);
                 resOk = await ClickByXPathNum(this.page, 0, this.xFirstButtonDelete);
                 if (!resOk){
-                    await this.page.screenshot({path: PathSS + `screenshot_del_location.png`, fullPage: true });
-                    await console.log(PathSS + `screenshot_del_location.png`);
+                    await this.page.screenshot({path: g_PathSS + `screenshot_del_location.png`, fullPage: true });
+                    await console.log(g_PathSS + `screenshot_del_location.png`);
                     await TempStop(this.page);
                     throw `FAIL => Табличное редактирование, вкладка "Локации", первая кнопка "Корзина" (Удаление Локации - первой в таблице)(${this.xDelete})`;
                 }
@@ -239,14 +239,14 @@ class Location {
                 throw `FAIL => Модалка "Найти сущ. локацию" Селект "Введите адресс" ClickByXPathNum(${this.xSelectEnterAddress})`;
             }
             await WaitRender(this.page);
-            strDialogMessage = ``;
+            g_strDialogMessage = ``;
             // Кнопка "Добавить"
             resOk = await ClickByXPath(this.page, this.xButtonAdd);
             if (!resOk){
                 throw `FAIL => Модалка "Найти сущ. локацию" Кнопка "Добавить"(${this.xButtonAdd})`;
             }
             await WaitRender(this.page);
-            await console.log(`strDialogMessage:(${strDialogMessage})`);
+            await console.log(`strDialogMessage:(${g_strDialogMessage})`);
 
 
             //await TempStop(this.page);
@@ -403,7 +403,7 @@ class Location {
             // this.xSelectCompanies + [contains(text(), "${LocationData.strCompanyName}")] or strCodeCompany
             resOk = await ClickByXPath(this.pageTableLocations, this.xSelectCompanies);
             if (!resOk) {
-                await this.page.screenshot({path: PathSS + 'screenshot_select_company_type.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_select_company_type.png', fullPage: true });
                 await console.log(`Селект в ДропДауне "Компании" ClickByXPath`);
                 //await TempStop(this.pageTableLocations);
                 throw `FAIL => Селект в ДропДауне "Компании" ClickByXPath(${this.xSelectCompanies})`;
@@ -454,7 +454,7 @@ class Location {
             // Проверить , что мы на таблице локаций !!!!
             resOk = await WaitForElementIsPresentByXPath(5000, this.pageTableLocations, this.xTableLocationReady);
             if (!resOk) {
-                let strPath = PathSS + 'screenshot_xTableLocationReady.png';
+                let strPath = g_PathSS + 'screenshot_xTableLocationReady.png';
 
                 await this.pageTableLocations.screenshot({path: strPath, fullPage: true });
                 await console.log(` screenshot= ${strPath}`);
@@ -464,7 +464,7 @@ class Location {
             // Проверить , что мы на таблице локаций и есть заголовок столбца №4 "Тип локации"!!!!
             resOk = await WaitForElementIsPresentByXPath(5000, this.pageTableLocations, this.xTableLocationColumnHeader_4);
             if (!resOk) {
-                let strPath = PathSS + 'screenshot_xTableLocationColumnHeader_4.png';
+                let strPath = g_PathSS + 'screenshot_xTableLocationColumnHeader_4.png';
 
                 await this.pageTableLocations.screenshot({path: strPath, fullPage: true });
                 await console.log(` screenshot= ${strPath}`);
@@ -528,7 +528,7 @@ class Location {
             //  Проверить , что спиннер исчез на форме Создания локации
             resOk = await WaitUntilXPathExist(this.pageTableLocations,5000, this.xSpinnerCreateLocation);
             if (!resOk) {
-                let strPath = PathSS + 'screenshot_xSpinnerCreateLocation.png';
+                let strPath = g_PathSS + 'screenshot_xSpinnerCreateLocation.png';
                 await this.pageTableLocations.screenshot({path: strPath, fullPage: true });
                 await console.log(` screenshot= ${strPath}`);
                 throw `FAIL => Проверить , что спиннер исчез на форме Создания локации(${this.xSpinnerCreateLocation})`;
@@ -540,7 +540,7 @@ class Location {
             await WaitForElementIsPresentByXPath(4000, this.pageTableLocations, this.xInputAddressFOX);
             resOk = await ClickByXPath(this.pageTableLocations, this.xInputAddressFOX);
             if (!resOk) {
-                await this.page.screenshot({path: PathSS + 'screenshot_address_location.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_address_location.png', fullPage: true });
                 // await console.log(`FAIL resOk Инпут "Адрес для маршрута в фоксе"`);
                 // await TempStop(this.pageTableLocations);
                 throw `FAIL => Инпут "Адрес для маршрута в фоксе" ClickByXPath(${this.xInputAddressFOX})`;
@@ -672,7 +672,7 @@ class Location {
 
             resOk = await ClickByXPath(this.pageTableLocations, this.xSelectContacts);
             if (!resOk) {
-                await this.page.screenshot({path: PathSS + 'screenshot_SelectContacts.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_SelectContacts.png', fullPage: true });
                 await console.log(`* Селект ДропДаун "Контакты" ClickByXPath`);
 
                 //await TempStop(this.pageTableLocations);
@@ -713,7 +713,7 @@ class Location {
             // this.xSelectCompanies + [contains(text(), "${LocationData.strCompanyName}")] or strCodeCompany
             resOk = await ClickByXPath(this.pageTableLocations, this.xSelectCompanies);
             if (!resOk) {
-                await this.page.screenshot({path: PathSS + 'screenshot_select_company_type.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_select_company_type.png', fullPage: true });
                 await console.log(`Селект в ДропДауне "Компании" ClickByXPath`);
                 //await TempStop(this.pageTableLocations);
                 throw `FAIL => Селект в ДропДауне "Компании" ClickByXPath(${this.xSelectCompanies})`;
@@ -756,7 +756,7 @@ class Location {
 
             resOk = await ClickByXPath(this.pageTableLocations, this.xButtonSaveLocation);
             if (!resOk) {
-                let strPath = PathSS + 'screenshot_xButtonSaveLocation.png';
+                let strPath = g_PathSS + 'screenshot_xButtonSaveLocation.png';
 
                 await this.pageTableLocations.screenshot({path: strPath, fullPage: true });
                 await console.log(` screenshot= ${strPath}`);

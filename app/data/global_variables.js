@@ -1,6 +1,9 @@
 global.g_width = 1700;
 global.g_height = 1000;
 
+global.g_strDialogMessage = ``;
+global.g_PathSS = `screenshots/`;
+
 // in file config.config
 
 global.gname_FrontCrmFoxURL = 'FRONT_CRM_FOX_URL';
@@ -247,6 +250,16 @@ global.g_ArraySTR = {
         'Хозяин',
         'Юрист',
     ], // StrContactType // ------------------------------------------------------------------------
+    'StrLevelMonitoringMC' : [
+        'Автоматически',
+        'Максимальный (Ночью на охраняемых)',
+        'Максимальный (Движение ночью разрешено)',
+        'Средний (Движение ночью разрешено)',
+        'Низкий',
+        'Не контролировать',
+        'Средний (Ночью на охраняемых)',
+        'Контроль загрузки и выгрузки',
+    ], // 'StrLevelMonitoringMC' -------------------------------------------------------------------
     'StrAddressFunny' : [
         'Хреновое',
         //'Хреново',

@@ -264,7 +264,7 @@ class Contact {
                 resErrorText+= `FAIL => Плашка "Заполните все поля для сохранения!" (${this.xValidatorFillAllFields}) \n`;
             }
             if(resErrorText !==``){
-                await this.page.screenshot({path: PathSS + 'screenshot_CheckValidationModalContact.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_CheckValidationModalContact.png', fullPage: true });
                 await console.log(`${this.ContactData.strLastName}  ${this.ContactData.PhoneData.strPhoneNumber} ИНН: ${this.ContactData.strINN}`);
                 //await console.log(`${resErrorText}`);
                 throw resErrorText; // Ошибки валидации => ВЫХОД
@@ -312,7 +312,7 @@ class Contact {
                 resErrorText+= `FAIL => Плашка "Заполните все поля для сохранения!" (${this.xValidatorFillAllFields}) \n`;
             }
             if(resErrorText !==``){
-                await this.page.screenshot({path: PathSS + 'screenshot_CheckValidationModalDriver.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_CheckValidationModalDriver.png', fullPage: true });
                 await console.log(`${this.ContactData.strLastName}  ${this.ContactData.PhoneData.strPhoneNumber} ИНН: ${this.ContactData.strINN}`);
                 //await console.log(`${resErrorText}`);
                 throw resErrorText; // Ошибки валидации => ВЫХОД
@@ -359,7 +359,7 @@ class Contact {
                 resErrorText+= `FAIL => Плашка "Заполните все поля для сохранения!" (${this.xValidatorFillAllFields}) \n`;
             }
             if(resErrorText !==``){
-                await this.page.screenshot({path: PathSS + 'screenshot_double_data.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_double_data.png', fullPage: true });
                 await console.log(`${this.ContactData.strLastName}  ${this.ContactData.PhoneData.strPhoneNumber} ИНН: ${this.ContactData.strINN}`);
                 //await console.log(`${resErrorText}`);
                 throw resErrorText; // Ошибки валидации => ВЫХОД
@@ -460,14 +460,14 @@ class Contact {
             // Обработать "Бус" "Фургон"
         if (this.ContactData.Vehicles[Num].VehicleData.strVehicleType === 'Тягач') {
             // Кнопка "+ Добавить" (Авто)
-            await console.log(`AddVehicleFromDriver[${Num}] ${this.ContactData.Vehicles[Num].VehicleData.strVehicleType} === 'Тягач'`);
+            //await console.log(`AddVehicleFromDriver[${Num}] ${this.ContactData.Vehicles[Num].VehicleData.strVehicleType} === 'Тягач'`);
             resOk = await ClickByXPath(this.page, this.xPlusButtonAddVehicle);
             if (!resOk) {
                 throw `FAIL => AddVehicleFromDriver =>  Кнопка "+ Добавить" (Авто) ClickByXPath(${this.xPlusButtonAddVehicle})`;
             }
         }else {
             // Кнопка "+ Добавить" (Прицеп)
-            await console.log(`AddVehicleFromDriver[${Num}] ${this.ContactData.Vehicles[Num].VehicleData.strVehicleType} `);
+            //await console.log(`AddVehicleFromDriver[${Num}] ${this.ContactData.Vehicles[Num].VehicleData.strVehicleType} `);
             resOk = await ClickByXPath(this.page, this.xPlusButtonAddTrailer);
             if (!resOk) {
                 throw `FAIL => AddVehicleFromDriver =>  Кнопка "+ Добавить" (Прицеп) ClickByXPath(${this.xPlusButtonAddTrailer})`;
@@ -605,7 +605,7 @@ class Contact {
             // Должна быть связь с конкретной компанией
             strGetCompanyName = await ElementGetInnerText(this.page, 0, this.xWorkWithData);
             if (strGetCompanyName !== this.ContactData.strWorkOnCompany) {
-                await this.page.screenshot({path: PathSS + `screenshot_CheckEnterContactWorkWith.png`, fullPage: true });
+                await this.page.screenshot({path: g_PathSS + `screenshot_CheckEnterContactWorkWith.png`, fullPage: true });
                 throw `FAIL => "Работает на" Данные: ${strGetCompanyName} !== ${this.ContactData.strWorkOnCompany}`;
             }
 
@@ -635,7 +635,7 @@ class Contact {
             await console.log(`Сохраняем контакт ${this.ContactData.strLastName} ${this.ContactData.strFirstName} ${this.ContactData.strMiddleName}`); // !!!!!!!
             resOk = await ClickByXPath(this.page, this.xButtonSaveContact);
             if (!resOk) {
-                await this.page.screenshot({path: PathSS + `screenshot_button_save_contact.png`, fullPage: true });
+                await this.page.screenshot({path: g_PathSS + `screenshot_button_save_contact.png`, fullPage: true });
                 await console.log(`${this.xButtonSaveContact}`);
                 //await TempStop(this.page);
                 throw `FAIL => ModalCreateContactSaveContact => в Контакт Кнопка "Сохранить" ClickByXPathWithScroll(${this.xButtonSaveContact})`;
@@ -654,7 +654,7 @@ class Contact {
                 }else{
                     returnResult = false;
                     await console.log(`FAIL => Не вижу "Контакт успешно сохранен!" \n WarningText=(${WarningText})`);
-                    await this.page.screenshot({path: PathSS + `screenshot_WarningsRead_after_button_save_contact.png`, fullPage: true });
+                    await this.page.screenshot({path: g_PathSS + `screenshot_WarningsRead_after_button_save_contact.png`, fullPage: true });
                 }
 
                 // await this.page.evaluate('document.body.innerHTML = document.body.innerHTML');

@@ -16,9 +16,51 @@ let DealCreateNew = async (browser, page, DealData) => {
     let MyFilePath = '';
     let returnResult = false;
     try {
-    await page.setViewport({width, height});
+        await page.setViewport({width: g_width, height: g_height});
+        var {Deal} = require("../tests_modules/sub_objects/deal_obj.js");
+
+        let NewDeal = new Deal(browser, page, DealData);
+
+        // Открытие Формы Создания НОВОЙ сделки
+        resOk = await NewDeal.ClickDealPlus();
+        if (!resOk) {
+            throw `FAIL => Открытие Формы Создания НОВОЙ сделки NewDeal.ClickDealPlus();`;
+        }
+        // Проверка Формы создания НОВОЙ сделки
+        resOk = await NewDeal.CheckFormNewDeal();
+        if (!resOk) {
+            throw `FAIL => Проверка Формы создания НОВОЙ сделки NewDeal.CheckFormNewDeal();`;
+        }
+
+        // Вводим "Компания заказчика *"
+        resOk = await NewDeal.EnterClientCompany();
+        if (!resOk) {
+            throw `FAIL => Вводим "Компания заказчика *"  NewDeal.EnterClientCompany();`;
+        }
+        // Вводим "Мониторинг (МЦ)"
+        resOk = await NewDeal.EnterLevelMonitoringMC();
+        if (!resOk) {
+            throw `FAIL => Вводим "Мониторинг (МЦ)"  NewDeal.EnterLevelMonitoringMC();`;
+        }
+
+        // Вводим "Тип Груза"
+        resOk = await NewDeal.EnterCargoTypeData();
+        if (!resOk) {
+            throw `FAIL => Вводим "Тип Груза" NewDeal.EnterCargoTypeData();`;
+        }
+        // Добавляем ВСЕ фрахты Заказчика
+        resOk = await NewDeal.AddAllClientFreights();
+        if (!resOk) {
+            throw `FAIL => Добавляем ВСЕ фрахты Заказчика NewDeal.AddAllClientFreights();`;
+        }
+
+
+        await console.log(`Временно Стоп DealCreateNew`);
+        await TempStop(page);
 
     //await page.setViewport({width2, height2});
+
+
 
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
@@ -478,7 +520,7 @@ let DealCreateNew = async (browser, page, DealData) => {
         DealData.returnResult = false;
         //await page.waitFor(5001111);
     }
-    await page.setViewport({width, height});
+   // await page.setViewport({width, height});
     return DealData;//<------------------EXIT !!!
 
 };

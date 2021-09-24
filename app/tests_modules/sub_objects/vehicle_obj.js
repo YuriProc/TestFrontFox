@@ -171,7 +171,7 @@ class Vehicle {
                 resErrorText+= `FAIL => Кнопка "Проверить в базе" Disabled ${this.xButtonCheckInBaseDisabled} \n`;
             }
             if(resErrorText !==``){
-                await this.page.screenshot({path: PathSS + `screenshot_CheckRegistrationCertificateNumberForm${Num}.png`, fullPage: true });
+                await this.page.screenshot({path: g_PathSS + `screenshot_CheckRegistrationCertificateNumberForm${Num}.png`, fullPage: true });
                 await console.log(` Скриншот: (screenshot_CheckRegistrationCertificateNumberForm${Num}.png)`);
                 //await console.log(`${resErrorText}`);
                 throw resErrorText; // Ошибки => ВЫХОД
@@ -191,7 +191,7 @@ class Vehicle {
             // Инпут "Серия и номер тех. паспорта"
             resOk = await SetTextByXPath(this.page, this.xInputRegistrationCertificateNumber, this.VehicleData.strRegistrationCertificateNumber);
             if (!resOk){
-                await this.page.screenshot({path: PathSS + 'screenshot_EnterRegistrationCertificateNumber.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_EnterRegistrationCertificateNumber.png', fullPage: true });
                 await console.log(` Скриншот: (screenshot_EnterRegistrationCertificateNumber.png)`);
                 throw ` FAIL => Инпут "Серия и номер тех. паспорта" SetTextByXPath(${this.xInputRegistrationCertificateNumber})`;
             }
@@ -200,7 +200,7 @@ class Vehicle {
             // Кнопка "Проверить в базе"
             resOk = await ClickByXPath(this.page, this.xButtonCheckInBaseActive);
             if (!resOk){
-                await this.page.screenshot({path: PathSS + 'screenshot_xButtonCheckInBaseActiveCF.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_xButtonCheckInBaseActiveCF.png', fullPage: true });
                 await console.log(` Скриншот: (screenshot_xButtonCheckInBaseActiveCF.png)`);
                 throw ` FAIL => Кнопка "Проверить в базе" ClickByXPath(${this.xButtonCheckInBaseActive})`;
             }
@@ -247,7 +247,7 @@ class Vehicle {
                 resErrorText+= `FAIL => Кнопка "Проверить в базе" Disabled ${this.xButtonCheckInBaseActive} \n`;
             }
             if(resErrorText !==``){
-                await this.page.screenshot({path: PathSS + `screenshot_CheckLicensePlateForm${Num}.png`, fullPage: true });
+                await this.page.screenshot({path: g_PathSS + `screenshot_CheckLicensePlateForm${Num}.png`, fullPage: true });
                 await console.log(` Скриншот: (screenshot_CheckLicensePlateForm${Num}.png)`);
                 //await console.log(`${resErrorText}`);
                 throw resErrorText; // Ошибки => ВЫХОД
@@ -266,7 +266,7 @@ class Vehicle {
             // Инпут "Гос. номера"
             resOk = await SetTextByXPath(this.page, this.xInputLicensePlate, this.VehicleData.strLicensePlate);
             if (!resOk){
-                await this.page.screenshot({path: PathSS + 'screenshot_EnterLicensePlateNumber.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_EnterLicensePlateNumber.png', fullPage: true });
                 await console.log(` Скриншот: (screenshot_EnterLicensePlateNumber.png)`);
                 throw ` FAIL => Инпут "Гос. номера" SetTextByXPath(${this.xInputLicensePlate})`;
             }
@@ -275,7 +275,7 @@ class Vehicle {
             // Кнопка "Проверить в базе"
             resOk = await ClickByXPath(this.page, this.xButtonCheckInBaseActive);
             if (!resOk){
-                await this.page.screenshot({path: PathSS + 'screenshot_xButtonCheckInBaseActiveLP.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_xButtonCheckInBaseActiveLP.png', fullPage: true });
                 await console.log(` Скриншот: (screenshot_xButtonCheckInBaseActiveLP.png)`);
                 throw ` FAIL => Кнопка "Проверить в базе" ClickByXPath(${this.xButtonCheckInBaseActive})`;
             }
@@ -310,7 +310,7 @@ class Vehicle {
             }
 
             if(resErrorText !==``){
-                await this.page.screenshot({path: PathSS + 'screenshot_CheckVehicleForm.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_CheckVehicleForm.png', fullPage: true });
                 await console.log(` Скриншот: (screenshot_CheckVehicleForm.png)`);
                 //await console.log(`${resErrorText}`);
                 throw resErrorText; // Ошибки => ВЫХОД
@@ -613,7 +613,7 @@ class Vehicle {
             if (!resOk) {
                 throw `FAIL => НЕ активен Селект "Компания/Контакт владельца" ClickByXPath(${this.xSelectSubjectOwnerActive})`;
             }
-            await WaitRender(this.page);
+            //await WaitRender(this.page);
 
             resOk = await SetTextByXPath(this.page, this.xInputSubjectOwner, this.VehicleData.strSubjectOwner);
             if (!resOk) {
@@ -687,6 +687,7 @@ class Vehicle {
             }
             await WaitRender(this.page);
             // Кнопка "Сохранить"
+            await console.log(`Сохраняем Транспорт ${this.VehicleData.strVehicleType} ${this.VehicleData.strLicensePlate}`);
             resOk = await ClickByXPath(this.page, this.xButtonSave);
             if (!resOk) {
                 throw `FAIL => SaveVehicle ClickByXPath(${this.xButtonSave})`;
@@ -694,7 +695,7 @@ class Vehicle {
             //span[@class="spinner-border"]
             // Спиннер формы
 
-            await WaitUntilXPathExist(this.page, 5000, this.xSpinner, true);
+            await WaitUntilXPathExist(this.page, 5000, this.xSpinner);
             await WaitRender(this.page);
 
             return true;

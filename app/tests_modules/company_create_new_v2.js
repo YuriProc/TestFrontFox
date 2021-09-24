@@ -38,46 +38,46 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             throw 'NewCompany.CheckCompanyForm(); = FAIL!"';//<--специальный вызов ошибки!
         }
 // ------
-//         resOk = await NewCompany.AddNewCompanyTypes();
-//         if (!resOk) {
-//             throw 'NewCompany.AddNewCompanyTypes(); = FAIL!"';//<--специальный вызов ошибки!
-//         }
-//
-//         // ------------------------------------------------
-//         // Если есть Заказчик, то очищаем и даём один тип груза, иначе только очищаем
-//         if (await NewCompany.CheckCompanyType('Заказчик')) {
-//             resOk = await NewCompany.AddNewCargoTypes();
-//             if (!resOk) {
-//                 throw 'NewCompany.AddNewCargoTypes(); = FAIL!"';//<--специальный вызов ошибки!
-//             }
-//         }else {
-//             resOk = await NewCompany.DeleteAllPresentCargoTypes();
-//             if (!resOk) {
-//                 throw 'NewCompany.DeleteAllPresentCargoTypes(); = FAIL!"';//<--специальный вызов ошибки!
-//             }
-//         }// ------------------------------------------------
-//
-//         resOk = await NewCompany.CheckBossPresent();
-//         if (!resOk) {
-//             throw 'NewCompany.CheckBossPresent(); = FAIL!"';//<--специальный вызов ошибки!
-//         }
-//         resOk = await NewCompany.AddNewPhoneNumber();
-//         if (!resOk){
-//             throw `FAIL => NewCompany.AddNewPhoneNumber`;
-//         }
-//         resOk = await NewCompany.AddNewEmail();
-//         if (!resOk){
-//             throw `FAIL => NewCompany.AddNewEmail`;
-//         }
-//         resOk = await NewCompany.AddNewLink();
-//         if (!resOk){
-//             throw `FAIL => NewCompany.AddNewLink`;
-//         }
-//
-//         resOk = await NewCompany.AddNewContract();
-//         if (!resOk){
-//             throw `FAIL => NewCompany.AddNewContract`;
-//         }
+        resOk = await NewCompany.AddNewCompanyTypes();
+        if (!resOk) {
+            throw 'NewCompany.AddNewCompanyTypes(); = FAIL!"';//<--специальный вызов ошибки!
+        }
+
+        // ------------------------------------------------
+        // Если есть Заказчик, то очищаем и даём один тип груза, иначе только очищаем
+        if (await NewCompany.CheckCompanyType('Заказчик')) {
+            resOk = await NewCompany.AddNewCargoTypes();
+            if (!resOk) {
+                throw 'NewCompany.AddNewCargoTypes(); = FAIL!"';//<--специальный вызов ошибки!
+            }
+        }else {
+            resOk = await NewCompany.DeleteAllPresentCargoTypes();
+            if (!resOk) {
+                throw 'NewCompany.DeleteAllPresentCargoTypes(); = FAIL!"';//<--специальный вызов ошибки!
+            }
+        }// ------------------------------------------------
+
+        resOk = await NewCompany.CheckBossPresent();
+        if (!resOk) {
+            throw 'NewCompany.CheckBossPresent(); = FAIL!"';//<--специальный вызов ошибки!
+        }
+        resOk = await NewCompany.AddNewPhoneNumber();
+        if (!resOk){
+            throw `FAIL => NewCompany.AddNewPhoneNumber`;
+        }
+        resOk = await NewCompany.AddNewEmail();
+        if (!resOk){
+            throw `FAIL => NewCompany.AddNewEmail`;
+        }
+        resOk = await NewCompany.AddNewLink();
+        if (!resOk){
+            throw `FAIL => NewCompany.AddNewLink`;
+        }
+
+        resOk = await NewCompany.AddNewContract();
+        if (!resOk){
+            throw `FAIL => NewCompany.AddNewContract`;
+        }
         //----------------------------------------
 // Если есть тип Заказчик, то создать ДВЕ локации с контактами
         if (await NewCompany.CheckCompanyType('Заказчик')) {
@@ -185,7 +185,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         //await page.waitFor(5001111);
     }
     if(!CompanyData.returnResult){
-        await page.screenshot({path: PathSS + 'screenshot_CompanyCreateNewV2.png', fullPage: true });
+        await page.screenshot({path: g_PathSS + 'screenshot_CompanyCreateNewV2.png', fullPage: true });
     }
     //await WaitRender(page);
     await WarningsRemove(page);

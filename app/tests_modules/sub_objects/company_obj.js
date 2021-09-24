@@ -144,7 +144,7 @@ class Company{
                 let strNotFind = "Данные не найдены!";
                 let strErrorActivity = "Trying to get property 'activities' of non-object";
                 if (strInnerText !== strAlreadyCreated) {
-                    await this.page.screenshot({ path: PathSS + `screenshot_ClickCompanyCreateNewPlus_checkInBase.png`, fullPage: true });
+                    await this.page.screenshot({ path: g_PathSS + `screenshot_ClickCompanyCreateNewPlus_checkInBase.png`, fullPage: true });
                 }
                 await WarningsRemove(this.page);
                 switch (strInnerText) {
@@ -212,7 +212,7 @@ class Company{
             if (this.CompanyData.strCompanyName === '') {
                 await console.log(`ElementGetInnerText = ""`);
                 //await TempStop(this.page);
-                await this.page.screenshot({path: PathSS + 'screenshot_strCompanyName.png', fullPage: true });
+                await this.page.screenshot({path: g_PathSS + 'screenshot_strCompanyName.png', fullPage: true });
                 throw `FAIL => Не вижу (Название Компании(ElementGetInnerText = "")) \n ${this.xHeaderCompanyName}`;
             }
             // Статус Компании
@@ -242,7 +242,7 @@ class Company{
 
                 await ClickByXPath(this.page, this.xBlockButtonKickFirst);
 
-                await this.page.screenshot({path: PathSS + `screenshot_block${i}.png`, fullPage: true });
+                await this.page.screenshot({path: g_PathSS + `screenshot_block${i}.png`, fullPage: true });
                 i--;
                 await WaitRender(this.page);
                 await WaitRender(this.page);
@@ -307,7 +307,7 @@ class Company{
                     //await console.log(`TypesCompPres[${i}]`);
                     resOk = await ClickByXPath(this.page, this.xTypesCompanyDel);
                     if (!resOk) {
-                        await this.page.screenshot({path: PathSS + `screenshot_del_company_type.png`, fullPage: true });
+                        await this.page.screenshot({path: g_PathSS + `screenshot_del_company_type.png`, fullPage: true });
                         await console.log(`FAIL => Del "Тип Компании" крестик`);
                         //await TempStop(this.page);
                         throw `FAIL => Del "Тип Компании" крестик (${this.xTypesCompanyDel})`;
@@ -327,7 +327,7 @@ class Company{
                 xPathTypes = `//span[contains(@class, "multiselect__option")]/span[contains(text(), "${this.CompanyData.strCompanyTypes[i]}")]`;
                 resOk = await ClickByXPath(this.page, xPathTypes);
                 if (!resOk) {
-                    await this.page.screenshot({path: PathSS + 'screenshot_add_company_type.png', fullPage: true });
+                    await this.page.screenshot({path: g_PathSS + 'screenshot_add_company_type.png', fullPage: true });
                     await console.log(`FAIL => Добавить "Тип Компании" (${xPathTypes}) `);
                     //await TempStop(page);
                     throw `FAIL => Добавить "Тип Компании" (${xPathTypes})`;
@@ -580,7 +580,7 @@ class Company{
             await WaitRender(this.page);
             resOk = await ClickByXPath(this.page, this.xDropDownCargoType);
             if (!resOk){
-                await this.page.screenshot({path: PathSS + `screenshot_cargo_type_dropdown.png`, fullPage: true });
+                await this.page.screenshot({path: g_PathSS + `screenshot_cargo_type_dropdown.png`, fullPage: true });
                 throw `FAIL => Модалка инпут Тип груза Клик "Выбор в дропдауне"  (${this.xDropDownCargoType})`;
             }
             // Модалка Тип Груза инпут "Цена"

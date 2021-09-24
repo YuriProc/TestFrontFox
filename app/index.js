@@ -70,12 +70,15 @@ let OpenFox = async () => {
     try { let resOk;
         let CodeCompany;
         oConfig = await OpenConfig.SetAllConfigConst();
-        oDataVariables = await OpenVariables.SetAllDataVariables();
-        resOk = await DeleteAllScreenshots(PathSS);
+        //oDataVariables = await OpenVariables.SetAllDataVariables();
+        let {DataForTests} = require("./data/data_for_tests.js");
+        let Data = new DataForTests();
+        await Data.SetAllDataVariables();
+        resOk = await DeleteAllScreenshots(g_PathSS);
         if(!resOk){
-            await console.log('\x1b[38;5;1m', `Ошибка удаления файлов Скринов (${PathSS})`, '\x1b[0m');
+            await console.log('\x1b[38;5;1m', `Ошибка удаления файлов Скринов (${g_PathSS})`, '\x1b[0m');
         }else {
-            await console.log('\x1b[38;5;2m', `OK все файлы скринов удалены (${PathSS})`, '\x1b[0m');
+            await console.log('\x1b[38;5;2m', `OK все файлы скринов удалены (${g_PathSS})`, '\x1b[0m');
         }
         if (oConfig === "OK") {
             await console.log('\x1b[38;5;2m', "Load Config", oConfig, '\x1b[0m');
@@ -103,32 +106,32 @@ let OpenFox = async () => {
         // https://blog.listratenkov.com/webstorm-ide-hot-keys/
 
         // Логинимся под ТОСТЕРОМ
-        LoginDataT.ResolvedFailLogin = false;//true;// <- Можно или нельзя Фейлиться по Email или Пароль
-        returnResult = await LPage.LoginCrm(page, browser, LoginDataT);
+        Data.LoginDataT.ResolvedFailLogin = false;//true;// <- Можно или нельзя Фейлиться по Email или Пароль
+        returnResult = await LPage.LoginCrm(page, browser, Data.LoginDataT);
         if (!returnResult) { // Если не получилось то логинимся под ROOT`ом
-            if(LoginDataT.ResolvedFailLogin){
-            returnResult = await LPage.LoginCrm(page, browser, LoginDataR);
+            if(Data.LoginDataT.ResolvedFailLogin){
+            returnResult = await LPage.LoginCrm(page, browser, Data.LoginDataR);
             if (!returnResult) { //Если не получилось то FAIL  и выход!!!
-                throw ` FAIL => LoginCrm(${LoginDataR.strUserLastName}) !!!`;
+                throw ` FAIL => LoginCrm(${Data.LoginDataR.strUserLastName}) !!!`;
             }
-            returnResult = await UCEPage.CheckUserExist(page, LoginDataT.strUserLastName);
+            returnResult = await UCEPage.CheckUserExist(page, Data.LoginDataT.strUserLastName);
             if (!returnResult) {    // если его нет то создаём
-                returnResult = await UCNPage.CreateNewUser(page, LoginDataT);
+                returnResult = await UCNPage.CreateNewUser(page, Data.LoginDataT);
                 if (!returnResult) { // если не получилось то FAIL и выход !!!
-                    throw ` FAIL => CreateNewUser(${LoginDataT.strUserLastName}) !!!`;
+                    throw ` FAIL => CreateNewUser(${Data.LoginDataT.strUserLastName}) !!!`;
                 }
             } else {
-                throw ` FAIL => User ${LoginDataT.strUserLastName} найден, а залогиниться под ним НЕ УДАЛОСЬ!!!`;
+                throw ` FAIL => User ${Data.LoginDataT.strUserLastName} найден, а залогиниться под ним НЕ УДАЛОСЬ!!!`;
             }
             //Попытка Номер 2 !!!
-            LoginDataT.ResolvedFailLogin = false;// <- Можно или нельзя Фейлиться по Email или Пароль
-            returnResult = await LPage.LoginCrm(page, LoginDataT);
+            Data.LoginDataT.ResolvedFailLogin = false;// <- Можно или нельзя Фейлиться по Email или Пароль
+            returnResult = await LPage.LoginCrm(page, Data.LoginDataT);
             if (!returnResult) {
-                throw ` FAIL !!! FAIL !!!=> LoginCrm(${LoginDataT.strUserLastName}) !!!`;
+                throw ` FAIL !!! FAIL !!!=> LoginCrm(${Data.LoginDataT.strUserLastName}) !!!`;
             }
 
             }else{
-                throw ` FAIL !!! FAIL !!!=> LoginCrm(${LoginDataT.strUserLastName}) !!!`;
+                throw ` FAIL !!! FAIL !!!=> LoginCrm(${Data.LoginDataT.strUserLastName}) !!!`;
             }
         }
         await console.log('LOGIN OK!!! Можно Дальше Тестить ...');
@@ -148,36 +151,63 @@ let OpenFox = async () => {
 
         for(let i=1;i<=1000;i++) {
 
-            // oDataVariables = await OpenVariables.SetAllDataVariables();
-            //
-            // CompanyData1.strCodeCompany = '14180856';//'43092634';//'14180856';
-            // CompanyData1.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
-            // CompanyData1.EmailData.strEmail = 'mail' + await randomInt(1001010, 9989999) + '@test.gmail';
-            // CompanyData1.LinkData.strLink = await GetFunnyUrl('Funny_Page_URL') + '/x='+ await randomInt(1001010, 9989999);
-            // CompanyData1.LocationData2.strAddressFOX = await GetFunnyStr('StrAddressFunny');
-            // CompanyData1.LocationData2.ContactData.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
-            // CompanyData1.LocationData2.ContactData.strINN = '' + await randomInt(1001001001, 9991999199);
-            // CompanyData1.LocationData2.ContactData.strLastName = await GetFunnyStr('StrLastNameFunny');//Фамилия
-            // CompanyData1.LocationData2.ContactData.strFirstName = await GetFunnyStr('StrFirstNameFunny');//Имя
-            // CompanyData1.LocationData2.ContactData.strMiddleName = await GetFunnyStr('StrMiddleNameFunny');//Отчество
+            //////// oDataVariables = await OpenVariables.SetAllDataVariables();
+            // await Data.SetAllDataVariables(); // <---- OK
+            // Data.CompanyData1.strCodeCompany = '14180856';//'43092634';//'14180856';
+            // Data.CompanyData1.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
+            // Data.CompanyData1.EmailData.strEmail = 'mail' + await randomInt(1001010, 9989999) + '@test.gmail';
+            // Data.CompanyData1.LinkData.strLink = await GetFunnyUrl('Funny_Page_URL') + '/x='+ await randomInt(1001010, 9989999);
+            // Data.CompanyData1.LocationData2.strAddressFOX = await GetFunnyStr('StrAddressFunny');
+            // Data.CompanyData1.LocationData2.ContactData.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
+            // Data.CompanyData1.LocationData2.ContactData.strINN = '' + await randomInt(1001001001, 9991999199);
+            // Data.CompanyData1.LocationData2.ContactData.strLastName = await GetFunnyStr('StrLastNameFunny');//Фамилия
+            // Data.CompanyData1.LocationData2.ContactData.strFirstName = await GetFunnyStr('StrFirstNameFunny');//Имя
+            // Data.CompanyData1.LocationData2.ContactData.strMiddleName = await GetFunnyStr('StrMiddleNameFunny');//Отчество
 
 
 
 
 await console.log(`NumTests=${i}`);
-            // CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData1);
-            // if (!CompanyData1.returnResult) {
-            //     throw `Не получилось создать компанию (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
+            // Data.CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData1);
+            // if (!Data.CompanyData1.returnResult) {
+            //     //throw `Не получилось создать компанию (${Data.CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
+            //     await console.log(`Не получилось создать компанию (${Data.CompanyData1.strCodeCompany})`);
+            //
             // }
             // await WaitRender(page);
-            CompanyData2.strCodeCompany = '00190928';//'14180856';//'43092634';//'14180856';
+            //
+            // // X) создаём тестовую компанию CompanyData2
+            // Data.CompanyData2.strCodeCompany = '00190928';//'14180856';//'43092634';//'14180856';
+            // Data.CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData2);
+            // if (!Data.CompanyData2.returnResult) {
+            //     //throw `Не получилось создать компанию (${Data.CompanyData2.strCodeCompany})`;//<--специальный вызов ошибки!
+            //     await console.log(`Не получилось создать компанию (${Data.CompanyData2.strCodeCompany})`);
+            // }
+// Создаём новую сделку
+            // ТОВ "ОМЕГА"
+            Data.CompanyData1.strCompanyName = `ТОВ "МЕГАЛАТ"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // <-временно тут
+            // 30982361
+            Data.CompanyData1.strCodeCompany = `39061081`;//`14180856`; // '14180856';
+            Data.CompanyData1.strCompanyID = `15774`;
 
-            // X) создаём тестовую компанию CompanyData2
-            CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData2);
-            if (!CompanyData2.returnResult) {
-                throw `Не получилось создать компанию (${CompanyData2.strCodeCompany})`;//<--специальный вызов ошибки!
+            Data.DealData1.strClientCompanyName = Data.CompanyData1.strCompanyName;
+            Data.DealData1.strClientCompanyCode = Data.CompanyData1.strCodeCompany;
+            Data.DealData1.strClientCompanyID = Data.CompanyData1.strCompanyID;
+            // ТОВ "СТАВАНГЕР"
+            Data.DealData1.strOurCompanyWithClient = `ТОВ "СТАВАНГЕР"`;
+            Data.DealData1 = await DealCNPage.DealCreateNew(browser, page, Data.DealData1);
+            if (Data.DealData1.returnResult) {
+
+                // 12.1) Проверяем новую сделку
+                Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
+            }
+            if (Data.DealData1.returnResult) {
+                // 12.2) Устанавливаем статус сделки
+                Data.DealData1.strStatus = 'Экспортировано в фокс';
+                Data.DealData1 = await DealSetStatusPage.DealSetStatus(browser, page, Data.DealData1);
             }
 
+await console.log(`index TempStop`);
 await TempStop(page);
         } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
 

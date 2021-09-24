@@ -39,7 +39,7 @@ let StartBrowser = async () => {
                 //'--start-fullscreen',
                 //'--disable-web-security',
                 //'--disable-safe-dns'
-                //'--disable-notifications',
+                '--disable-notifications',
                 //'--profile-directory="Default"',
                 ],
 
@@ -119,7 +119,7 @@ let BrowserGetPage = async (browser, strPageURL) => {
         //await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36');
 
         page.on('dialog', async dialog => {
-            strDialogMessage = dialog.message();
+            g_strDialogMessage = dialog.message();
             await console.log(`АВТО_ПОДТВЕРЖДЕНИЕ:` + dialog.message());
             //await dialog.dismiss()
             await dialog.accept();
@@ -226,6 +226,19 @@ let LoginCrm = async (page, browser, LoginData) => {
                 throw `     FAIL => не пропал спиннер на кнопке "Авторизоваться" \n WaitUntilXPathExist(page, 10500, ${xButtonAuthorizeSpinner});\n`;
             }
 
+            // Неверный логин или пароль
+
+            resOk = await WarningsRead(page);
+            if (resOk === `Неверный логин или пароль`) {
+                throw `     FAIL => Вижу Warning ${resOk}\n`;
+            }
+            if (resOk !== ``) {
+               await console.log(`Вижу Warning ${resOk}`);
+               await WarningsClick(page);
+            }
+
+
+
             //--------------------------------------------
             // myXPath = `//div[@class="notification-content"][contains(text(), "Неверный логин или пароль")]`;
             // ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
@@ -307,6 +320,8 @@ let LoginCrm = async (page, browser, LoginData) => {
 
     }catch (err) {
         await console.log('\x1b[38;5;1m', "На странице ВХОД В СИСТЕМУ произошла ошибка", err, '\x1b[0m');
+        await page.screenshot({path: g_PathSS + `screenshot_Login.png`, fullPage: true });
+        await console.log(` Скриншот: (screenshot_Login.png)`);
         g_StatusCurrentTest = 'Провален !!!';
         await g_FailedTests++;
         await console.log('\x1b[38;5;1m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');

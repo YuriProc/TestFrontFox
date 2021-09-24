@@ -112,8 +112,8 @@ class Contract{
                 await console.log(`deleteAllContracts ${QElem}`);
                 resOk = await ClickByXPathNum(this.page, 0, this.xDelete);
                 if (!resOk){
-                    await this.page.screenshot({path: PathSS + `screenshot_del_contract.png`, fullPage: true });
-                    await console.log(PathSS + `screenshot_del_contract.png`);
+                    await this.page.screenshot({path: g_PathSS + `screenshot_del_contract.png`, fullPage: true });
+                    await console.log(g_PathSS + `screenshot_del_contract.png`);
                     await TempStop(this.page);
                     throw `FAIL => Табличное редактирование, вкладка "Договора", первая кнопка "Корзина" (Удаление Договора - первого в таблице)(${this.xDelete})`;
                 }

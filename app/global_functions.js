@@ -219,7 +219,25 @@ WarningsRemove = async function (page, timeout = 1000) {
     }
 }
 //-----------------------------------------------------------------------------------
+OutToConsoleInnerTextByXPAth = async function (page, xPath) {
+    try {    // Вывести в консоль внутренний текст из элементов по xPath
+        let strTemp;
+        let tempLength = await ElementGetLength(page, xPath);
+        --tempLength;
+        await console.log(`--- OutToConsoleInnerTextByXPAth Length=${tempLength} -------------`);
 
+        for (let i = 0; i <= tempLength; i++) {
+
+            strTemp = await ElementGetInnerText(page, i, xPath);
+            await console.log(`'${strTemp}',`);
+        }
+        await console.log(`--- End OutToConsoleInnerTextByXPAth -------------`);
+        return true;
+    }catch (e) {
+        await console.log('\x1b[38;5;1m', "OutToConsoleByXPAth => error=>",e, '\x1b[0m');
+        return false;
+    }
+}
 //-----------------------------------------------------------------------------------
 WaitUntilPageLoads  = async function (page) {
 
@@ -510,7 +528,7 @@ ElementGetValue = async function (page , Num, MyXPath) {
         return '';
     }
 };
-ElementGetInnerText = async function (page , Num, MyXPath) {
+ElementGetInnerText = async function (page , Num, MyXPath) { // с НУЛЯ
     try {
         const linkHandlers = await page.$x(MyXPath);
         const MaxL = linkHandlers.length -1 ;
@@ -1089,32 +1107,37 @@ TypeByXPath__PromiseAll = async function (page , MyXPath, MyText) {
 }
 //-----------------------------------------------------------------------------------
 SetTextByXPath = async function (page , MyXPath, MyText) {
-    const linkHandlers = await page.$x(MyXPath);
-    let TempText = await MyText.substr(0, MyText.length - 1);
-    let LastText = await MyText.substr(MyText.length - 1, 1);
-    if (linkHandlers.length === 1) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        let TempText = await MyText.substr(0, MyText.length - 1);
+        let LastText = await MyText.substr(MyText.length - 1, 1);
+        if (linkHandlers.length === 1) {
 
-        //await linkHandlers[0].click();
+            //await linkHandlers[0].click();
 
-        // await console.log(`SetTextByXPath:(${MyText})`);
-        // await console.log(`TempText:(${TempText})`);
-        // await console.log(`LastText:(${LastText})`);
+            // await console.log(`SetTextByXPath:(${MyText})`);
+            // await console.log(`TempText:(${TempText})`);
+            // await console.log(`LastText:(${LastText})`);
 
-        await page.evaluate((el, value) => el.value = value, linkHandlers[0], TempText);
-        //await TypeByXPath(page , MyXPath, ' ');
+            await page.evaluate((el, value) => el.value = value, linkHandlers[0], TempText);
+            //await TypeByXPath(page , MyXPath, ' ');
 
-        // await page.keyboard.sendCharacter(String.fromCharCode(32)); //32 - пробел; 13 - enter; 8 - Del
-        // await page.waitFor(1000);
-        // await page.keyboard.sendCharacter(String.fromCharCode(8));
-        // await page.keyboard.press('Space');
-        // await page.waitFor(50);
-        // await page.keyboard.press('Backspace');
-        await linkHandlers[0].type(LastText);
+            // await page.keyboard.sendCharacter(String.fromCharCode(32)); //32 - пробел; 13 - enter; 8 - Del
+            // await page.waitFor(1000);
+            // await page.keyboard.sendCharacter(String.fromCharCode(8));
+            // await page.keyboard.press('Space');
+            // await page.waitFor(50);
+            // await page.keyboard.press('Backspace');
+            await linkHandlers[0].type(LastText);
 
-        //await console.log(`SetTextByXPath:(${MyText})`);
+            //await console.log(`SetTextByXPath:(${MyText})`);
 
-        return true;
-    }else{
+            return true;
+        } else {
+            return false;
+        }
+    }catch (e) {
+        await console.log(`Error => In SetTextByXPath: ${e}`);
         return false;
     }
 }
