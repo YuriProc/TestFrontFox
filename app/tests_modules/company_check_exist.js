@@ -92,7 +92,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
         if (!resOK){
             throw `FAIL => ClickByXPath (${xPath})`;
         }
-        resOK = await SetInputByXPath(page,xPath,firstEDRPOU); //strCodeCompany
+        resOK = await SetInputByXPath(page,xPath,firstEDRPOU); //strCompanyCode
         if (!resOK){
             throw `FAIL => SetInputByXPath (${xPath})`;
         }
@@ -104,7 +104,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
         }
 
 
-        xPath = `//td[@aria-colindex="5"][@role="cell"]/a[contains(text(), "${firstEDRPOU}")]`;//strCodeCompany
+        xPath = `//td[@aria-colindex="5"][@role="cell"]/a[contains(text(), "${firstEDRPOU}")]`;//strCompanyCode
         resOK = await WaitForElementIsPresentByXPath(20000, page, xPath);
         if (!resOK){
             throw `FAIL => Фильтр по ЕДРПОУ не работает WaitForElementIsPresentByXPath (${xPath})`;
@@ -128,7 +128,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
             throw `FAIL => ClickByXPath (${xPath})`;
         }
         // перезаписываем то что в инпуте
-        resOK = await SetInputByXPath(page,xPath,strCodeCompany); //strCodeCompany
+        resOK = await SetInputByXPath(page,xPath,strCodeCompany); //strCompanyCode
         if (!resOK){
             throw `FAIL => SetInputByXPath (${xPath})`;
         }
@@ -139,7 +139,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
             throw `FAIL => ClickByXPath (${xPath})`;
         }
         // проверяем есть ли строки
-        xPath = `//td[@aria-colindex="5"][@role="cell"]/a[contains(text(), "${strCodeCompany}")]`;//strCodeCompany
+        xPath = `//td[@aria-colindex="5"][@role="cell"]/a[contains(text(), "${strCodeCompany}")]`;//strCompanyCode
         ElPresent1 = await WaitForElementIsPresentByXPath(4000, page, xPath);
 
 

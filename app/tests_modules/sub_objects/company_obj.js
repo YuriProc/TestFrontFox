@@ -47,6 +47,9 @@ class Company{
         this.xTabContacts = `//li[@role="presentation"]/a[@role="tab"][@aria-selected="true"][contains(text(),"Контакты")]`;
         //Табличное редактирование, строка с типом Директор
         this.xStrTypeBoss = `//tr[@role="row"]/td[@aria-colindex="3"][@role="cell"][contains(text(), "Директор")]`;
+        // Строки с ФИО и Линками + [contains(text(), "ФИО")] , @href=???
+        this.xStringsFIOandLinks = `//tr[@role="row"]/td[@aria-colindex="2"][@role="cell"]/a`;
+
         // закроем таблицу
         // Закрыть Таблицу табличное редактирование
         this.xCloseTable = `//button[@type="button"][@class="close"]`;
@@ -122,7 +125,7 @@ class Company{
                 throw `FAIL => Ждём появления Инпут "Введите ЕДРПОУ/ИНН" (${this.xInputINN})`;
             }
             // Вводим код ЕДРПОУ
-            resOk = await SetTextByXPath(this.page, this.xInputINN, this.CompanyData.strCodeCompany);
+            resOk = await SetTextByXPath(this.page, this.xInputINN, this.CompanyData.strCompanyCode);
             if (!resOk) {
                 throw `FAIL => Вводим код ЕДРПОУ SetTextByXPath(${this.xInputINN})`;
             }
@@ -405,7 +408,7 @@ class Company{
     //--------------------------------------------------------------------
     async CreateNewDriverWithVehiclesFromCompanies(DriverData){ // Создадим нового Водилу с Транспортом
         try{
-            let xPath, resOk;
+            let xPath, resOk, tempFIO, tempXPath, tempHref;
             if (DriverData.strContactType !== 'Водитель'){
                throw `FAIL => Ошибка данных! DriverData.strContactType(${DriverData.strContactType}) !== 'Водитель'`;
             }
@@ -424,6 +427,47 @@ class Company{
             }
 
             await WaitRender(this.page);
+            // Открыть Табл редактирование "Контакты"
+            // Контактные данные -> Контакты
+            resOk = await ClickByXPath(this.page, this.ContactDataContacts);
+            if (!resOk){
+                throw `FAIL => Контактные данные -> Открыть Табл редактирование "Контакты" ClickByXPath(${this.ContactDataContacts})`;
+            }
+            //Проверка открытия ТАБА Контакты
+            resOk = await WaitForElementIsPresentByXPath(3000, this.page, this.xTabContacts);
+            if(!resOk){
+                throw `FAIL => Проверка открытия ТАБА Контакты WaitForElementIsPresentByXPath(${this.xTabContacts})`;
+            }
+
+            DriverData.strFIO = DriverData.strLastName + ` ` + DriverData.strFirstName + ` ` + DriverData.strMiddleName;
+
+            // Строки с ФИО и Линками + [contains(text(), "ФИО")] , @href=???
+
+            tempXPath = this.xStringsFIOandLinks + `[contains(text(), "${DriverData.strFIO}")]`;
+            resOk = await WaitForElementIsPresentByXPath(3000, this.page, tempXPath);
+            if(!resOk){
+                await console.log('\x1b[38;5;1m\t', `Не вижу строки в табличном редактировании (${tempXPath}) - FAIL !!!`, '\x1b[0m');
+            }
+            tempHref = await ElementGetHref(this.page, 0, tempXPath);
+            if(tempHref===``){
+                await console.log('\x1b[38;5;1m\t', `Линк на Контакт Водителя (${tempXPath}) - FAIL !!!`, '\x1b[0m');
+                DriverData.strContactID = `_FAIL__FAIL__FAIL_`;
+            }else{
+                await console.log('\x1b[38;5;2m\t', `Линк на Контакт Водителя (${tempHref}) - OK`, '\x1b[0m');
+                DriverData.strContactID = await GetIDFromHref(tempHref);
+            }
+            await WaitRender(this.page);
+            // Закрыть Табл редактирование
+            // Закрыть Таблицу табличное редактирование
+            resOk = await ClickByXPath(this.page, this.xCloseTable);
+            if (!resOk){
+                throw `FAIL => Контактные данные -> Закрыть Табл редактирование "Контакты" ClickByXPath(${this.xCloseTable})`;
+            }
+            await WaitRender(this.page);
+
+
+
+
 
             return true;
         }catch (e) {
@@ -789,10 +833,10 @@ class Company{
 
             var {Location} = require("../sub_objects/location_obj.js");
             // this.CompanyData.LocationData1.strCompanyName = this.CompanyData.strCompanyName;
-            // this.CompanyData.LocationData1.strCodeCompany = this.CompanyData.strCodeCompany;
+            // this.CompanyData.LocationData1.strCompanyCode = this.CompanyData.strCompanyCode;
             //
             // this.CompanyData.LocationData1.ContactData.strWorkOnCompany = this.CompanyData.strCompanyName;
-            // this.CompanyData.LocationData1.ContactData.strWorkOnCompanyEDRPOU = this.CompanyData.strCodeCompany;
+            // this.CompanyData.LocationData1.ContactData.strWorkOnCompanyEDRPOU = this.CompanyData.strCompanyCode;
 
             let NewLocation = new Location(this.browser, this.page , LocationData);
             resOk = await NewLocation.clickLocation();

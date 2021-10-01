@@ -49,11 +49,39 @@ let DealCreateNew = async (browser, page, DealData) => {
             throw `FAIL => Вводим "Тип Груза" NewDeal.EnterCargoTypeData();`;
         }
         // Добавляем ВСЕ фрахты Заказчика
-        resOk = await NewDeal.AddAllClientFreights();
+        resOk = await NewDeal.AddAllClientOrTransporterFreights(1); //1 or 2
         if (!resOk) {
-            throw `FAIL => Добавляем ВСЕ фрахты Заказчика NewDeal.AddAllClientFreights();`;
+            throw `FAIL => Добавляем ВСЕ фрахты Заказчика NewDeal.AddAllClientOrTransporterFreights();`;
         }
 
+        // Вводим "Компания перевозчика *"
+        resOk = await NewDeal.EnterTransporterCompany();
+        if (!resOk) {
+            throw `FAIL => Вводим "Компания перевозчика *"  NewDeal.EnterTransporterCompany();`;
+        }
+
+        // Вводим "ФИО водителя *"
+        resOk = await NewDeal.EnterDriver();
+        if (!resOk) {
+            throw `FAIL => Вводим "ФИО водителя *"  NewDeal.EnterDriver();`;
+        }
+
+        // Вводим "Автомобиль *"
+        resOk = await NewDeal.EnterVehicle();
+        if (!resOk) {
+            throw `FAIL => Вводим "Автомобиль *"  NewDeal.EnterVehicle();`;
+        }
+
+        // Вводим "Прицеп"
+        resOk = await NewDeal.EnterTrailer();
+        if (!resOk) {
+            throw `FAIL => Вводим "Прицеп"  NewDeal.EnterTrailer();`;
+        }
+        // Добавляем ВСЕ фрахты Перевозчика
+        resOk = await NewDeal.AddAllClientOrTransporterFreights(2); //1 or 2
+        if (!resOk) {
+            throw `FAIL => Добавляем ВСЕ фрахты Перевозчика NewDeal.AddAllClientOrTransporterFreights();`;
+        }
 
         await console.log(`Временно Стоп DealCreateNew`);
         await TempStop(page);

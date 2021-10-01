@@ -1,5 +1,5 @@
 global.g_width = 1700;
-global.g_height = 1000;
+global.g_height = 900;
 
 global.g_strDialogMessage = ``;
 global.g_PathSS = `screenshots/`;

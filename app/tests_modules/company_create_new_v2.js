@@ -1,6 +1,6 @@
 
 let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
-    const nameTest = NameFunction()+'->"' + CompanyData.strCodeCompany + '"';
+    const nameTest = NameFunction()+'->"' + CompanyData.strCompanyCode + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
@@ -83,9 +83,9 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         if (await NewCompany.CheckCompanyType('Заказчик')) {
 
             CompanyData.LocationData1.strCompanyName = CompanyData.strCompanyName;
-            CompanyData.LocationData1.strCodeCompany = CompanyData.strCodeCompany;
+            CompanyData.LocationData1.strCompanyCode = CompanyData.strCompanyCode;
             CompanyData.LocationData1.ContactData.strWorkOnCompany = CompanyData.LocationData1.strCompanyName;
-            CompanyData.LocationData1.ContactData.strWorkOnCompanyEDRPOU = CompanyData.LocationData1.strCodeCompany;
+            CompanyData.LocationData1.ContactData.strWorkOnCompanyEDRPOU = CompanyData.LocationData1.strCompanyCode;
             resOk = await NewCompany.CreateNewContactForLocation(CompanyData.LocationData1.ContactData);
             if (!resOk) {
                 throw 'NewCompany.CreateNewContactForLocation( N 1 ); = FAIL!"';//<--специальный вызов ошибки!
@@ -96,9 +96,9 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             }
 
             CompanyData.LocationData2.strCompanyName = CompanyData.strCompanyName;
-            CompanyData.LocationData2.strCodeCompany = CompanyData.strCodeCompany;
+            CompanyData.LocationData2.strCompanyCode = CompanyData.strCompanyCode;
             CompanyData.LocationData2.ContactData.strWorkOnCompany = CompanyData.LocationData2.strCompanyName;
-            CompanyData.LocationData2.ContactData.strWorkOnCompanyEDRPOU = CompanyData.LocationData2.strCodeCompany;
+            CompanyData.LocationData2.ContactData.strWorkOnCompanyEDRPOU = CompanyData.LocationData2.strCompanyCode;
             resOk = await NewCompany.CreateNewContactForLocation(CompanyData.LocationData2.ContactData);
             if (!resOk) {
                 throw 'NewCompany.CreateNewContactForLocation( N 2 ); = FAIL!"';//<--специальный вызов ошибки!
@@ -143,7 +143,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
 
 // Компания успешно сохранена!
 
-        let WarningText = await WarningsRead(page, 5000);
+        let WarningText = await WarningsRead(page, 11000);
 
 
         if(await SubStrIsPresent('Компания успешно сохранена!', WarningText)){

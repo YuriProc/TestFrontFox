@@ -45,7 +45,7 @@ WaitUntilXPathExist = async function (page, mSec, xPath, print = false) {
         }
         // Ждём пока xPath присутствует
         while (await ElementIsPresent(page, xPath)){
-            // Если прошло больше 65 сек то выход!!!
+            // Если прошло больше mSec сек то выход!!!
             if(await Date.now() - startTime > mSec) {
                 return false;
             }
@@ -1134,6 +1134,7 @@ SetTextByXPath = async function (page , MyXPath, MyText) {
 
             return true;
         } else {
+            await console.log(`Error => In SetTextByXPath: length ${linkHandlers.length} !== 1`);
             return false;
         }
     }catch (e) {

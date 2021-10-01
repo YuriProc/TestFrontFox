@@ -3,6 +3,10 @@ class CompanyTable {
     constructor(page, CompanyData) {
         this.page = page;
         this.CompanyData = CompanyData;
+        // Подождать пока Таблица Загрузится
+        this.xTableBusy = `//table[@role="table"][@aria-busy="true"]`;
+        this.xTableReady = `//table[@role="table"][@aria-busy="false"]`;
+
         // Верхнее Меню "Компании"
         this.xMenuCompany = `//a[@href="/crm/companies"][contains(text(), "Компании")]`;
         // Верхнее Меню "Компании" Активно
@@ -21,6 +25,17 @@ class CompanyTable {
     //----------------------------------------
     async ClickMenuCompanies(){
         try{ let resOk;
+            await WaitRender(this.page);
+            // Подождать пока Таблица начнёт грузиться
+            await WaitUntilXPathExist( this.page, 5000, this.xTableBusy);
+
+            // Подождать пока Таблица Загрузится
+            resOk = await WaitForElementIsPresentByXPath( 2000, this.page, this.xTableReady);
+            if (!resOk) {
+                throw `FAIL => Подождать пока Таблица Загрузится(${this.xTableReady})`;
+            }
+
+
             // Верхнее Меню "Компании"
             resOk = await ClickByXPath(this.page, this.xMenuCompany);
             if (!resOk) {
@@ -37,7 +52,7 @@ class CompanyTable {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in ClickMenuCompanies ${e} \n`);
+            await console.log(`${e} \n FAIL in ClickMenuCompanies `);
             return false;
         }
     }//async ClickMenuCompanies()
@@ -58,7 +73,7 @@ class CompanyTable {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in ClickFilter ${e} \n`);
+            await console.log(`${e} \n FAIL in ClickFilter `);
             return false;
         }
     }//async ClickFilter()
@@ -83,7 +98,7 @@ class CompanyTable {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in FilterInTableEDRPOU ${e} \n`);
+            await console.log(`${e} \n FAIL in FilterInTableEDRPOU`);
             return false;
         }
     }//async FilterInTableEDRPOU()
@@ -103,10 +118,11 @@ class CompanyTable {
                // throw `FAIL => Поле в строке "ЕДРПОУ"=${strEDRPOU} ElementGetLength !== 1 (${resOk})`;
                 return false;
             }
-            // Запишем ID Компании в CompanyData.strID
+            // Запишем ID Компании в CompanyData.strCompanyID
+
             return true;
         }catch (e) {
-            await console.log(`FAIL in CheckInTableEDRPOU ${e} \n`);
+            await console.log(`${e} \n FAIL in CheckInTableEDRPOU`);
             return false;
         }
     }//async CheckInTableEDRPOU()
@@ -125,18 +141,19 @@ class CompanyTable {
             if (tempHref === ''){
                 throw `FAIL => tempHref === '' ElementGetHref(${xPath})`;
             }
-            this.CompanyData.strHref = tempHref;
+            this.CompanyData.strCompanyHref = tempHref;
             //await console.log(`href=${tempHref}`);
             tempID = await GetIDFromHref(tempHref);
             if (tempID === ''){
                 throw `FAIL => tempID === '' GetIDFromHref(${tempHref})`;
             }
-            this.CompanyData.strID = tempID;
+            this.CompanyData.strCompanyID = tempID;
             //await console.log(`tempID=${tempID}`);
-            resOk = await ClickByXPath(this.page, xPath);
-            if (!resOk) {
-                throw `FAIL => Кнопка "Карандаш" ClickByXPath(${xPath})`;
-            }
+            //  пока не открывать - не готово
+            // resOk = await ClickByXPath(this.page, xPath);
+            // if (!resOk) {
+            //     throw `FAIL => Кнопка "Карандаш" ClickByXPath(${xPath})`;
+            // }
 
 
 

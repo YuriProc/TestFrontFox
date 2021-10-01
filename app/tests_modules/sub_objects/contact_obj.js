@@ -94,11 +94,28 @@ class Contact {
         this.xInputDriverLicenseNumber = `//fieldset[legend[contains(text(), "Номер водительского удостоверения")][span[@class="required"][contains(text(), "*")]]]`;
         this.xInputDriverLicenseNumber+= `//input[@name="Номер водительского удостоверения"]`;
         // Кнопка "+ Добавить" (Авто)
-        this.xPlusButtonAddVehicle = `//div[@class="driver-data__type"][div[@class="icon"][img[@alt="Автомобили"]]]`;
-        this.xPlusButtonAddVehicle+= `/div[@class="add-vehicle-btn"][contains(text(), "Добавить")]`;
+        this.xVehicle = `//div[@class="driver-data__type"][div[@class="icon"][img[@alt="Автомобили"]]]`;
+        this.xPlusButtonAddVehicle = this.xVehicle + `/div[@class="add-vehicle-btn"][contains(text(), "Добавить")]`;
+        // ТАБЛИЧНОЕ РЕДАКТИРОВАНИЕ ДОДЕЛАТЬ
+        // Кнопка "ещё" (Авто)
+        this.xButtonMoreVehicle = this.xVehicle + `/div[@class="title"][contains(text(), "еще")]`;
+        // ТАБ Активный "Транспорт"
+        this.xTabVehicleActive = `//a[@role="tab"][@aria-selected="true"][contains(text(), "Транспорт")]`;
+        // Ячейка с Номером Авто/Прицепа + [contains(text(), "${XXX}")]
+        this.xLicensePlateCell = `//td[@aria-colindex="8"][@role="cell"]/a[contains(@href, "/crm/vehicle/")]`;
+
+            // // Строки с ФИО и Линками + [contains(text(), "ФИО")] , @href=???
+             // this.xStringsFIOandLinks = `//tr[@role="row"]/td[@aria-colindex="2"][@role="cell"]/a`;
         // Кнопка "+ Добавить" (Прицеп)
-        this.xPlusButtonAddTrailer = `//div[@class="driver-data__type"][div[@class="icon"][img[@alt="Прицепы"]]]`;
-        this.xPlusButtonAddTrailer+= `/div[@class="add-trailer-btn"][contains(text(), "Добавить")]`;
+        this.xTrailer = `//div[@class="driver-data__type"][div[@class="icon"][img[@alt="Прицепы"]]]`;
+        this.xPlusButtonAddTrailer = this.xTrailer + `/div[@class="add-trailer-btn"][contains(text(), "Добавить")]`;
+        // Кнопка "ещё" (Прицеп)
+        this.xButtonMoreTrailer = this.xTrailer + `/div[@class="title"][contains(text(), "еще")]`;
+        // ТАБ Активный "Прицепы"
+        this.xTabTrailerActive = `//a[@role="tab"][@aria-selected="true"][contains(text(), "Прицепы")]`;
+
+        // Табличное Редактирование Закрыть "X"
+        this.xTabEditClose = `//div[contains(@id, "data-table-contact-modal")]//button[@class="close"][contains(text(), "×")]`;
 
         // в Контакт Кнопка "Сохранить"
         this.xButtonSaveContact = `//div[@class="crm-contact__store"]//button[@type="button"][contains(@class, "primary")][contains(text(), "Сохранить")]`;
@@ -455,6 +472,8 @@ class Contact {
     }//async EnterDriverLicenseNumber()
     //----------------------------------------
     async AddVehicleFromDriver(Num ) {
+        let TempXPath;
+        let tempHref;
         try { let resOk;
            // this.ContactData.Vehicles[Num].VehicleData.strVehicleType
             // Обработать "Бус" "Фургон"
@@ -482,6 +501,92 @@ class Contact {
             if (!resOk) {
                 throw `FAIL => Создание Нового Транспорта NewVehicle.CreateNewVehicle( ${Num} );`;
             }
+            await WaitRender(this.page);
+            // await console.log(`табл ред`);
+            // await this.page.waitFor(2000);
+
+
+            if (this.ContactData.Vehicles[Num].VehicleData.strVehicleType === 'Тягач') {
+                // Кнопка "ещё" (Авто)
+                resOk = await ClickByXPath(this.page, this.xButtonMoreVehicle);
+                if (!resOk) {
+                    throw `FAIL => AddVehicleFromDriver =>  Кнопка Кнопка "ещё" (Авто) ClickByXPath(${this.xButtonMoreVehicle})`;
+                }
+                // ТАБ Активный "Транспорт"
+                resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xTabVehicleActive);
+                if (!resOk) {
+                    throw `FAIL => AddVehicleFromDriver =>  ТАБ Активный "Транспорт" WaitForElementIsPresentByXPath(${this.xTabVehicleActive})`;
+                }
+                // Ячейка с Номером Авто/Прицепа + [contains(text(), "${XXX}")]
+                TempXPath = this.xLicensePlateCell + `[contains(text(), "${this.ContactData.Vehicles[Num].VehicleData.strLicensePlate}")]`;
+                resOk = await WaitForElementIsPresentByXPath(2000, this.page, TempXPath);
+                if (!resOk) {
+                    throw `FAIL => AddVehicleFromDriver =>  Ячейка с Номером Авто WaitForElementIsPresentByXPath(${TempXPath})`;
+                }
+                tempHref = await ElementGetHref(this.page, 0, TempXPath);
+                if(tempHref === ``){
+                    await console.log('\x1b[38;5;1m\t', `Линк на Авто (${TempXPath}) - FAIL !!!`, '\x1b[0m');
+                }else{
+                    await console.log('\x1b[38;5;2m\t', `Линк на Авто (${tempHref}) - OK`, '\x1b[0m');
+                }
+
+            }else {
+                // Кнопка "ещё" (Прицеп)
+                resOk = await ClickByXPath(this.page, this.xButtonMoreTrailer);
+                if (!resOk) {
+                    throw `FAIL => AddVehicleFromDriver =>  Кнопка "ещё" (Прицеп) ClickByXPath(${this.xButtonMoreTrailer})`;
+                }
+                // ТАБ Активный "Прицепы"
+                resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xTabTrailerActive);
+                if (!resOk) {
+                    throw `FAIL => AddVehicleFromDriver =>  ТАБ Активный "Прицепы" WaitForElementIsPresentByXPath(${this.xTabTrailerActive})`;
+                }
+                // Ячейка с Номером Авто/Прицепа + [contains(text(), "${XXX}")]
+                TempXPath = this.xLicensePlateCell + `[contains(text(), "${this.ContactData.Vehicles[Num].VehicleData.strLicensePlate}")]`;
+                resOk = await WaitForElementIsPresentByXPath(2000, this.page, TempXPath);
+                if (!resOk) {
+                    throw `FAIL => AddVehicleFromDriver =>  Ячейка с Номером Прицепа WaitForElementIsPresentByXPath(${TempXPath})`;
+                }
+                tempHref = await ElementGetHref(this.page, 0, TempXPath);
+                if(tempHref === ``){
+                    await console.log('\x1b[38;5;1m\t', `Линк на Прицеп (${TempXPath}) - FAIL !!!`, '\x1b[0m');
+                }else{
+                    await console.log('\x1b[38;5;2m\t', `Линк на Прицеп (${tempHref}) - OK`, '\x1b[0m');
+                }
+            }
+            this.ContactData.Vehicles[Num].VehicleData.strVehicleID = await GetIDFromHref(tempHref);
+
+            await WaitRender(this.page);
+
+            // await console.log(`Close табл ред`);
+            // await this.page.waitFor(2000);
+
+            // Табличное Редактирование Закрыть "X"
+            resOk = await ClickByXPath(this.page, this.xTabEditClose);
+            if (!resOk) {
+                throw `FAIL => AddVehicleFromDriver =>  Табличное Редактирование Закрыть "X" ClickByXPath(${this.xTabEditClose})`;
+            }
+            // let Qtemp = await ElementGetLength(this.page, this.xTabEditClose);
+            // await console.log(`Qtemp=${Qtemp}`);
+            //
+            // await TempStop(this.page);
+
+
+            // Узнать ID Тачки ДОДЕЛАТЬ  -------------------------
+            // // Строки с ФИО и Линками + [contains(text(), "ФИО")] , @href=???
+            //
+            //  let tempXPath = this.xStringsFIOandLinks + `[contains(text(), "${DriverData.strFIO}")]`;
+            // resOk = await WaitForElementIsPresentByXPath(3000, this.page, tempXPath);
+            // if(!resOk){
+            //     await console.log('\x1b[38;5;1m\t', `Не вижу строки в табличном редактировании (${tempXPath}) - FAIL !!!`, '\x1b[0m');
+            // }
+            // let tempHref = await ElementGetHref(this.page, 0, tempXPath);
+            // if(tempHref===``){
+            //     await console.log('\x1b[38;5;1m\t', `Линк на Контакт Водителя (${tempXPath}) - FAIL !!!`, '\x1b[0m');
+            // }else{
+            //     await console.log('\x1b[38;5;2m\t', `Линк на Контакт Водителя (${tempHref}) - OK`, '\x1b[0m');
+            //     DriverData.strContactID = await GetIDFromHref(tempHref);
+            // }
 
 
 //         await console.log(`TempStop --- AddVehicleFromDriver`);

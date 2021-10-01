@@ -39,8 +39,8 @@ class Vehicle {
         this.xFieldSetVehicleSubType = `//fieldset[legend[contains(text(), "Субтип транспорта")][span[@class="required"][contains(text(), "*")]]]`;
         // Селект "Субтип транспорта"
         this.xSelectVehicleSubType = this.xFieldSetVehicleSubType + `//div[@class="multiselect__tags"]`;
-        // подождать пока будет активен Селект "Субтип транспорта"
-        this.xSelectVehicleSubTypeActive = this.xFieldSetVehicleSubType + `//div[@class="multiselect crm-select multiselect--active"]`;
+        // подождать пока будет активен Селект "Субтип транспорта"  [contains(@class, "multiselect crm-select multiselect--active")]
+        this.xSelectVehicleSubTypeActive = this.xFieldSetVehicleSubType + `//div[contains(@class, "multiselect crm-select multiselect--active")]`;
         // Инпут "Субтип транспорта" *
         this.xInputVehicleSubType = this.xFieldSetVehicleSubType + `//input`;
         // DropDown "Субтип транспорта" с нужным Типом
@@ -374,7 +374,7 @@ class Vehicle {
             // подождать пока будет активен Селект "Субтип транспорта"
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xSelectVehicleSubTypeActive);
             if (!resOk) {
-                throw `FAIL => НЕ активен Селект "Субтип транспорта" ClickByXPath(${this.xSelectVehicleSubType})`;
+                throw `FAIL => НЕ активен Селект "Субтип транспорта" WaitForElementIsPresentByXPath(${this.xSelectVehicleSubTypeActive})`;
             }
             //await WaitRender(this.page);
 

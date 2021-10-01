@@ -29,9 +29,9 @@ class DataForTests {
         //--------------------------------------------------------------
         //--------------------------------------------------------------
         this.CompanyData1 = {
-            strCodeCompany: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+            strCompanyCode: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
             strCompanyID: '', // <= Заполнится автоматически при проверке Компании !!!
-            strHref: '', // <= Заполнится автоматически при проверке Компании !!!
+            strCompanyHref: '', // <= Заполнится автоматически при проверке Компании !!!
             strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes: ['Заказчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
             strCargoType: 'Запчастини',
@@ -63,7 +63,7 @@ class DataForTests {
                 strIndustryType: 'Алкоголь',
                 strContactName: 'АА Джамшут ББ',
                 strCompanyName: 'ЧЛЕН',// Заполнить в перед созданием объекта из CompanyData !!!
-                strCodeCompany: ``,// Заполнить в перед созданием объекта из CompanyData !!!
+                strCompanyCode: ``,// Заполнить в перед созданием объекта из CompanyData !!!
                 strLocationName: `Название Локации1`,
                 ContactData: {
                     PhoneData: {
@@ -97,7 +97,7 @@ class DataForTests {
                 strIndustryType: 'Алкоголь',
                 strContactName: 'АА Джамшут ББ',
                 strCompanyName: 'ЧЛЕН',// Заполнить в перед созданием объекта из CompanyData !!!
-                strCodeCompany: ``,// Заполнить в перед созданием объекта из CompanyData !!!
+                strCompanyCode: ``,// Заполнить в перед созданием объекта из CompanyData !!!
                 strLocationName: `Название Локации2`,
                 ContactData: {
                     PhoneData: {
@@ -152,9 +152,9 @@ class DataForTests {
         }; //  this.CompanyData1
         //------------------------------------------------------------------------------------------------------------
         this.CompanyData2 = {
-            strCodeCompany: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+            strCompanyCode: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
             strCompanyID: '', // <= Заполнится автоматически при проверке Компании !!!
-            strHref: '', // <= Заполнится автоматически при проверке Компании !!!
+            strCompanyHref: '', // <= Заполнится автоматически при проверке Компании !!!
             strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes: ['Перевозчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
             strCargoType: 'Пляшка',//'Запчастини',
@@ -192,6 +192,8 @@ class DataForTests {
                 strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
                 strFirstName: await GetFunnyStr('StrFirstNameFunny'),//Имя
                 strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
+                strFIO : ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
+                strContactID : ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
                 strWorkOnCompany: ``, // Заполнить в перед созданием объекта из CompanyData !!!
                 strWorkOnCompanyEDRPOU: ``, // Заполнить перед созданием объекта из CompanyData !!!
                 strDriverLicenseNumber: `ПРВ` + await randomInt(100001, 999999),
@@ -199,6 +201,7 @@ class DataForTests {
                     {
                         VehicleData: {
                             strLicensePlate: 'FF' + await randomInt(1000, 9999) + 'KK',
+                            strVehicleID: ``, // Заполнить ПЕРЕД выполнением Теста
                             strRegistrationCertificateNumber: `XXX` + await randomInt(100000, 999999), // 3+6 !!!!
                             strVehicleType: 'Тягач',
                             strCarBrand: 'DAF', // 'MAN', 'VOLVO', 'IVECO', 'RENAULT', 'SCANIA',
@@ -212,6 +215,7 @@ class DataForTests {
                     {
                         VehicleData: {
                             strLicensePlate: 'PP' + await randomInt(1000, 9999) + 'TT',
+                            strVehicleID: ``, // Заполнить ПЕРЕД выполнением Теста
                             strRegistrationCertificateNumber: `ZZZ` + await randomInt(100000, 999999), // 3+6 !!!!
                             strVehicleType: 'Напівпричіп',
                             strVehicleSubType: `Ізотерм`,//`Тент`, // `Реф`, `Ізотерм`, `Цільномет`, // `Контейнеровоз`,  (20,40,45 Футов)
@@ -240,7 +244,7 @@ class DataForTests {
                 strIndustryType: 'Алкоголь',
                 strContactName: 'АА Джамшут ББ',
                 strCompanyName: 'ЧЛЕН',// Заполнить перед AddNewLocation из CompanyData !!!
-                strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+                strCompanyCode: ``,// Заполнить в AddNewLocation из CompanyData !!!
                 strLocationName: `Название Локации1`,
                 ContactData: {
                     PhoneData: {
@@ -274,7 +278,7 @@ class DataForTests {
                 strIndustryType: 'Алкоголь',
                 strContactName: 'АА Джамшут ББ',
                 strCompanyName: 'ЧЛЕН',// Заполнить в AddNewLocation из CompanyData !!!
-                strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+                strCompanyCode: ``,// Заполнить в AddNewLocation из CompanyData !!!
                 strLocationName: `Название Локации2`,
                 ContactData: {
                     PhoneData: {
@@ -332,6 +336,7 @@ class DataForTests {
             strClientCompanyName : ``, // Заполнить ПЕРЕД выполнением Теста
             strClientCompanyCode : ``, // Заполнить ПЕРЕД выполнением Теста
             strClientCompanyID : ``, // Заполнить ПЕРЕД выполнением Теста
+            strOurCompanyWithClient: ``,//CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
             strCargoName: `Поліетилен`, //'Алкоголь',
             strCargoCost: `450000`, //'100500',
             AutoCompleteCargo: true, // false
@@ -341,13 +346,13 @@ class DataForTests {
             ClientFreights: [{
                 Amount: '10500',
                 PaymentForm: `з ПДВ 20%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, `По сканокопіям`, `По ТТН`, ``, ``,
                 Currency: 'UAH',
             },
                 // {
-                //     Amount: '10500',
-                //     PaymentForm: `з ПДВ 20%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                //     AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Amount: '10700',
+                //     PaymentForm: `з ПДВ 0%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
                 //     Currency: 'UAH',
                 // },
             ],
@@ -400,13 +405,21 @@ class DataForTests {
             strPointLoading: await GetFunnyStr('StrAddress'), //StrAddress //StrAddressFunny
             strPointUnLoading: await GetFunnyStr('StrAddress'), //StrAddress //StrAddressFunny
           //  CompanyClient: ``,//CompanyData1,//'ОСНОВА',
-            strOurCompanyWithClient: ``,//CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
 
-            CompanyTransporter: ``,//CompanyData2,//'ЛЬВІВКУЛЬТТОВАРИ',
-            strOurCompanyTransporter: ``,// CompanyData2.strContractOurCompany,//'ТРАНСЛОЙД',
-            DriverFullData: ``,//DriverData,//'Курганов',
+// Transporter
+            strTransporterType: 'Компания', // 'Контакт',
+            strTransporterCompanyName : ``, // Заполнить ПЕРЕД выполнением Теста
+            strTransporterCompanyCode : ``, // Заполнить ПЕРЕД выполнением Теста
+            strTransporterCompanyID : ``, // Заполнить ПЕРЕД выполнением Теста
+            strOurCompanyWithTransporter: ``,//CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
+
+            strDriverFullName: ``,// Заполнить ПЕРЕД выполнением Теста
+            strDriverPhone: ``,// Заполнить ПЕРЕД выполнением Теста
+            strContactDriverID: ``, // Заполнить ПЕРЕД выполнением Теста
             strLicensePlate1: ``,//VehicleData1.strLicensePlate,//'BC3082EE',//DAF BC3082EE
+            strVehicleID: ``, // Заполнить ПЕРЕД выполнением Теста
             strLicensePlate2: ``,//VehicleData2.strLicensePlate,//'BC7519XO',// KRONE BC7519XO
+            strTrailerID: ``, // Заполнить ПЕРЕД выполнением Теста
             strFoxResponsible: 'Тостер',
             strLogist: 'Тостер',
             strDealID: '',

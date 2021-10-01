@@ -400,7 +400,7 @@ class Location {
             }
             await WaitRender(this.pageTableLocations);
             // Селект в ДропДауне "Компании" ${LocationData.strCompanyName} вводим Name - выдаёт "Name (Code)"
-            // this.xSelectCompanies + [contains(text(), "${LocationData.strCompanyName}")] or strCodeCompany
+            // this.xSelectCompanies + [contains(text(), "${LocationData.strCompanyName}")] or strCompanyCode
             resOk = await ClickByXPath(this.pageTableLocations, this.xSelectCompanies);
             if (!resOk) {
                 await this.page.screenshot({path: g_PathSS + 'screenshot_select_company_type.png', fullPage: true });
@@ -710,7 +710,7 @@ class Location {
 
             await WaitForElementIsPresentByXPath(5000, this.pageTableLocations, this.xSelectCompanies);
             // Селект в ДропДауне "Компании" ${LocationData.strCompanyName} вводим Name - выдаёт "Name (Code)"
-            // this.xSelectCompanies + [contains(text(), "${LocationData.strCompanyName}")] or strCodeCompany
+            // this.xSelectCompanies + [contains(text(), "${LocationData.strCompanyName}")] or strCompanyCode
             resOk = await ClickByXPath(this.pageTableLocations, this.xSelectCompanies);
             if (!resOk) {
                 await this.page.screenshot({path: g_PathSS + 'screenshot_select_company_type.png', fullPage: true });
