@@ -10,8 +10,12 @@ class Deal {
         this.xMenuDealsPlus = `//a[@href="/crm/deal"][@class="info__add"]/div[@class="add-item"]`;
         // Секция Сделки
         this.xDealSection = `//section[@class="crm-view crm-view__deal"]`;
+        // Хеадер
+        this.xHeader = this.xDealSection + `//header[@class="crm-view__header"]`;
         // Заголовок "Создание сделки"
-        this.xHeaderCreateDeal = `//span[contains(text(), "Создание сделки")]`;
+        this.xHeaderCreateDeal = this.xHeader + `//span[contains(text(), "Создание сделки")]`;
+        // Сатус Сделки (InnerText)
+        this.xDealStatusName = this.xHeader + `//div[@class="crm-select__single-replica"]/span`;
         // Кнопка "Отдел продаж" Выбрана
         this.xButtonSalesDepartmentSelected = `//button[@type="button"][contains(@class, "fox-button__primary")]/span[contains(text(), "Отдел продаж")]`;
         this.xButtonSalesDepartmentNotSelected = `//button[@type="button"][contains(@class, "fox-button__outline")]/span[contains(text(), "Отдел продаж")]`;
@@ -23,6 +27,7 @@ class Deal {
         this.xValidationOurCompanyClient = `//p[@class="validator-feedback__name"][contains(text(), "Юр. лицо")]`;
         this.xValidationCargoType = `//p[@class="validator-feedback__name"][contains(text(), "Выберите тип груза")]`;
         this.xValidationCargoPrice = `//p[@class="validator-feedback__name"][contains(text(), "Стоимость груза")]`;
+        this.xValidationCargoWeight = `//p[@class="validator-feedback__name"][contains(text(), "Тоннаж клиента")]`;
         this.xValidationTransporterDelay = `//p[@class="validator-feedback__name"][contains(text(), "Отсрочка перевозчика")]`;
         this.xValidationTransporterCompany = `//p[@class="validator-feedback__name"][contains(text(), "Компания перевозчика")]`;
         this.xValidationOurCompanyTransporter = `//p[@class="validator-feedback__name"][contains(text(), "Юр. лицо с перевозом")]`;
@@ -68,11 +73,11 @@ class Deal {
         this.xDropDownOurCompaniesWithClient = this.xDropDownOurCompanyWithClient + `/li[@role="option"]`;
         // ДропДаун "Юр. лицо" Нужная строка
         this.xDropDownOurCompanyWithClientStr = this.xDropDownOurCompaniesWithClient + `[contains(text(), '${this.DealData.strOurCompanyWithClient}')]`;
-        // Мониторинг (МЦ)
-        this.xLevelMonitporingMC = this.xSectionDataOfClients + `//div[@class="bordered-single-select"][div[contains(text(), "Мониторинг (МЦ)")]]`;
-        this.xSelectedLevelMonitporingMCGetText = this.xLevelMonitporingMC + `//span[@class="vs__selected"]`;
-        // стрелка вниз раскрытие Дроп дауна "Мониторинг (МЦ)"
-        this.xLevelMonitporingMCArrowDown = this.xLevelMonitporingMC + `//div[@class="vs__actions"]`;
+        //-------------------------
+        // Кросс Док
+        this.xCrossDoc = `//label[span[contains(text(),"Кросс Док")]]`;
+        this.xCheckBoxCrossDoc = this.xCrossDoc + `/div[@class="control-indicator"]`;
+        this.xCheckBoxValueCrossDoc = this.xCrossDoc + `/input[@type="checkbox"]`;
         // ФилдСет "Тип груза *"
         this.xFieldSetCargoType = `//fieldset[legend[contains(text(), "Тип груза")][span[@class="required"][contains(text(),"*")]]]`;
         // Выбранный Тип груза
@@ -81,8 +86,16 @@ class Deal {
         this.xFieldSetCargoCost = `//fieldset[legend[contains(text(), "Стоимость груза")][span[@class="required"][contains(text(),"*")]]]`;
         // Инпут "Стоимость груза"
         this.xInputCargoCost = this.xFieldSetCargoCost + `//input[@name="Стоимость груза"]`;
+        // ФилдСет "Тоннаж клиента *"
+        this.xFieldSetCargoWeight = `//fieldset[legend[contains(text(), "Тоннаж клиента")][span[@class="required"][contains(text(),"*")]]]`;
+        // Инпут "Тоннаж клиента *"
+        this.xInputCargoWeight = this.xFieldSetCargoWeight + `//input[@name="Тоннаж клиента"]`;
 
-
+        // Мониторинг (МЦ)
+        this.xLevelMonitporingMC = this.xSectionDataOfClients + `//div[@class="bordered-single-select"][div[contains(text(), "Мониторинг (МЦ)")]]`;
+        this.xSelectedLevelMonitporingMCGetText = this.xLevelMonitporingMC + `//span[@class="vs__selected"]`;
+        // стрелка вниз раскрытие Дроп дауна "Мониторинг (МЦ)"
+        this.xLevelMonitporingMCArrowDown = this.xLevelMonitporingMC + `//div[@class="vs__actions"]`;
         //ul[@role="listbox"]/li[@role="option"]
         // ДропДаун "Мониторинг (МЦ)" строки
         this.xDropDownLevelMonitporingMCstrings = this.xLevelMonitporingMC + `//li[@role="option"]`;
@@ -99,7 +112,7 @@ class Deal {
         this.xModalHeaderAddFreight = this.xModalAddFreight + `[//div[@class="title"][contains(text(), "Добавить фрахт")]]`;
         // Выбор Валюты "UAH"
         this.xValutaUAH = `//div[@title="UAH"][span[contains(text(), "UAH")]]`;
-        // Филд сет "Фрахт"
+        // Филд сет "Фрахт" --------------------------------------------------------
         this.xFieldSetFreight = `//fieldset[legend[contains(text(), "Фрахт")]]`;
         // Инпут "Фрахт"
         this.xInputFreight = this.xFieldSetFreight + `//input[@name="Фрахт"]`;
@@ -129,12 +142,34 @@ class Deal {
         this.xAdditionalConditionPaymentDropDownNeedStr = this.xFieldSetAdditionalConditionPayment + `//span`;
         // Выбранное значение + `[contains(text(), "")]` GetInnerText
         this.xAdditionalConditionPaymentSelectedValue = this.xFieldSetAdditionalConditionPayment + `//div[@class="crm-select__single-replica"]/span`;
-
-
-
-        // Кнопка "Сохранить" -----------------------------
+        // Фрахт Кнопка "Сохранить" -----------------------------
         this.xAddFreightButtonSaveDisabled = this.xModalAddFreight + `//button[contains(text(), "Сохранить")][@disabled="disabled"]`;
         this.xAddFreightButtonSaveActive = this.xModalAddFreight + `//button[contains(text(), "Сохранить") and not(contains(@disabled , "disabled"))]`;
+        // Дополнительные поля
+        this.xButtonAdditionalFields = `//div[@role="button"][contains(text(),"Дополнительные поля")][contains(text(),"2")]`;
+        this.xButtonAdditionalFieldsCollapsed = this.xButtonAdditionalFields + `[@aria-expanded="false"]`;
+        this.xButtonAdditionalFieldsExpanded = this.xButtonAdditionalFields + `[@aria-expanded="true"]`;
+        // Инпут "Номер транспортировки"
+        this.xInputNumberTransportation = `//fieldset[legend[contains(text(),"Номер транспортировки")]]//input[@name="Номер транспортировки"]`;
+        // Филдсет "Номер вкладки" ----------------------------
+        this.xFeildSetNumberInSet = `//fieldset[legend[contains(text(),"Номер вкладки")]]`;
+        // Инпут "Номер вкладки"
+        this.xInputInSet = this.xFeildSetNumberInSet + `//input[@placeholder="Выберите номер вкладки"]`;
+        // Инпут "Номер вкладки" Выбранное значение (ElementGetInnerText)
+        this.xInputInSetSelectedValue = this.xFeildSetNumberInSet + `//div[@class="crm-select__single-replica"]/span`;
+
+        // "Номер вкладки" Стрелка вниз для раскрытия списка
+        this.xArrowDownInSet = this.xFeildSetNumberInSet + `//div[@class="multiselect__select"]`;
+        // Спиннер НЕ Активный в "Номер вкладки"
+        this.xInSetSpinnerNotActive = this.xFeildSetNumberInSet + `//div[@class="multiselect__spinner"][@style="display: none;"]`;
+        // "Номер вкладки" Раскрытый список
+        this.xDropDownInSetActive = this.xFeildSetNumberInSet + `//div[@class="multiselect__content-wrapper"][not(contains(@style,"display: none;"))]`;
+        // "Номер вкладки" в Раскрытом списке Нужная строка + [contains(text(), "${XXX}")] или [text()="${XXX}"]
+        this.xDropDownInSetNeedStr = this.xFeildSetNumberInSet + `//li/span[contains(@class,"highlight")]/span`;
+
+
+
+
 
         // ==== END ----- Секция "Данные про заказчика"=====================================================
         // ===== Секция "Данные про перевозчика"=====================================================
@@ -257,8 +292,131 @@ class Deal {
         //-----------------------------------------
 
         // ==== END ----- Секция "Данные про перевозчика"=====================================================
+        // Филдсет "Адрес и дата загрузки"
+        this.xFieldSetAddressLoading = `//fieldset[legend[contains(text(),"Адрес и дата загрузки")]]`;
+        // Кнопка "Изменить" в "Адрес и дата загрузки"
+        this.xButtonChangeLoading = this.xFieldSetAddressLoading + `//div[@role="button"][contains(text(),"Изменить")]`;
+        // Модалка "Маршрут"
+        this.xModalMarshrut = `//div[@id="deal-address-control"]`;
+        // Заголовок "Маршрут"
+        this.xHeaderMarshrut = this.xModalMarshrut + `//h3[contains(text(),"Маршрут")]`;
+        // Кнопка "Добавить загрузку"
+        this.xButtonAddLoading = this.xModalMarshrut + `//button[contains(text(),"Добавить загрузку")]`;
+        // Кнопка "Добавить выгрузку"
+        this.xButtonAddUnLoading = this.xModalMarshrut + `//button[contains(text(),"Добавить выгрузку")]`;
+        // Класс ДейтПикер
+        this.xClassDatePicker = `//div[@class="flatpickr-wrapper"]`;
+        // Дата Загрузки (Num)
+        this.xDateLoading = `//input[@placeholder="Дата загрузки"]`;
+        // Раскрытый Дейт Пикер "Дата загрузки"
+        this.xDateLoadingPickerActive = this.xClassDatePicker+ `[input[@placeholder="Дата загрузки"][@class="flatpickr-input active"]]`;
+        // Выезд с загрузки (Num)
+        this.xDateExitLoading = `//input[@placeholder="Выезд с загрузки"]`;
+        // Раскрытый Дейт Пикер "Выезд с загрузки"
+        this.xDateExitLoadingPickerActive = this.xClassDatePicker+ `[input[@placeholder="Выезд с загрузки"][@class="flatpickr-input active"]]`;
+        // Дата Выгрузки (Num)
+        this.xDateUnLoading = `//input[@placeholder="Дата выгрузки"]`;
+        // Раскрытый Дейт Пикер "Дата выгрузки"
+        this.xDateUnLoadingPickerActive = this.xClassDatePicker+ `[input[@placeholder="Дата выгрузки"][@class="flatpickr-input active"]]`;
+        // Выезд с выгрузки (Num)
+        this.xDateExitUnLoading = `//input[@placeholder="Выезд с выгрузки"]`;
+        // Раскрытый Дейт Пикер "Выезд с выгрузки"
+        this.xDateExitUnLoadingPickerActive = this.xClassDatePicker+ `[input[@placeholder="Выезд с выгрузки"][@class="flatpickr-input active"]]`;
+        // Мувер Адресов
+        this.xMoover = `//div[contains(@class, "addresses-mover__item")]`;
+        // Мувер "Загрузка" (Num)
+        this.xMoverLoading = this.xMoover + `[/div/div/div[@title="Загрузка"]]/div/div[@class="mover"]`;
+        this.xSVGMover = this.xMoover + `/div[@class="options"]/div[@class="mover"]`;
+        // Селект Тип "Загрузка"
+        this.xSelTypeLoading = this.xMoover + `//div[contains(@class, "location-category-select")][div[span[contains(text(), "Загрузка")]]]//div[@class="multiselect__select"]`;
+        // Инпут "Загрузка" (Num)
+        this.xClassLoading = `//div[@class="address-control-item"][div/div/div[@title="Загрузка"]]`;// /span[contains(text(),"Выгрузка")]
+        this.xMultiSelectLoading = this.xClassLoading + `//div[@class="multiselect__tags"][input[@placeholder="Выберите или введите"]]`;
+        this.xInputLoading = this.xClassLoading + `//input[@placeholder="Выберите или введите"]`;
+        // ДропДаун "Загрузка" раскрытый
+        this.xDropDownLoadingReady = this.xClassLoading + `//div[@class="multiselect__content-wrapper"][not(contains(@style , "display: none"))]`;
+        // В "Загрузка" Дропдаун пункт "Поиск по базе данных"
+        this.xLoadingButtonFindInBase = this.xDropDownLoadingReady + `//button[contains(text(),"Поиск по базе данных")]`;
+        //*[@id="deal-address-control"]/div/main/div/div/div[1]/div/div/div[2]/div[2]/div[1]/div[1]/div/div/div[3]/ul/button
+
+        // Нужная строка ДропДаун "Загрузка" + [contains(text(),"${XXX}")]
+        //this.xDropDownLoadingNeedStr = this.xClassLoading + `//li[@class="multiselect__element"]/span[contains(@class,"highlight")]/span`;
+        this.xDropDownLoadingNeedStr = `//li[@class="multiselect__element"]/span[contains(@class,"highlight")]/span`;
+        // Селект Тип "Выгрузка"
+        this.xSelTypeUnLoading = this.xMoover + `//div[contains(@class, "location-category-select")][div[span[contains(text(), "Выгрузка")]]]//div[@class="multiselect__select"]`;
+        // Инпут "Выгрузка" (Num)
+        this.xClassUnLoading = `//div[@class="address-control-item"][div/div/div[@title="Выгрузка"]]`;
+        this.xMultiSelectUnLoading = this.xClassUnLoading + `//div[@class="multiselect__tags"][input[@placeholder="Выберите или введите"]]`;
+        this.xInputUnLoading = this.xClassUnLoading + `//input[@placeholder="Выберите или введите"]`;
+        // ДропДаун "Выгрузка" раскрытый
+        this.xDropDownUnLoadingReady = this.xClassUnLoading + `//div[@class="multiselect__content-wrapper"][not(contains(@style , "display: none"))]`;
+        // В "Выгрузка" Дропдаун пункт "Поиск по базе данных"
+        this.xUnLoadingButtonFindInBase = this.xDropDownUnLoadingReady + `//button[contains(text(),"Поиск по базе данных")]`;
+        // Нужная строка ДропДаун "Выгрузка" + [contains(text(),"${XXX}")]
+        this.xDropDownUnLoadingNeedStr = `//li[@class="multiselect__element"]/span[contains(@class,"highlight")]/span`;
 
 
+        // Кнопка "Сохранить адреса"
+        this.xButtonSaveAddresses = this.xModalMarshrut + `//button[contains(text(),"Сохранить адреса")]`;
+        this.xButtonSaveAddressesDisabled = this.xButtonSaveAddresses + `[@disabled="disabled"]`;
+        this.xButtonSaveAddressesActive = this.xButtonSaveAddresses + `[not(contains(@disabled , "disabled"))]`;
+        //  Комментарий к загрузке
+        this.xButtonCommentLoadind = `//div[contains(text(), "Комментарий к загрузке")]`;
+        // Текст Ареа "Комментарий к загрузке" Раскрытый
+        this.xTextAreaCommentLoadind = `//div[@id="loading-collapse-point"][@class="collapse show"]//textarea`;
+        //  Комментарий к выгрузке
+        this.xButtonCommentUnLoadind = `//div[contains(text(), "Комментарий к выгрузке")]`;
+        // Текст Ареа "Комментарий к выгрузке" Раскрытый
+        this.xTextAreaCommentUnLoadind = `//div[@id="unloading-collapse-point"][@class="collapse show"]//textarea`;
+        //Филдсет "Ответственный по фоксу"
+        this.xFieldSetResponsibleFOX = `//fieldset[legend[contains(text(),"Ответственный по фоксу")]]`;
+        // "Ответственный по фоксу" Стрелка Вниз для раскрытия списка
+        this.xResponsibleArrowDown = this.xFieldSetResponsibleFOX + `//div[@class="multiselect__select"]`;
+        // Инпут "Ответственный по фоксу"
+        this.xInputResponsible = `//input[@placeholder="Выберите ответсвенного по фоксу"]`;
+        // Раскрытый ДропДаун "Ответственный по фоксу"
+        this.xDropDownResponsible = this.xFieldSetResponsibleFOX + `//div[@class="multiselect__content-wrapper"][not(contains(@style , "display: none;"))]`;
+        this.xDropDownResponsibleNotDisplayed = this.xFieldSetResponsibleFOX + `//div[@class="multiselect__content-wrapper"][contains(@style , "display: none;")]`;
+        // Нужная строка ДропДаун "Ответственный по фоксу" + [contains(text(),"${XXX}")]
+        this.xDropDownResponsibleNeedStr = `//li[@class="multiselect__element"]/span[contains(@class,"highlight")]/span`;
+
+        //Филдсет "Логист"
+        this.xFieldSetLogist = `//fieldset[legend[contains(text(),"Логист")]]`;
+        // "Ответственный по фоксу" Стрелка Вниз для раскрытия списка
+        this.xLogistArrowDown = this.xFieldSetLogist + `//div[@class="multiselect__select"]`;
+        // Инпут "Логист"
+        this.xInputLogist = `//input[@placeholder="Выберите логиста"]`;
+        // Раскрытый ДропДаун "Логист"
+        this.xDropDownLogist = this.xFieldSetLogist + `//div[@class="multiselect__content-wrapper"][not(contains(@style , "display: none;"))]`;
+        this.xDropDownLogistNotDisplayed = this.xFieldSetLogist + `//div[@class="multiselect__content-wrapper"][contains(@style , "display: none;")]`;
+        // Нужная строка ДропДаун "Логист" + [contains(text(),"${XXX}")]
+        this.xDropDownLogistNeedStr = `//li[@class="multiselect__element"]/span[contains(@class,"highlight")]/span`;
+
+        //BEGIN -- Заявка с Перевозчиком ----------------
+        // секция Перевозчика "Создать заявку"
+        this.xCreateOrder = this.xSectionDataOfTransporter + `//div[contains(text(),"Создать заявку")]`;
+        // Заголовок "Создание заявки с перевозчиком"
+        this.xHeaderCreateOrderTransporter = `//span[@class="title"][contains(text(),"Создание заявки с перевозчиком")]`;
+        // "Создание заявки с перевозчиком" кнопка "Создать" Активная
+        this.xButtonCreateOrderActive = `//button[@type="submit"][contains(text(),"Создать")][not(contains(@disabled , "disabled"))]`;
+        // -- END --- Заявка с Перевозчиком ----
+        // Сделка Кнопка "Сохранить" Активная
+        this.xButtonDealSaveActive = `//div[contains(@class , "text-center")][button[contains(text(),"Сохранить и остаться")]]`;
+        this.xButtonDealSaveActive+= `/button[contains(text(),"Сохранить") and not(contains(text(),"Сохранить и остаться"))][not(contains(@disabled , "disabled"))]`;
+        // Сделка Кнопка "Сохранить" Disabled
+        this.xButtonDealSaveDisabled = `//div[contains(@class , "text-center")][button[contains(text(),"Сохранить и остаться")]]`;
+        this.xButtonDealSaveDisabled+= `/button[contains(text(),"Сохранить") and not(contains(text(),"Сохранить и остаться"))][contains(@disabled , "disabled")]`;
+        // Сделка Кнопка "Сохранить и остаться" Активная
+        this.xButtonDealSaveAndStayActive = `//button[contains(text(),"Сохранить и остаться")][not(contains(@disabled , "disabled"))]`;
+        // Сделка Кнопка "Сохранить и остаться" Disabled
+        this.xButtonDealSaveAndStayDisabled = `//button[contains(text(),"Сохранить и остаться")][contains(@disabled , "disabled")]`;
+        // Таблица Сделок Готова
+        this.xTableDeals = `//div[@class="speedyTable"]`;
+        this.xTableDealsBusy = this.xTableDeals + `[//span[@class="spinner-border"]]`;
+
+
+        // Счётчик вызова Дат в Адресах
+        this.CounterCallDate = 0;
 
     } // constructor(browser, page, DealData)
     //----------------------------------------
@@ -355,6 +513,10 @@ class Deal {
             if(!resOk){
                 resErrorText+= `FAIL => Нет валидации "Стоимость груза" ${this.xValidationCargoPrice} \n`;
             }
+            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xValidationCargoWeight);
+            if(!resOk){
+                resErrorText+= `FAIL => Нет валидации "Тоннаж клиента" ${this.xValidationCargoWeight} \n`;
+            }
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xValidationTransporterDelay);
             if(!resOk){
                 resErrorText+= `FAIL => Нет валидации "Отсрочка перевозчика" ${this.xValidationTransporterDelay} \n`;
@@ -433,7 +595,8 @@ class Deal {
             // Линк на Компанию Заказчика
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xLinkClientCompany);
             if (!resOk) {
-                throw `FAIL => НЕ вижу Линк на Компанию Заказчика WaitForElementIsPresentByXPath(${this.xLinkClientCompany})`;
+                // throw `FAIL => НЕ вижу Линк на Компанию Заказчика WaitForElementIsPresentByXPath(${this.xLinkClientCompany})`;
+                await console.log('\x1b[38;5;1m\t', `Линк на Компанию Заказчика WaitForElementIsPresentByXPath(${this.xLinkClientCompany}) - FAIL !!!`, '\x1b[0m');
             }
             // await WaitRender(this.page);
             // await this.page.waitFor(1000);
@@ -449,7 +612,6 @@ class Deal {
                     TxtErr+= `FAIL => WaitForElementIsPresentByXPath(${this.xNoClientsContractDisabled})`;
                 throw TxtErr;
             }
-
 
             // Автовыбор Юр. лицо (с Заказчиком) ( без  [contains(text(), '${this.DealData.strOurCompanyWithClient}')])
             // Автовыбор Юр. лицо (с Заказчиком)
@@ -505,13 +667,9 @@ class Deal {
                 await console.log('\x1b[38;5;2m\t', `Линк на Компанию Заказчика (${tempHref}) - OK`, '\x1b[0m');
             }
 
-            await console.log('\x1b[38;5;2m\t', `Компания Заказчика ${this.DealData.strClientCompanyName} - OK`, '\x1b[0m');
-            await console.log('\x1b[38;5;2m\t', `Наше "Юр. лицо" с компанией Заказчика ${this.DealData.strOurCompanyWithClient} - OK`, '\x1b[0m');
+            await console.log('\x1b[38;5;2m\t', `Компания Заказчика (${this.DealData.strClientCompanyName}) - OK`, '\x1b[0m');
+            await console.log('\x1b[38;5;2m\t', `Наше "Юр. лицо" с компанией Заказчика (${this.DealData.strOurCompanyWithClient}) - OK`, '\x1b[0m');
             await WaitRender(this.page);
-
-
-
-
 
             return true;
         } catch (e) {
@@ -522,18 +680,140 @@ class Deal {
         }
     }//async EnterClientCompany()
     //----------------------------------------
+    async EnterCrossDoc() { // Кросс Док
+        let resOk;let boxIsChecked;
+        try {
+            // await console.log(`0 boxIsChecked=(${boxIsChecked})`);
+            // await this.page.waitFor(2000);
+            // Кросс Док
+            boxIsChecked = await ElementIsChecked(this.page, 0, this.xCheckBoxValueCrossDoc);
+            // await console.log(`0 boxIsChecked=(${boxIsChecked})`);
+            if(boxIsChecked) {
+                await console.log('\x1b[38;5;1m\t', `Кросс Док Чек Бокс => По дефолту Должен быть СНЯТ , а он (${boxIsChecked}) - FAIL !!!`, '\x1b[0m');
+            }else {
+                resOk = WaitForElementIsPresentByXPath(2000, this.page, this.xCheckBoxCrossDoc);
+                if (!resOk) {
+                    await console.log('\x1b[38;5;1m\t', `Кросс Док Чек Бокс => Не Вижу - FAIL !!!`, '\x1b[0m');
+                } else {
+                    // Кросс Док Чек Бокс => Клик 1 Установить
+                    resOk = await ClickByXPath(this.page, this.xCheckBoxCrossDoc);
+                    //await this.page.waitFor(2000);
+                    if (!resOk) {
+                        await console.log('\x1b[38;5;1m\t', `Кросс Док Чек Бокс => Клик 1 Установить - FAIL !!!`, '\x1b[0m');
+                    } else {
+                        //await this.page.waitFor(2000);
+                        boxIsChecked = await ElementIsChecked(this.page, 0, this.xCheckBoxValueCrossDoc);
+                        // await console.log(`1 boxIsChecked=(${boxIsChecked})`);
+                        if (!boxIsChecked) {
+                            await console.log('\x1b[38;5;1m\t', `Кросс Док Чек Бокс => Клик 1 Установить => НЕ УСТАНОВИЛСЯ ЧЕК(${boxIsChecked})- FAIL !!!`, '\x1b[0m');
+                        } else {
+                            // Кросс Док Чек Бокс => Клик 2 Снять
+                            //await this.page.waitFor(3000);
+                            resOk = await ClickByXPath(this.page, this.xCheckBoxCrossDoc);
+                            //await this.page.waitFor(2000);
+                            if (!resOk) {
+                                await console.log('\x1b[38;5;1m\t', `Кросс Док Чек Бокс => Клик 2 Снять - FAIL !!!`, '\x1b[0m');
+                            } else {
+                                //await this.page.waitFor(500);
+                                boxIsChecked = await ElementIsChecked(this.page, 0, this.xCheckBoxValueCrossDoc);
+                                // await console.log(`2 boxIsChecked=(${boxIsChecked})`);
+                                if(boxIsChecked){
+                                    await console.log('\x1b[38;5;1m\t', `Кросс Док Чек Бокс => Клик 2 Снять => НЕ СНЯЛСЯ ЧЕК(${boxIsChecked}) - FAIL !!!`, '\x1b[0m');
+                                }else {
+                                    if(this.DealData.isCrossDoc){
+                                        // Если в Сделке он Должен быть установлен, то Ставим его
+                                        resOk = await ClickByXPath(this.page, this.xCheckBoxCrossDoc);
+                                        //await this.page.waitFor(2000);
+                                        boxIsChecked = await ElementIsChecked(this.page, 0, this.xCheckBoxValueCrossDoc);
+                                        if (!resOk) {
+                                            await console.log('\x1b[38;5;1m\t', `Кросс Док Чек Бокс => Клик 3 Установить - FAIL !!!`, '\x1b[0m');
+                                        }else{
+                                            if(!boxIsChecked){
+                                                await console.log('\x1b[38;5;1m\t', `Кросс Док Чек Бокс => Клик 3 Установить => НЕ УСТАНОВИЛСЯ ЧЕК(${boxIsChecked}) - FAIL !!!`, '\x1b[0m');
+                                            }else{
+                                                await console.log('\x1b[38;5;2m\t', `Кросс Док в Сделке Установлен(${boxIsChecked}) - Ok`, '\x1b[0m');
+                                            }
+                                        }
+                                    }else {
+                                        await console.log('\x1b[38;5;2m\t', `Работа чек бокса "Кросс Док" на странице Сделки Проверена - Ok`, '\x1b[0m');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //await this.page.waitFor(2000);
+            // Проверка на соответствие состояния требуемому
+            if(this.DealData.isCrossDoc !== boxIsChecked) {
+                // Попытка привести состояние к требуемому
+                await ClickByXPath(this.page, this.xCheckBoxCrossDoc);
+                boxIsChecked = await ElementIsChecked(this.page, 0, this.xCheckBoxValueCrossDoc);
+                if (this.DealData.isCrossDoc !== boxIsChecked) {
+                    throw `\x1b[38;5;1m\t !!! FAIL -> Кросс Док Состояние Чек Бокса(${boxIsChecked}) НЕ СООТВЕТСТВУЕТ ТРЕБУЕМОМУ (${this.DealData.isCrossDoc}) - FAIL !!!\x1b[0m`;
+                }
+            }
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterCrossDoc`);
+            return false;
+        }
+    }//async EnterCrossDoc() // Кросс Док
+    //----------------------------------------
+    async EnterCargoTypeData() {
+        let resOk;
+        let strGetCargoType = ``;
+        let strGetCargoCost = ``;
+        let strErr = ``;
+        try {
+                // strCargoType: 'Алкоголь',
+                // strCargoCost: '100500',
+                // AutoCompleteCargo: true, // false
+            await WaitRender(this.page);
+            if (this.DealData.AutoCompleteCargo) { // Если true то должен быть автовыбран указанный тип груза и его цена
+                // Автовыбор Выбранный "Тип груза"
+                strGetCargoType = await ElementGetInnerText(this.page, 0, this.xSelectedCargoType);
+                if (strGetCargoType !== this.DealData.strCargoType){
+                    strErr+= `\x1b[38;5;1m\tАвтовыбор Выбранный "Тип груза" FAIL => (${strGetCargoType})!==(${this.DealData.strCargoType})\n`;
+                }
+                // Автовыбор Инпут "Стоимость груза"
+                strGetCargoCost = await ElementGetValue(this.page, 0, this.xInputCargoCost);
+                if (strGetCargoCost !== this.DealData.strCargoCost){
+                    strErr+= `\x1b[38;5;1m\tАвтовыбор Инпут "Стоимость груза" FAIL => (${strGetCargoCost})!==(${this.DealData.strCargoCost})\n`;
+                }
+                //Проверка автовыбора Ок
+                await console.log('\x1b[38;5;2m\t', `Автовыбор "Тип груза" (${this.DealData.strCargoType}) - OK`, '\x1b[0m');
+                await console.log('\x1b[38;5;2m\t', `Автовыбор "Стоимость груза" (${this.DealData.strCargoCost} грн.) - OK`, '\x1b[0m');
+            }
+            // Тоннаж клиента *
+            resOk = await SetTextByXPath(this.page, this.xInputCargoWeight, this.DealData.strCargoWeight);
+            if (!resOk) {
+                strErr+= '\x1b[38;5;1m\t', `FAIL -> Инпут "Тоннаж клиента *" SetTextByXPath(${this.xInputCargoWeight})`, '\x1b[0m';
+            }else {
+                await console.log('\x1b[38;5;2m\t', `Тоннаж клиента * (${this.DealData.strCargoWeight}) - OK`, '\x1b[0m');
+            }
+            if(strErr!==``){
+                throw strErr; // вывод суммарной ошибки и выход
+            }
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterCargoTypeData`);
+            return false;
+        }
+    }//async EnterCargoTypeData()
+    //----------------------------------------
     async EnterLevelMonitoringMC() {
         let resOk;
+        const strAutomatically = `Автоматически`;
         let strTemp = ``;
         let strErr = ``;
         try {
             // Проверка "Мониторинг (МЦ)" "Автоматически"
             strTemp = await ElementGetInnerText(this.page, 0, this.xSelectedLevelMonitporingMCGetText);
-            if (strTemp !== `Автоматически`){
-                strErr+= `FAIL => Автовыбор "Мониторинг (МЦ)" (${strTemp})!==(Автоматически)`;
+            if (strTemp !== strAutomatically){
+                strErr+= `FAIL => Автовыбор "Мониторинг (МЦ)" (${strTemp})!==(${strAutomatically})`;
             }
-
-
             // стрелка вниз раскрытие Дроп дауна "Мониторинг (МЦ)"
             resOk = await ClickByXPath(this.page, this.xLevelMonitporingMCArrowDown);
             if (!resOk) {
@@ -551,60 +831,18 @@ class Deal {
             if (!resOk) {
                 throw `FAIL => ДропДаун "Мониторинг (МЦ)" нужная строка ClickByXPath(${this.xDropDownLevelMonitporingMCstrData})`;
             }
-
-
             if (strErr!==``){
-                await console.log('\x1b[38;5;1m\t', `Проверка "Мониторинг (МЦ)" "Автоматически" - ${strErr}`, '\x1b[0m');
+                await console.log('\x1b[38;5;1m\t', `Проверка "Мониторинг (МЦ)" (${strAutomatically}) - ${strErr}`, '\x1b[0m');
             }else{
-                await console.log('\x1b[38;5;2m\t', `Проверка "Мониторинг (МЦ)" "Автоматически" - OK`, '\x1b[0m');
+                await console.log('\x1b[38;5;2m\t', `Проверка "Мониторинг (МЦ)" (${strAutomatically}) - OK`, '\x1b[0m');
             }
-
-            await console.log('\x1b[38;5;2m\t', `Установка "Мониторинг (МЦ)" ${this.DealData.strLevelMonitoringMC} - OK`, '\x1b[0m');
+            await console.log('\x1b[38;5;2m\t', `Установка "Мониторинг (МЦ)" (${this.DealData.strLevelMonitoringMC}) - OK`, '\x1b[0m');
             return true;
         } catch (e) {
             await console.log(`${e} \n FAIL in EnterLevelMonitoringMC`);
             return false;
         }
     }//async EnterLevelMonitoringMC()
-    //----------------------------------------
-    async EnterCargoTypeData() {
-        let resOk;
-        let strGetCargoType = ``;
-        let strGetCargoCost = ``;
-        let strErr = ``;
-        try {
-                // strCargoName: 'Алкоголь',
-                // strCargoCost: '100500',
-                // AutoCompleteCargo: true, // false
-            if (this.DealData.AutoCompleteCargo) { // Если true то должен быть автовыбран указанный тип груза и его цена
-                // Автовыбор Выбранный "Тип груза"
-                strGetCargoType = await ElementGetInnerText(this.page, 0, this.xSelectedCargoType);
-                if (strGetCargoType !== this.DealData.strCargoName){
-                    strErr+= `\x1b[38;5;1m\tАвтовыбор Выбранный "Тип груза" FAIL => (${strGetCargoType})!==(${this.DealData.strCargoName})\n`;
-                }
-                // Автовыбор Инпут "Стоимость груза"
-                strGetCargoCost = await ElementGetValue(this.page, 0, this.xInputCargoCost);
-                if (strGetCargoCost !== this.DealData.strCargoCost){
-                    strErr+= `\x1b[38;5;1m\tАвтовыбор Инпут "Стоимость груза" FAIL => (${strGetCargoCost})!==(${this.DealData.strCargoCost})\n`;
-                }
-
-                if(strErr!==``){
-                    throw strErr; // вывод суммарной ошибки и выход
-                }
-                //Проверка автовыбора Ок
-                await console.log('\x1b[38;5;2m\t', `Автовыбор "Тип груза" ${this.DealData.strCargoName} - OK`, '\x1b[0m');
-                await console.log('\x1b[38;5;2m\t', `Автовыбор "Стоимость груза" ${this.DealData.strCargoCost} грн. - OK`, '\x1b[0m');
-
-            }
-
-
-
-            return true;
-        } catch (e) {
-            await console.log(`${e} \n FAIL in EnterCargoTypeData`);
-            return false;
-        }
-    }//async EnterCargoTypeData()
     //----------------------------------------
     async ChekModalAddNewFreight() { // Проверка Модалки "Добавить фрахт"
         let resOk;
@@ -657,16 +895,16 @@ class Deal {
         }
     }//async ChekModalAddNewFreight()
     //----------------------------------------
-    async AddAllClientOrTransporterFreights( CT ) { // Добавить Все Фрахты Заказчика //1 or 2
+    async AddAllClientOrTransporterFreights( CT ) { // Добавить Все Фрахты Заказчика // CT 1 or 2; Client = 1 ; Transporter = 2
         let resOk;
         let QFreights = 0;
         let xTemp = ``;
         let N = 0;
         try {
-            if(!(CT === 1 || CT === 2)) {
+            if(!(CT === 1 || CT === 2)) { // CT 1 or 2; Client = 1 ; Transporter = 2
                 throw `FAIL => Параметр CT НЕ УКАЗАН В ДАННЫХ ДЛЯ ТЕСТОВ CT=(${CT}) AddAllClientOrTransporterFreights( CT )`;
             }
-            if (CT === 1) {
+            if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
                 // Фрахт Заказчика
                 QFreights = this.DealData.ClientFreights.length;
                 //await console.log(`QFreights=${QFreights}`);
@@ -674,7 +912,7 @@ class Deal {
                 if (QFreights < 1) {
                     throw `FAIL => Фрахт Заказчика НЕ УКАЗАН В ДАННЫХ ДЛЯ ТЕСТОВ QFreights=(${QFreights})`;
                 }
-            }else{
+            }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
                 // Фрахт Перевозчика
                 QFreights = this.DealData.TransporterFreights.length;
                 //await console.log(`QFreights=${QFreights}`);
@@ -687,13 +925,13 @@ class Deal {
             //
             for(N = 0; N < QFreights; N++ ) {
                 // await console.log(`ClientFreights[${N}].Amount=${this.DealData.ClientFreights[N].Amount}`);
-                if (CT === 1) {
+                if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
                     // Заказчик Кнопка "+ Добавить Фрахт"
                     resOk = await ClickByXPath(this.page, this.xClientAddFreightBtn);
                     if (!resOk) {
                         throw `FAIL => Заказчик Кнопка "+ Добавить Фрахт" ClickByXPath(${this.xClientAddFreightBtn})`;
                     }
-                }else{
+                }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
                     // Перевозчик Кнопка "+ Добавить Фрахт"
                     resOk = await ClickByXPathNum(this.page,0, this.xTransporterAddFreightBtn);
                     if (!resOk) {
@@ -714,9 +952,9 @@ class Deal {
                 if (!resOk) {
                     throw `FAIL => Инпут "Фрахт" ClickByXPath(${this.xInputFreight})`;
                 }
-                if (CT === 1) {
+                if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
                     resOk = await SetTextByXPath(this.page, this.xInputFreight, this.DealData.ClientFreights[N].Amount);
-                }else{
+                }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
                     resOk = await SetTextByXPath(this.page, this.xInputFreight, this.DealData.TransporterFreights[N].Amount);
                 }
                 if (!resOk) {
@@ -730,9 +968,9 @@ class Deal {
                     throw `FAIL => Селект "Форма оплаты" Стрелка вниз для раскрытия списка ClickByXPath(${this.xPaymentFormArrowDown})`;
                 }
                 // Вводим "Форма оплаты"
-                if (CT === 1) {
+                if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
                     resOk = await SetTextByXPath(this.page, this.xSelectPaymentForm, this.DealData.ClientFreights[N].PaymentForm);
-                }else{
+                }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
                     resOk = await SetTextByXPath(this.page, this.xSelectPaymentForm, this.DealData.TransporterFreights[N].PaymentForm);
                 }
 
@@ -740,9 +978,9 @@ class Deal {
                     throw `FAIL => Вводим "Форма оплаты" SetTextByXPath(${this.xSelectPaymentForm})`;
                 }
                 // ДропДаун с нужной строкой + `[contains(text(), "${XXX}")]`
-                if (CT === 1) {
+                if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
                     xTemp = this.xPaymentFormDropDownNeedStr + `[contains(text(), "${this.DealData.ClientFreights[N].PaymentForm}")]`;
-                }else{
+                }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
                     xTemp = this.xPaymentFormDropDownNeedStr + `[contains(text(), "${this.DealData.TransporterFreights[N].PaymentForm}")]`;
                 }
 
@@ -759,18 +997,18 @@ class Deal {
                     throw `FAIL => Селект "Доп. условие оплаты" Стрелка вниз для раскрытия списка ClickByXPath(${this.xAdditionalConditionPaymentArrowDown})`;
                 }
                 // Вводим "Доп. условие оплаты"
-                if (CT === 1) {
+                if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
                     resOk = await SetTextByXPath(this.page, this.xSelectAdditionalConditionPayment, this.DealData.ClientFreights[N].AdditionalConditionPayment);
-                }else{
+                }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
                     resOk = await SetTextByXPath(this.page, this.xSelectAdditionalConditionPayment, this.DealData.TransporterFreights[N].AdditionalConditionPayment);
                 }
                 if (!resOk) {
                     throw `FAIL => Вводим "Доп. условие оплаты" SetTextByXPath(${this.xSelectAdditionalConditionPayment})`;
                 }
                 // ДропДаун с нужной строкой + `[contains(text(), "${XXX}")]` `[text()="${XXX}"]`
-                if (CT === 1) {
+                if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
                     xTemp = this.xAdditionalConditionPaymentDropDownNeedStr + `[text()="${this.DealData.ClientFreights[N].AdditionalConditionPayment}"]`;
-                }else{
+                }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
                     xTemp = this.xAdditionalConditionPaymentDropDownNeedStr + `[text()="${this.DealData.TransporterFreights[N].AdditionalConditionPayment}"]`;
                 }
                 resOk = await ClickByXPath(this.page, xTemp);
@@ -788,10 +1026,10 @@ class Deal {
                 if (!resOk) {
                     throw `FAIL => Кнопка "Сохранить" Активная ClickByXPath(${this.xAddFreightButtonSaveActive})`;
                 }
-                if (CT === 1) {
-                    await console.log('\x1b[38;5;2m\t', `Добавлен фрахт Заказчика ${this.DealData.ClientFreights[N].Amount} грн. ${this.DealData.ClientFreights[N].PaymentForm}  - OK`, '\x1b[0m');
-                }else {
-                    await console.log('\x1b[38;5;2m\t', `Добавлен фрахт Заказчика ${this.DealData.TransporterFreights[N].Amount} грн. ${this.DealData.TransporterFreights[N].PaymentForm}  - OK`, '\x1b[0m');
+                if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
+                    await console.log('\x1b[38;5;2m\t', `Фрахт Заказчика(${N}) добавлен (${this.DealData.ClientFreights[N].Amount} грн. ${this.DealData.ClientFreights[N].PaymentForm}) - OK`, '\x1b[0m');
+                }else { // CT 1 or 2; Client = 1 ; Transporter = 2
+                    await console.log('\x1b[38;5;2m\t', `Фрахт Перевозчика(${N}) добавлен (${this.DealData.TransporterFreights[N].Amount} грн. ${this.DealData.TransporterFreights[N].PaymentForm}) - OK`, '\x1b[0m');
                 }
                 // Подождать пока закроется Модалка
                  await WaitRender(this.page);
@@ -803,7 +1041,130 @@ class Deal {
             await console.log(`${e} \n FAIL in AddAllClientOrTransporterFreights`);
             return false;
         }
-    }//async AddAllClientOrTransporterFreights() //1 or 2
+    }//async AddAllClientOrTransporterFreights(CT) // CT 1 or 2; Client = 1 ; Transporter = 2
+    //----------------------------------------
+    async EnterAdditionalFields() { // Вводим Дополнительные поля
+        let resOk;let tempValue = ``;let resError = false;
+        let xTempNeed = ``;
+        let strFromPage = ``;
+        try {
+            // Дополнительные поля // Сразу после открытия сделки должны быть свёрнуты [@aria-expanded="false"]
+            // this.xButtonAdditionalFields
+            // this.xButtonAdditionalFieldsCollapsed
+            // this.xButtonAdditionalFieldsExpanded
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xButtonAdditionalFields);
+            if (!resOk) {
+                await console.log('\x1b[38;5;1m\t', `Дополнительные поля => Не Вижу - FAIL !!!`, '\x1b[0m');
+                resError = true;
+            }else {
+                // Сразу после открытия сделки должны быть свёрнуты [@aria-expanded="false"]
+                tempValue = await ElementGetAttribute(this.page, 0, `aria-expanded`, this.xButtonAdditionalFields);
+                //await console.log('\x1b[38;5;3m\t', `tempValue -> (${tempValue})`, '\x1b[0m');
+                if (tempValue === ``) {
+                    await console.log('\x1b[38;5;1m\t', `Дополнительные поля => Не Вижу Состояния (Свёрнуны/Развёрнуты)- FAIL !!!`, '\x1b[0m');
+                    resError = true;
+                }else {
+                    if (tempValue===`true`) { //[@aria-expanded="true"] - развёрнуты
+                        await console.log('\x1b[38;5;3m\t', `Warning -> Дополнительные поля => Сразу после открытия сделки должны быть свёрнуты, а они раскрыты <- Warning !`, '\x1b[0m');
+                    //await TempStop(this.page);
+                    }else if(tempValue===`false`){
+                        resOk = await ClickByXPathNum(this.page, 0,this.xButtonAdditionalFields);
+                        if (!resOk) {
+                            await console.log('\x1b[38;5;1m\t', `Дополнительные поля => Клик - FAIL !!!`, '\x1b[0m');
+                            resError = true;
+                        }else {
+                            tempValue = await ElementGetAttribute(this.page, 0, `aria-expanded`, this.xButtonAdditionalFields);
+                            if (tempValue===`false`) {
+                                await console.log('\x1b[38;5;1m\t', `Дополнительные поля => После Клика НЕ РАСКРЫЛИСЬ - FAIL !!!`, '\x1b[0m');
+                                resError = true;
+                            }
+                        }
+                    }else{
+                        await console.log('\x1b[38;5;1m\t', `Дополнительные поля => Неизвестное состояние(${tempValue})-(Свёрнуны/Развёрнуты)? - FAIL !!!`, '\x1b[0m');
+                        resError = true;
+                    }
+                }
+            }
+            if(!resError) {
+                // Инпут "Номер транспортировки"
+                resOk = await SetTextByXPath(this.page, this.xInputNumberTransportation, this.DealData.strNumberTransportation);
+                if (!resOk) {
+                    resError = true;
+                    await console.log('\x1b[38;5;1m\t', `FAIL -> Инпут "Номер транспортировки" SetTextByXPath(${this.xInputNumberTransportation})`, '\x1b[0m');
+                }else {
+                    await console.log('\x1b[38;5;2m\t', `Номер транспортировки (${this.DealData.strNumberTransportation}) - OK`, '\x1b[0m');
+                }
+                // "Номер вкладки" Стрелка вниз для раскрытия списка
+                resOk = await ClickByXPath(this.page, this.xArrowDownInSet);
+                if (!resOk) {
+                    await console.log('\x1b[38;5;1m\t', `FAIL -> "Номер вкладки" Стрелка вниз для раскрытия списка ClickByXPath(${this.xArrowDownInSet})`, '\x1b[0m');
+                    resError = true;
+                }else{
+                    // "Номер вкладки" Раскрытый список
+                    resOk = await WaitForElementIsPresentByXPath(7000, this.page, this.xDropDownInSetActive);
+                    if (!resOk) {
+                        await console.log('\x1b[38;5;1m\t', `FAIL -> "Номер вкладки" Раскрытый список WaitForElementIsPresentByXPath(${this.xDropDownInSetActive})`, '\x1b[0m');
+                    }
+                    // Инпут "Номер вкладки"
+                    resOk = await SetTextByXPath(this.page, this.xInputInSet, this.DealData.strNumberInSet);
+                    if (!resOk) {
+                        await console.log('\x1b[38;5;1m\t', `FAIL -> Инпут "Номер вкладки" SetTextByXPath(${this.xInputInSet})`, '\x1b[0m');
+                        resError = true;
+                    }else {
+                        // Спиннер НЕ Активный в "Номер вкладки"
+                        resOk = await WaitForElementIsPresentByXPath(7000, this.page, this.xInSetSpinnerNotActive);
+                        // "Номер вкладки" в Раскрытом списке Нужная строка + [contains(text(), "${XXX}")] или [text()="${XXX}"]
+                        xTempNeed = this.xDropDownInSetNeedStr + `[text()="${this.DealData.strNumberInSet}"]`;
+                        resOk = await WaitForElementIsPresentByXPath(7000, this.page, xTempNeed);
+                        if (!resOk) {
+                            await console.log('\x1b[38;5;1m\t', `FAIL -> "Номер вкладки" в Раскрытом списке Нужная строка WaitForElementIsPresentByXPath(${xTempNeed})`, '\x1b[0m');
+                            resError = true;
+                        }else{
+                            resOk = await ClickByXPath(this.page, xTempNeed);
+                            if (!resOk) {
+                                await console.log('\x1b[38;5;1m\t', `FAIL -> "Номер вкладки" в Раскрытом списке Нужная строка ClickByXPath(${xTempNeed})`, '\x1b[0m');
+                                resError = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if(resError){
+                await console.log('\x1b[38;5;1m\t', `Дополнительные поля => "Номер транспортировки" и "Номер вкладки" в данных для тестов ОЧИЩЕНЫ И НЕ БУДУТ УЧАСТВОВАТЬ В СЦЕНАРИИ- SKIPPED !!!`, '\x1b[0m');
+                this.DealData.strNumberTransportation = ``;
+                this.DealData.strNumberInSet = ``;
+                throw `\x1b[38;5;1m\t Пропущено - "Номер транспортировки" и "Номер вкладки"`;
+            }
+            strFromPage = await ElementGetValue(this.page, 0, this.xInputNumberTransportation);
+            if(strFromPage !== this.DealData.strNumberTransportation){
+                await console.log('\x1b[38;5;1m\t', `Дополнительные поля => "Номер транспортировки" (${strFromPage}) !== (${this.DealData.strNumberTransportation}) в данных для тестов ОЧИЩЕНО И НЕ БУДЕТ УЧАСТВОВАТЬ В СЦЕНАРИИ - FAIL !!!`, '\x1b[0m');
+                this.DealData.strNumberTransportation = ``;
+                resError = true;
+            }else{ // OK !!!!
+                await console.log('\x1b[38;5;2m\t', `Дополнительные поля => "Номер транспортировки" (${this.DealData.strNumberTransportation}) - OK`, '\x1b[0m');
+            }
+            //await WaitRender(this.page);
+            // strFromPage = await ElementGetValue(this.page, 0, this.xInputInSet);
+            // Инпут "Номер вкладки" Выбранное значение (ElementGetInnerText)
+            strFromPage = await ElementGetInnerText(this.page, 0, this.xInputInSetSelectedValue);
+            if(strFromPage !== this.DealData.strNumberInSet){
+                await console.log('\x1b[38;5;1m\t', `Дополнительные поля => "Номер вкладки" (${strFromPage}) !== (${this.DealData.strNumberInSet}) в данных для тестов ОЧИЩЕНО И НЕ БУДЕТ УЧАСТВОВАТЬ В СЦЕНАРИИ - FAIL !!!`, '\x1b[0m');
+                this.DealData.strNumberInSet = ``;
+                resError = true;
+            }else { // OK !!!!
+                await console.log('\x1b[38;5;2m\t', `Дополнительные поля => "Номер вкладки" (${this.DealData.strNumberInSet}) - OK`, '\x1b[0m');
+            }
+            if(resError){
+                throw `\x1b[38;5;1m\t Пропущено - "Номер транспортировки" и "Номер вкладки"`;
+            }
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterAdditionalFields`);
+            return false;
+        }
+    }//async EnterAdditionalFields() // Вводим Дополнительные поля
     //----------------------------------------
     async EnterTransporterCompany() {
         let resOk, resOk2;
@@ -844,7 +1205,7 @@ class Deal {
             // Линк на Компанию перевозчика
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xLinkTransporterCompany);
             if (!resOk) {
-                throw `FAIL => НЕ вижу Линк на Компанию перевозчика WaitForElementIsPresentByXPath(${this.xLinkTransporterCompany})`;
+                throw `FAIL => НЕ вижу Линк на Компанию Перевозчика WaitForElementIsPresentByXPath(${this.xLinkTransporterCompany})`;
             }
             // await WaitRender(this.page);
             // await this.page.waitFor(1000);
@@ -855,7 +1216,7 @@ class Deal {
             //await console.log(`xPath=${this.xNoClientsContractDisabled}`);
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xNoTransporterContractDisabled);
             if (!resOk) {
-                let TxtErr = `FAIL => У Компании перевозчика отсутствует Договор !!! \n`;
+                let TxtErr = `FAIL => У Компании Перевозчика отсутствует Договор !!! \n`;
                 TxtErr+= `FAIL => НЕ вижу ПРОПАВШЕЙ надписи "Создайте хотя бы 1 договор для выбора юр. лица!" \n`;
                 TxtErr+= `FAIL => WaitForElementIsPresentByXPath(${this.xNoTransporterContractDisabled})`;
                 throw TxtErr;
@@ -911,9 +1272,9 @@ class Deal {
             }// if (!resOk) { // если не Автовыбралась Наша компания проверим ДропДаун
             let tempHref = await ElementGetHref(this.page, 0 , this.xLinkTransporterCompany);
             if (tempHref === ``){
-                await console.log('\x1b[38;5;1m\t', `Линк на Компанию перевозчика (${this.xLinkTransporterCompany}) - FAIL !!!`, '\x1b[0m');
+                await console.log('\x1b[38;5;1m\t', `Линк на Компанию Перевозчика (${this.xLinkTransporterCompany}) - FAIL !!!`, '\x1b[0m');
             }else{
-                await console.log('\x1b[38;5;2m\t', `Линк на Компанию перевозчика (${tempHref}) - OK`, '\x1b[0m');
+                await console.log('\x1b[38;5;2m\t', `Линк на Компанию Перевозчика (${tempHref}) - OK`, '\x1b[0m');
             }
 
             await console.log('\x1b[38;5;2m\t', `Компания Перевозчика (${this.DealData.strTransporterCompanyName}) - OK`, '\x1b[0m');
@@ -1240,6 +1601,996 @@ class Deal {
             return false;
         }
     }//async EnterTrailer()
+    //----------------------------------------
+    async EnterAllAddresses() {
+        let resOk;
+        let QAdr = 0;
+        let N = 0;
+        try {
+            // Вводим Адрес Загрузки
+            // Кнопка "Изменить" в "Адрес и дата загрузки"
+            resOk = await ClickByXPath(this.page, this.xButtonChangeLoading);
+            if (!resOk) {
+                throw `FAIL => Кнопка "Изменить" в "Адрес и дата загрузки" ClickByXPath(${this.xButtonChangeLoading})`;
+            }
+            // Проверка Модалки "Маршрут"
+            resOk = await this.CheckModalMarshrut();
+            if (!resOk) {
+                throw `FAIL => Проверка Модалки "Маршрут" this.CheckModalMarshrut();`;
+            }
+            // Ввод Адресов Загрузки
+            QAdr = this.DealData.PointsLoading.length;
+            for(N = 0; N < QAdr; N++ ) {
+                // Вводим Одну Загрузку (Num)
+                resOk = await this.EnterOneLoading(N);
+                if (!resOk) {
+                    throw `FAIL => Вводим Одну Загрузку EnterOneLoading(${N})`;
+                }
+            }
+            // Ввод Адресов Выгрузки
+            QAdr = this.DealData.PointsUnLoading.length;
+            for(N = 0; N < QAdr; N++ ) {
+                // Вводим Одну Выгрузку (Num)
+                resOk = await this.EnterOneUnLoading(N);
+                if (!resOk) {
+                    throw `FAIL => Вводим Одну Выгрузку EnterOneUnLoading(${N})`;
+                }
+            }
+            // Ждём и Жмём Сохранить Адреса
+            // Кнопка "Сохранить адреса" Active
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xButtonSaveAddressesActive);
+            if (!resOk) {
+                throw `FAIL => Кнопка "Сохранить адреса" Active WaitForElementIsPresentByXPath(${this.xButtonSaveAddressesActive})`;
+            }
+            resOk = await ClickByXPath(this.page, this.xButtonSaveAddressesActive);
+            if (!resOk) {
+                throw `FAIL => Кнопка "Сохранить адреса" Active ClickByXPath(${this.xButtonSaveAddressesActive})`;
+            }
+            await WaitRender(this.page);
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterAllAddresses`);
+            return false;
+        }
+    }//async EnterAllAddresses()
+    //----------------------------------------
+    //----------------------------------------
+    async EnterOneLoading(Num) {
+        let resOk;let tempStr;let tempXP;
+        try {
+            // Вводим Адрес Загрузки
+
+            if(Num===0){ // Первая Загрузка
+                resOk = await ClickByXPathNum(this.page, Num, this.xMultiSelectLoading);
+                if (!resOk) {
+                    throw `FAIL => Инпут "Загрузка" (${Num}) ClickByXPath(${this.xMultiSelectLoading})`;
+                }
+                // ДропДаун "Загрузка" раскрытый
+                resOk = await WaitForElementIsPresentByXPath(1000, this.page, this.xDropDownLoadingReady);
+                if (!resOk) {
+                    throw `FAIL => ДропДаун "Загрузка"(${Num}) раскрытый WaitForElementIsPresentByXPath(${this.xDropDownLoadingReady})`;
+                }
+                // Ввод Адреса Загрузки
+                tempStr = this.DealData.PointsLoading[Num].PointLoading.strAddressFOXfromGoogle;
+                resOk = await SetTextByXPathNum(this.page, Num, this.xInputLoading, tempStr);
+                if (!resOk) {
+                    throw `FAIL => Инпут "Загрузка" (Num) SetTextByXPathNum(${Num})(${this.xInputLoading})`;
+                }
+                // Нужная строка ДропДаун "Загрузка" + [contains(text(),"${XXX}")]
+                tempXP = this.xDropDownLoadingNeedStr + `[contains(text(),"${tempStr}")]`;
+                resOk = await WaitForElementIsPresentByXPath(1000, this.page, tempXP);
+                if (!resOk) {
+                    throw `FAIL => Нужная строка ДропДаун "Загрузка"(${Num}) WaitForElementIsPresentByXPath(${tempXP})`;
+                }
+                resOk = await ClickByXPath(this.page, tempXP);
+                if (!resOk) {
+                    throw `FAIL => Нужная строка ДропДаун "Загрузка"(${Num}) ClickByXPath(${tempXP})`;
+                }
+            }else { // if(Num=0)
+                // Если не перввая, нужно нажать на кнопку "Добавить загрузку"
+                // Кнопка "Добавить загрузку"
+                resOk = await ClickByXPath(this.page, this.xButtonAddLoading);
+                if (!resOk) {
+                    throw `FAIL => Кнопка "Добавить загрузку" ClickByXPath(${this.xButtonAddLoading})`;
+                }
+                //Ждём пока появится "Добавленная Загрузка (Num)"
+                // Инпут "Загрузка" (Num)
+                resOk = await WaitForElementIsPresentByXPathNum(1000, Num, this.page, this.xMultiSelectLoading);
+                if (!resOk) {
+                    throw `FAIL => Инпут "Загрузка" (${Num}) WaitForElementIsPresentByXPathNum(${this.xMultiSelectLoading})`;
+                }
+                // Мувер "Загрузка" (Num)
+                // Num = 2;
+                // Перетаскивание Последней Загрузки
+                let SS = `#deal-address-control > div > main > div > div > div:nth-child(1) > div > div > div:nth-child(3) > div.options > div.mover > svg`;
+                let DS = `#deal-address-control > div > main > div > div > div:nth-child(1) > div > div > div:nth-child(2) > div.options > div.mover > svg`;
+                resOk = await dragAndDrop(this.page, SS, DS);
+                if (!resOk) {
+                    throw `FAIL => Загрузка Перетаскивание Последней(${Num}) dragAndDrop(${this.xButtonAddLoading})`;
+                } else {
+                    await console.log('\x1b[38;5;2m\t', `Загрузка Перетаскивание Последней(${Num}) - OK`, '\x1b[0m');
+                }
+                //*[@id="deal-address-control"]/div/main/div/div/div[1]/div/div/div[2]/div[1]/div[1]
+                await WaitRender(this.page);
+                // раскрыть Дропдаун
+                resOk = await ClickByXPathNum(this.page, Num, this.xMultiSelectLoading);
+                if (!resOk) {
+                    throw `FAIL => Инпут "Загрузка" (${Num}) ClickByXPath(${this.xMultiSelectLoading})`;
+                }
+                // ДропДаун "Загрузка" раскрытый
+                resOk = await WaitForElementIsPresentByXPath(1000, this.page, this.xDropDownLoadingReady);
+                if (!resOk) {
+                    throw `FAIL => ДропДаун "Загрузка"(${Num}) раскрытый WaitForElementIsPresentByXPath(${this.xDropDownLoadingReady})`;
+                }
+
+                // как искать по локациям Компании или по всей базе данных
+                if (!this.DealData.PointsLoading[Num].PointLoading.fromCompany) {
+                    // Поиск по базе данных
+                    // В "Загрузка" Дропдаун пункт "Поиск по базе данных"
+                    resOk = await ClickByXPathNumWithScroll(1000, this.page, 0, this.xLoadingButtonFindInBase);
+                    if (!resOk) {
+                        throw `FAIL => В "Загрузка" Дропдаун пункт "Поиск по базе данных"(${Num}) ClickByXPathNumWithScroll(${this.xLoadingButtonFindInBase})`;
+                    }
+                    // Вводим адрес локации
+                    tempStr = this.DealData.PointsLoading[Num].PointLoading.strAddressFOXfromGoogle;
+                    resOk = await SetTextByXPathNum(this.page, Num, this.xInputLoading, tempStr);
+                    if (!resOk) {
+                        throw `FAIL => Инпут "Загрузка" (${Num}) SetTextByXPathNum(${this.xMultiSelectLoading})`;
+                    }
+                    // Ждём пока найдёт
+                    tempXP = this.xDropDownLoadingNeedStr + `[contains(text(),"${tempStr}")]`;
+                    resOk = await WaitForElementIsPresentByXPath(7000, this.page, tempXP);
+                    if (!resOk) {
+                        throw `FAIL => Нужная строка ДропДаун "Загрузка"(${Num}) WaitForElementIsPresentByXPath(${tempXP})`;
+                    }
+
+                    resOk = await ClickByXPath(this.page, tempXP);
+                    if (!resOk) {
+                        throw `FAIL => Нужная строка ДропДаун "Загрузка"(${Num}) ClickByXPath(${tempXP})`;
+                    }
+
+                }// if (!this.DealData.PointsLoading[Num].PointLoading.fromCompany){
+                // await this.page.waitFor(20100);
+            } // if(Num=0) else
+            await console.log('\x1b[38;5;2m\t', `Загрузка(${Num}) Адрес(${tempStr}) - OK`, '\x1b[0m');
+            await WaitRender(this.page);
+            // Ввод Дат ---------------------------------
+
+            // Дата Загрузки (Num)
+            // const {DatePicker} = require("../sub_objects/date_picker_obj.js");
+            // let NewDatePicker = new DatePicker(this.browser, this.page);
+            // resOk = await NewDatePicker.OpenDatePicker(Num, this.xDateLoading);
+            // resOk = await NewDatePicker.ClickNextOfCurrentDate(1);
+            // let strHours =   `` + await randomInt(1, 23);
+            // let strMinutes = `` + await randomInt(1, 59);
+            // await console.log(`strHours=(${strHours}), strMinutes=(${strMinutes})`);
+            // resOk = await NewDatePicker.SetTime(strHours, strMinutes);
+
+            this.DealData.PointsLoading[Num].PointLoading.strInDate =  await this.SetDateTime(Num, this.xDateLoading);
+            this.DealData.PointsLoading[Num].PointLoading.strOutDate = await this.SetDateTime(Num, this.xDateExitLoading);
+            await console.log('\x1b[38;5;2m\t', `Загрузка(${Num}) Дата In (${this.DealData.PointsLoading[Num].PointLoading.strInDate}) - OK`, '\x1b[0m');
+            await console.log('\x1b[38;5;2m\t', `Загрузка(${Num}) Дата Out(${this.DealData.PointsLoading[Num].PointLoading.strOutDate}) - OK`, '\x1b[0m');
+
+
+            //
+            // await TempStop(this.page, `--------ДАТА--------`);
+            //
+            // //------------------------------
+            // resOk = await ClickByXPathNum(this.page, Num, this.xDateLoading);
+            // if (!resOk) {
+            //     throw `FAIL => Дата Загрузки (${Num}) ClickByXPathNum(${this.xDateLoading})`;
+            // }
+            // // Раскрытый Дейт Пикер "Дата загрузки"
+            // resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xDateLoadingPickerActive);
+            // if (!resOk) {
+            //     throw `FAIL => Раскрытый Дейт Пикер "Дата загрузки"(${Num}) WaitForElementIsPresentByXPath(${this.xDateLoadingPickerActive})`;
+            // }
+            // // Выезд с загрузки (Num)
+            // resOk = await ClickByXPathNum(this.page, Num, this.xDateExitLoading);
+            // if (!resOk) {
+            //     throw `FAIL => Выезд с загрузки (${Num}) ClickByXPathNum(${this.xDateExitLoading})`;
+            // }
+            // // Раскрытый Дейт Пикер "Выезд с загрузки"
+            // resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xDateExitLoadingPickerActive);
+            // if (!resOk) {
+            //     throw `FAIL => Раскрытый Дейт Пикер "Дата загрузки"(${Num}) WaitForElementIsPresentByXPath(${this.xDateExitLoadingPickerActive})`;
+            // }
+            // // Клик в любом месте - Дата Автовыберется
+            // // Заголовок "Маршрут"
+            // resOk = await ClickByXPath(this.page, this.xHeaderMarshrut);
+            // if (!resOk) {
+            //     throw `FAIL => Клик в любом месте (Заголовок "Маршрут") для Автовыбора даты (${Num}) ClickByXPath(${this.xHeaderMarshrut})`;
+            // }
+            await WaitRender(this.page);
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterOneLoading(${Num})`);
+            return false;
+        }
+    }//async EnterOneLoading(Num)
+    //----------------------------------------
+    async SetDateTime(Num, xPath) {
+        let resOk;
+        let Value = ``;
+        try {
+            const {DatePicker} = require("../sub_objects/date_picker_obj.js");
+            let NewDatePicker = new DatePicker(this.browser, this.page);
+            resOk = await NewDatePicker.OpenDatePicker(Num, xPath);
+            this.CounterCallDate++;
+            resOk = await NewDatePicker.ClickNextOfCurrentDate(this.CounterCallDate);
+            let strHours =   `` + await randomInt(1, 23);
+            let strMinutes = `` + await randomInt(1, 59);
+            // await console.log(`strHours=(${strHours}), strMinutes=(${strMinutes})`);
+            resOk = await NewDatePicker.SetTime(strHours, strMinutes);
+            Value = NewDatePicker.Value;
+
+            return Value;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in TemplateTemp`);
+            return ``;
+        }
+    }//async TemplateTemp()
+    //----------------------------------------
+    async EnterOneUnLoading(Num) { // ВЫГРУЗКА
+        let resOk;let tempStr;let tempXP;
+        try {
+            // Вводим Адрес Выгрузки
+
+            if(Num===0){ // Первая Выгрузка
+                resOk = await ClickByXPathNum(this.page, Num, this.xMultiSelectUnLoading);
+                if (!resOk) {
+                    throw `FAIL => Инпут "Выгрузка" (${Num}) ClickByXPath(${this.xMultiSelectUnLoading})`;
+                }
+                // ДропДаун "Выгрузка" раскрытый
+                resOk = await WaitForElementIsPresentByXPath(1000, this.page, this.xDropDownUnLoadingReady);
+                if (!resOk) {
+                    throw `FAIL => ДропДаун "Выгрузка"(${Num}) раскрытый WaitForElementIsPresentByXPath(${this.xDropDownUnLoadingReady})`;
+                }
+                // Ввод Адреса Выгрузки
+                tempStr = this.DealData.PointsUnLoading[Num].PointUnLoading.strAddressFOXfromGoogle;
+                resOk = await SetTextByXPathNum(this.page, Num, this.xInputUnLoading, tempStr);
+                if (!resOk) {
+                    throw `FAIL => Инпут "Выгрузка" (Num) SetTextByXPathNum(${Num})(${this.xInputUnLoading})`;
+                }
+                // Нужная строка ДропДаун "Выгрузка" + [contains(text(),"${XXX}")]
+                tempXP = this.xDropDownUnLoadingNeedStr + `[contains(text(),"${tempStr}")]`;
+                resOk = await WaitForElementIsPresentByXPath(4000, this.page, tempXP);// <-Поиск по Базе мб ДОООлго
+                if (!resOk) {
+                    throw `FAIL => Нужная строка ДропДаун "Выгрузка"(${Num}) WaitForElementIsPresentByXPath(${tempXP})`;
+                }
+                resOk = await ClickByXPath(this.page, tempXP);
+                if (!resOk) {
+                    throw `FAIL => Нужная строка ДропДаун "Выгрузка"(${Num}) ClickByXPath(${tempXP})`;
+                }
+            }else { // if(Num=0)
+                // Если не перввая, нужно нажать на кнопку "Добавить выгрузку"
+                // Кнопка "Добавить выгрузку"
+                resOk = await ClickByXPath(this.page, this.xButtonAddUnLoading);
+                if (!resOk) {
+                    throw `FAIL => Кнопка "Добавить выгрузку" ClickByXPath(${this.xButtonAddUnLoading})`;
+                }
+                //Ждём пока появится "Добавленная Выгрузка (Num)"
+                // Инпут "Выгрузка" (Num)
+                resOk = await WaitForElementIsPresentByXPathNum(1000, Num, this.page, this.xMultiSelectUnLoading);
+                if (!resOk) {
+                    throw `FAIL => Инпут "Выгрузка" (${Num}) WaitForElementIsPresentByXPathNum(${this.xMultiSelectUnLoading})`;
+                }
+                // раскрыть Дропдаун
+                resOk = await ClickByXPathNum(this.page, Num, this.xMultiSelectUnLoading);
+                if (!resOk) {
+                    throw `FAIL => Инпут "Выгрузка" (${Num}) ClickByXPath(${this.xMultiSelectUnLoading})`;
+                }
+                // ДропДаун "Выгрузка" раскрытый
+                resOk = await WaitForElementIsPresentByXPath(1000, this.page, this.xDropDownUnLoadingReady);
+                if (!resOk) {
+                    throw `FAIL => ДропДаун "Выгрузка"(${Num}) раскрытый WaitForElementIsPresentByXPath(${this.xDropDownUnLoadingReady})`;
+                }
+
+                // как искать по локациям Компании или по всей базе данных
+                if (!this.DealData.PointsUnLoading[Num].PointUnLoading.fromCompany){
+                    // Поиск по базе данных
+                    // В "Выгрузка" Дропдаун пункт "Поиск по базе данных"
+                    resOk = await ClickByXPathNumWithScroll(1000, this.page,0, this.xUnLoadingButtonFindInBase);
+                    if (!resOk) {
+                        throw `FAIL => В "Выгрузка" Дропдаун пункт "Поиск по базе данных"(${Num}) ClickByXPathNumWithScroll(${this.xUnLoadingButtonFindInBase})`;
+                    }
+                    // Вводим адрес локации
+                    tempStr = this.DealData.PointsUnLoading[Num].PointUnLoading.strAddressFOXfromGoogle;
+                    resOk = await SetTextByXPathNum(this.page, Num, this.xInputUnLoading, tempStr);
+                    if (!resOk) {
+                        throw `FAIL => Инпут "Загрузка" (${Num}) SetTextByXPathNum(${this.xInputUnLoading})`;
+                    }
+                    // Ждём пока найдёт
+                    tempXP = this.xDropDownUnLoadingNeedStr + `[contains(text(),"${tempStr}")]`;
+                    resOk = await WaitForElementIsPresentByXPath(4000, this.page, tempXP);// <-Поиск по Базе мб ДОООлго
+                    if (!resOk) {
+                        throw `FAIL => Нужная строка ДропДаун "Выгрузка"(${Num}) WaitForElementIsPresentByXPath(${tempXP})`;
+                    }
+
+                    resOk = await ClickByXPath(this.page, tempXP);
+                    if (!resOk) {
+                        throw `FAIL => Нужная строка ДропДаун "Выгрузка"(${Num}) ClickByXPath(${tempXP})`;
+                    }
+
+                }// if (!this.DealData.PointsUnLoading[Num].PointUnLoading.fromCompany){
+                // await this.page.waitFor(20100);
+            } // if(Num=0) else
+            await console.log('\x1b[38;5;2m\t', `Выгрузка(${Num}) Адрес(${tempStr}) - OK`, '\x1b[0m');
+            await WaitRender(this.page);
+            // Ввод Дат
+            // Дата Выгрузки (Num)
+            this.DealData.PointsUnLoading[Num].PointUnLoading.strInDate =  await this.SetDateTime(Num, this.xDateUnLoading);
+            this.DealData.PointsUnLoading[Num].PointUnLoading.strOutDate = await this.SetDateTime(Num, this.xDateExitUnLoading);
+            await console.log('\x1b[38;5;2m\t', `Выгрузка(${Num}) Дата In (${this.DealData.PointsUnLoading[Num].PointUnLoading.strInDate}) - OK`, '\x1b[0m');
+            await console.log('\x1b[38;5;2m\t', `Выгрузка(${Num}) Дата Out(${this.DealData.PointsUnLoading[Num].PointUnLoading.strOutDate}) - OK`, '\x1b[0m');
+            // ----------
+            // resOk = await ClickByXPathNum(this.page, Num, this.xDateUnLoading);
+            // if (!resOk) {
+            //     throw `FAIL => Дата Загрузки (${Num}) ClickByXPathNum(${this.xDateUnLoading})`;
+            // }
+            // // Раскрытый Дейт Пикер "Дата выгрузки"
+            // resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xDateUnLoadingPickerActive);
+            // if (!resOk) {
+            //     throw `FAIL => Раскрытый Дейт Пикер "Дата выгрузки"(${Num}) WaitForElementIsPresentByXPath(${this.xDateUnLoadingPickerActive})`;
+            // }
+            // // Выезд с выгрузки (Num)
+            // resOk = await ClickByXPathNum(this.page, Num, this.xDateExitUnLoading);
+            // if (!resOk) {
+            //     throw `FAIL => Выезд с выгрузки (${Num}) ClickByXPathNum(${this.xDateExitUnLoading})`;
+            // }
+            // // Раскрытый Дейт Пикер "Выезд с выгрузки"
+            // resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xDateExitUnLoadingPickerActive);
+            // if (!resOk) {
+            //     throw `FAIL => Раскрытый Дейт Пикер "Дата выгрузки"(${Num}) WaitForElementIsPresentByXPath(${this.xDateExitUnLoadingPickerActive})`;
+            // }
+            // // Клик в любом месте - Дата Автовыберется
+            // // Заголовок "Маршрут"
+            // resOk = await ClickByXPath(this.page, this.xHeaderMarshrut);
+            // if (!resOk) {
+            //     throw `FAIL => Клик в любом месте (Заголовок "Маршрут") для Автовыбора даты (${Num}) ClickByXPath(${this.xHeaderMarshrut})`;
+            // }
+            await WaitRender(this.page);
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterOneUnLoading(${Num})`);
+            return false;
+        }
+    }//async EnterOneUnLoading(Num)
+// --------------------------------------------------
+    async EnterComments() {
+        let resOk;
+        try {
+            //  Комментарий к загрузке
+            resOk = await ClickByXPath(this.page, this.xButtonCommentLoadind);
+            if (!resOk) {
+                throw `FAIL => Комментарий к загрузке  ClickByXPath(${this.xButtonCommentLoadind})`;
+            }
+            // Текст Ареа "Комментарий к загрузке" Раскрытый
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xTextAreaCommentLoadind);
+            if (!resOk) {
+                throw `FAIL => Текст Ареа "Комментарий к загрузке" Раскрытый WaitForElementIsPresentByXPath(${this.xTextAreaCommentLoadind})`;
+            }
+            resOk = await ClickByXPath(this.page, this.xTextAreaCommentLoadind);
+            if (!resOk) {
+                throw `FAIL => Текст Ареа "Комментарий к загрузке" Раскрытый ClickByXPath(${this.xTextAreaCommentLoadind})`;
+            }
+            this.DealData.strCommentLoadind = `Загрузка в ` + this.DealData.PointsLoading[0].PointLoading.strAddressFOXfromGoogle;
+            // Ввод Текста в "Комментарий к загрузке"
+            resOk = await SetTextByXPath(this.page, this.xTextAreaCommentLoadind,this.DealData.strCommentLoadind);
+            if (!resOk) {
+                throw `FAIL => Ввод Текста в "Комментарий к загрузке" SetTextByXPath(${this.xTextAreaCommentLoadind})`;
+            }
+            await console.log('\x1b[38;5;2m\t', `Комментарий к загрузке (${this.DealData.strCommentLoadind}) - OK`, '\x1b[0m');
+
+            //  Комментарий к выгрузке
+            resOk = await ClickByXPath(this.page, this.xButtonCommentUnLoadind);
+            if (!resOk) {
+                throw `FAIL => Комментарий к выгрузке  ClickByXPath(${this.xButtonCommentUnLoadind})`;
+            }
+            // Текст Ареа "Комментарий к выгрузке" Раскрытый
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xTextAreaCommentUnLoadind);
+            if (!resOk) {
+                throw `FAIL => Текст Ареа "Комментарий к выгрузке" Раскрытый WaitForElementIsPresentByXPath(${this.xTextAreaCommentUnLoadind})`;
+            }
+            resOk = await ClickByXPath(this.page, this.xTextAreaCommentUnLoadind);
+            if (!resOk) {
+                throw `FAIL => Текст Ареа "Комментарий к выгрузке" Раскрытый ClickByXPath(${this.xTextAreaCommentUnLoadind})`;
+            }
+            this.DealData.strCommentUnLoadind = `Выгрузка в ` + this.DealData.PointsUnLoading[0].PointUnLoading.strAddressFOXfromGoogle;
+            // Ввод Текста в "Комментарий к выгрузке"
+            resOk = await SetTextByXPath(this.page, this.xTextAreaCommentUnLoadind,this.DealData.strCommentUnLoadind);
+            if (!resOk) {
+                throw `FAIL => Ввод Текста в "Комментарий к выгрузке" SetTextByXPath(${this.xTextAreaCommentUnLoadind})`;
+            }
+            await console.log('\x1b[38;5;2m\t', `Комментарий к выгрузке (${this.DealData.strCommentUnLoadind}) - OK`, '\x1b[0m');
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterComments`);
+            return false;
+        }
+    }//async EnterComments()
+     //----------------------------------------
+    async CheckModalMarshrut() {
+        let resOk;
+        let strError = ``;
+        try {
+            await WaitRender(this.page);
+            // Заголовок "Маршрут"
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xHeaderMarshrut);
+            if (!resOk) {
+                strError+=`Заголовок "Маршрут"\n`;
+            }
+            // Кнопка "Добавить загрузку"
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xButtonAddLoading);
+            if (!resOk) {
+                strError+=`Кнопка "Добавить загрузку"\n`;
+            }
+            // Кнопка "Добавить выгрузку"
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xButtonAddUnLoading);
+            if (!resOk) {
+                strError+=`Кнопка "Добавить выгрузку"\n`;
+            }
+            // Кнопка "Сохранить адреса"
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xButtonSaveAddresses);
+            if (!resOk) {
+                strError+=`Кнопка "Сохранить адреса"\n`;
+            }
+            if (strError !== ``){
+                throw `FAIL => \n ${strError}`;
+            }
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in CheckModalMarshrut`);
+            return false;
+        }
+    }//async CheckModalMarshrut()
+    //----------------------------------------
+    async EnterResponsibleAndLogist() {
+        let resOk;let tempXP;
+        try {
+            // Вводим Ответственного и Логиста
+            // "Ответственный по фоксу" Стрелка Вниз для раскрытия списка
+            resOk = await ClickByXPath(this.page, this.xResponsibleArrowDown);
+            if (!resOk) {
+                throw `FAIL => "Ответственный по фоксу" Стрелка Вниз для раскрытия списка ClickByXPath(${this.xResponsibleArrowDown})`;
+            }
+            // подождать пока раскроется ДропДаун
+            // Раскрытый ДропДаун "Ответственный по фоксу"
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xDropDownResponsible);
+            if (!resOk) {
+                throw `FAIL => Раскрытый ДропДаун "Ответственный по фоксу" WaitForElementIsPresentByXPath(${this.xDropDownResponsible})`;
+            }
+            // Инпут "Ответственный по фоксу"
+            resOk = await SetTextByXPath(this.page, this.xInputResponsible, this.DealData.strResponsibleFOX);
+            if (!resOk) {
+                throw `FAIL => Инпут "Ответственный по фоксу" SetTextByXPath(${this.xInputResponsible})`;
+            }
+            // Нужная строка ДропДаун "Ответственный по фоксу" + [contains(text(),"${XXX}")]
+            tempXP = this.xDropDownResponsibleNeedStr + `[contains(text(),"${this.DealData.strResponsibleFOX}")]`;
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, tempXP);
+            if (!resOk) {
+                throw `FAIL => Нужная строка ДропДаун "Ответственный по фоксу" WaitForElementIsPresentByXPath(${tempXP})`;
+            }
+            resOk = await ClickByXPath( this.page, tempXP);
+            if (!resOk) {
+                throw `FAIL => Нужная строка ДропДаун "Ответственный по фоксу" ClickByXPath(${tempXP})`;
+            }
+            // Подождать пока закроется Дропдаун
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xDropDownResponsibleNotDisplayed);
+            if (!resOk) {
+                throw `FAIL => Подождать пока закроется Дропдаун "Ответственный по фоксу" WaitForElementIsPresentByXPath(${this.xDropDownResponsibleNotDisplayed})`;
+            }
+            await console.log('\x1b[38;5;2m\t', `Ответственный по фоксу (${this.DealData.strResponsibleFOX}) `, `- OK !`, '\x1b[0m');
+            //---------
+            // "Логист" Стрелка Вниз для раскрытия списка
+            resOk = await ClickByXPath(this.page, this.xLogistArrowDown);
+            if (!resOk) {
+                throw `FAIL => "Логист" Стрелка Вниз для раскрытия списка ClickByXPath(${this.xLogistArrowDown})`;
+            }
+            // подождать пока раскроется ДропДаун
+            // Раскрытый ДропДаун "Логист"
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xDropDownLogist);
+            if (!resOk) {
+                throw `FAIL => Раскрытый ДропДаун "Логист" WaitForElementIsPresentByXPath(${this.xDropDownLogist})`;
+            }
+            // Инпут "Логист"
+            resOk = await SetTextByXPath(this.page, this.xInputLogist, this.DealData.strLogist);
+            if (!resOk) {
+                throw `FAIL => Инпут "Логист" SetTextByXPath(${this.xInputLogist})`;
+            }
+            // Нужная строка ДропДаун "Логист" + [contains(text(),"${XXX}")]
+            tempXP = this.xDropDownLogistNeedStr + `[contains(text(),"${this.DealData.strLogist}")]`;
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, tempXP);
+            if (!resOk) {
+                throw `FAIL => Нужная строка ДропДаун "Логист" WaitForElementIsPresentByXPath(${tempXP})`;
+            }
+            resOk = await ClickByXPath( this.page, tempXP);
+            if (!resOk) {
+                throw `FAIL => Нужная строка ДропДаун "Логист" ClickByXPath(${tempXP})`;
+            }
+            // Подождать пока закроется Дропдаун
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xDropDownLogistNotDisplayed);
+            if (!resOk) {
+                throw `FAIL => Подождать пока закроется Дропдаун "Логист" WaitForElementIsPresentByXPath(${this.xDropDownLogistNotDisplayed})`;
+            }
+            await console.log('\x1b[38;5;2m\t', `Логист (${this.DealData.strLogist}) `, `- OK !`, '\x1b[0m');
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in EnterResponsibleAndLogist`);
+            return false;
+        }
+    }//async EnterResponsibleAndLogist()
+    //----------------------------------------
+    async SaveDealAndWaitTableDeals() { // Сохраняем Сделку и ждём отрисовки таблицы сделок
+        let resOk;
+        let strWarning = ``;
+        try { // Сохраняем Сделку
+            // 1)нажать на "Сохранить и остаться", что б получить ID сделки
+            // ) если ошибка Оригинала Договора
+            // 2) выцепить ID сделки
+            // 3)нажать на "Сохранить"
+            // 4)чекнуть отрисовку таблицы сделок
+            // Сделка Кнопка "Сохранить и остаться" Активная
+            resOk = await WaitForElementIsPresentByXPath(7000, this.page, this.xButtonDealSaveAndStayActive);
+            if (!resOk) {
+                throw `FAIL => Сделка Кнопка "Сохранить и остаться" Активная WaitForElementIsPresentByXPath(${this.xButtonDealSaveAndStayActive})`;
+            }
+            // await this.page.waitFor(2000);
+            // resOk = await ElementSetAttribute(this.page,0, `disabled`, `disabled`, this.xButtonDealSaveActive);
+            // await console.log(`resOk=${resOk}`);
+            // await this.page.waitFor(2000);
+
+//             // секция Перевозчика "Создать заявку"
+//             resOk = await ClickByXPath(this.page, this.xCreateOrder);
+//             if (!resOk) {
+//                 throw `FAIL => секция Перевозчика "Создать заявку" ClickByXPath(${this.xCreateOrder})`;
+//             }
+//             // Заголовок "Создание заявки с перевозчиком"
+//             resOk = await WaitForElementIsPresentByXPath(7000, this.page, this.xHeaderCreateOrderTransporter);
+//             if (!resOk) {
+//                 throw `FAIL => Заголовок "Создание заявки с перевозчиком" WaitForElementIsPresentByXPath(${this.xHeaderCreateOrderTransporter})`;
+//             }
+//             // "Создание заявки с перевозчиком" кнопка "Создать" Активная
+//             resOk = await WaitForElementIsPresentByXPath(7000, this.page, this.xButtonCreateOrderActive);
+//             if (!resOk) {
+//                 throw `FAIL => "Создание заявки с перевозчиком" кнопка "Создать" Активная WaitForElementIsPresentByXPath(${this.xButtonCreateOrderActive})`;
+//             }
+//             resOk = await ClickByXPath(this.page, this.xButtonCreateOrderActive);
+//             if (!resOk) {
+//                 throw `FAIL => "Создание заявки с перевозчиком" кнопка "Создать" Активная ClickByXPath(${this.xButtonCreateOrderActive})`;
+//             }
+//             // https://question-it.com/questions/130241/kuklovod-kak-zhdat-tolko-pervyj-otvet-html
+//             await  console.log(`Заявка Click Save`);
+//             //await this.page.setRequestInterception(true);
+//             await this.page.on('response', async (response) => {
+//                 // if (response.url().includes("https://api.maerskline.com/track/")) {
+//                 try {
+//                     if (response.url().includes("https://dev.api.cfo.tl.ee/api/v2/deal")) {
+//                         let resultJ = await response.json();
+//                         await console.log(`-1-----------------------`);
+//                         await console.log(resultJ); // JSON RESULT OK
+//                         await console.log(`-2-----------------------`);
+//                         // здесь перехватил результат, ВСЕ ОК
+//                         //await page.evaluate(() => window.stop())
+//                     }
+//                 }catch (e) {
+//
+//                 }
+//             });
+//
+//             //
+//             // const [response] = await Promise.all([
+//             //  ClickByXPath(this.page, this.xButtonCreateOrderActive),
+//             //     // page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
+//             //     // this.page.waitForNavigation('networkidle2') // The promise resolves after navigation has finished after no more than 2 request left
+//             //     WaitUntilXPathExist(this.page, 7000, this.xHeaderCreateOrderTransporter)
+//             // ]);
+//             // await console.log(`-------------\n${response}\n--------------------`);
+//             // let resultJson = await response.json();
+//             // await console.log(`-------------\n${resultJson}\n--------------------`);
+//
+//             resOk = await WaitUntilXPathExist(this.page, 17000, this.xHeaderCreateOrderTransporter);
+//             if (!resOk) {
+//                 throw `FAIL => Модалка не закрылась -> Заголовок "Создание заявки с перевозчиком" WaitUntilXPathExist(${this.xButtonCreateOrderActive})`;
+//             }
+//
+//
+//
+// await console.log(`Заявка ОК`);
+//             //await TempStop(this.page);
+            //--------
+            // Сатус Сделки (InnerText) тут ещё рано
+            // let tempStrID = await this.GetDealStatusID();
+
+
+            let tempBoolean = true;
+            let noVehicleWeight = 0;
+            let noTrailerWeight = 0;
+// labelLoop1:
+   while(tempBoolean){
+       tempBoolean = false;
+
+    // resOk = await ClickByXPath(this.page, this.xButtonDealSaveAndStayActive);
+    // if (!resOk) {
+    //     throw `FAIL => Сделка Кнопка "Сохранить и остаться" Активная ClickByXPath(${this.xButtonDealSaveAndStayActive})`;
+    // }
+
+       // await console.log(`-3000-`);
+       // await this.page.waitFor(3000);
+       g_tempDataFromEventListener_id = ``;
+       await console.log('\x1b[38;5;3m\t', `Сохраняем Сделку..................`, '\x1b[0m');
+
+       resOk = await ResponseListener(this.page, `${g_BackCfoFoxURL}/api/v2/deal`, true);
+       resOk = await ClickByXPath(this.page, this.xButtonDealSaveActive);
+       if (!resOk) {
+           throw `FAIL => Сделка Кнопка "Сохранить" Активная ClickByXPath(${this.xButtonDealSaveActive})`;
+       }
+    // Проверяем Варнинги
+    strWarning = await WarningsRead(this.page, 19000, false);
+       resOk = await ResponseListener(this.page, `${g_BackCfoFoxURL}/api/v2/deal`, false);
+
+    let warnDealSuccessfullyCreated = 'Сделка успешно создана!';
+    let warnNoOriginalContract = 'Нет оригинала Договора №';
+    let warnNoVehicleMaxWeight = 'У Автомобиля не указана допустимая масса';
+    let warnNoTrailerMaxWeight = 'У прицепа не указана допустимая масса';
+
+    if (await SubStrIsPresent(warnDealSuccessfullyCreated, strWarning)) { // Сделка успешно создана!
+        this.DealData.strStatusID = `1`;
+        await console.log('\x1b[38;5;2m\t', `Сообщение (${strWarning}) - OK !!!`, '\x1b[0m');
+    } else if (await SubStrIsPresent(warnNoOriginalContract, strWarning)) { // Нет оригинала Договора
+
+        await console.log('\x1b[38;5;3m\t', `Сообщение (${strWarning}) \n - Значит уже есть 5 сделок с этой компанией Заказчика, а оригинала договора ещё нет. Добавим его.`, '\x1b[0m');
+
+        await console.log('\x1b[38;5;3m\t', `Добавление Оригинала Договора -> Открываем компанию ${this.DealData.strClientCompanyName}`, '\x1b[0m');
+        //выцепить номер договора !!!!
+        let strNumContract = await GetSubStrFromStr(warnNoOriginalContract, ` с юр.лицом`,strWarning);
+        //await console.log(`strNumContract=${strNumContract}`);
+        //№СТВ-131021-13
+        resOk = await this.ClientAddOriginalContract(strNumContract);
+        if(resOk){
+            await console.log('\x1b[38;5;3m\t', `Добавление Оригинала Договора - OK !!!`, '\x1b[0m');
+            tempBoolean = true;
+            await WarningsRemove(this.page);
+            //break labelLoop1;
+
+        }else {
+            await console.log('\x1b[38;5;1m\t', `FAIL -> ( Добавление Оригинала Договора ) - FAIL !!!`, '\x1b[0m');
+            throw `Сделка не сохранена !!!`;
+        }
+    } else if(await SubStrIsPresent(warnNoVehicleMaxWeight, strWarning) || await SubStrIsPresent(warnNoTrailerMaxWeight, strWarning) ){
+
+        await WarningsRemove(this.page);
+        if(await SubStrIsPresent(warnNoVehicleMaxWeight, strWarning)){
+            if (noVehicleWeight > 0) {
+                throw `\x1b[38;5;1m\tFAIL -> Повторная ошибка(${warnNoVehicleMaxWeight})  - FAIL !!!\x1b[0m`;
+            }
+            await console.log('\x1b[38;5;3m\t', `Будем Добавлять (${warnNoVehicleMaxWeight}) - Warning !!!`, '\x1b[0m');
+            noVehicleWeight++;
+            await this.SetAutoMaxWeight(0, 7450, 12700);
+        }
+        if(await SubStrIsPresent(warnNoTrailerMaxWeight, strWarning)){
+            if (noTrailerWeight > 0) {
+                throw `\x1b[38;5;1m\tFAIL -> Повторная ошибка(${warnNoTrailerMaxWeight})  - FAIL !!!\x1b[0m`;
+            }
+            await console.log('\x1b[38;5;3m\t', `Будем Добавлять (${warnNoTrailerMaxWeight}) - Warning !!!`, '\x1b[0m');
+            noTrailerWeight++;
+            await this.SetAutoMaxWeight(1, 11350, 38750);
+        }
+        tempBoolean = true;
+        await WaitRender(this.page);
+        // Возврат на while(tempBoolean) <----!!!!!!!
+    } else{ // Другие "неизвестные ошибки"
+        await console.log('\x1b[38;5;1m\t', `Warning ( ${strWarning} ) - Warning !!!`, '\x1b[0m');
+        await this.page.screenshot({path: g_PathSS + `screenshot_ButtonDealSaveActive.png`, fullPage: true});
+        await console.log(g_PathSS + `screenshot_ButtonDealSaveActive.png`);
+
+    }
+}//while(tempBoolean)
+            this.DealData.strDealID = g_tempDataFromEventListener_id;
+            if (this.DealData.strDealID === ''){
+                await console.log('\x1b[38;5;1m\t', `FAIL ! -> Получение ID Сделки (${this.DealData.strDealID}) - FAIL!`, '\x1b[0m');
+            }else{
+                this.DealData.strStatusID = `1`;
+                await console.log('\x1b[38;5;2m\t', `Получение ID Сделки (${this.DealData.strDealID}) - OK !!!`, '\x1b[0m');
+            }
+
+            // // подождать пока кнопки раздизейблятся
+            // resOk = await WaitForElementIsPresentByXPath(7000, this.page, this.xButtonDealSaveActive);
+            // if (!resOk) {
+            //     throw `FAIL => Сделка Кнопка "Сохранить" Активная WaitForElementIsPresentByXPath(${this.xButtonDealSaveActive})`;
+            // }
+            // // 2) узнать ID сделки
+            // resOk = await this.GetDealIDFromURL();
+            // if (!resOk) {
+            //     throw `FAIL => узнать ID сделки this.GetDealIDFromURL();`;
+            // }
+
+            // await HoverByXPath(this.page, this.xButtonDealSaveActive);
+            //
+            // resOk = await ClickByXPath(this.page, this.xButtonDealSaveActive);
+            // if (!resOk) {
+            //     throw `FAIL => Сделка Кнопка "Сохранить" Активная ClickByXPath(${this.xButtonDealSaveActive})`;
+            // }
+
+          //  await console.log(`g_tempDataFromEventListener=(${g_tempDataFromEventListener})`);
+//await console.log(`1-this.DealData.strDealID=(${this.DealData.strDealID})`);
+// await TempStop(this.page, `---- Здесь SaveDeal----`);
+
+            // Ждём отрисовки таблицы сделок
+            resOk = await WaitForElementIsPresentByXPath(19000, this.page, this.xTableDeals);
+            if (!resOk) {
+                throw `FAIL => Ждём отрисовки таблицы сделок WaitForElementIsPresentByXPath(${this.xTableDeals})`;
+            }else {
+                await console.log('\x1b[38;5;2m\t', `Сохранение Сделки -> Переход на таблицу Сделок - ОК`, '\x1b[0m');
+            }
+            await ScrollByXPathNum(this.page, `//div[@id="crm-top-header"]`);
+            // Ждём пока пропадёт спиннер таблицы сделок
+            resOk = await WaitUntilXPathExist(this.page, 11000, this.xTableDealsBusy);
+            if (!resOk) {
+                throw `FAIL => Ждём пока пропадёт спиннер таблицы сделок WaitUntilXPathExist(${this.xTableDealsBusy})`;
+            }
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in SaveDealAndWaitTableDeals`);
+            return false;
+        }
+    }//async SaveDealAndWaitTableDeals() // Сохраняем Сделку и ждём отрисовки таблицы сделок
+     //----------------------------------------
+    async ClientAddOriginalContract(strNumContract) {
+        let resOk;
+        try {
+            const newPagePromise = new Promise(x => this.browser.once('targetcreated', target => x(target.page())));    // объявляем промис
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // Клик по Компании Заказчика // кликаем, открывается новая СТРАНИЦА
+            resOk = await ClickByXPath(this.page, this.xLinkClientCompany);
+            if (!resOk) {
+                throw `FAIL => Клик по Компании Заказчика (${this.xLinkClientCompany})`;
+            }
+
+            this.pageClientCompany = await newPagePromise;           // объявляем новую СТРАНИЦУ/окно, теперь с ней можно работать
+            await this.pageClientCompany.setViewport({width: g_width, height: g_height});
+            var {Company} = require("../sub_objects/company_obj.js");
+            let CompanyDataD = { // !!! для Конструктора - иначе будут ошибки (эти поля используются в конструкторе)
+                strCompanyCode: this.DealData.strClientCompanyCode,
+                strCargoType: `ТНВ`,// тут можно фейк
+                strCargoVehicleType: `Тент`,// тут можно фейк
+                ContractData: {
+                    strContractOurCompany: this.DealData.strOurCompanyWithClient,
+                    strPaymentCondition: 'По календарным', // тут можно фейк
+                },
+            };
+
+            let NewCompanyD = new Company(this.browser, this.pageClientCompany , CompanyDataD);
+            resOk = await NewCompanyD.CheckCompanyForm();
+            if (!resOk) {
+                throw 'NewCompanyD.CheckCompanyForm(); = FAIL!"';//<--специальный вызов ошибки!
+            }
+
+            resOk = await NewCompanyD.EditExistsContractAddOriginal(strNumContract);
+            if (!resOk) {
+                throw 'NewCompanyD.EditExistsContractAddOriginal(); = FAIL!"';//<--специальный вызов ошибки!
+            }
+            await this.pageClientCompany.close();
+
+//await TempStop(this.page);
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in ClientAddOriginalContract`);
+            return false;
+        }
+    }//async ClientAddOriginalContract()
+    //----------------------------------------
+    async GetDealIDFromURL() {
+        let resOk;
+        try {
+            let strCrmDeal = `/crm/deal/`;
+
+            await WaitRender(this.page);
+            // Проверка URL
+            let strPageURL = await this.page.url();
+            resOk = true;
+            if (! await SubStrIsPresent(strCrmDeal, strPageURL)){
+                resOk = false;
+                await console.log('\x1b[38;5;1m\t', `!!! FAIL -> URL страницы (${strPageURL}) не содержит (${strCrmDeal}) <- FAIL !!!`, '\x1b[0m');
+            }
+            let strID_fromURL = await GetIDFromHref(strPageURL);
+            if (strID_fromURL === ``){
+                resOk = false;
+                await console.log('\x1b[38;5;1m\t', `!!! FAIL -> URL страницы (${strPageURL}) не содержит ID (${strID_fromURL}) <- FAIL !!!`, '\x1b[0m');
+            }
+            if (! resOk){
+                throw `FAIL => Проверка URL`;
+            }else {
+                await console.log('\x1b[38;5;2m\t', `URL страницы=(${strPageURL}) `, `- OK !`, '\x1b[0m');
+            }
+            this.DealData.strDealID = strID_fromURL;
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in GetDealIDFromURL`);
+            return false;
+        }
+    }//async GetDealIDFromURL()
+    //----------------------------------------
+    async GetDealStatusID() {
+        let resOk;
+        try {
+            let InProcessing = `В обработке`;
+            let Concluded = "Заключена";
+            let strDealStatusName = await ElementGetInnerText(this.page, 0, this.xDealStatusName);
+
+            if (strDealStatusName === InProcessing) {
+                await console.log('\x1b[38;5;2m\t', `Статус Сделки ID=1 (${strDealStatusName}) - OK !!!`, '\x1b[0m');
+                // this.DealData.strStatusID = `1`;
+                return `1`;
+            }else if(strDealStatusName === Concluded) {
+                await console.log('\x1b[38;5;2m\t', `Статус Сделки ID=2 (${strDealStatusName}) - OK !!!`, '\x1b[0m');
+                //this.DealData.strStatusID = `2`;
+                return `2`;
+            }
+            await console.log('\x1b[38;5;1m\t', `FAIL !!!  Статус Сделки (${strDealStatusName}) - FAIL !!!`, '\x1b[0m');
+
+            return ``;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in TemplateTemp`);
+            return ``;
+        }
+    }//async TemplateTemp()
+     //----------------------------------------
+    /**
+     * @param {boolean} setListener The boolean
+     * @param {string} requestUrl The string
+     */
+    async ResponseListener1(page, requestUrl, setListener) {
+        let resOk;
+        try {
+            g_setListener = setListener;
+
+            async function done(page, fName) {
+                if(page) { // response requestfinished
+                    //await page.removeListener('requestfinished', onRequestFinished);
+                    await page.removeListener('requestfinished', fName);
+                }else{
+                    await console.log(`page=NOT`);
+                }
+            };
+            async function onRequestFinished(request) {
+                // https://question-it.com/questions/130241/kuklovod-kak-zhdat-tolko-pervyj-otvet-html
+                try {
+                    if(! g_setListener){
+                        await done(page, onRequestFinished); // <- тут сработает !!!
+                        return true;
+                    }
+
+                    if (request.url().includes(requestUrl)) {
+                        const response = await request.response();
+                        let resultJ = await response.json();
+                        //await console.log(`-1-----------------------`);
+                        // await console.log(resultJ); // JSON RESULT OK
+                        // await console.log(`-2-----------------------`);
+
+                        g_tempDataFromEventListener_id = resultJ.data.id;
+
+                        await done(page, onRequestFinished);// <- тут сработает !!!
+
+                        return true;
+                    }
+                }catch (e) {
+                    await console.log(`*Ошибка в onRequestFinished (${e})`);
+                    return false;
+                }
+            };
+            if (setListener) { // requestfinished  // response
+                await page.on('requestfinished', onRequestFinished);
+            }else{
+                await done(page, onRequestFinished);// <- тут не сработает !!!
+            }
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in ResponseListener(${requestUrl})(${setListener})`);
+            return false;
+        }
+    }//async ResponseListener(requestUrl, setListener)
+    //----------------------------------------
+    async SetAutoMaxWeight(Who, WeightEmpty, WeightFull) { // Who=0 - Vehicle Who=1 - Trailer
+        let resOk;
+        try {
+            await WaitRender(this.page);
+            if(!((Who === 0) || (Who === `0`) || (Who === 1) || (Who === `1`))){
+                throw `Внутренняя ошибка -> не правильно передан параметр Who(${Who}) Должно быть(Who=0 - Vehicle Who=1 - Trailer)`;
+            }
+            const newPagePromise = new Promise(x => this.browser.once('targetcreated', target => x(target.page())));    // объявляем промис
+            if( (Who === 0) || (Who === `0`) ){
+                // Клик по Автомобиль для перехода на карточку Автомобиля
+                resOk = await ClickByXPath(this.page, this.xSelectedVehicle);
+                if (!resOk) {
+                    throw `FAIL => Клик по Автомобиль для перехода на карточку Автомобиля(${this.xSelectedVehicle})`;
+                }
+            }else{
+                // Клик по Прицеп для перехода на карточку Прицепа
+                resOk = await ClickByXPath(this.page, this.xSelectedTrailer);
+                if (!resOk) {
+                    throw `FAIL => Клик по Прицеп для перехода на карточку Прицепа(${this.xSelectedTrailer})`;
+                }
+            }
+
+            //await WaitMS(5000); // если ждать то получается pageVehicleCard === null    ????!!!!
+            let pageVehicleCard = await newPagePromise;           // объявляем новую СТРАНИЦУ/окно, теперь с ней можно работать
+
+            //await console.log(`pageVehicleCard=(${pageVehicleCard})`);
+            //await console.dir(pageVehicleCard, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
+            if(pageVehicleCard === null){
+                let AllPages = await this.browser.pages();
+                let TempLenPages = AllPages.length;
+              //  await console.log(`0 TempLenPages=(${TempLenPages})`);
+                if (TempLenPages < 2 ){
+                    resOk = await WaitForBrowserNewPage(this.browser,2, 4000);
+                    if(!resOk) {
+                        AllPages = await this.browser.pages();
+                        TempLenPages = AllPages.length;
+                        throw `FAIL => TempLenPages=(${TempLenPages})`;
+                    }
+                }
+                AllPages = await this.browser.pages();
+                TempLenPages = AllPages.length;
+            //    await console.log(`1 TempLenPages=(${TempLenPages})`);
+                pageVehicleCard = AllPages[TempLenPages-1];// !!! С НУЛЯ !!!
+            }
+            //await console.log(`pageVehicleCard=(${pageVehicleCard})`);
+            if (!pageVehicleCard) {
+                throw `FAIL => pageVehicleCard=(${pageVehicleCard})`;
+            }
+            await pageVehicleCard.bringToFront();
+            await pageVehicleCard.setViewport({width: g_width, height: g_height});
+            const {Vehicle} = require("../sub_objects/vehicle_obj.js");
+            let VehicleData = { // это для того что б конструктор не упал
+                strLicensePlate: ``,
+                strVehicleID: ``,
+                strRegistrationCertificateNumber: ``,
+                strVehicleType: ``,
+                strCarBrand: ``,
+                strModel: ``,
+                strQuantityAxles: '',
+                strTypeOwner: '',
+                strDocument: '',
+                strSubjectOwner: '',
+                strVehicleEmptyWeight: WeightEmpty, // <- Нужно
+                strVehicleMaxWeight: WeightFull, // <- Нужно
+            }
+            let NewVehicle = new Vehicle(this.browser, pageVehicleCard, VehicleData);
+            await SpinnerWait(pageVehicleCard,12000);
+            await WaitRender(pageVehicleCard);
+            // await pageVehicleCard.screenshot({path: g_PathSS + `screenshot_TEMP.png`, fullPage: true});
+            // await console.log(g_PathSS + `screenshot_TEMP.png`);
+            resOk = await NewVehicle.VehicleAddEmptyAndMaxWeights();
+            if (!resOk) {
+                throw `FAIL => Добавление Веса в Карточке Авто/Прицепа NewVehicle.VehicleAddEmptyAndMaxWeights(${Who},${WeightEmpty},${WeightFull});`;
+            }
+            resOk = await NewVehicle.SaveVehicle();
+            if (!resOk) {
+                throw `FAIL => Сохранение Авто/Прицепа NewVehicle.SaveVehicle(${Who},${WeightEmpty},${WeightFull});`;
+            }
+            await pageVehicleCard.close();// новая СТРАНИЦА/окно, закрыть
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in SetAutoMaxWeight`);
+            await this.page.screenshot({path: g_PathSS + `screenshot_SetAutoMaxWeight.png`, fullPage: true});
+            await console.log(g_PathSS + `screenshot_SetAutoMaxWeight.png`);
+
+            return false;
+        }
+    }//async SetAutoMaxWeight()
+
     //----------------------------------------
     async TemplateTemp() {
         let resOk;

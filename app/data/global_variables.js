@@ -1,16 +1,26 @@
 global.g_width = 1700;
 global.g_height = 900;
+//global.g_tempNum = 0;
+global.g_setListener = false;
+global.g_tempDataEventListenerFunctionHandle = null;
+global.g_tempDataFromEventListener_id = false;
+global.g_tempDataFromEventListener_json = ``;
+
 
 global.g_strDialogMessage = ``;
+global.g_strDialogInitiator = ``;
 global.g_PathSS = `screenshots/`;
 
 // in file config.config
 
-global.gname_FrontCrmFoxURL = 'FRONT_CRM_FOX_URL';
-global.g_FrontCrmFoxURL = '';
+// global.gname_FrontCrmFoxURL = 'FRONT_CRM_FOX_URL';
+// global.g_FrontCrmFoxURL = '';
 
 global.gname_FrontCfoFoxURL = 'FRONT_CFO_FOX_URL';
 global.g_FrontCfoFoxURL = '';
+
+global.gname_BackCfoFoxURL = 'BACK_CFO_FOX_URL';
+global.g_BackCfoFoxURL = '';
 
 global.gname_ShowActionInBrowser = 'SHOW_ACTION_IN_BROWSER';
 global.g_ShowActionInBrowser = true;
@@ -28,8 +38,8 @@ global.gname_TestVar = 'TEST_VAR';
 global.g_TestVar = 'test';
 
 // String For Out To Log File
-global.g_StrStartTime = `${new Date(Date.now())}`;
-global.g_StrOutLog = `Start LOG File ${g_StrStartTime}\n`;
+global.g_StartTimeMS = new Date(Date.now());
+global.g_StrOutLog = `Start LOG File ${g_StartTimeMS}\n`;
 
 // statuses and counts of tests
 global.g_StatusCurrentTest = 'NoStatus';
@@ -142,7 +152,8 @@ global.g_ArraySTR = {
     'StrCompanyCodeArray' : [ //38462049//38977165//32603291//35898620//40465590
         //'38462049', // '36486577' // no short name'32734101'
         // '19292382' <-не перебуває в процесі припинення, свідоцтво про державну реєстрацію недійсне
-        '38977165', '32603291', '35898620', '40465590', '41298780', '30225667', '13416966', '13318100',
+        // '13416966' ,<- зареєстровано, свідоцтво про державну реєстрацію недійсне
+        '38977165', '32603291', '35898620', '40465590', '41298780', '30225667', /*'13416966',*/ '13318100',
         '22460038', '39803312', '41685542', '41038088', '41719450', '33836080', '33128355', '38436952',
         '39695504', '42620617', '32811552', '36186964', '38473135', '40899034', '42842304', '39811449',
         '14180856', '41900270', '24907124', '42587622', '42749512', '38689788', '35662674', '36476600',
@@ -165,7 +176,10 @@ global.g_ArraySTR = {
         '34865966', '35829431', '36953687', '36412827', '41876217', '42372900', '20465289', '41112150',
         '34057400', '41269680', '37696134', '37361279', '38239373', '38825272', '39116638', '42228907',
         '39123540', '40646256', '34961633', '40407669', '42316432', '33685380', '40967067', '39501613',
-        '38212864',
+        '38212864', '31541444', '30648461', '33609996', '36197798', '31416332', '32237983', '42966589',
+        '32994117', '20804048', '31195969', '36098276', '35958396', '38922535', '32443697', '32462463',
+        '24881353', '31631679', '43505781', '37130226', '34311199', '42209816', '34561547', '43704975',
+        '35107840', '39040674', '42673758', '40947187', '33051565', '33300364', '36421347', '35592183',
     ],
     'StrAddress' : [
         'Київ',
@@ -251,15 +265,27 @@ global.g_ArraySTR = {
         'Юрист',
     ], // StrContactType // ------------------------------------------------------------------------
     'StrLevelMonitoringMC' : [
-        'Автоматически',
+        // 'Автоматически',
         'Максимальный (Ночью на охраняемых)',
         'Максимальный (Движение ночью разрешено)',
         'Средний (Движение ночью разрешено)',
         'Низкий',
-        'Не контролировать',
+        // 'Не контролировать',
         'Средний (Ночью на охраняемых)',
         'Контроль загрузки и выгрузки',
     ], // 'StrLevelMonitoringMC' -------------------------------------------------------------------
+    'StrArrayNumberInSet' : [
+        'KF01',
+        'KF02',
+        'KF03',
+        'KF04',
+        'KF05',
+        'KF21',
+        'KF22',
+        'KF23',
+        'KF24',
+        'KF25',
+    ],
     'StrAddressFunny' : [
         'Хреновое',
         //'Хреново',
@@ -345,6 +371,7 @@ global.g_ArraySTR = {
         'Каюк',
         'Криворучко',
         'Кабздец',
+        'Косяков',
         'Кидалов',
         'Карачун',
         'Лоховцев',
@@ -367,6 +394,7 @@ global.g_ArraySTR = {
         'Серняев',
         'Сторчак',
         'Синяков',
+        'Трешак',
         'Тугодумов',
         'Тугосралов',
         'Трахтенберг',
@@ -375,8 +403,10 @@ global.g_ArraySTR = {
         'Хрямзель',
         'Цицик',
         'Цицькин',
+        'Чекушкин',
         'Черкаш',
         'Чобля',
+        'Шмаровоз',
         'Шумахер',
         'Шелудивый',
         'Шнырь',

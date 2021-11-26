@@ -737,7 +737,6 @@ class Contact {
             await WarningsRemove(this.page);
             // в Контакт Кнопка "Сохранить"
             //this.xButtonSaveContact = `//button[@type="button"][contains(@class, "primary")][contains(text(), "Сохранить")]`;
-            await console.log(`Сохраняем контакт ${this.ContactData.strLastName} ${this.ContactData.strFirstName} ${this.ContactData.strMiddleName}`); // !!!!!!!
             resOk = await ClickByXPath(this.page, this.xButtonSaveContact);
             if (!resOk) {
                 await this.page.screenshot({path: g_PathSS + `screenshot_button_save_contact.png`, fullPage: true });
@@ -745,6 +744,11 @@ class Contact {
                 //await TempStop(this.page);
                 throw `FAIL => ModalCreateContactSaveContact => в Контакт Кнопка "Сохранить" ClickByXPathWithScroll(${this.xButtonSaveContact})`;
             }
+            await console.log('\x1b[38;5;2m\t', `Сохранили контакт `,
+                                                `${this.ContactData.strLastName} `,
+                                                `${this.ContactData.strFirstName} `,
+                                                `${this.ContactData.strMiddleName} `,
+                                                `тел. ${this.ContactData.PhoneData.strPhoneNumber} - OK`, '\x1b[0m'); // !!!!!!!
 
             WarningText = await WarningsRead(this.page, 4000);
 

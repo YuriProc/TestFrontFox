@@ -412,4 +412,151 @@ for( let i=0 ; i<=tempLength ; i++ ) {
 
 await console.log(`-------------`);
 await TempStop(this.page);
-//=================================================================
+            //=================================================================
+// Вывести в консоль все поля таблицы CFO
+//let xPathTemp = `//li[@class="multiselect__element"]/span[contains(@class, "multiselect__option")]/span`;
+            let xPathTemp1 = `//div[@data-type="head-cell"][@class="head"]`;
+            let strColName,strFName; // data-field
+            let tlCN,tlFN, tl0,tl1;
+            let tempLength1 = await ElementGetLength(this.page, xPathTemp1);
+            --tempLength1;
+            await console.log(`tempLength=${tempLength1} -------------`);
+            await console.log(`-------------`);
+
+            for( let i=0 ; i<=tempLength1 ; i++ ) {
+                strFName = await ElementGetAttribute(this.page, i, `data-field`, xPathTemp1);
+                strColName = await ElementGetInnerText(this.page, i, xPathTemp1);
+                tlCN = strColName.length;
+                tlFN = strFName.length;
+                tl0 = 42 - tlCN;
+                tl1 = 39 - tlFN;
+                await console.log(`['${strColName}', ${' '.repeat(tl0)}'${strFName}',  ${' '.repeat(tl1)}'',  '',  '',  ''],`);
+                //74 ' '.repeat(N)
+            }
+            await console.log(`-------------`);
+ //============================
+// Обращение к полям ОБЪЕКТА через строки
+            // `PointsLoading[0].PointLoading.strAddressFOX`
+            // let strName = `ClientFreights[0].Amount`;//`strClientCompanyName`;
+            let strName1 = `ClientFreights`;//`strClientCompanyName`;
+            let strName2 = `Amount`;
+            let strName3 = ``;
+            let strName4 = ``;
+            let tstr = this.DealData[strName1][0][strName2];
+            await console.log(`DealData.ClientFreights[0].Amount=(${this.DealData.ClientFreights[0].Amount})`);
+            await console.log(`DealData.xName=(${tstr})`);
+            strName1 = `PointsLoading`;//`strClientCompanyName`;
+            strName2 = `1`;
+            strName3 = `PointLoading`;
+            strName4 = `strAddressFOX`;
+            let tstr1 = this.DealData[strName1][strName2][strName3][strName4];
+            await console.log(`DealData.PointsLoading[0].PointLoading.strAddressFOX=(${this.DealData.PointsLoading[0].PointLoading.strAddressFOX})`);
+            await console.log(`DealData.xName=(${tstr1})`);
+// =================================================================
+// https://question-it.com/questions/130241/kuklovod-kak-zhdat-tolko-pervyj-otvet-html
+//async ReadResponse() {
+    let resOk;
+    try {
+        // https://question-it.com/questions/130241/kuklovod-kak-zhdat-tolko-pervyj-otvet-html
+        function waitForRequestToFinish(page, requestUrl, timeout) {
+            page.on('response', onRequestFinished);
+            let fulfill, timeoutId = (typeof timeout === 'number' && timeout >= 0) ? setTimeout(done, timeout) : -1;
+            return new Promise(resolve => fulfill = resolve);
+
+            function done() {
+                page.removeListener('response', onRequestFinished);
+                clearTimeout(timeoutId);
+                fulfill();
+            }
+            async function onRequestFinished(req) {
+                try {
+                    if (req.url().includes(requestUrl)) {
+                        let resultJ = await req.json();
+                        await console.log(`-1-----------------------`);
+                        await console.log(resultJ); // JSON RESULT OK
+                        await console.log(`-2-----------------------`);
+
+
+                        done();
+                    }
+                }catch (e) {
+
+                }
+            }
+        };
+
+        await waitForRequestToFinish(this.page,"https://dev.api.cfo.tl.ee/api/v2/deal", 12000);
+
+        // await this.page.on('response', async (response) => { <- тоже ок работало
+        //     // if (response.url().includes("https://api.maerskline.com/track/")) {
+        //     try {
+        //         if (response.url().includes("https://dev.api.cfo.tl.ee/api/v2/deal")) {
+        //             let resultJ = await response.json();
+        //             await console.log(`-1-----------------------`);
+        //             await console.log(resultJ); // JSON RESULT OK
+        //             await console.log(`-2-----------------------`);
+        //             // здесь перехватил результат, ВСЕ ОК
+        //             ----//await page.evaluate(() => window.stop())
+        //         }
+        //     }catch (e) {
+        //
+        //     }
+        // });
+
+        return true;
+    } catch (e) {
+        await console.log(`${e} \n FAIL in ReadResponse`);
+        return false;
+    }
+//}//async ReadResponse()
+//================================================
+// https://ru.stackoverflow.com/questions/1214723/node-js-%D0%B5%D1%81%D1%82%D1%8C-%D0%BB%D0%B8-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-cin-n-%D0%B8%D0%B7-c
+// @ts-check
+const readline = require('readline');
+
+await (async () => {
+
+    try {
+        const count = await askInteger('Введите количество элементов: ');
+        const arr = [];
+        while (arr.length < count) {
+            try {
+                const number = await askInteger(`Введите число #${1 + arr.length}: `);
+                arr.push(number);
+            } catch (err) {}
+        }
+
+        const sum = arr.reduce((acc, x) => acc += x, 0);
+        console.log(sum);
+
+    } catch (err) {
+        console.error(err);
+    }
+
+})();
+
+/**
+ * @param {*} question
+ * @returns {Promise<number>}
+ */
+async function askInteger(question) {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    return new Promise((resolve, reject) => {
+        rl.question(question, (answer) => {
+            rl.close();
+
+            /** @type {number} */
+            let number;
+            if (answer !== null && answer !== undefined && answer !== '') {
+                number = +answer;
+            }
+
+            return Number.isInteger(number) ? resolve(number) : reject('INCORRECT_INPUT');
+        });
+    });
+}
+//===============================================

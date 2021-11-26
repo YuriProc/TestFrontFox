@@ -43,19 +43,45 @@ WaitUntilXPathExist = async function (page, mSec, xPath, print = false) {
                 await console.log(`WaitUntilXPathExist - ВИЖУ ОК (${xPath})`);
             }
         }
-        // Ждём пока xPath присутствует
-        while (await ElementIsPresent(page, xPath)){
-            // Если прошло больше mSec сек то выход!!!
-            if(await Date.now() - startTime > mSec) {
+        while (await ElementIsPresent(page, xPath)){ // Ждём пока xPath присутствует
+            await page.waitFor(100);
+            if(await Date.now() - startTime > mSec) { // Если прошло больше mSec сек то выход!!!
                 return false;
             }
         }
         return true;
     } catch (e) {
+        await console.log(`WaitUntilXPathExist ERROR (${e})`);
         return false;
     }
 };
 //-----------------------------------------------------------------------------------
+SpinnerWait = async function (page, mSec=31000, print=false) {
+    let xPath = `//span[@class="spinner-border"]`;
+    let startTime = await Date.now();
+    try {
+        if (!await WaitForElementIsPresentByXPath(500, page, xPath)){
+            if (print) {
+                await console.log(`SpinnerWait - не вижу (${xPath})`);
+            }
+        }else{
+            if (print) {
+                await console.log(`SpinnerWait - ВИЖУ ОК (${xPath})`);
+            }
+        }
+        while (await ElementIsPresent(page, xPath)){ // Ждём пока xPath присутствует
+            await page.waitFor(100);
+            if(await Date.now() - startTime > mSec) { // Если прошло больше mSec сек то выход!!!
+                return false;
+            }
+        }
+        return true;
+    } catch (e) {
+        await console.log(`SpinnerWait ERROR (${e})`);
+        return false;
+    }
+};
+//-------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------
 GetExceptions = async function (page) {
@@ -132,7 +158,7 @@ WarningsClick = async function (page, timeout = 1000) {
         }else {
             qLength = await ElementGetLength(page, myXPath);
             strInnerText = await ElementGetInnerText(page, qLength-1, myXPath);
-            await console.log('\x1b[38;5;3m', `         WarningsClick => (${strInnerText})`, '\x1b[0m');
+            await console.log('\x1b[38;5;3m\t', `WarningsClick => (${strInnerText})`, '\x1b[0m');
             ResOk = await ClickByXPathNum(page, qLength-1, myXPath);
             await WaitUntilPageLoads(page);
             qLength = await ElementGetLength(page, myXPath);
@@ -151,8 +177,7 @@ WarningsClick = async function (page, timeout = 1000) {
     }
 }
 //-----------------------------------------------------------------------------------
-WarningsRead = async function (page, timeout = 1000) {
-
+WarningsRead = async function (page, timeout = 1000, print = true) {
     try {
         // class="vue-notification-template vue-notification error"
         let myXPath = `//div[@class="notification-content"]`;
@@ -161,7 +186,6 @@ WarningsRead = async function (page, timeout = 1000) {
         let strWarningOutput = '';
         let qLength;
         let Num = 0;
-
         ResOk = await WaitForElementIsPresentByXPath(timeout, page, myXPath );
         if (!ResOk){
             return '';
@@ -175,7 +199,9 @@ WarningsRead = async function (page, timeout = 1000) {
                 }else{
                     strWarningOutput+= ' ; '+ strInnerText;
                 }
-                await console.log('\x1b[38;5;3m', `         WarningsRead => (${strInnerText})`, '\x1b[0m');
+                if (print) {
+                    await console.log('\x1b[38;5;3m\t', `WarningsRead => (${strInnerText})`, '\x1b[0m');
+                }
                 --Num;
             }
             return strWarningOutput;
@@ -212,7 +238,6 @@ WarningsRemove = async function (page, timeout = 1000) {
             }
             return strInnerText;
         }
-
     }catch (e) {
         await console.log('\x1b[38;5;1m', "WarningsRemove => error=>",e, '\x1b[0m');
         return false;
@@ -331,6 +356,39 @@ WaitRender = async function (page, timeout = 30000) {
         await page.waitFor(checkDurationMsecs);
     }
 };
+//------------------------------------------------------------------------------------
+WaitMS = async function(timeMS= 100){
+    try {
+        await new Promise(resolve => setTimeout(resolve, timeMS));
+        return true;
+    }catch (e) {
+        await console.log('\x1b[38;5;1m', `WaitMS(${timeMS}) => error=>`,e, '\x1b[0m');
+        return false;
+    }
+}
+//------------------------------------------------------------------------------------
+WaitForBrowserNewPage = async function(browser, qPages, timeMS=1000){
+    let TempLenPages;
+    let AllPages;
+    let startTime = await Date.now();
+    try{
+        AllPages = await browser.pages();
+        TempLenPages = AllPages.length;
+        while (TempLenPages < qPages){
+            await WaitMS(100);
+            AllPages = await browser.pages();
+            TempLenPages = AllPages.length;
+            if((await Date.now() - startTime > timeMS) && (TempLenPages < qPages)) {
+                return false;// <- Выход из Цикла !!!
+            }
+        }
+        await AllPages[TempLenPages-1].bringToFront();//  С НУЛЯ !!!
+        return true;
+    }catch (e) {
+        await console.log('\x1b[38;5;1m', `WaitForBrowserNewPage (${qPages}) => error=>`,e, '\x1b[0m');
+        return false;
+    }
+}
 //------------------------------------------------------------------------------------
 ClickIfExistsUpdated  = async function (page) {
 
@@ -458,6 +516,39 @@ WaitForElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
     }
 };
 //-----------------------------------------------------------------------------------
+WaitForElementIsPresentByXPathNum  = async function (timeMS, Num, page, MyXPath) {
+    let startTime = await Date.now();
+    let linkHandlers;
+    try {
+        while (true) {
+            //await page.waitFor(300);
+            //await console.log(`1`);
+            linkHandlers = await page.$x(MyXPath);
+            //await console.log(`2`);
+            if (linkHandlers.length > Num) {
+                // if(MyXPath===`//button[@type="button"][@class="close"]`){
+                //     await console.log(`1`);
+                // }
+                return true;
+            }else {
+                if ((await Date.now() - startTime) > timeMS) {
+                    //await console.log('Element:',MyXPath,' Not Present >', timeMS, 'ms');
+                    return false;
+                }else {
+                    // if(MyXPath===`//button[@type="button"][@class="close"]`){
+                    //     await console.log(`0`);
+                    // }
+                    await page.waitFor(200);
+                }
+            }
+        }
+    }catch (e) {
+        await console.log(`catch Error => WaitForElementIsPresentByXPathNum(${Num})(${MyXPath})`);
+        await console.log(`ERROR => ${e}`);
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
 ElementIsPresent = async function (page , MyXPath) {
     try {
          const linkHandlers = await page.$x(MyXPath);
@@ -528,6 +619,61 @@ ElementGetValue = async function (page , Num, MyXPath) {
         return '';
     }
 };
+//------------------------------------------------------------
+ElementGetAttribute = async function (page , Num, strAttribute ,MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        let PropValue;
+        if (Num > MaxL){
+            await console.log(`ElementGetAttribute("${strAttribute}")  -> Num=${Num} > MaxL=${MaxL}  return ""`);
+            return '';
+        }else{
+            PropValue = await page.evaluate((elm, strAttribute )=> elm.getAttribute(strAttribute), linkHandlers[Num], strAttribute);
+            return PropValue;
+        }
+    }catch (e) {
+        await console.log(`ElementGetAttribute -> catch (e) ${e}`);
+        return '';
+    }
+};
+//------------------------------------------------------------
+ElementSetAttribute = async function (page , Num, strAttribute ,valAttribute, MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        if (Num > MaxL){
+            await console.log(`ElementSetAttribute("${strAttribute}")  -> Num=${Num} > MaxL=${MaxL}  return ""`);
+            return false;
+        }else{
+            await page.evaluate((elm, strAttribute, valAttribute)=> elm.setAttribute(strAttribute, valAttribute), linkHandlers[Num], strAttribute, valAttribute);
+            return true;
+        }
+    }catch (e) {
+        await console.log(`ElementSetAttribute -> catch (e) ${e}`);
+        return false;
+    }
+};
+//------------------------------------------------------------
+ElementRemoveAttribute = async function (page , Num, strAttribute ,MyXPath) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        const MaxL = linkHandlers.length -1 ;
+        let PropValue;
+        if (Num > MaxL){
+            await console.log(`ElementRemoveAttribute("${strAttribute}")  -> Num=${Num} > MaxL=${MaxL}  return ""`);
+            return false;
+        }else{
+            PropValue = await page.evaluate((elm, strAttribute )=> elm.removeAttribute(strAttribute), linkHandlers[Num], strAttribute);
+            return true;
+        }
+
+    }catch (e) {
+        await console.log(`ElementRemoveAttribute -> catch (e) ${e}`);
+        return false;
+    }
+};
+//------------------------------------------------------------
 ElementGetInnerText = async function (page , Num, MyXPath) { // с НУЛЯ
     try {
         const linkHandlers = await page.$x(MyXPath);
@@ -551,8 +697,23 @@ SubStrIsPresent = async function (SubStr , Str) {
     } else {
         return false;
     }
-
 };
+GetSubStrFromStr = async function (SubStr0 , SubStr1, Str) {
+    let len0,pos0,pos1;
+    pos0 = Str.indexOf(SubStr0);
+    if (pos0 !== -1) {
+        len0 = SubStr0.length;
+        pos0 = pos0 + len0;
+        pos1 = Str.indexOf(SubStr1,pos0);
+
+        return Str.slice(pos0,pos1);
+    } else {
+        return ``;
+    }
+};
+InsertSubStr = function (str, index, value) {
+    return str.substr(0, index) + value + str.substr(index);
+}
 
 GetIDFromHref = async function (Str) {
     // https://dev.cfo.tl.ee/crm/company/17691
@@ -611,7 +772,7 @@ ElementGetClass = async function (page , Num, MyXPath) {
         if (Num > MaxL){
             return '';
         }else{
-            PropInnerText = await page.evaluate(elm => elm.class, linkHandlers[Num]);
+            PropInnerText = await page.evaluate(elm => elm.className , linkHandlers[Num]);
             return PropInnerText;
         }
     }catch (e) {
@@ -655,9 +816,10 @@ ClickByXPath = async function (page , MyXPath) {
        //     await console.log(`Ошибка внутр ClickByXPath/WaitForElementIsPresentByXPath:${MyXPath}`,'\n');
        //     return false;
        // }
+
        resOk = await ElementIsVisible(page, MyXPath);
         if (!resOk) {
-            //await console.log(`Ошибка внутр ClickByXPath/ElementIsVisible:${MyXPath}`,'\n');
+            await console.log(`Ошибка внутр ClickByXPath/ElementIsVisible:${MyXPath}`,'\n');
             return false;
         }
         //await console.log(`ElementIsVisible${resOk}`,'\n');
@@ -677,6 +839,91 @@ ClickByXPath = async function (page , MyXPath) {
         }
     }catch (e) {
         await console.log(`Ошибка внутр ClickByXPath:${MyXPath}`, e ,'\n');
+        return false;
+    }
+};
+//-------------------------
+ClickByXPathW = async function (page , MyXPath) {
+    let startTime = await Date.now();
+    let linkHandlers;
+    let resOk;
+    let ElPresent = false;
+    let TimeOver = false;
+    const timeMS = 4000;
+    try {
+        //  resOk = await WaitForElementIsPresentByXPath(4000, page, MyXPath);
+        while (!ElPresent && !TimeOver ) {
+            linkHandlers = await page.$x(MyXPath);
+            if (linkHandlers.length > 0) {
+                ElPresent = true;
+            }else{
+                if ((await Date.now() - startTime) > timeMS) {
+                    TimeOver = true;
+                }else{
+                    // await page.waitFor(200);
+                }
+            }
+        }// while (!ElPresent && !TimeOver )
+        if (!ElPresent){
+            return false;
+        }
+        resOk = await ElementIsVisible(page, MyXPath);
+        if (!resOk) {
+            //await console.log(`Ошибка внутр ClickByXPath/ElementIsVisible:${MyXPath}`,'\n');
+            return false;
+        }
+        //await console.log(`ElementIsVisible${resOk}`,'\n');
+        linkHandlers = await page.$x(MyXPath);
+
+        if ((await linkHandlers.length) === 1) {
+            await linkHandlers[0].click();
+            return true;
+        } else {
+            await console.log('Ошибка внутр ClickByXPathW:( linkHandlers.length=',linkHandlers.length , ')','\n',`XPath=`,MyXPath,'\n');
+            return false;
+        }
+    }catch (e) {
+        await console.log(`Ошибка внутр ClickByXPathW:${MyXPath}`, e ,'\n');
+        return false;
+    }
+};
+//-------------------------
+ClickByXPathWNum = async function (page ,Num, MyXPath) {
+    let startTime = await Date.now();
+    let linkHandlers;
+    let ElPresent = false;
+    let TimeOver = false;
+    const timeMS = 4000;
+    try {
+        while (!ElPresent && !TimeOver ) {
+            linkHandlers = await page.$x(MyXPath);
+            if (linkHandlers.length > Num) {
+                ElPresent = true;
+            }else{
+                if ((await Date.now() - startTime) > timeMS) {
+                    TimeOver = true;
+                }else{
+                    // await page.waitFor(200);
+                }
+            }
+        }// while (!ElPresent && !TimeOver )
+        if (!ElPresent){
+            return false;
+        }
+        await linkHandlers[Num].click();
+        return true;
+    }catch (e) {
+        await console.log(`Ошибка внутр ClickByXPathWNum:${MyXPath}`, e ,'\n');
+        return false;
+    }
+}; // ClickByXPathWNum
+//-------------------------
+MouseClickXY = async function (page , MX, MY) {
+    try {
+        await page.mouse.click(MX, MY);
+        return true;
+    }catch (e) {
+        await console.log(`Ошибка внутр MouseClickXY(MX:${MX}; MY:${MY}) `, e ,'\n');
         return false;
     }
 };
@@ -763,10 +1010,32 @@ HoverByXPath = async function (page , MyXPath) {
         return false;
     }
 };
+//-----------------------------------------------------------------------------------
+HoverByXPathNum = async function (page, Num, MyXPath) {
+    const linkHandlers = await page.$x(MyXPath);
+    try {
+        if ((await linkHandlers.length) > Num) {
+
+            await linkHandlers[Num].hover();
+
+            return true;
+        } else {
+            await console.log(`Ошибка внутр HoverByXPathNum(${Num}):(length=${linkHandlers.length})\n`);
+            await console.log(`Ошибка внутр HoverByXPathNum(${MyXPath})\n`);
+            return false;
+        }
+    }catch (e) {
+        await console.log('Ошибка внутр HoverByXPathNum:', e ,'\n');
+        await console.log(`Ошибка внутр HoverByXPathNum(${Num}):(length=${linkHandlers.length})\n`);
+        await console.log(`Ошибка внутр HoverByXPathNum(${MyXPath})\n`);
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
 ClickByXPathNum = async function (page ,Num ,MyXPath) { // Отсчёт с 0 !!!
     const linkHandlers = await page.$x(MyXPath);
     try {
-        if (await linkHandlers.length >= Num) {
+        if (await linkHandlers.length > Num) {
             //await linkHandlers[0].click({ clickCount:20, delay: 500 });
             await linkHandlers[Num].click();
             //await page.evaluate(el => el.click(), linkHandlers[0]);
@@ -778,6 +1047,30 @@ ClickByXPathNum = async function (page ,Num ,MyXPath) { // Отсчёт с 0 !!!
         return false;
     }
 };
+//-----------------------------------------------------------------------------------
+ScrollByXPathNum = async function (page , MyXPath, Num=0) { // Num с Нуля !!!
+    let elHandle;let resOk;
+    try {
+        resOk = await WaitForElementIsPresentByXPath(2000, page, MyXPath);
+        if(resOk) {
+            elHandle = await page.$x(MyXPath);
+            if (await elHandle.length > Num) {
+                await page.evaluate(el => el.scrollIntoView(), elHandle[0]);
+                 await page.waitFor(500);
+                return true; // <- OK Тут !!!!
+            } else {
+                await console.log(`Ошибка внутрення ScrollByXPathNum -> (elHandle.length:${elHandle.length} !> Num:${Num})`);
+                return false;
+            }
+        }
+        await console.log(`Ошибка внутрення ScrollByXPathNum -> WaitForElementIsPresentByXPath(${MyXPath})`);
+        return false;
+    }catch (e) {
+        await console.log(`Ошибка внутрення ScrollByXPathNum -> (${e})`);
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 ClickByXPathWithScroll = async function (timeMS, page , MyXPath) {
     let startTime = await Date.now();
@@ -805,15 +1098,15 @@ ClickByXPathWithScroll = async function (timeMS, page , MyXPath) {
     }
 };
 //-----------------------------------------------------------------------------------
-ClickByXPathNumWithScroll = async function (timeMS, page ,Num , MyXPath) { // Num отсчёт с 1 !!!
+ClickByXPathNumWithScroll = async function (timeMS, page ,Num , MyXPath) { // Num отсчёт с 0 !!!
     let startTime = await Date.now();
     const elHandle = await page.$x(MyXPath);
     try {
-        if (await elHandle.length >= Num) {
+        if (await elHandle.length > Num) {
 
-            await page.evaluate(el => el.scrollIntoView(), elHandle[Num - 1]);
+            await page.evaluate(el => el.scrollIntoView(), elHandle[Num]);
             await page.waitFor(500);
-            while (!await ClickByXPath(page, MyXPath)) {
+            while (!await ClickByXPathNum(page, Num, MyXPath)) {
                 await page.waitFor(100);
                 if( (await Date.now() - startTime) > timeMS ) {
                     //await console.log('Element:',MyXPath,' Not Present >', timeMS, 'ms');
@@ -828,6 +1121,230 @@ ClickByXPathNumWithScroll = async function (timeMS, page ,Num , MyXPath) { // Nu
         return false;
     }
 };
+//--------------------------------------------------------------------------------
+dragAndDropX = async function (page, source,Num1, target, Num2) {
+    await page.evaluate((source, target) => {
+        //source = document.querySelector('#'+source);
+        let sourceA = page.$x(source);
+
+        let event = document.createEvent("CustomEvent");
+        event.initCustomEvent("mousedown", true, true, null);
+        event.clientX = sourceA[Num1].getBoundingClientRect().top;
+        event.clientY = sourceA[Num1].getBoundingClientRect().left;
+        sourceA[Num1].dispatchEvent(event);
+
+        event = document.createEvent("CustomEvent");
+        event.initCustomEvent("dragstart", true, true, null);
+        event.clientX = sourceA[Num1].getBoundingClientRect().top;
+        event.clientY = sourceA[Num1].getBoundingClientRect().left;
+        sourceA[Num1].dispatchEvent(event);
+
+        event = document.createEvent("CustomEvent");
+        event.initCustomEvent("drag", true, true, null);
+        event.clientX = sourceA[Num1].getBoundingClientRect().top;
+        event.clientY = sourceA[Num1].getBoundingClientRect().left;
+        sourceA[Num1].dispatchEvent(event);
+
+
+        //target = document.querySelector('#'+target);
+        let targetA = page.$x(target);
+
+        event = document.createEvent("CustomEvent");
+        event.initCustomEvent("dragover", true, true, null);
+        event.clientX = targetA[Num2].getBoundingClientRect().top;
+        event.clientY = targetA[Num2].getBoundingClientRect().left;
+        targetA[Num2].dispatchEvent(event);
+
+        event = document.createEvent("CustomEvent");
+        event.initCustomEvent("drop", true, true, null);
+        event.clientX = targetA[Num2].getBoundingClientRect().top;
+        event.clientY = targetA[Num2].getBoundingClientRect().left;
+        targetA[Num2].dispatchEvent(event);
+
+        event = document.createEvent("CustomEvent");
+        event.initCustomEvent("dragend", true, true, null);
+        event.clientX = targetA[Num2].getBoundingClientRect().top;
+        event.clientY = targetA[Num2].getBoundingClientRect().left;
+        targetA[Num2].dispatchEvent(event);
+    }, source, target);
+}
+//-------------------------------------------------------------------------------
+dragAndDrop = async function(page, originSelector, destinationSelector) {
+    try {
+        const origin = await page.waitForSelector(originSelector);
+        const destination = await page.waitForSelector(destinationSelector);
+        const originBox = await origin.boundingBox();
+        const destinationBox = await destination.boundingBox();
+        const lastPositionCoordenate = (box) => ({
+            x: box.x + box.width / 2,
+            y: box.y + box.height,
+        });
+        const getPayload = (box) => ({
+            bubbles: true,
+            cancelable: true,
+            screenX: lastPositionCoordenate(box).x,
+            screenY: lastPositionCoordenate(box).y,
+            clientX: lastPositionCoordenate(box).x,
+            clientY: lastPositionCoordenate(box).y,
+        });
+
+        // Function in browser.
+        const pageFunction = async (_originSelector, _destinationSelector, originPayload, destinationPayload) => {
+            const _origin = document.querySelector(_originSelector);
+            let _destination = document.querySelector(_destinationSelector);
+            // If has child, put at the end.
+            _destination = _destination.lastElementChild || _destination;
+
+            // Init Events
+            _origin.dispatchEvent(new MouseEvent('pointerdown', originPayload));
+            _origin.dispatchEvent(new DragEvent('dragstart', originPayload));
+
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            _destination.dispatchEvent(new MouseEvent('dragenter', destinationPayload));
+            _origin.dispatchEvent(new DragEvent('dragend', destinationPayload));
+        };
+
+        // Init drag and drop.
+        await page.evaluate(
+            pageFunction,
+            originSelector,
+            destinationSelector,
+            getPayload(originBox),
+            getPayload(destinationBox),
+        );
+        return true;
+    }catch (e) {
+        return false;
+    }
+}//----
+//-------------------------------------------------------------------------------
+dragAndDropXpath = async function(page, originXPath, oNum, destinationXPath, dNum) {
+  try {
+      const originA = await page.$x(originXPath);
+      const destinationA = await page.$x(destinationXPath);
+      if (await originA.length < 1 || await destinationA.length < 1) {
+          await console.log(` originA.length=${originA.length}   destinationA.length=${destinationA.length} `);
+          return false;
+      }
+
+      const originBox = await originA[oNum].boundingBox();
+      const destinationBox = await destinationA[dNum].boundingBox();
+      const lastPositionCoordenate = (box) => ({
+          x: box.x + box.width / 2,
+          y: box.y + box.height,
+      });
+      const getPayload = (box) => ({
+          bubbles: true,
+          cancelable: true,
+          screenX: lastPositionCoordenate(box).x,
+          screenY: lastPositionCoordenate(box).y,
+          clientX: lastPositionCoordenate(box).x,
+          clientY: lastPositionCoordenate(box).y,
+      });
+
+      // Function in browser.
+      const pageFunction = async (_originSelector,_oN, _destinationSelector,_dN, originPayload, destinationPayload) => {
+
+          getElementByXpath =  async function (path, N) {
+
+              const LH = await document.evaluate(path, document, null, XPathResult.ANY_TYPE, null);
+              return LH[N];
+          }
+
+          let _origin = await getElementByXpath(_originSelector, _oN);
+          let _destination = await getElementByXpath(_destinationSelector, _dN);
+          // If has child, put at the end.
+          //_destination = _destination.lastElementChild || _destination;
+
+          // Init Events
+          await _origin.dispatchEvent(new MouseEvent('pointerdown', originPayload));
+          await _origin.dispatchEvent(new DragEvent('dragstart', originPayload));
+
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          _destination.dispatchEvent(new MouseEvent('dragenter', destinationPayload));
+          _origin.dispatchEvent(new DragEvent('dragend', destinationPayload));
+      };
+
+      // Init drag and drop.
+      await page.evaluate(
+          pageFunction,
+          originXPath,oNum,
+          destinationXPath,dNum,
+          getPayload(originBox),
+          getPayload(destinationBox),
+      );
+      return true;
+  }catch (e) {
+      await console.log(`dragAndDropXpath catch (e) -> (${e})`);
+      return false;
+  }
+};//dragAndDropXpath ----
+//------------
+pageCursor = async () => {
+        const box = document.createElement('div');
+        box.classList.add('mouse-helper');
+        const styleElement = document.createElement('style');
+        styleElement.innerHTML = `
+  .mouse-helper {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    background-image: url('https://icons.iconarchive.com/icons/iconsmind/outline/512/One-Finger-icon.png'); 
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50px;
+    margin-left: -20px;
+    margin-top: -4px;
+    transition: background .2s, border-radius .2s, border-color .2s;
+    z-index: 10000;
+  }
+  .mouse-helper.button-1 {
+    transition: none;
+    background: rgba(255,0,0,0.5); 
+  }
+  .mouse-helper.button-2 {
+    transition: none;
+    border-color: rgba(0,0,255,0.9);
+  }
+  .mouse-helper.button-3 {
+    transition: none;
+    border-radius: 4px;
+  }
+  .mouse-helper.button-4 {
+    transition: none;
+    border-color: rgba(255,0,0,0.9);
+  }
+  .mouse-helper.button-5 {
+    transition: none;
+    border-color: rgba(0,255,0,0.9);
+  }
+  `;
+        document.head.appendChild(styleElement);
+        document.body.appendChild(box);
+        document.addEventListener('mousemove', event => {
+            box.style.left = event.pageX + 'px';
+            box.style.top = event.pageY + 'px';
+            updateButtons(event.buttons);
+        }, true);
+        document.addEventListener('mousedown', event => {
+            updateButtons(event.buttons);
+            box.classList.add('button-' + event.which);
+        }, true);
+        document.addEventListener('mouseup', event => {
+            updateButtons(event.buttons);
+            box.classList.remove('button-' + event.which);
+        }, true);
+        function updateButtons(buttons) {
+            for (let i = 0; i < 5; i++)
+                box.classList.toggle('button-' + i, buttons & (1 << i));
+        }
+    };
+// как использовать -> await page.evaluate(pageCursor);
 //--------------------------------------------------------------------------------
 SelectFromList = async function (page, selectorList, valueItem ) {
     try {
@@ -879,8 +1396,15 @@ GetDataFromList = async function (page, xPath ) {
     return Data;
 };
 //------------------------
-TempStop = async function(page){
-    await console.log('Временно СТОП');
+TempStop = async function(page, WarnText=``){
+    let dtEnd = new Date(Date.now());
+    await console.log(`Временно СТОП \nDT:${dtEnd}`);
+    let dtAll = dtEnd - g_StartTimeMS;
+    let strDtAll = msToHHMMSS(dtAll);
+    await console.log(`Времени от начала: ${strDtAll}`);
+    if(WarnText!==``){
+        await console.log(WarnText);
+    }
     await page.waitFor(98765400);
 };
 //--------------------
@@ -1109,6 +1633,7 @@ TypeByXPath__PromiseAll = async function (page , MyXPath, MyText) {
 SetTextByXPath = async function (page , MyXPath, MyText) {
     try {
         const linkHandlers = await page.$x(MyXPath);
+        MyText = await MyText.toString();
         let TempText = await MyText.substr(0, MyText.length - 1);
         let LastText = await MyText.substr(MyText.length - 1, 1);
         if (linkHandlers.length === 1) {
@@ -1143,6 +1668,30 @@ SetTextByXPath = async function (page , MyXPath, MyText) {
     }
 }
 //-----------------------------------------------------------------------------------
+SetTextByXPathNum = async function (page , Num ,MyXPath, MyText) {
+    try {
+        const linkHandlers = await page.$x(MyXPath);
+        let TempText = await MyText.substr(0, MyText.length - 1);
+        let LastText = await MyText.substr(MyText.length - 1, 1);
+        if (linkHandlers.length > Num) {
+
+            await page.evaluate((el, value) => el.value = value, linkHandlers[Num], TempText);
+
+            await linkHandlers[Num].type(LastText);
+
+            //await console.log(`SetTextByXPath:(${MyText})`);
+
+            return true;
+        } else {
+            await console.log(`Error => In SetTextByXPathNum: length (${linkHandlers.length}) Num (${Num})`);
+            return false;
+        }
+    }catch (e) {
+        await console.log(`Error => In SetTextByXPathNum: ${e}`);
+        return false;
+    }
+}
+//-----------------------------------------------------------------------------------
 TypeInPage = async function (page, MyText, tMS) { // работает ТОЛЬКО после успешного клика на Инпут
     try{
         await page.waitFor(200);
@@ -1155,7 +1704,26 @@ TypeInPage = async function (page, MyText, tMS) { // работает ТОЛЬК
 }
 //-----------------------------------------------------------------------------------
 NameFunction = function() {
-    return NameFunction.caller.name;
+    try {
+        return NameFunction.caller.name;
+    }catch (e) {
+        //console.log(`ERROR in NameFunction (${e})`);
+        console.log(">>> DEBUG <<<", (e.stack.split("at ")[1]).trim());
+        // Вы также можете добавить собственные аргументы в конце, например
+        //
+        // console.log("DEBUG", (new Error().stack.split("at ")[1]).trim(), ">>>", myVar);
+        // Обратите внимание, что если вы поместите это во вспомогательную функцию, измените индекс стека, например, [1]на [2].
+
+    }
+}
+//-----------------------------------------------------------------------------------
+NameNameFunction = function() {
+    try {
+        const UpFunc = NameNameFunction.caller;
+        return UpFunc.caller.name;
+    }catch (e) {
+        console.log(`ERROR in NameNameFunction (${e})`);
+    }
 }
 //-----------------------------------------------------------------------------------
 randomInt = async function(low, high) {
@@ -1173,6 +1741,24 @@ msToHHMMSS = function(ms_num) {
     //return hours+':'+minutes+':'+seconds;
     //return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
     return hours+' час, '+minutes+' мин, '+seconds+' сек';
+}
+FRGB = function (FB,R,G,B) { // FB  - 0/1, (R G B - 0..5)
+    if (FB === undefined) {return `\x1b[0m`;}
+    //  https://en.wikipedia.org/wiki/ANSI_escape_code
+    if (R>5){R=5}
+    if (R<0){R=0}
+    if (G>5){G=5}
+    if (G<0){G=0}
+    if (B>5){B=5}
+    if (B<0){B=0}
+    let N = 16 + 36 * R + 6 * G + B;
+    let FBl;
+    if (FB === 0) {
+        FBl = 38;
+    }else{
+        FBl = 48;
+    }
+    return `\x1b[${FBl};5;${N}m`;
 }
 //-----------------------------------------------------------------------------------
 SaveTempPictureFromURL = async function(browser, strPicURL, MyFileName) {
@@ -1242,15 +1828,15 @@ SaveTempPictureFromRandomURL = async function(browser, MyArrayName, Num) {// Num
 };
 //----------------------------------------------------------------------------------
 GetFunnyStr = async function(MyArrayName) {
-
     let RandNum = await randomInt(0, g_ArraySTR[MyArrayName].length - 1);
-
+    return g_ArraySTR[MyArrayName][RandNum];
+};
+GetRandomStr = async function(MyArrayName) {
+    let RandNum = await randomInt(0, g_ArraySTR[MyArrayName].length - 1);
     return g_ArraySTR[MyArrayName][RandNum];
 };
 GetFunnyUrl = async function(MyArrayName) {
-
     let RandNum = await randomInt(0, g_ArrayURL[MyArrayName].length - 1);
-
     return g_ArrayURL[MyArrayName][RandNum];
 };
 //-----------------------------------------------------------------------------------
@@ -1352,3 +1938,118 @@ DeleteAllScreenshots = async function(directory = 'test') {
     }
 }
 //-----------------------------------------------------------------------------------
+//----------------------------------------
+/**
+ * @param {boolean} setListener The boolean
+ * @param {string} requestUrl The string
+ */
+ResponseListener = async function(page, requestUrl, setListener) {
+    let resOk;
+    try {
+        g_setListener = setListener;
+        //await console.log(`ResponseListener g_setListener=(${g_setListener})`);
+
+        async function done(page, fName) {
+            if(g_tempDataEventListenerFunctionHandle === null){
+                return false;
+            }
+            if(page) { // response requestfinished
+                //await page.removeListener('requestfinished', onRequestFinished);
+                await page.removeListener('requestfinished', fName);
+                g_tempDataEventListenerFunctionHandle = null;
+            }else{
+                await console.log(`page=NOT`);
+            }
+        };
+        async function onRequestFinished(request) {
+            // https://question-it.com/questions/130241/kuklovod-kak-zhdat-tolko-pervyj-otvet-html
+            try {
+                // await console.log(`onRequestFinished g_setListener=(${g_setListener})`);
+                // await console.log(`requestUrl=   (${requestUrl})`);
+                // await console.log(`request.url()=(${request.url()})`);
+                if(!g_setListener){
+                    await done(page, g_tempDataEventListenerFunctionHandle); // <- тут сработает !!!
+                    return true;
+                }
+
+                if (request.url().includes(requestUrl)) {
+                    const response = await request.response();
+                    let resultJ = await response.json();
+                    g_tempDataFromEventListener_json = resultJ;
+                    //await console.log(`-1-----------------------`);
+                    // await console.log(resultJ); // JSON RESULT OK
+                    // await console.log(`-2-----------------------`);
+                    // await console.log(`requestUrl=   (${requestUrl})+++++`);
+                    // await console.log(`request.url()=(${request.url()})++++++`);
+                    // await console.log(`response.status()=(${response.status()})`);
+                    if(response.status() === 200) {
+                        g_tempDataFromEventListener_id = resultJ.data.id;
+                        // await console.log(`g_tempDataFromEventListener=(${g_tempDataFromEventListener})`);
+                    }else{
+                        // await console.log(`response.status()=(${response.status()})`);
+                        // if(resultJ.messages) {
+                        //     for(let i=0; i<resultJ.messages.length;i++) {
+                        //         await console.log(`messages[${i}]=(${resultJ.messages[i]})`);
+                        //     }
+                        // }
+                    }
+                    await done(page, g_tempDataEventListenerFunctionHandle);// <- тут сработает !!!
+
+                    return true;
+                }
+            }catch (e) {
+                await console.log(`*Ошибка в onRequestFinished (${e})`);
+                return false;
+            }
+        };
+        if (setListener) { // requestfinished  // response
+            g_tempDataFromEventListener_id = ``;
+            g_tempDataFromEventListener_json = ``;
+            g_tempDataEventListenerFunctionHandle = onRequestFinished;
+
+            //await console.log(`g_tempDataEventListenerFunctionHandle=(${g_tempDataEventListenerFunctionHandle})`);
+            await page.on('requestfinished', g_tempDataEventListenerFunctionHandle);
+        }else{
+           // await console.log(`else setListener(${setListener})`);
+            await done(page, g_tempDataEventListenerFunctionHandle);// <- тут не сработает !!! (Уже сработает)
+            // await console.log(`g_tempDataEventListenerFunctionHandle(${g_tempDataEventListenerFunctionHandle})`);
+        }
+
+        return true;
+    } catch (e) {
+        await console.log(`${e} \n FAIL in ResponseListener(${requestUrl})(${setListener})`);
+        return false;
+    }
+}//async ResponseListener(requestUrl, setListener)
+//----------------------------------------
+GetDealMarshrut = async function(DealData){
+    try {
+        let tempAdr = DealData.PointsLoading[0].PointLoading.strAddressFOX;
+        for (let i = 1; i < DealData.PointsLoading.length; i++) {
+            tempAdr += `; ` + DealData.PointsLoading[i].PointLoading.strAddressFOX;
+        }
+        tempAdr += ` - ` + DealData.PointsUnLoading[0].PointUnLoading.strAddressFOX;
+        for (let i = 1; i < DealData.PointsUnLoading.length; i++) {
+            tempAdr += `; ` + DealData.PointsUnLoading[i].PointUnLoading.strAddressFOX;
+        }
+        return tempAdr;
+    }catch (e) {
+        await console.log(`${e} \n FAIL in GetDealMarshrut`);
+        return ``;
+    }
+}
+//----------------------------------------
+array_flip = async function ( trans )
+{
+    let key, tmp_ar = {};
+
+    for ( key in trans )
+    {
+        if ( trans.hasOwnProperty( key ) )
+        {
+            tmp_ar[trans[key]] = key;
+        }
+    }
+
+    return tmp_ar;
+}

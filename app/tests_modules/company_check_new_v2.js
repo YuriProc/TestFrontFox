@@ -41,19 +41,19 @@ let CompanyCheckNewV2 = async (browser, page, CompanyData) => {
 
         //await TempStop(page);
         // Отфильтровать по ЕДРПОУ
-        resOk = await NewCompanyTable.FilterInTableEDRPOU(CompanyData.strCompanyCode);
+        resOk = await NewCompanyTable.FilterInTableEDRPOU();
         if (!resOk) {
-            throw `FAIL => NewCompanyTable.FilterInTableEDRPOU(${CompanyData.strCompanyCode})`;//<--специальный вызов ошибки!
+            throw `FAIL => NewCompanyTable.FilterInTableEDRPOU()`;//<--специальный вызов ошибки!
         }
         //Проверить, что в Таблице ТОЛЬКО одна строка с таким ЕДРПОУ
-        resOk = await NewCompanyTable.CheckInTableEDRPOU(CompanyData.strCompanyCode);
+        resOk = await NewCompanyTable.CheckInTableEDRPOU();
         if (!resOk) {
-            throw `FAIL => NewCompanyTable.CheckInTableEDRPOU(${CompanyData.strCompanyCode})`;//<--специальный вызов ошибки!
+            throw `FAIL => NewCompanyTable.CheckInTableEDRPOU()`;//<--специальный вызов ошибки!
         }
         // Открыть карточку Компании (клик на карандаш)
-        resOk = await NewCompanyTable.OpenAndCheckCompany(CompanyData.strCompanyCode);
+        resOk = await NewCompanyTable.OpenAndCheckCompany();
         if (!resOk) {
-            throw `FAIL => NewCompanyTable.OpenAndCheckCompany(${CompanyData.strCompanyCode})`;//<--специальный вызов ошибки!
+            throw `FAIL => NewCompanyTable.OpenAndCheckCompany()`;//<--специальный вызов ошибки!
         }
 
         // await console.log(`CheckInTableEDRPOU ${CompanyData.strCompanyID}`);
@@ -88,7 +88,7 @@ let CompanyCheckNewV2 = async (browser, page, CompanyData) => {
         //     throw `FAIL => WaitForElementIsPresentByXPath(${xPath})`;
         // }
         // // Вводим код ЕДРПОУ
-        // resOk = await SetInputByXPath(page, xPath, CompanyData.strCodeCompany);
+        // resOk = await SetInputByXPath(page, xPath, CompanyData.strCompanyCode);
         // if (!resOk) {
         //     throw `FAIL => SetInputByXPath(${xPath})`;
         // }
@@ -136,9 +136,9 @@ let CompanyCheckNewV2 = async (browser, page, CompanyData) => {
         // }
         // // Проверим код компании
         // strCheck = await ElementGetValue(page, 0, xPath);
-        // if ( strCheck !== CompanyData.strCodeCompany ){
+        // if ( strCheck !== CompanyData.strCompanyCode ){
         //     enableError = true;
-        //     tempStr = `=> FAIL => (ЕДРПОУ\\ИНН !== CompanyData.strCodeCompany)(${strCheck} !== ${CompanyData.strCodeCompany})`;
+        //     tempStr = `=> FAIL => (ЕДРПОУ\\ИНН !== CompanyData.strCompanyCode)(${strCheck} !== ${CompanyData.strCompanyCode})`;
         //     await console.log('\x1b[38;5;1m', tempStr , '\x1b[0m');
         //     g_StrOutLog+= tempStr + `\n`;
         //     //throw `     FAIL => (ЕДРПОУ\\ИНН !== CompanyData.strCompanyCode)(${strCheck} !== ${CompanyData.strCompanyCode})`;
@@ -259,7 +259,7 @@ let CompanyCheckNewV2 = async (browser, page, CompanyData) => {
         //
         //
         // if (enableError){
-        //     throw `при проверке Компании ${CompanyData.strCodeCompany} были несоответствия`;
+        //     throw `при проверке Компании ${CompanyData.strCompanyCode} были несоответствия`;
         // }
 
 

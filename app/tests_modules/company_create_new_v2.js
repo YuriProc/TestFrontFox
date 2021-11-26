@@ -20,6 +20,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
     let ElPresent1,ElPresent2,ElPresent3,ElPresent4;
     //let TypesCompPres = [false,false,false,false];
     let findCreatedCompanyOk = false;
+    let ResErrors = false;
     try {
     await page.setViewport({width: g_width, height: g_height});
 
@@ -61,6 +62,10 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         if (!resOk) {
             throw 'NewCompany.CheckBossPresent(); = FAIL!"';//<--специальный вызов ошибки!
         }
+        resOk = await NewCompany.CheckDocumentWriterPresent();
+        if (!resOk) {
+            throw 'NewCompany.CheckDocumentWriterPresent(); = FAIL!"';//<--специальный вызов ошибки!
+        }
         resOk = await NewCompany.AddNewPhoneNumber();
         if (!resOk){
             throw `FAIL => NewCompany.AddNewPhoneNumber`;
@@ -92,7 +97,8 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             }
             resOk = await NewCompany.AddNewLocation(CompanyData.LocationData1);
             if (!resOk) {
-                throw `FAIL => NewCompany.AddNewLocation(CompanyData.LocationData1);`;
+                await console.log('\x1b[38;5;1m\t', `AddNewLocation(${CompanyData.LocationData1.strAddressFOX})) - FAIL !!!`, '\x1b[0m');
+                //throw `FAIL => NewCompany.AddNewLocation(CompanyData.LocationData1);`;
             }
 
             CompanyData.LocationData2.strCompanyName = CompanyData.strCompanyName;
@@ -105,7 +111,9 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             }
             resOk = await NewCompany.AddNewLocation(CompanyData.LocationData2);
             if (!resOk) {
-                throw `FAIL => NewCompany.AddNewLocation(CompanyData.LocationData2);`;
+                ResErrors = true;
+                await console.log('\x1b[38;5;1m\t', `AddNewLocation(${CompanyData.LocationData2.strAddressFOX})) - FAIL !!!`, '\x1b[0m');
+                //throw `FAIL => NewCompany.AddNewLocation(CompanyData.LocationData2);`;
             }
         }//----------------------------------
         // Если есть тип Перевозчик, то создать Водилу и Тягач и Прицеп
@@ -117,7 +125,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             }
 
         }else{
-            await console.log(`НЕ (Перевозчик)`);
+            // await console.log(`НЕ (Перевозчик)`);
         }
 
 
@@ -143,7 +151,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
 
 // Компания успешно сохранена!
 
-        let WarningText = await WarningsRead(page, 11000);
+        let WarningText = await WarningsRead(page, 21000);
 
 
         if(await SubStrIsPresent('Компания успешно сохранена!', WarningText)){
@@ -152,9 +160,9 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             resOk = false;
         }
 
-        if (resOk) {
+        if (resOk && !ResErrors) {
             //await console.log('\x1b[38;5;2m', "Вижу =>", xPath, '\x1b[0m');
-            await console.log('\x1b[38;5;2m', `WarningText = ${WarningText}` , '\x1b[0m');
+            await console.log('\x1b[38;5;2m\t', `WarningText = ${WarningText}` , '\x1b[0m');
             g_StatusCurrentTest = 'Пройден';
             await g_SuccessfulTests++;
             await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
@@ -164,7 +172,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             //return CompanyData;//<------------------EXIT !!!
         }else {
             //await console.log('\x1b[38;5;1m', "Не Вижу =>", xPath, '\x1b[0m');
-            await console.log('\x1b[38;5;1m', "!!!! На странице Компании что то пошло не так !!!" , '\x1b[0m');
+            await console.log('\x1b[38;5;1m', "!!!! На странице Компании были ошибки !!!" , '\x1b[0m');
             await console.log('\x1b[38;5;1m', `WarningText = ${WarningText}` , '\x1b[0m');
             g_StatusCurrentTest = 'Провален !!!';
             await g_FailedTests++;

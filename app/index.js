@@ -90,7 +90,7 @@ let OpenFox = async () => {
         browser = await LPage.StartBrowser();
 
         //let strLoginCrmFoxURL = g_FrontCrmFoxURL + '/login';
-        let strLoginCrmFoxURL = g_FrontCrmFoxURL;
+        let strLoginCrmFoxURL = g_FrontCfoFoxURL;// g_FrontCrmFoxURL;
         page = await LPage.BrowserGetPage(browser, strLoginCrmFoxURL);
 
 
@@ -138,6 +138,10 @@ let OpenFox = async () => {
 
 
 
+
+// await TempStop(page, `---- BEFORE -----`);
+        //--------
+
         //throw 'НЕ ОШИБКА => Тостер ВЫХОД ЗАПЛАНИРОВАННЫЙ OK!!!';
 
         //CodeCompany = '40465590';//40894612 +//40864216//40992677//40802689//33322524//33343916//33693475//26388251
@@ -151,67 +155,100 @@ let OpenFox = async () => {
 
         for(let i=1;i<=1000;i++) {
 
-            //////// oDataVariables = await OpenVariables.SetAllDataVariables();
-            // await Data.SetAllDataVariables(); // <---- OK
-            // Data.CompanyData1.strCompanyCode = '14180856';//'43092634';//'14180856';
-            // Data.CompanyData1.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
-            // Data.CompanyData1.EmailData.strEmail = 'mail' + await randomInt(1001010, 9989999) + '@test.gmail';
-            // Data.CompanyData1.LinkData.strLink = await GetFunnyUrl('Funny_Page_URL') + '/x='+ await randomInt(1001010, 9989999);
-            // Data.CompanyData1.LocationData2.strAddressFOX = await GetFunnyStr('StrAddressFunny');
-            // Data.CompanyData1.LocationData2.ContactData.PhoneData.strPhoneNumber = '38067' + await randomInt(1001010, 9989999);
-            // Data.CompanyData1.LocationData2.ContactData.strINN = '' + await randomInt(1001001001, 9991999199);
-            // Data.CompanyData1.LocationData2.ContactData.strLastName = await GetFunnyStr('StrLastNameFunny');//Фамилия
-            // Data.CompanyData1.LocationData2.ContactData.strFirstName = await GetFunnyStr('StrFirstNameFunny');//Имя
-            // Data.CompanyData1.LocationData2.ContactData.strMiddleName = await GetFunnyStr('StrMiddleNameFunny');//Отчество
+             await Data.SetAllDataVariables(); // <---- OK
+
 
 
 
 
 await console.log(`NumTests=${i}`);
-            // Data.CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData1);
-            // if (!Data.CompanyData1.returnResult) {
-            //     //throw `Не получилось создать компанию (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
-            //     await console.log(`Не получилось создать компанию (${Data.CompanyData1.strCompanyCode})`);
-            //
-            // }
-            // await WaitRender(page);
-            //
-            // // X) создаём тестовую компанию CompanyData2
-            // Data.CompanyData2.strCompanyCode = '00190928';//'14180856';//'43092634';//'14180856';
-            // Data.CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData2);
-            // if (!Data.CompanyData2.returnResult) {
-            //     //throw `Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
-            //     await console.log(`Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`);
-            // }
-            // // X) Проверяем созданную тестовую компанию CompanyData2
-            // Data.CompanyData2 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, Data.CompanyData2);
-            // if (!Data.CompanyData2.returnResult) {
-            //     throw `FAIL => CompanyCheckNewV2 (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
-            // }
+           // await WaitMS(5000);
+            Data.DealData1.strDealID = `41846`;
+            Data.DealData1.strStatusID = `2`;
+            Data.DealData1.strClientCompanyName = `ТОВ "ИКС СПРИНТ"`;
+            Data.DealData1.ClientFreights[0].Amount = `500`;
+            Data.DealData1.PointsLoading[0].PointLoading.strAddressFOX = `Херсон`;
+            Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
+            await TempStop(page);
+          // //    Data.CompanyData1.strCompanyCode = `40253046`;
+          //   Data.CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData1);
+          //   // await TempStop(page);
+          //
+          //   if (!Data.CompanyData1.returnResult) {
+          //       //throw `Не получилось создать компанию (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
+          //       await console.log(`Ошибки при создании компании (${Data.CompanyData1.strCompanyCode})`);
+          //   }
+          //   await WaitRender(page);
+          //   // X) Проверяем созданную тестовую компанию CompanyData2
+          //   Data.CompanyData1 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, Data.CompanyData1);
+          //   if (!Data.CompanyData1.returnResult) {
+          //       throw `FAIL => CompanyCheckNewV2 (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
+          //   }
+          //
+          //   // X) создаём тестовую компанию CompanyData2
+          // //  Data.CompanyData2.strCompanyCode = '00190928';//'14180856';//'43092634';//'14180856';
+          //   Data.CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData2);
+          //   if (!Data.CompanyData2.returnResult) {
+          //       //throw `Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
+          //       await console.log(`Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`);
+          //   }
+          //   // X) Проверяем созданную тестовую компанию CompanyData2
+          //   Data.CompanyData2 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, Data.CompanyData2);
+          //   if (!Data.CompanyData2.returnResult) {
+          //       throw `FAIL => CompanyCheckNewV2 (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
+          //   }
 // Создаём новую сделку
-            // Client
-            Data.CompanyData1.strCompanyName = `ТОВ "МЕГАЛАТ"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // ТОВ "ОМЕГА"// <-временно тут
-            Data.CompanyData1.strCompanyCode = `39061081`;//`14180856`; // '14180856'; // 30982361
-            Data.CompanyData1.strCompanyID = `15774`;
+           // Client
+            Data.CompanyData1.strCompanyName = `ТОВ "ТРАНСАГЕНТСТВО ДЕРЕВО"`;//`ТОВ "БЕЛ ПЛЮС ГРУП"`;//`ТОВ "ФРЕЙМ РЕНТАЛ"`;//`ПП "ПРИМ АГРО"`;//`ТОВ "МЕГАЛАТ"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // ТОВ "ОМЕГА"// <-временно тут
+            Data.CompanyData1.strCompanyCode = `35917653`;//`42329394`;//`39311015`; // `39061081`;//`14180856`; // '14180856'; // 30982361
+            Data.CompanyData1.strCompanyID = `18576`;// `15774`;
+            Data.CompanyData1.ContractData.strContractOurCompany = `СТАВАНГЕР`;
+            Data.CompanyData1.strCargoType = `Запчастини`;
+            Data.CompanyData1.strCargoCost = `100500`;
+            Data.CompanyData1.LocationData1.strAddressFOX = `Сискі`;
+            Data.CompanyData1.LocationData1.strAddressFOXfromGoogle = `Сискі, Польща`;
+            Data.CompanyData1.LocationData2.strAddressFOX = `Лобково`;
+            Data.CompanyData1.LocationData2.strAddressFOXfromGoogle = `Лобково, Московская обл., 143151`;
+
+
+            // Transporter
+            Data.CompanyData2.strCompanyName = `ТОВ "ФРЕЙМ РЕНТАЛ"`;//`АТ "ПОКРОВСЬКИЙ ГЗК"`;//`ТОВ "ФОКС ТРАНС"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // <-временно тут
+            Data.CompanyData2.strCompanyCode = `39311015`;//`00190928`; //38215221`;//`14180856`; // '14180856';
+            Data.CompanyData2.strCompanyID = `6652`;// `12970`;
+            Data.CompanyData2.ContractData.strContractOurCompany = `ПЕРЕВОЗ`;
+            Data.CompanyData2.DriverData.strLastName = `Гендальф`;
+            Data.CompanyData2.DriverData.strFirstName = `Графон`;
+            Data.CompanyData2.DriverData.strMiddleName = `Алибабаевич`;
+            Data.CompanyData2.DriverData.strContactID = `38576`;
+            Data.CompanyData2.DriverData.PhoneData.strPhoneNumber = `380676182637`;
+            Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strLicensePlate = `FF1252KK`;
+            Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strVehicleID = `62899`;
+            Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strLicensePlate = `PP6961TT`;
+            Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleID = `62900`;
+
             Data.DealData1.strClientCompanyName = Data.CompanyData1.strCompanyName;
             Data.DealData1.strClientCompanyCode = Data.CompanyData1.strCompanyCode;
             Data.DealData1.strClientCompanyID = Data.CompanyData1.strCompanyID;
-            Data.DealData1.strOurCompanyWithClient = `СТАВАНГЕР`; //CompanyData1.ContractData.strContractOurCompany// ТОВ "СТАВАНГЕР"
-            // Transporter
-            Data.CompanyData2.strCompanyName = `АТ "ПОКРОВСЬКИЙ ГЗК"`;//`ТОВ "ФОКС ТРАНС"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // <-временно тут
-            Data.CompanyData2.strCompanyCode = `00190928`; //38215221`;//`14180856`; // '14180856';
-            Data.CompanyData2.strCompanyID = `7490`;// `12970`;
-            Data.CompanyData2.ContractData.strContractOurCompany = `ПЕРЕВОЗ`;
-            Data.CompanyData2.DriverData.strLastName = `Присунько`;
-            Data.CompanyData2.DriverData.strFirstName = `Графон`;
-            Data.CompanyData2.DriverData.strMiddleName = `Вениаминович`;
-            Data.CompanyData2.DriverData.strContactID = `36954`;
-            Data.CompanyData2.DriverData.PhoneData.strPhoneNumber = `380678607000`;
-            Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strLicensePlate = `FF5978KK`;
-            Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strVehicleID = `61749`;
-            Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strLicensePlate = `PP5030TT`;
-            Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleID = `61750`;
+            Data.DealData1.strOurCompanyWithClient =  Data.CompanyData1.ContractData.strContractOurCompany// `СТАВАНГЕР`;
+            Data.DealData1.strCargoType = Data.CompanyData1.strCargoType;
+            Data.DealData1.strCargoCost = Data.CompanyData1.strCargoCost;
+            Data.DealData1.PointsLoading[0].PointLoading.strAddressFOX = Data.CompanyData1.LocationData1.strAddressFOX;
+            Data.DealData1.PointsLoading[0].PointLoading.strAddressFOXfromGoogle = Data.CompanyData1.LocationData1.strAddressFOXfromGoogle;
+            Data.DealData1.PointsLoading[0].PointLoading.fromCompany = true;
+            Data.DealData1.PointsLoading[1].PointLoading.strAddressFOX = `Херсон`;
+            Data.DealData1.PointsLoading[1].PointLoading.strAddressFOXfromGoogle = `вулиця Домобудівельна, Херсон, Херсонська область, Україна, 73000`;
+            Data.DealData1.PointsLoading[1].PointLoading.fromCompany = false;
+            Data.DealData1.PointsUnLoading[0].PointUnLoading.strAddressFOX = Data.CompanyData1.LocationData2.strAddressFOX;
+            Data.DealData1.PointsUnLoading[0].PointUnLoading.strAddressFOXfromGoogle = Data.CompanyData1.LocationData2.strAddressFOXfromGoogle;
+            Data.DealData1.PointsUnLoading[0].PointUnLoading.fromCompany = true;
+            Data.DealData1.PointsUnLoading[1].PointUnLoading.strAddressFOX = `Одеса`;
+            Data.DealData1.PointsUnLoading[1].PointUnLoading.strAddressFOXfromGoogle = `Хутірська вулиця, 70, Одеса, Одеська область, Україна, 65000`;
+            Data.DealData1.PointsUnLoading[1].PointUnLoading.fromCompany = false;
+            Data.DealData1.strResponsibleFOX = `Тестін Сергій`;
+            Data.DealData1.strLogist = Data.LoginDataT.strUserLastName + ` ` + Data.LoginDataT.strUserFirstName + ` ` + Data.LoginDataT.strUserMiddleName;
 
+
+            Data.DealData1.PointsUnLoading[0].PointUnLoading.strAddressFOXfromGoogle = Data.CompanyData1.LocationData2.strAddressFOXfromGoogle;
             Data.DealData1.strTransporterCompanyName = Data.CompanyData2.strCompanyName; // Заполнить ПЕРЕД выполнением Теста
             Data.DealData1.strTransporterCompanyCode = Data.CompanyData2.strCompanyCode; // Заполнить ПЕРЕД выполнением Теста
             Data.DealData1.strTransporterCompanyID = Data.CompanyData2.strCompanyID; // Заполнить ПЕРЕД выполнением Теста
@@ -228,19 +265,28 @@ await console.log(`NumTests=${i}`);
             Data.DealData1.strTrailerID = Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleID;
 
             Data.DealData1 = await DealCNPage.DealCreateNew(browser, page, Data.DealData1);
+            //await TempStop(page);
             if (Data.DealData1.returnResult) {
 
-                // 12.1) Проверяем новую сделку
+                //12.1) Проверяем новую сделку
                 Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
+
             }
+
+
+            if(!g_ShowActionInBrowser){
+                await browser.close();
+            }
+            fs_log.writeFileSync(g_LogFileName, g_StrOutLog);
+            await TempStop(page, `---- Здесь index -----`);
             if (Data.DealData1.returnResult) {
                 // 12.2) Устанавливаем статус сделки
-                Data.DealData1.strStatus = 'Экспортировано в фокс';
-                Data.DealData1 = await DealSetStatusPage.DealSetStatus(browser, page, Data.DealData1);
+                //Data.DealData1.strStatus = 'Экспортировано в фокс';
+                //Data.DealData1 = await DealSetStatusPage.DealSetStatus(browser, page, Data.DealData1);
             }
 
-await console.log(`index TempStop`);
-await TempStop(page);
+// await console.log(`index TempStop`);
+// await TempStop(page);
         } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
 
 
@@ -249,18 +295,18 @@ await TempStop(page);
         // X) Проверяем созданную тестовую компанию CompanyData1
         CompanyData1 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, CompanyData1);
         if (!CompanyData1.returnResult) {
-            throw `FAIL => CompanyCheckNewV2 (${CompanyData1.strCodeCompany})`;//<--специальный вызов ошибки!
+            throw `FAIL => CompanyCheckNewV2 (${CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
         }
 
 
 
         // X) проверяем наличие тестовой компании CompanyData2
-        returnResult = await CCEPage.CompanyCheckExist(page, CompanyData2.strCodeCompany);
-        await console.log('\x1b[38;5;2m', "         CompanyCheckExist(", CompanyData2.strCodeCompany, ")=>", returnResult, '\x1b[0m');
+        returnResult = await CCEPage.CompanyCheckExist(page, CompanyData2.strCompanyCode);
+        await console.log('\x1b[38;5;2m', "         CompanyCheckExist(", CompanyData2.strCompanyCode, ")=>", returnResult, '\x1b[0m');
         // X) создаём тестовую компанию CompanyData2
         CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, CompanyData2);
         if (!CompanyData2.returnResult) {
-            throw `Не получилось создать компанию (${CompanyData2.strCodeCompany})`;//<--специальный вызов ошибки!
+            throw `Не получилось создать компанию (${CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
         }
         //await console.log(`Created => CompanyData2:`,  CompanyData2);
         // X) Проверяем созданную тестовую компанию CompanyData2

@@ -54,7 +54,7 @@ if (returnResult) {
 
 
 CompanyData1 = {
-    strCodeCompany : CodeCompany,
+    strCompanyCode : strCompanyCode,
     strCompanyTypes : [ 'Заказчик' , 'Перевозчик', ], // Заказчик // Перевозчик // Экспедитор
     boolIsOurCompany : false,
     boolNeedCheck : false,

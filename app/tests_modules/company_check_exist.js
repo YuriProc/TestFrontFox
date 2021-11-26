@@ -1,5 +1,5 @@
-let CompanyCheckExist = async (page, strCodeCompany) => {
-    const nameTest = NameFunction()+'->"' + strCodeCompany + '"';
+let CompanyCheckExist = async (page, strCompanyCode) => {
+    const nameTest = NameFunction()+'->"' + strCompanyCode + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
@@ -128,7 +128,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
             throw `FAIL => ClickByXPath (${xPath})`;
         }
         // перезаписываем то что в инпуте
-        resOK = await SetInputByXPath(page,xPath,strCodeCompany); //strCompanyCode
+        resOK = await SetInputByXPath(page,xPath,strCompanyCode); //strCompanyCode
         if (!resOK){
             throw `FAIL => SetInputByXPath (${xPath})`;
         }
@@ -139,7 +139,7 @@ let CompanyCheckExist = async (page, strCodeCompany) => {
             throw `FAIL => ClickByXPath (${xPath})`;
         }
         // проверяем есть ли строки
-        xPath = `//td[@aria-colindex="5"][@role="cell"]/a[contains(text(), "${strCodeCompany}")]`;//strCompanyCode
+        xPath = `//td[@aria-colindex="5"][@role="cell"]/a[contains(text(), "${strCompanyCode}")]`;//strCompanyCode
         ElPresent1 = await WaitForElementIsPresentByXPath(4000, page, xPath);
 
 

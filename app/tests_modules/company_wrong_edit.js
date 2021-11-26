@@ -36,8 +36,8 @@ ScrollAndClickSave = async function (page) {
     return false;
 }
 //
-let CompanyWrongEdit = async (page, strCodeCompany) => {
-    const nameTest = NameFunction()+'->"' + strCodeCompany + '"';
+let CompanyWrongEdit = async (page, strCompanyCode) => {
+    const nameTest = NameFunction()+'->"' + strCompanyCode + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
@@ -75,14 +75,14 @@ let CompanyWrongEdit = async (page, strCodeCompany) => {
             throw 'ClickByXPath(//input[@placeholder="ЕДРПОУ\\ИНН"])';//<--специальный вызов ошибки!
         }
         //Вводим код Тестовой компании
-        resOk = await TypeByXPath(page, '//input[@placeholder="ЕДРПОУ\\ИНН"]',strCodeCompany);
+        resOk = await TypeByXPath(page, '//input[@placeholder="ЕДРПОУ\\ИНН"]',strCompanyCode);
         //Ждём загрузки страницы
         resOk = await WaitUntilPageLoads(page);
                 //await console.log('\x1b[38;5;2m', "WaitUntilPageLoads" ,resOk , '\x1b[0m');
         //проверяем что нет надписи (//b[contains(text(), "Ничего не найдено")])
         resOk = await ElementIsPresent(page,'//b[contains(text(), "Ничего не найдено")]');
         if (resOk) {
-            throw `Компании с таким ЕДРПОУ (${strCodeCompany}) нет в базе`;//<--специальный вызов ошибки!
+            throw `Компании с таким ЕДРПОУ (${strCompanyCode}) нет в базе`;//<--специальный вызов ошибки!
         }
         await page.waitFor(500);
         //Клик по кнопке Редактировать table__option

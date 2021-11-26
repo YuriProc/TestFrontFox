@@ -30,13 +30,23 @@ class Contract{
         this.xContract = `//div[contains(@class, "crm-view__section-block")]/div[@class="container-fluid"]//div[@class="relations__item"]/label[contains(text(), "Договор")]`;
         //Табличное редактирование, вкладка "Договора" (Активная)
         this.xTabContracts = `//li[@role="presentation"]/a[@role="tab"][@aria-selected="true"][contains(text(),"Договора")]`;
+        // Активная Таблица
+        this.xActiveTable = `//div[@role="tabpanel"][@aria-hidden="false"]//table[@role="table"]`;
+        // поле в шапке "# договора" aria-colindex="4"
+        this.xHeaderNumContract = this.xActiveTable + `//th[@role="columnheader"][div[contains(text(),"# договора")]]`;
+        // Редактировать Договор "Карандаш" (Num)
+        this.xEditContractNum = this.xActiveTable + `//div[@class="edit-icon"]`;
         //Табличное редактирование, вкладка "Договора", первая кнопка "Корзина" (Удаление Договора - первого в таблице)
-        this.xDelete = `//table[@role="table"][.//th[@role="columnheader"]/div[contains(text(),"# договора")]]//div[@data-id="0"][@class="delete-icon"]`;
+        this.xFirstDelete = `//table[@role="table"][.//th[@role="columnheader"]/div[contains(text(),"# договора")]]//div[@data-id="0"][@class="delete-icon"]`;
+        //Табличное редактирование, вкладка "Договора", кнопки "Корзина" (Удаление Договора) NUM
+        this.xNumDelete = `//table[@role="table"][.//th[@role="columnheader"]/div[contains(text(),"# договора")]]//div[@class="delete-icon"]`;
         // Табличное редактирование, кнопка "+ Добавить Договора"
         this.xPlusContract = `//div[@class="tab-pane active"]/div[@class="data-table-manager__tab-footer d-flex"]`;
         this.xPlusContract+= `/button[@type="button"][contains(text(), "Добавить Договора")]`;
         //Модалка договора тайтл "Договор"
         this.xTitleContract = `//div[contains(@id, "company-order-creation")][@class="modal-body"]//h5[contains(text(), "Договор")]`;
+        // Чек "Наличие оригинала"
+        this.xCheckHaveOriginal = `//label/span[contains(text(),"Наличие оригинала")]`;
         //ДропДаун "От какой фирмы работаем с контактом" ?? Компанией
         this.xOurCompanyInput =`//fieldset[./legend[contains(text(), "От какой фирмы работаем с")]]//div[@class="multiselect__select"]`;
         // Выбор нашей компании в Дропдауне
@@ -51,13 +61,16 @@ class Contract{
         this.xButtonCreateContract=`//div[contains(@id,"company-order-creation")]//button[@type="submit"][contains(text(), "Создать договор")]`;
         // Договор Кнопка "Создать договор" Дизейблед
         this.xButtonCreateContractDisabled=`//div[contains(@id,"company-order-creation")]//button[@type="submit"][@disabled="disabled"]`;
+        // Кнопка "Редактировать договор"
+        this.xButtonEditContract = `//button[contains(text(), "Редактировать договор")]`;
         // Закрыть Таблицу Договора табличное редактирование
 //!!!!!!!!!!!!!! не стабильно нужно чекать сообщения в чипсах !!!!!!!!
         this.xCloseTable=`//button[@type="button"][@class="close"]`;
 
 
 
-
+        // Сообщения
+        this.warnContractSuccessfullyCreated = `Договор успешно создан`;
     }//constructor( page , CompanyData)
     //---------------------------------------------
     async clickContract(){
@@ -79,6 +92,107 @@ class Contract{
             return false;
         }
     } //async clickContract()
+    //---------------------------------------------
+    async findContract(strNumContract){
+        let resOk;let strNumPosHeader;
+        let strNumPosContract;
+        //Блок "Контактные данные" пункт "Договор" открытое табличное редактирование
+        try {
+            // поле в шапке "# договора" aria-colindex="4"
+            strNumPosHeader = await ElementGetAttribute(this.page,0, `aria-colindex`, this.xHeaderNumContract);
+            if(strNumPosHeader === ``){
+                throw `FAIL => Блок "Контактные данные" пункт "Договор" поле в шапке "# договора" не найдено(${this.xHeaderNumContract})`;
+            }
+            //[contains(text(),"${strNumContract}")]
+            let tempX = this.xActiveTable + `//tr[@role="row"]//td[@role="cell"][@aria-colindex="${strNumPosHeader}"]`;
+            // await console.log(`tempX=${tempX}`);
+            let linkHandlers = await this.page.$x(tempX);
+            let tempLength = await linkHandlers.length;
+            // await console.log(`tempLength=${tempLength}`);
+            let tempPos = -1;
+            let PropInnerText;
+            for(let i = 0; i < tempLength; i++){
+                PropInnerText = await this.page.evaluate(elm => elm.innerText, linkHandlers[i]);
+                // await console.log(`PropInnerText(${i})=${PropInnerText}`);
+                if(PropInnerText === strNumContract){
+                    tempPos = i;
+                }
+            }// for(let i = 0; i < tempLength; i++){
+            if(tempPos === -1){
+                throw `FAIL => Блок "Контактные данные" пункт "Договор" не найдена строка с договором №(${strNumContract})`;
+            }
+
+            return tempPos;
+        }catch (e) {
+            await console.log(`${e} in findContract(${strNumContract})`);
+            return -1;
+        }
+    } //async findContract(strNumContract)
+    //---------------------------------------------
+    async openContract(numPos){
+        //Блок "Контактные данные" пункт "Договор" открытое табличное редактирование
+        try {
+            let resOk;
+            // Редактировать Договор "Карандаш" (Num)
+            resOk = await ClickByXPathNum(this.page, numPos, this.xEditContractNum);
+            if (!resOk) {
+                throw `FAIL => Редактировать Договор "Карандаш" ClickByXPathNum(${numPos})(${this.xEditContractNum})`;
+            }
+            //Модалка договора тайтл "Договор"
+            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xTitleContract);
+            if (!resOk) {
+                throw `FAIL => Модалка договора тайтл "Договор" WaitForElementIsPresentByXPath(${this.xTitleContract})`;
+            }
+
+            return true;
+        }catch (e) {
+            await console.log(`${e} in openContract`);
+            return false;
+        }
+    } //async openContract()
+    //---------------------------------------------
+    async EditContractAddOriginalAndSave(){
+        //Открыта Модалка "Договор"
+        try {
+            let resOk;
+            // Клик по "Наличие оригинала"
+            // Чек "Наличие оригинала"
+            resOk = await ClickByXPath(this.page, this.xCheckHaveOriginal);
+            if (!resOk) {
+                throw `FAIL => Чек "Наличие оригинала" ClickByXPath(${this.xCheckHaveOriginal})`;
+            }
+            // кнопка "Редактировать договор" должна успеть Задизейблиться
+            await WaitRender(this.page);
+            // раздизейблить кнопку "Редактировать договор"
+            // Кнопка "Редактировать договор"
+            resOk = await ElementRemoveAttribute(this.page, 0, `disabled`, this.xButtonEditContract);
+            if (!resOk) {
+                throw `FAIL => раздизейблить кнопку "Редактировать договор" ElementRemoveAttribute(${this.xButtonEditContract})`;
+            }
+            resOk = await ClickByXPath(this.page, this.xButtonEditContract);
+            if (!resOk) {
+                throw `FAIL => Кнопка "Редактировать договор" ClickByXPath(${this.xButtonEditContract})`;
+            }
+            // await WaitRender(this.page);
+
+            let strWarn = await WarningsRead(this.page, 4000, false);
+            if (strWarn === ``) {
+                await console.log('\x1b[38;5;3m\t', `??? Странно нет сообщений после сохраниния Договора ???`, '\x1b[0m');
+            }else {
+                if (! await SubStrIsPresent(this.warnContractSuccessfullyCreated, strWarn)) {
+                    await console.log('\x1b[38;5;1m\t', `FAIL -> После создания договора есть ошибка (${strWarn}) - FAIL !!!`, '\x1b[0m');
+                    throw `Неизвестная ошибка создания Договора`;
+                } else {
+                    await console.log('\x1b[38;5;2m\t', `"Редактировать договор" (${strWarn}) - OK !`, '\x1b[0m');
+                }
+            }
+
+            return true;
+        }catch (e) {
+            await console.log(`${e} in EditContractAddOriginalAndSave`);
+            return false;
+        }
+    } //async EditContractAddOriginalAndSave()
     //---------------------------------------------
     async clickCloseContractTable(){
         // Закрыть Таблицу Договора табличное редактирование
@@ -104,22 +218,43 @@ class Contract{
     //---------------------------------------------
     async deleteAllContracts(){
         try {
-            let resOk, QElem;
+            let resOk, QElem, QElemX, strWarning;
             await WaitRender(this.page);
             //Табличное редактирование, вкладка "Договора", первая кнопка "Корзина" (Удаление Договора - первого в таблице)
-            QElem = await ElementGetLength(this.page, this.xDelete);
-            while(QElem>0) {
-                await console.log(`deleteAllContracts ${QElem}`);
-                resOk = await ClickByXPathNum(this.page, 0, this.xDelete);
+            // this.xDelete
+            //Табличное редактирование, вкладка "Договора", кнопки "Корзина" (Удаление Договора) NUM
+            // this.xNumDelete
+            QElem = await ElementGetLength(this.page, this.xNumDelete);
+            let QRetryWrong = 0; let QTry = 5;
+            while(QElem>0 && QTry>QRetryWrong && QElem>QRetryWrong) {
+                //await console.log(`QElem ${QElem}`);
+                g_strDialogInitiator = `Удаление Договора`;
+                resOk = await ClickByXPathNum(this.page, QRetryWrong, this.xNumDelete);
                 if (!resOk){
-                    await this.page.screenshot({path: g_PathSS + `screenshot_del_contract.png`, fullPage: true });
-                    await console.log(g_PathSS + `screenshot_del_contract.png`);
-                    await TempStop(this.page);
-                    throw `FAIL => Табличное редактирование, вкладка "Договора", первая кнопка "Корзина" (Удаление Договора - первого в таблице)(${this.xDelete})`;
+                    await this.page.screenshot({path: g_PathSS + `screenshot_FAIL_del_contract.png`, fullPage: true });
+                    await console.log(g_PathSS + `screenshot_FAIL_del_contract.png`);
+                    // await TempStop(this.page);
+                    throw `FAIL => Табличное редактирование, вкладка "Договора", первая кнопка "Корзина" (Удаление Договора - первого в таблице)(${this.xNumDelete})`;
                 }
-                await WaitUntilPageLoads(this.page);
-                QElem = await ElementGetLength(this.page, this.xDelete);
+                // await WaitRender(this.page);
+                strWarning = await WarningsRead(this.page, 2000,false);
+                await WarningsRemove(this.page);
+                await WaitRender(this.page);
+                QElemX = QElem;
+                //await console.log(`QElemX ${QElemX}`);
+                QElem = await ElementGetLength(this.page, this.xNumDelete);
+               // await console.log(`QElem ${QElem}`);
+                if (QElem === QElemX){
+                    //await console.log(`QElem ${QElem} : QElemX ${QElemX}`);
+                    QRetryWrong++;
+                    await console.log('\x1b[38;5;1m\t', `Warning !!! - (${strWarning}) - Warning !!!`, '\x1b[0m');
+                    await this.page.screenshot({path: g_PathSS + `screenshot_NOT_del_contract.png`, fullPage: true });
+                    await console.log(g_PathSS + `screenshot_NOT_del_contract.png`);
+                    await WarningsRemove(this.page);
+                    await WaitRender(this.page);
+                }
             }
+            // Нельзя удалить договор, у которого есть оригиналы!
             return true;
         }catch (e) {
             await console.log(`${e}`);
@@ -141,25 +276,39 @@ class Contract{
                 throw `FAIL => Модалка договора тайтл "Договор"(${this.xTitleContract})`;
             }
             //ДропДаун "От какой фирмы работаем с контактом" ?? Компанией
-            await ClickByXPath(this.page, this.xOurCompanyInput);
-            await this.page.waitFor(200);
-            await this.page.keyboard.type(this.ContractData.strContractOurCompany, {delay: 20});
-            // Выбор нашей компании в Дропдауне
-            resOk = await ClickByXPath(this.page, this.xOurCompanySelect);
-            if (!resOk){
-                //await TempStop(page);
-                throw `FAIL => Выбор нашей компании в Дропдауне(${this.xOurCompanySelect})`;
+            // await ClickByXPath(this.page, this.xOurCompanyInput);
+            // await this.page.waitFor(200);
+            // await this.page.keyboard.type(this.ContractData.strContractOurCompany, {delay: 20});
+            // // Выбор нашей компании в Дропдауне
+            // resOk = await ClickByXPath(this.page, this.xOurCompanySelect);
+            // if (!resOk){
+            //     //await TempStop(page);
+            //     throw `FAIL => Выбор нашей компании в Дропдауне(${this.xOurCompanySelect})`;
+            // }
+            // await WaitUntilPageLoads(this.page);
+            const {MultiSelect} = require("../sub_objects/drop_down_obj.js");
+            //(browser, page, xForward ,LegendText, Required, NeedStr)
+            let OurCompanySelect = new MultiSelect(this.browser, this.page, ``, `От какой фирмы работаем с`, true, this.ContractData.strContractOurCompany);
+            resOk = await OurCompanySelect.SetData();
+            if (!resOk) {
+                throw 'FAIL => OurCompanySelect.SetData(); = FAIL!"';//<--специальный вызов ошибки!
             }
-            await WaitUntilPageLoads(this.page);
+
             //Договор Инпут "Условие оплаты"
 
-            await ClickByXPath(this.page, this.xPaymentConditionInput);
-            await WaitUntilPageLoads(this.page);
-            //Договор ДропДаун Селект "Условие оплаты"
-            resOk = await ClickByXPath(this.page, this.xPaymentConditionSelect);
-            if (!resOk){
-                throw `FAIL => Договор ДропДаун Селект "Условие оплаты"(${this.xPaymentConditionSelect})`;
+            // await ClickByXPath(this.page, this.xPaymentConditionInput);
+            // await WaitUntilPageLoads(this.page);
+            // //Договор ДропДаун Селект "Условие оплаты"
+            // resOk = await ClickByXPath(this.page, this.xPaymentConditionSelect);
+            // if (!resOk){
+            //     throw `FAIL => Договор ДропДаун Селект "Условие оплаты"(${this.xPaymentConditionSelect})`;
+            // }
+            let PaymentConditionSelect = new MultiSelect(this.browser, this.page, ``, `Условие оплаты`, true, this.ContractData.strPaymentCondition);
+            resOk = await PaymentConditionSelect.SetData();
+            if (!resOk) {
+                throw 'FAIL => PaymentConditionSelect.SetData(); = FAIL!"';//<--специальный вызов ошибки!
             }
+
             // Договор Отсрочка Инпут
             await ClickByXPath(this.page, this.xPaymentDelay);
             if (!resOk){
@@ -184,7 +333,7 @@ class Contract{
             await WaitUntilXPathExist(this.page, 4000, this.xButtonCreateContractDisabled);
             resOk = await WarningsClick(this.page);
             if (resOk !== '') {
-                if ( await SubStrIsPresent('Договор успешно создан', resOk) ) {
+                if ( await SubStrIsPresent(this.warnContractSuccessfullyCreated, resOk) ) {
 
                 } else {
                 throw ` FAIL => После Содания Договора есть Ошибка:(${resOk})`;
@@ -193,9 +342,9 @@ class Contract{
             //await console.log(`Кнопка "Создать договор"раздизейблилась--------`);
             //await WaitUntilPageLoads(this.page);
             //Ждём в таблице ПЕРВЫЙ договор
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xDelete);
+            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xFirstDelete);
             if (!resOk) {
-                throw `FAIL => Ждём в таблице ПЕРВЫЙ договор(${this.xDelete})`;
+                throw `FAIL => Ждём в таблице ПЕРВЫЙ договор(${this.xFirstDelete})`;
             }
 
             await WaitRender(this.page);

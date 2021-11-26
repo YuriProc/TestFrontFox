@@ -1,5 +1,5 @@
-let CompanyCreateNew = async (page, strCodeCompany) => {
-    const nameTest = NameFunction()+'->"' + strCodeCompany + '"';
+let CompanyCreateNew = async (page, strCompanyCode) => {
+    const nameTest = NameFunction()+'->"' + strCompanyCode + '"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
@@ -42,7 +42,7 @@ let CompanyCreateNew = async (page, strCodeCompany) => {
         //await console.log('\x1b[38;5;2m', "Вижу => input[@id=\"code\"] ", '\x1b[0m');
         await page.click("input[id=code]");
         // Вводим код ЕДРПОУ
-        await page.type("input[id=code]",strCodeCompany);
+        await page.type("input[id=code]",strCompanyCode);
         // Жмём проверить в базе
         let linkButtonVerifyInBase = await page.$x("//span[contains(text(), 'Проверить в базе')]");
         await linkButtonVerifyInBase[0].click();

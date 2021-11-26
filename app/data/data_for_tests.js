@@ -7,12 +7,12 @@ class DataForTests {
     async SetAllDataVariables() {
         // Юзер 1 Данные для логина
         this.LoginDataT = {
-            strUserFirstName: 'Валентин',//'Валентин',// 'Тест', Синицький Валентин Петрович
-            strUserLastName: 'Синицький',//'Синицький',// 'Тостер',
-            strUserMiddleName: 'Петрович',//'Петрович',// 'Тостерович',
+            strUserFirstName: 'Олександр',//'Валентин',// 'Тест', Саліхов Олександр Нурісламович
+            strUserLastName: 'Саліхов',//'Синицький',// 'Тостер',
+            strUserMiddleName: 'Нурісламович',//'Петрович',// 'Тостерович',
             strLogin: 'test',
-            strEmail: 'sinickiy.v@transpower.app',//'sinickiy.v@transpower.app',//'test@test.com',
-            strPassword: '12345',
+            strEmail: `salikhov.a@transloyd.com`,//'sinickiy.v@transpower.app',//'sinickiy.v@transpower.app',//'test@test.com',
+            strPassword: `Pjiru`,//'12345',
             //ResolvedFailLogin : true, // <- Можно или нельзя Фейлиться по Email или Пароль
             // Если можно то в случае (Неверный e-mail или пароль) +1 g_SuccessfulTests
             // Если нельзя то в случае (Неверный e-mail или пароль) +1 g_FailedTests
@@ -35,7 +35,7 @@ class DataForTests {
             strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes: ['Заказчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
             strCargoType: 'Запчастини',
-            strCargoPrice: '100500',
+            strCargoCost: '100500',
             strCargoVehicleType: `Тент`,
             strCargoVehicleCapacity0: `20`,
             strCargoVehicleCapacity1: `22`,
@@ -53,7 +53,7 @@ class DataForTests {
                 strPaymentCondition: 'По банковским', // 'По банковским', 'По календарным'
             },
             LocationData1: {
-                strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', 'StrAddress'
+                strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', `Бухалово`,'StrAddress'
                 strAddressFOXfromGoogle: ``,
                 strAddressTTN: `Юридический адрес (Для ТТН и заявок)`,
                 strCategory: ['Грузополучатель', 'Грузоотправитель', 'Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
@@ -158,7 +158,7 @@ class DataForTests {
             strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes: ['Перевозчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
             strCargoType: 'Пляшка',//'Запчастини',
-            strCargoPrice: '100100',
+            strCargoCost: '100100',
             strCargoVehicleType: `Тент`,
             strCargoVehicleCapacity0: `20`,
             strCargoVehicleCapacity1: `22`,
@@ -210,6 +210,8 @@ class DataForTests {
                             strTypeOwner: 'Компания', // 'Контакт',
                             strDocument: 'Договор купли-продажи', // 'Неформально', 'По доверенности', 'По тех-пасспорту', 'Договор аренды нотариальный', '', '',
                             strSubjectOwner: '', // Заполнить перед созданием объекта из CompanyData !!!
+                            strVehicleEmptyWeight: ``,
+                            strVehicleMaxWeight: ``,
                         }
                     },
                     {
@@ -229,6 +231,8 @@ class DataForTests {
                             strTypeOwner: 'Компания', // 'Контакт',
                             strDocument: 'Договор купли-продажи', // 'Неформально', 'По доверенности', 'По тех-пасспорту', 'Договор аренды нотариальный', '', '',
                             strSubjectOwner: '', // Заполнить перед созданием объекта из CompanyData !!!
+                            strVehicleEmptyWeight: ``,
+                            strVehicleMaxWeight: ``,
                         }
                     },
                 ],
@@ -337,12 +341,16 @@ class DataForTests {
             strClientCompanyCode : ``, // Заполнить ПЕРЕД выполнением Теста
             strClientCompanyID : ``, // Заполнить ПЕРЕД выполнением Теста
             strOurCompanyWithClient: ``,//CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
-            strCargoName: `Поліетилен`, //'Алкоголь',
-            strCargoCost: `450000`, //'100500',
+            strClientDelay: ``, // Взять и проверить из соотв Договора
+            isCrossDoc: true,//true, // false
+            strCargoType: ``, // `Поліетилен`, //'Алкоголь', // Заполнить ПЕРЕД выполнением Теста
+            strCargoCost: ``, // `450000`, //'100500', // Заполнить ПЕРЕД выполнением Теста
+            strCargoWeight: `22.53`,  // `22.53`, // Заполнить ПЕРЕД выполнением Теста
             AutoCompleteCargo: true, // false
             strLevelMonitoringMC: 'Максимальный (Ночью на охраняемых)', // 'Автоматически', 'Максимальный (Ночью на охраняемых)', 'Максимальный (Движение ночью разрешено)',
             // 'Средний (Движение ночью разрешено)', 'Низкий', 'Не контролировать', 'Средний (Ночью на охраняемых)', 'Контроль загрузки и выгрузки',
-
+            strNumberTransportation: `NT-` + await + await randomInt(90010010, 99899899), // NT-92345678
+            strNumberInSet: await GetRandomStr('StrArrayNumberInSet'),
             ClientFreights: [{
                 Amount: '10500',
                 PaymentForm: `з ПДВ 20%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
@@ -374,6 +382,9 @@ class DataForTests {
                     PointLoading : {
                         strAddressFOX: `Бодуны`,//await GetFunnyStr('StrAddress'),
                         strAddressFOXfromGoogle: ``,
+                        fromCompany: true,
+                        strInDate: ``,
+                        strOutDate: ``,
 
                     }
                 },
@@ -381,6 +392,9 @@ class DataForTests {
                     PointLoading : {
                         strAddressFOX: `Хераково`,//await GetFunnyStr('StrAddress'),
                         strAddressFOXfromGoogle: ``,
+                        fromCompany: false,
+                        strInDate: ``,
+                        strOutDate: ``,
                     }
                 }
             ],
@@ -389,15 +403,25 @@ class DataForTests {
                     PointUnLoading : {
                         strAddressFOX: `Сучки`,//await GetFunnyStr('StrAddress'),
                         strAddressFOXfromGoogle: ``,
+                        fromCompany: true,
+                        strInDate: ``,
+                        strOutDate: ``,
                     }
                 },
                 {
                     PointUnLoading : {
-                        strAddressFOX: `Дрочево`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOX: `Сучки`,//await GetFunnyStr('StrAddress'),
                         strAddressFOXfromGoogle: ``,
+                        fromCompany: false,
+                        strInDate: ``,
+                        strOutDate: ``,
                     }
-                }
+                },
             ],
+            strCommentLoadind: ``,
+            strCommentUnLoadind: ``,
+            strResponsibleFOX: `Тестін Сергій`,
+            strLogist: ``,
 
             //strLicensePlate : 'TEST 3245 NUM',
             // strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
@@ -421,9 +445,9 @@ class DataForTests {
             strLicensePlate2: ``,//VehicleData2.strLicensePlate,//'BC7519XO',// KRONE BC7519XO
             strTrailerID: ``, // Заполнить ПЕРЕД выполнением Теста
             strFoxResponsible: 'Тостер',
-            strLogist: 'Тостер',
-            strDealID: '',
-            strStatus: '',
+            strLogistXXX: 'Тостер',
+            strDealID: '', // Появится потом автоматически
+            strStatusID: '',// Появится потом автоматически
             returnResult: false,
             returnStr: '',
         };//this.DealData1 -----------------------------------------------------------------------------------
@@ -443,13 +467,13 @@ let SetAllDataVariables = async () => {
 
         //--------------------------------------------------------------
         CompanyData1 = {
-            strCodeCompany: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+            strCompanyCode: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
             strCompanyID: '', // <= Заполнится автоматически при проверке Компании !!!
             strHref: '', // <= Заполнится автоматически при проверке Компании !!!
             strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes: ['Заказчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
             strCargoType: 'Запчастини',
-            strCargoPrice: '100500',
+            strCargoCost: '100500',
             strCargoVehicleType: `Тент`,
             strCargoVehicleCapacity0: `20`,
             strCargoVehicleCapacity1: `22`,
@@ -477,7 +501,7 @@ let SetAllDataVariables = async () => {
                 strIndustryType: 'Алкоголь',
                 strContactName: 'АА Джамшут ББ',
                 strCompanyName: 'ЧЛЕН',// Заполнить в перед созданием объекта из CompanyData !!!
-                strCodeCompany: ``,// Заполнить в перед созданием объекта из CompanyData !!!
+                strCompanyCode: ``,// Заполнить в перед созданием объекта из CompanyData !!!
                 strLocationName: `Название Локации1`,
                 ContactData: {
                     PhoneData: {
@@ -511,7 +535,7 @@ let SetAllDataVariables = async () => {
                 strIndustryType: 'Алкоголь',
                 strContactName: 'АА Джамшут ББ',
                 strCompanyName: 'ЧЛЕН',// Заполнить в перед созданием объекта из CompanyData !!!
-                strCodeCompany: ``,// Заполнить в перед созданием объекта из CompanyData !!!
+                strCompanyCode: ``,// Заполнить в перед созданием объекта из CompanyData !!!
                 strLocationName: `Название Локации2`,
                 ContactData: {
                     PhoneData: {
@@ -568,13 +592,13 @@ let SetAllDataVariables = async () => {
 
 //---------------------------------------------------------------------------------------------------------------------
         CompanyData2 = {
-            strCodeCompany: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
+            strCompanyCode: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
             strCompanyID: '', // <= Заполнится автоматически при проверке Компании !!!
             strHref: '', // <= Заполнится автоматически при проверке Компании !!!
             strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes: ['Перевозчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
             strCargoType: 'Пляшка',//'Запчастини',
-            strCargoPrice: '100100',
+            strCargoCost: '100100',
             strCargoVehicleType: `Тент`,
             strCargoVehicleCapacity0: `20`,
             strCargoVehicleCapacity1: `22`,
@@ -656,7 +680,7 @@ let SetAllDataVariables = async () => {
                 strIndustryType: 'Алкоголь',
                 strContactName: 'АА Джамшут ББ',
                 strCompanyName: 'ЧЛЕН',// Заполнить перед AddNewLocation из CompanyData !!!
-                strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+                strCompanyCode: ``,// Заполнить в AddNewLocation из CompanyData !!!
                 strLocationName: `Название Локации1`,
                 ContactData: {
                     PhoneData: {
@@ -690,7 +714,7 @@ let SetAllDataVariables = async () => {
                 strIndustryType: 'Алкоголь',
                 strContactName: 'АА Джамшут ББ',
                 strCompanyName: 'ЧЛЕН',// Заполнить в AddNewLocation из CompanyData !!!
-                strCodeCompany: ``,// Заполнить в AddNewLocation из CompanyData !!!
+                strCompanyCode: ``,// Заполнить в AddNewLocation из CompanyData !!!
                 strLocationName: `Название Локации2`,
                 ContactData: {
                     PhoneData: {
@@ -751,7 +775,7 @@ let SetAllDataVariables = async () => {
             strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
             strDriverLicenseNumber: 'DLN' + RNum,
             strCompanyName: CompanyData2.strCompanyName, //'ТРАНСЛОЙД',
-            strCodeCompany: CompanyData2.strCodeCompany,
+            strCompanyCode: CompanyData2.strCompanyCode,
         };
 //---------------------------------------------------------------------------------------------------------------------
 // Тягач

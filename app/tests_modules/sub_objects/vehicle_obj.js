@@ -50,6 +50,10 @@ class Vehicle {
         this.xInputCapacity = `//fieldset[legend[contains(text(), "Тоннаж")]]//input`;
         // Инпут "Обьем"
         this.xInputVolume = `//fieldset[legend[contains(text(), "Обьем")]]//input`;
+        // Инпут "Масса без груза (кг)"
+        this.xInputEmptyWeight = `//fieldset[legend[contains(text(), "Масса без груза (кг)")]]//input`;
+        // Инпут "Полная масса (кг)"
+        this.xInputMaxWeight = `//fieldset[legend[contains(text(), "Полная масса (кг)")]]//input`;
         // Кнопки "Тип загрузки" + [span[contains(text(), "${this.VehicleData.strLoadingTypes[i]}")]]
         this.xButtonsLoadingTypes = `//fieldset[legend[contains(text(),"Тип загрузки")]]//button[@type="button"]`;
         // Кнопки "Тип контейнера" + [span[contains(text(), "${this.VehicleData.strContainerType}")]]
@@ -687,11 +691,12 @@ class Vehicle {
             }
             await WaitRender(this.page);
             // Кнопка "Сохранить"
-            await console.log(`Сохраняем Транспорт ${this.VehicleData.strVehicleType} ${this.VehicleData.strLicensePlate}`);
+
             resOk = await ClickByXPath(this.page, this.xButtonSave);
             if (!resOk) {
                 throw `FAIL => SaveVehicle ClickByXPath(${this.xButtonSave})`;
             }
+            await console.log('\x1b[38;5;2m\t',`Сохранение Транспорта ${this.VehicleData.strVehicleType} ${this.VehicleData.strLicensePlate} - OK !!!`, '\x1b[0m');
             //span[@class="spinner-border"]
             // Спиннер формы
 
@@ -701,6 +706,8 @@ class Vehicle {
             return true;
         } catch (e) {
             await console.log(`${e} \n FAIL in SaveVehicle`);
+            await this.page.screenshot({path: g_PathSS + `SaveVehicle.png`, fullPage: true});
+            await console.log(g_PathSS + `screenshot_SaveVehicle.png`);
             return false;
         }
     }//async SaveVehicle()
@@ -825,7 +832,40 @@ class Vehicle {
         }
     }//async CreateNewVehicle()
     //----------------------------------------
+    async VehicleAddEmptyAndMaxWeights() {
+        let resOk;
+        try {
 
+            // Инпут "Масса без груза (кг)"
+            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xInputEmptyWeight);
+            if (!resOk) {
+                throw `FAIL => Инпут "Масса без груза (кг)" WaitForElementIsPresentByXPath(${this.xInputEmptyWeight})`;
+            }
+
+            resOk = await SetTextByXPath(this.page, this.xInputEmptyWeight, this.VehicleData.strVehicleEmptyWeight);
+            if (!resOk) {
+                throw `FAIL => Инпут "Масса без груза (кг)" SetTextByXPath(${this.xInputEmptyWeight})`;
+            }
+            await console.log('\x1b[38;5;2m\t', `Масса без груза (кг) добавлена (${this.VehicleData.strVehicleEmptyWeight}) - OK !!!`, '\x1b[0m');
+            // Инпут "Полная масса (кг)"
+            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xInputMaxWeight);
+            if (!resOk) {
+                throw `FAIL => Инпут "Полная масса (кг)" WaitForElementIsPresentByXPath(${this.xInputMaxWeight})`;
+            }
+            resOk = await SetTextByXPath(this.page, this.xInputMaxWeight, this.VehicleData.strVehicleMaxWeight);
+            if (!resOk) {
+                throw `FAIL => Инпут "Полная масса (кг)" SetTextByXPath(${this.xInputMaxWeight})`;
+            }
+            await console.log('\x1b[38;5;2m\t', `Полная масса (кг) добавлена (${this.VehicleData.strVehicleMaxWeight}) - OK !!!`, '\x1b[0m');
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in VehicleAddEmptyAndMaxWeights`);
+            await this.page.screenshot({path: g_PathSS + `screenshot_VehicleAddEmptyAndMaxWeights.png`, fullPage: true});
+            await console.log(g_PathSS + `screenshot_VehicleAddEmptyAndMaxWeights.png`);
+            return false;
+        }
+    }//async VehicleAddEmptyAndMaxWeights()
 
     //----------------------------------------
     async TemplateTemp() {

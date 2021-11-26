@@ -167,6 +167,7 @@ await console.log('press(\'Enter\')');
     margin-left: -10px;
     margin-top: -10px;
     transition: background .2s, border-radius .2s, border-color .2s;
+    z-index: 10000;
   }
   .mouse-helper.button-1 {
     transition: none;
@@ -210,3 +211,86 @@ await console.log('press(\'Enter\')');
     }
 })();
 //----------------------------------------------------------------------------
+// DragAndDropXXX
+async function dragAndDrop(page, originSelector, destinationSelector) {
+    const origin = await page.waitForSelector(originSelector);
+    const destination = await page.waitForSelector(destinationSelector);
+    const originBox = await origin.boundingBox();
+    const destinationBox = await destination.boundingBox();
+    const lastPositionCoordenate = (box) => ({
+        x: box.x + box.width / 2,
+        y: box.y + box.height,
+    });
+    const getPayload = (box) => ({
+        bubbles: true,
+        cancelable: true,
+        screenX: lastPositionCoordenate(box).x,
+        screenY: lastPositionCoordenate(box).y,
+        clientX: lastPositionCoordenate(box).x,
+        clientY: lastPositionCoordenate(box).y,
+    });
+
+    // Function in browser.
+    const pageFunction = async (_originSelector, _destinationSelector, originPayload, destinationPayload) => {
+        const _origin = document.querySelector(_originSelector);
+        let _destination = document.querySelector(_destinationSelector);
+        // If has child, put at the end.
+        _destination = _destination.lastElementChild || _destination;
+
+        // Init Events
+        _origin.dispatchEvent(new MouseEvent('pointerdown', originPayload));
+        _origin.dispatchEvent(new DragEvent('dragstart', originPayload));
+
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        _destination.dispatchEvent(new MouseEvent('dragenter', destinationPayload));
+        _origin.dispatchEvent(new DragEvent('dragend', destinationPayload));
+    };
+
+    // Init drag and drop.
+    await page.evaluate(
+        pageFunction,
+        originSelector,
+        destinationSelector,
+        getPayload(originBox),
+        getPayload(destinationBox),
+    );
+}
+
+await dragAndDrop(
+    page,
+    '#origin-selector',
+    '#destination-selector',
+);
+//===================================================
+// https://question-it.com/questions/250434/dozhdites-pojavlenija-teksta-pri-ispolzovanii-puppeteer
+// вариации поиска текста и классов
+await page.waitForXPath("//*[@class='count' and contains(., 'Expected text')]");
+//----------------------------------------------------
+function waitForRequestToFinish(page, requestUrl, timeout) {
+    page.on('response', onRequestFinished);
+    let fulfill, timeoutId = (typeof timeout === 'number' && timeout >= 0) ? setTimeout(done, timeout) : -1;
+    return new Promise(resolve => fulfill = resolve);
+
+    function done() {
+        page.removeListener('requestfinished', onRequestFinished);
+        clearTimeout(timeoutId);
+        fulfill();
+    }
+    async function onRequestFinished(req) {
+        try {
+            if (req.url().includes(requestUrl)) {
+                let resultJ = await req.response().json();
+                await console.log(`-1-----------------------`);
+                await console.log(resultJ); // JSON RESULT OK
+                await console.log(`-2-----------------------`);
+
+                await console.log(`-ID=(${resultJ.data.id})`);
+                done();
+            }
+        }catch (e) {
+            await console.log(`-какая то херня(${e})`);
+        }
+    }
+};
+
+ await waitForRequestToFinish(this.page,"https://dev.api.cfo.tl.ee/api/v2/deal", 12000);

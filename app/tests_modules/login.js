@@ -120,7 +120,7 @@ let BrowserGetPage = async (browser, strPageURL) => {
 
         page.on('dialog', async dialog => {
             g_strDialogMessage = dialog.message();
-            await console.log(`АВТО_ПОДТВЕРЖДЕНИЕ:` + dialog.message());
+            await console.log('\x1b[38;5;3m\t', g_strDialogInitiator + ` => АВТО_ПОДТВЕРЖДЕНИЕ:` + dialog.message() + ` [ OK ]`, '\x1b[0m');
             //await dialog.dismiss()
             await dialog.accept();
         })
@@ -316,6 +316,9 @@ let LoginCrm = async (page, browser, LoginData) => {
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
+
+        await page.evaluate(pageCursor);
+
         return true; //<-------------EXIT !!!
 
     }catch (err) {

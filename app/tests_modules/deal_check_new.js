@@ -1,16 +1,12 @@
 let DealCheckNew = async (browser, page, DealData) => {
+    let tempAdr = await GetDealMarshrut(DealData);
     const nameTest = NameFunction()+'->"'+'ID:'+DealData.strDealID +
-                                    '=>' + DealData.strPointLoading +'/'+ DealData.strPointUnLoading+'"';
+                                    '=>' + tempAdr +'"';
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
     g_StrOutLog += `Тест[ ${nameTest} ]=> ${g_StatusCurrentTest} `;
 
-    //await page.waitFor(500);
-    let width = 1200;
-    let height = 880;
-    let widthX = 1200;
-    let heightX = 1800;
     let xPath;
     let ElPresent, ElPresent1, ElPresent2, ElPresent3;
     let resOk;
@@ -18,9 +14,43 @@ let DealCheckNew = async (browser, page, DealData) => {
     let returnResult = false;
     let enableError = false;
     try {
-    await page.setViewport({width, height});
+        await page.setViewport({width: g_width, height: g_height});
+// Открыть НовоСозданную сделку и проверить ВСЕ ранее введённые поля
+        const {DealTable} = require("../tests_modules/sub_objects/deal_table_obj.js");
+        //Клик по пункту меню Сделки
 
-    //await page.setViewport({width2, height2});
+        let NewDealTable = new DealTable(browser, page, DealData);
+        //Клик по пункту меню Сделки
+        resOk = await NewDealTable.ClickMenuDeals();
+        if (!resOk) {
+            throw `FAIL => Клик по пункту меню Сделки NewDealTable.ClickMenuDeals();`;
+        }
+
+        // Ждём пока таблица сделок будет готова
+        resOk = await NewDealTable.TableDealsReady();
+        if (!resOk) {
+            throw `FAIL => Ждём пока таблица сделок будет готова NewDealTable.TableDealsReady();`;
+        }
+        // Добавить поле
+        resOk = await NewDealTable.DealTableFilterByField(`ID`, DealData.strDealID);
+        if (!resOk) {
+            throw `FAIL => Добавить поле NewDealTable.DealTableFilterByField(ID, ${DealData.strDealID});`;
+        }
+        // Проверить текущую сделку в таблице сделок
+        resOk = await NewDealTable.TableDealCheckOneCurrentDeal(); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
+        if (!resOk) {
+            throw `FAIL => Проверить текущую сделку в таблице сделок NewDealTable.TableDealCheckOneCurrentDeal();`;
+        }
+        resOk = await NewDealTable.Temp(); // temp
+        if (!resOk) {
+            throw `FAIL => NewDealTable.Temp();`;
+        }
+
+
+        if(!g_ShowActionInBrowser){
+            await browser.close();
+        }
+        await TempStop(page, `Тест ------ deal_check_new.js -------`);
 
         //Клик по LOGO
         await page.click("div[class=logo__icon]");
@@ -258,12 +288,14 @@ let DealCheckNew = async (browser, page, DealData) => {
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
         DealData.returnResult = true;
 
-    } catch (err) {
-        await console.log('\x1b[38;5;1m', "!!!! Ошибка на странице (Редагувати угоду) : ",err , '\x1b[0m');
+    } catch (e) {
+        await console.log('\x1b[38;5;1m', `!!!! Ошибка на странице (${e}) ` , '\x1b[0m');
+        await page.screenshot({path: g_PathSS + `screenshot_dealCheckNew.png`, fullPage: true});
+        await console.log(g_PathSS + `screenshot_dealCheckNew.png`);
         g_StatusCurrentTest = 'Провален !!!';
         await g_FailedTests++;
         await console.log('\x1b[38;5;1m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
-        g_StrOutLog+=`=> Ошибка ${err} => ${g_StatusCurrentTest} \n`;
+        g_StrOutLog+=`=> Ошибка ${e} => ${g_StatusCurrentTest} \n`;
         DealData.returnResult = false;
         //await page.waitFor(5001111);
     }

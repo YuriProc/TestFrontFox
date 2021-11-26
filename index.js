@@ -4,7 +4,7 @@ require('./app/data/global_variables');
 
 console.log('-----------------','\x1b[38;5;2m',  'Start FOX TESTS', '\x1b[0m', '----------------');
 
-let strDT = 'DT:'+ g_StrStartTime;
+let strDT = 'DT:'+ g_StartTimeMS;
 console.log( strDT );
 
 // при возникновении необработанных ошибок/исключений выводить их в консоль, программа не будет падать
