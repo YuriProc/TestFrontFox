@@ -1938,6 +1938,36 @@ DeleteAllScreenshots = async function(directory = 'test') {
     }
 }
 //-----------------------------------------------------------------------------------
+GetNewPage = async function(browser, page, qPages = 2){
+    let ResPage;
+    let resOk;
+    try{
+        if(page === null){
+            let AllPages = await browser.pages();
+            let TempLenPages = AllPages.length;
+            if (TempLenPages < 2 ){
+                resOk = await WaitForBrowserNewPage(browser,qPages, 4000);
+                if(!resOk) {
+                    AllPages = await browser.pages();
+                    TempLenPages = AllPages.length;
+                    throw `FAIL => TempLenPages=(${TempLenPages})`;
+                }
+            }
+            AllPages = await browser.pages();
+            TempLenPages = AllPages.length;
+            ResPage = AllPages[TempLenPages-1];// !!! С НУЛЯ !!!
+            if (!ResPage) {
+                throw `FAIL => ResPage=(${ResPage})`;
+            }
+        }else{
+            ResPage = page;
+        }
+        return ResPage;
+    }catch (e) {
+        await console.log(`${e} \n ERROR => GetNewPage()`);
+        return null;
+    }
+}// GetNewPage = async function(browser, page)
 //----------------------------------------
 /**
  * @param {boolean} setListener The boolean

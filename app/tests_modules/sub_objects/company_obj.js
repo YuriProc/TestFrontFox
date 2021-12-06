@@ -144,6 +144,8 @@ class Company{
             if (!resOk) {
                 throw `FAIL => Ждём появления Верхнее меню "Компания +"(${this.xMenuCompanyPlus})`;
             }
+            await HoverByXPathNum(this.page, 0, this.xMenuCompanyPlus);
+            await WaitRender(this.page);
             // Таблица Компаний "Загрузка"
             // Ждём пока не пропадёт
             resOk = await WaitUntilXPathExist(this.page,5000, this.xCompanyTableLoading);

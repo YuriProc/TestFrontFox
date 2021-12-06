@@ -66,7 +66,7 @@ class MultiSelect {
     async InitNeedStr(NeedStr){
         try{let resOk;
             this.NeedStr = NeedStr;
-            this.xDropDownNeedStr = this.xDropDownStrHL + `/span[contains(text(), "${this.NeedStr}")]`;
+            this.xDropDownNeedStr = this.xDropDownStrHL + `/span[contains(text(), '${this.NeedStr}')]`;
 
             return true;
         }catch (e) {

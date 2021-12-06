@@ -460,12 +460,16 @@ class Location {
             if (!resOk) {
                 throw `FAIL => Кнопка "Перейти в таблицу локаций"(${this.xButtonGoToTableLocations})`;
             }
-
             this.pageTableLocations = await newPagePromise;           // объявляем новую СТРАНИЦУ/окно, теперь с ней можно работать
+            this.pageTableLocations = await GetNewPage(this.browser, this.pageTableLocations, 2);// <- подстраховка
+            if (!this.pageTableLocations) {
+                throw `FAIL => this.pageTableLocations=(${this.pageTableLocations})`;
+            }
 
-            let width = 1700;
-            let height = 950;
-            await this.pageTableLocations.setViewport({width, height});
+            // let width = 1700;
+            // let height = 950;
+            await this.pageTableLocations.bringToFront();
+            await this.pageTableLocations.setViewport({width: g_width, height: g_height});
 
             await WaitRender(this.pageTableLocations);
             // !!!!!!! Курсор !!!!!
@@ -590,8 +594,9 @@ class Location {
                 throw `FAIL => Дропдаун адресов Гугла ClickByXPathNum(${tempRand})(${this.xDropDownGoogleAddress})`;
             }
             await WaitRender(this.pageTableLocations);
-            resOk = await ElementGetValue(this.pageTableLocations, 0, this.xInputAddressFOX);
-            this.LocationData.strAddressFOXfromGoogle = resOk;
+            // потом , сразу может быть не тот язык, птом Google переводит через ~1 сек
+            // resOk = await ElementGetValue(this.pageTableLocations, 0, this.xInputAddressFOX);
+            // this.LocationData.strAddressFOXfromGoogle = resOk;
             // Удалим слушатель на Респонс // /api/address
             resOk = await ResponseListener(this.pageTableLocations, `${g_BackCfoFoxURL}/api/address`, false);
             if(g_tempDataFromEventListener_json && g_tempDataFromEventListener_json.data) {
@@ -787,6 +792,8 @@ class Location {
                 throw `FAIL => Селект в ДропДауне "Компании" ClickByXPath(${this.xSelectCompanies})`;
             }
             await this.pageTableLocations.waitFor(200);
+            resOk = await ElementGetValue(this.pageTableLocations, 0, this.xInputAddressFOX);
+            this.LocationData.strAddressFOXfromGoogle = resOk;
             // Инпут "Название"
             this.LocationData.strLocationName+= ` ` + this.LocationData.strAddressFOX;
             resOk = await SetTextByXPath(this.pageTableLocations, this.xInputLocationName, this.LocationData.strLocationName );

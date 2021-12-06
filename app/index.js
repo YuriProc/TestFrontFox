@@ -163,68 +163,75 @@ let OpenFox = async () => {
 
 await console.log(`NumTests=${i}`);
            // await WaitMS(5000);
-            Data.DealData1.strDealID = `41846`;
+            Data.DealData1.strDealID = `33066`;
             Data.DealData1.strStatusID = `2`;
-            Data.DealData1.strClientCompanyName = `ТОВ "ИКС СПРИНТ"`;
+            Data.DealData1.strClientCompanyName = `ПРАТ "ВО "СТАЛЬКАНАТ-СІЛУР"`;//4316
+            Data.DealData1.strClientCompanyID = `4316`;
+            Data.DealData1.strClientCompanyCode = `26209430`;
+            Data.DealData1.strOurCompanyWithClient = `ТОВ "ТРАНСЛОЙД"`;
             Data.DealData1.ClientFreights[0].Amount = `500`;
-            Data.DealData1.PointsLoading[0].PointLoading.strAddressFOX = `Херсон`;
+            //Data.DealData1.PointsLoading[0].PointLoading.strAddressFOX = `Херсон`;
+            Data.DealData1.PointsLoading[0].PointLoading.strInDate = `26.07.2021 08:00`;
+            Data.DealData1.PointsUnLoading[1].PointUnLoading.strOutDate = `29.07.2021 15:00`;
+
             Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
             await TempStop(page);
-          // //    Data.CompanyData1.strCompanyCode = `40253046`;
-          //   Data.CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData1);
-          //   // await TempStop(page);
-          //
-          //   if (!Data.CompanyData1.returnResult) {
-          //       //throw `Не получилось создать компанию (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
-          //       await console.log(`Ошибки при создании компании (${Data.CompanyData1.strCompanyCode})`);
-          //   }
-          //   await WaitRender(page);
-          //   // X) Проверяем созданную тестовую компанию CompanyData2
-          //   Data.CompanyData1 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, Data.CompanyData1);
-          //   if (!Data.CompanyData1.returnResult) {
-          //       throw `FAIL => CompanyCheckNewV2 (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
-          //   }
-          //
-          //   // X) создаём тестовую компанию CompanyData2
-          // //  Data.CompanyData2.strCompanyCode = '00190928';//'14180856';//'43092634';//'14180856';
-          //   Data.CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData2);
-          //   if (!Data.CompanyData2.returnResult) {
-          //       //throw `Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
-          //       await console.log(`Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`);
-          //   }
-          //   // X) Проверяем созданную тестовую компанию CompanyData2
-          //   Data.CompanyData2 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, Data.CompanyData2);
-          //   if (!Data.CompanyData2.returnResult) {
-          //       throw `FAIL => CompanyCheckNewV2 (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
-          //   }
+           //==========
+          //    Data.CompanyData1.strCompanyCode = `40253046`;
+            Data.CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData1);
+            // await TempStop(page);
+
+            if (!Data.CompanyData1.returnResult) {
+                //throw `Не получилось создать компанию (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
+                await console.log(`Ошибки при создании компании (${Data.CompanyData1.strCompanyCode})`);
+            }
+            await WaitRender(page);
+            // X) Проверяем созданную тестовую компанию CompanyData2
+            Data.CompanyData1 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, Data.CompanyData1);
+            if (!Data.CompanyData1.returnResult) {
+                throw `FAIL => CompanyCheckNewV2 (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
+            }
+
+            // X) создаём тестовую компанию CompanyData2
+          //  Data.CompanyData2.strCompanyCode = '00190928';//'14180856';//'43092634';//'14180856';
+            Data.CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData2);
+            if (!Data.CompanyData2.returnResult) {
+                //throw `Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
+                await console.log(`Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`);
+            }
+            // X) Проверяем созданную тестовую компанию CompanyData2
+            Data.CompanyData2 = await CCheckNV2Page.CompanyCheckNewV2(browser, page, Data.CompanyData2);
+            if (!Data.CompanyData2.returnResult) {
+                throw `FAIL => CompanyCheckNewV2 (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
+            }
 // Создаём новую сделку
-           // Client
-            Data.CompanyData1.strCompanyName = `ТОВ "ТРАНСАГЕНТСТВО ДЕРЕВО"`;//`ТОВ "БЕЛ ПЛЮС ГРУП"`;//`ТОВ "ФРЕЙМ РЕНТАЛ"`;//`ПП "ПРИМ АГРО"`;//`ТОВ "МЕГАЛАТ"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // ТОВ "ОМЕГА"// <-временно тут
-            Data.CompanyData1.strCompanyCode = `35917653`;//`42329394`;//`39311015`; // `39061081`;//`14180856`; // '14180856'; // 30982361
-            Data.CompanyData1.strCompanyID = `18576`;// `15774`;
-            Data.CompanyData1.ContractData.strContractOurCompany = `СТАВАНГЕР`;
-            Data.CompanyData1.strCargoType = `Запчастини`;
-            Data.CompanyData1.strCargoCost = `100500`;
-            Data.CompanyData1.LocationData1.strAddressFOX = `Сискі`;
-            Data.CompanyData1.LocationData1.strAddressFOXfromGoogle = `Сискі, Польща`;
-            Data.CompanyData1.LocationData2.strAddressFOX = `Лобково`;
-            Data.CompanyData1.LocationData2.strAddressFOXfromGoogle = `Лобково, Московская обл., 143151`;
-
-
-            // Transporter
-            Data.CompanyData2.strCompanyName = `ТОВ "ФРЕЙМ РЕНТАЛ"`;//`АТ "ПОКРОВСЬКИЙ ГЗК"`;//`ТОВ "ФОКС ТРАНС"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // <-временно тут
-            Data.CompanyData2.strCompanyCode = `39311015`;//`00190928`; //38215221`;//`14180856`; // '14180856';
-            Data.CompanyData2.strCompanyID = `6652`;// `12970`;
-            Data.CompanyData2.ContractData.strContractOurCompany = `ПЕРЕВОЗ`;
-            Data.CompanyData2.DriverData.strLastName = `Гендальф`;
-            Data.CompanyData2.DriverData.strFirstName = `Графон`;
-            Data.CompanyData2.DriverData.strMiddleName = `Алибабаевич`;
-            Data.CompanyData2.DriverData.strContactID = `38576`;
-            Data.CompanyData2.DriverData.PhoneData.strPhoneNumber = `380676182637`;
-            Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strLicensePlate = `FF1252KK`;
-            Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strVehicleID = `62899`;
-            Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strLicensePlate = `PP6961TT`;
-            Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleID = `62900`;
+//            // Client
+//             Data.CompanyData1.strCompanyName = `ТОВ "ТРАНСАГЕНТСТВО ДЕРЕВО"`;//`ТОВ "БЕЛ ПЛЮС ГРУП"`;//`ТОВ "ФРЕЙМ РЕНТАЛ"`;//`ПП "ПРИМ АГРО"`;//`ТОВ "МЕГАЛАТ"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // ТОВ "ОМЕГА"// <-временно тут
+//             Data.CompanyData1.strCompanyCode = `35917653`;//`42329394`;//`39311015`; // `39061081`;//`14180856`; // '14180856'; // 30982361
+//             Data.CompanyData1.strCompanyID = `18576`;// `15774`;
+//             Data.CompanyData1.ContractData.strContractOurCompany = `СТАВАНГЕР`;
+//             Data.CompanyData1.strCargoType = `Запчастини`;
+//             Data.CompanyData1.strCargoCost = `100500`;
+//             Data.CompanyData1.LocationData1.strAddressFOX = `Сискі`;
+//             Data.CompanyData1.LocationData1.strAddressFOXfromGoogle = `Сискі, Польща`;
+//             Data.CompanyData1.LocationData2.strAddressFOX = `Лобково`;
+//             Data.CompanyData1.LocationData2.strAddressFOXfromGoogle = `Лобково, Московская обл., 143151`;
+//
+//
+//             // Transporter
+//             Data.CompanyData2.strCompanyName = `ТОВ "ФРЕЙМ РЕНТАЛ"`;//`АТ "ПОКРОВСЬКИЙ ГЗК"`;//`ТОВ "ФОКС ТРАНС"`;//`ПП "ВЛА-ДЕН"`; // `ПП "ВЛА-ДЕН"`; // <-временно тут
+//             Data.CompanyData2.strCompanyCode = `39311015`;//`00190928`; //38215221`;//`14180856`; // '14180856';
+//             Data.CompanyData2.strCompanyID = `6652`;// `12970`;
+//             Data.CompanyData2.ContractData.strContractOurCompany = `ПЕРЕВОЗ`;
+//             Data.CompanyData2.DriverData.strLastName = `Гендальф`;
+//             Data.CompanyData2.DriverData.strFirstName = `Графон`;
+//             Data.CompanyData2.DriverData.strMiddleName = `Алибабаевич`;
+//             Data.CompanyData2.DriverData.strContactID = `38576`;
+//             Data.CompanyData2.DriverData.PhoneData.strPhoneNumber = `380676182637`;
+//             Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strLicensePlate = `FF1252KK`;
+//             Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strVehicleID = `62899`;
+//             Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strLicensePlate = `PP6961TT`;
+//             Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleID = `62900`;
 
             Data.DealData1.strClientCompanyName = Data.CompanyData1.strCompanyName;
             Data.DealData1.strClientCompanyCode = Data.CompanyData1.strCompanyCode;
@@ -265,6 +272,7 @@ await console.log(`NumTests=${i}`);
             Data.DealData1.strTrailerID = Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleID;
 
             Data.DealData1 = await DealCNPage.DealCreateNew(browser, page, Data.DealData1);
+        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
             //await TempStop(page);
             if (Data.DealData1.returnResult) {
 
@@ -287,7 +295,7 @@ await console.log(`NumTests=${i}`);
 
 // await console.log(`index TempStop`);
 // await TempStop(page);
-        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
+   //     } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
 
 
 

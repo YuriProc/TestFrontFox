@@ -265,7 +265,7 @@ class DealTable {
             let LenColName,LenColValue;
             let ColName;
             let C,resC,sC;
-            AllFLen = 2;
+            AllFLen = 10;
             for(let i=0 ; i < AllFLen; i++){
                 ColName = this.CFO.Fields[i][0];
                 LenColName = ColName.length;
@@ -300,7 +300,10 @@ class DealTable {
             if(DLogic === '='){
                 DName = this.CFO.Fields[NCF][3];
                 return this.DealData[DName];
-            }else{
+            }else if(DLogic === '1' || DLogic === 1){
+                return await this.GetDealCustomValue(this.CFO.Fields[NCF][1]);
+
+            }else {
                 return '';
             }
 
@@ -311,6 +314,184 @@ class DealTable {
             return '';
         }
     }//async GetDealValue()
+    //----------------------------------------
+    async GetDealCustomValue(IName) {
+        let resOk;
+        let DValue = ``;
+        try {
+            switch (IName) {
+                case "date_loading":
+                    DValue = this.DealData.PointsLoading[0].PointLoading.strInDate;
+                    break;
+                case "point_loadings":
+                    DValue = await this.GetDealInOutStrPoints(0); // 0 - In / 1 - Out
+                    break;
+                case "point_unloading":
+                    DValue = await this.GetDealInOutStrPoints(1); // 0 - In / 1 - Out
+                    break;
+                case "client_cash_true":
+                    DValue = await this.GetDealFreightsAmount(0,0); //
+                    break;
+                case "client_cash_true_payment_form":
+                    DValue = await this.GetDealFreightsPaymentForm(0,0); //
+                    break;
+                default:
+                    throw `FAIL => Не найден столбец таблицы CFO GetDealCustomValue(${IName});`;
+
+            } // switch (IName)
+
+            return DValue;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in GetDealCustomValue`);
+            return ``;
+        }
+    }//async GetDealCustomValue()
+    //----------------------------------------
+    async GetDealInOutStrPoints(InOut) { // InOut =0 - In / =1 - Out
+        let resValue = ``;
+        let lengthPArray;
+        let addrKey;
+        let tempArray = {};
+        try {
+            if (InOut === 0){
+                lengthPArray = this.DealData.PointsLoading.length;
+            }else if(InOut === 1){
+                lengthPArray = this.DealData.PointsUnLoading.length;
+            }else{
+                throw ` ошибка внутренняя InOut !== 0 || 1 (${InOut})`;
+            }
+            for (let i = 0; i < lengthPArray; ++i)
+            {
+                if (InOut === 0){
+                    addrKey = this.DealData.PointsLoading[i].PointLoading.strAddressFOX;
+                }else {
+                    addrKey = this.DealData.PointsUnLoading[i].PointUnLoading.strAddressFOX;
+                }
+                if (tempArray[addrKey] !== undefined)
+                    ++tempArray[addrKey];
+                else
+                    tempArray[addrKey] = 1;
+            }// for (let i = 0; i < lengthPArray; ++i)
+            let n = 0;
+            for (let key in tempArray){
+                if (n !== 0){
+                    resValue+= `; `;
+                }
+                resValue+= key;
+                if (tempArray[key] > 1){
+                    resValue+= ` (${tempArray[key]})`;
+                }
+                n++;
+            }
+            return resValue;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in GetDealInOutStrPoints(${InOut})`);
+            return ``;
+        }
+    }//async GetDealInOutStrPoints()
+    //----------------------------------------
+    async GetDealFreightsAmount(CT,CCL) { // CL - Client/Transporter (0,1) , CCL - Cash/CashLess (0,1)
+        let resOk;
+        let resValue = ``;
+        let keyFreights = ``;
+        let lengthFArray;
+        let Amount = 0;
+        let tempArray = {};
+        try {
+            if (CT === 0){
+                keyFreights = `ClientFreights`;
+            }else if(CT === 1){
+                keyFreights = `TransporterFreights`;
+            }else{
+                throw ` ошибка внутренняя CT !== 0 || 1 (${CT})`;
+            }
+            lengthFArray = this.DealData[keyFreights].length;
+            if (CCL !== 0 && CCL !== 1){
+                throw ` ошибка внутренняя CCL !== 0 || 1 (${CCL})`;
+            }
+            for (let i = 0; i < lengthFArray; ++i)
+            {
+                if(CCL === 0){ // `нал`, `софт`, `топливо`,
+                    if (this.DealData[keyFreights][i].PaymentForm === `нал` ||
+                        this.DealData[keyFreights][i].PaymentForm === `софт` ||
+                        this.DealData[keyFreights][i].PaymentForm === `топливо` ){
+                        Amount+= Number(this.DealData[keyFreights][i].Amount);
+                    }
+                }else{ // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`
+                    if (this.DealData[keyFreights][i].PaymentForm === `без ПДВ` ||
+                        this.DealData[keyFreights][i].PaymentForm === `з ПДВ 0%` ||
+                        this.DealData[keyFreights][i].PaymentForm === `з ПДВ 20%` ){
+                        Amount+= Number(this.DealData[keyFreights][i].Amount);
+                    }
+                }
+            }// for (let i = 0; i < lengthPArray; ++i)
+            if (Amount === 0 ){
+                resValue = ``;
+            }else {
+                resValue = Amount.toFixed(2);
+            }
+            return resValue;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in GetDealFreightsAmount(${CT}, ${CCL})`);
+            return ``;
+        }
+    }//async GetDealFreightsAmount(CT,CCL)
+    //-----------------------------------
+    async GetDealFreightsPaymentForm(CT,CCL) { // CL - Client/Transporter (0,1) , CCL - Cash/CashLess (0,1)
+        let resOk;
+        let resValue = ``;
+        let keyFreights = ``;
+        let lengthFArray;
+        let tempKey;
+        let strPF = ``;
+        let tempArray = {};
+        try {
+            if (CT === 0){
+                keyFreights = `ClientFreights`;
+            }else if(CT === 1){
+                keyFreights = `TransporterFreights`;
+            }else{
+                throw ` ошибка внутренняя CT !== 0 || 1 (${CT})`;
+            }
+            lengthFArray = this.DealData[keyFreights].length;
+            if (CCL !== 0 && CCL !== 1){
+                throw ` ошибка внутренняя CCL !== 0 || 1 (${CCL})`;
+            }
+            for (let i = lengthFArray - 1; i >= 0 ; --i)
+            {
+                if(CCL === 0){ // `нал`, `софт`, `топливо`,
+                    if (this.DealData[keyFreights][i].PaymentForm === `нал` ||
+                        this.DealData[keyFreights][i].PaymentForm === `софт` ||
+                        this.DealData[keyFreights][i].PaymentForm === `топливо` ){
+                        tempKey = this.DealData[keyFreights][i].PaymentForm;
+                    }
+                }else{ // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`
+                    if (this.DealData[keyFreights][i].PaymentForm === `без ПДВ` ||
+                        this.DealData[keyFreights][i].PaymentForm === `з ПДВ 0%` ||
+                        this.DealData[keyFreights][i].PaymentForm === `з ПДВ 20%` ){
+                        tempKey = this.DealData[keyFreights][i].PaymentForm;
+                    }
+                }
+                //
+                if (tempArray[tempKey] !== undefined)
+                    ++tempArray[tempKey];
+                else
+                    tempArray[tempKey] = 1;
+            }// for (let i = 0; i < lengthPArray; ++i)
+            let n = 0;
+            for (let key in tempArray){
+                if (n !== 0){
+                    resValue+= `; `;
+                }
+                resValue+= key;
+                n++;
+            }
+            return resValue;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in GetDealFreightsPaymentForm(${CT}, ${CCL})`);
+            return ``;
+        }
+    }//async GetDealFreightsPaymentForm(CT,CCL)
     //----------------------------------------
     async Temp() {
         let resOk;

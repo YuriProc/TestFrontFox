@@ -2290,7 +2290,7 @@ class Deal {
 
     }
 }//while(tempBoolean)
-            this.DealData.strDealID = g_tempDataFromEventListener_id;
+            this.DealData.strDealID = '' + g_tempDataFromEventListener_id;
             if (this.DealData.strDealID === ''){
                 await console.log('\x1b[38;5;1m\t', `FAIL ! -> Получение ID Сделки (${this.DealData.strDealID}) - FAIL!`, '\x1b[0m');
             }else{
@@ -2524,30 +2524,34 @@ class Deal {
 
             //await WaitMS(5000); // если ждать то получается pageVehicleCard === null    ????!!!!
             let pageVehicleCard = await newPagePromise;           // объявляем новую СТРАНИЦУ/окно, теперь с ней можно работать
-
-            //await console.log(`pageVehicleCard=(${pageVehicleCard})`);
-            //await console.dir(pageVehicleCard, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
-            if(pageVehicleCard === null){
-                let AllPages = await this.browser.pages();
-                let TempLenPages = AllPages.length;
-              //  await console.log(`0 TempLenPages=(${TempLenPages})`);
-                if (TempLenPages < 2 ){
-                    resOk = await WaitForBrowserNewPage(this.browser,2, 4000);
-                    if(!resOk) {
-                        AllPages = await this.browser.pages();
-                        TempLenPages = AllPages.length;
-                        throw `FAIL => TempLenPages=(${TempLenPages})`;
-                    }
-                }
-                AllPages = await this.browser.pages();
-                TempLenPages = AllPages.length;
-            //    await console.log(`1 TempLenPages=(${TempLenPages})`);
-                pageVehicleCard = AllPages[TempLenPages-1];// !!! С НУЛЯ !!!
-            }
-            //await console.log(`pageVehicleCard=(${pageVehicleCard})`);
+            pageVehicleCard = await GetNewPage(this.browser, pageVehicleCard, 2);// <- подстраховка
             if (!pageVehicleCard) {
                 throw `FAIL => pageVehicleCard=(${pageVehicleCard})`;
             }
+            //
+            // //await console.log(`pageVehicleCard=(${pageVehicleCard})`);
+            // //await console.dir(pageVehicleCard, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
+            // if(pageVehicleCard === null){
+            //     let AllPages = await this.browser.pages();
+            //     let TempLenPages = AllPages.length;
+            //   //  await console.log(`0 TempLenPages=(${TempLenPages})`);
+            //     if (TempLenPages < 2 ){
+            //         resOk = await WaitForBrowserNewPage(this.browser,2, 4000);
+            //         if(!resOk) {
+            //             AllPages = await this.browser.pages();
+            //             TempLenPages = AllPages.length;
+            //             throw `FAIL => TempLenPages=(${TempLenPages})`;
+            //         }
+            //     }
+            //     AllPages = await this.browser.pages();
+            //     TempLenPages = AllPages.length;
+            // //    await console.log(`1 TempLenPages=(${TempLenPages})`);
+            //     pageVehicleCard = AllPages[TempLenPages-1];// !!! С НУЛЯ !!!
+            // }
+            // //await console.log(`pageVehicleCard=(${pageVehicleCard})`);
+            // if (!pageVehicleCard) {
+            //     throw `FAIL => pageVehicleCard=(${pageVehicleCard})`;
+            // }
             await pageVehicleCard.bringToFront();
             await pageVehicleCard.setViewport({width: g_width, height: g_height});
             const {Vehicle} = require("../sub_objects/vehicle_obj.js");

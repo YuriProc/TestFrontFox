@@ -46,7 +46,7 @@ class DataForTests {
             boolNeedCheck: false,
             strManagers: [this.LoginDataT.strUserLastName, 'Гриневич'],
             ContractData: {
-                strContractOurCompany: 'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
+                strContractOurCompany: `ТОВ "СТАВАНГЕР"`, //'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД // ТОВ "ТРАНСЛОЙД"
                 strTransportationType: 'По Украине', // 'По Украине', 'Международная'
                 strContractOurCompanyIs: 'Перевозчик', // 'Заказчик' , 'Перевозчик'
                 strDelayDays: '7',
@@ -169,7 +169,7 @@ class DataForTests {
             boolNeedCheck: false,
             strManagers: [this.LoginDataT.strUserLastName, 'Гриневич'],
             ContractData: {
-                strContractOurCompany: 'ПЕРЕВОЗ',//'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
+                strContractOurCompany: `ТОВ "ПЕРЕВОЗ"`,//'ПЕРЕВОЗ',//'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
                 strTransportationType: 'По Украине', // 'По Украине', 'Международная'
                 strContractOurCompanyIs: 'Заказчик', // 'Заказчик' , 'Перевозчик'
                 strDelayDays: '3',
@@ -357,12 +357,30 @@ class DataForTests {
                 AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, `По сканокопіям`, `По ТТН`, ``, ``,
                 Currency: 'UAH',
             },
-                // {
-                //     Amount: '10700',
-                //     PaymentForm: `з ПДВ 0%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                //     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                //     Currency: 'UAH',
-                // },
+                {
+                    Amount: '10700',
+                    PaymentForm: `з ПДВ 0%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
+                {
+                    Amount: '100',
+                    PaymentForm: `софт`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
+                {
+                    Amount: '150',
+                    PaymentForm: `нал`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
+                {
+                    Amount: '20',
+                    PaymentForm: `топливо`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
             ],
             TransporterFreights: [{
                 Amount: '7500',
@@ -378,9 +396,9 @@ class DataForTests {
                 },
             ],
             PointsLoading : [
-                {
+                { // Харків (2); Покровськ; Запоріжжя
                     PointLoading : {
-                        strAddressFOX: `Бодуны`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOX: `Харків`,//await GetFunnyStr('StrAddress'),
                         strAddressFOXfromGoogle: ``,
                         fromCompany: true,
                         strInDate: ``,
@@ -390,18 +408,38 @@ class DataForTests {
                 },
                 {
                     PointLoading : {
-                        strAddressFOX: `Хераково`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOX: `Харків`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOXfromGoogle: ``,
+                        fromCompany: true,
+                        strInDate: ``,
+                        strOutDate: ``,
+
+                    }
+                },
+                {
+                    PointLoading : {
+                        strAddressFOX: `Покровськ`,//await GetFunnyStr('StrAddress'),
                         strAddressFOXfromGoogle: ``,
                         fromCompany: false,
                         strInDate: ``,
                         strOutDate: ``,
                     }
-                }
+                },
+                {
+                    PointLoading : {
+                        strAddressFOX: `Запоріжжя`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOXfromGoogle: ``,
+                        fromCompany: true,
+                        strInDate: ``,
+                        strOutDate: ``,
+
+                    }
+                },
             ],
             PointsUnLoading : [
                 {
                     PointUnLoading : {
-                        strAddressFOX: `Сучки`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOX: `Одеса`,//await GetFunnyStr('StrAddress'),
                         strAddressFOXfromGoogle: ``,
                         fromCompany: true,
                         strInDate: ``,
@@ -410,7 +448,7 @@ class DataForTests {
                 },
                 {
                     PointUnLoading : {
-                        strAddressFOX: `Сучки`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOX: `Одеса`,//await GetFunnyStr('StrAddress'),
                         strAddressFOXfromGoogle: ``,
                         fromCompany: false,
                         strInDate: ``,
