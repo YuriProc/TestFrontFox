@@ -8,7 +8,7 @@ class Phone {
         //Табличное редактирование ТАБ "Телефон"
         this.xTabPhone = `//li[@role="presentation"]/a[@role="tab"][@aria-selected="true"][contains(text(),"Телефоны")]`;
         // Табличное редактирование Кнопка "+ Добавить Телефоны"
-        this.xButtonPlusPhone = `//div[@class="tab-pane active"]/div[@class="data-table-manager__tab-footer d-flex"]`;
+        this.xButtonPlusPhone = `//div[@class="tab-pane active"]//div[@class="data-table-manager__tab-footer d-flex"]`;
         this.xButtonPlusPhone+= `/button[@type="button"][contains(text(), "Добавить Телефоны")]`;
         // Заголовок в Модалке "Номер телефона"
         this.xModalTitlePhoneNumber=`//h5[@class="modal-title"][contains(text(), "Номер телефона")]`;

@@ -364,13 +364,19 @@ class DataForTests {
                     Currency: 'UAH',
                 },
                 {
+                    Amount: '300',
+                    PaymentForm: `без ПДВ`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
+                {
                     Amount: '100',
                     PaymentForm: `софт`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
                     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
                     Currency: 'UAH',
                 },
                 {
-                    Amount: '150',
+                    Amount: '1500',
                     PaymentForm: `нал`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
                     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
                     Currency: 'UAH',
@@ -416,25 +422,25 @@ class DataForTests {
 
                     }
                 },
-                {
-                    PointLoading : {
-                        strAddressFOX: `Покровськ`,//await GetFunnyStr('StrAddress'),
-                        strAddressFOXfromGoogle: ``,
-                        fromCompany: false,
-                        strInDate: ``,
-                        strOutDate: ``,
-                    }
-                },
-                {
-                    PointLoading : {
-                        strAddressFOX: `Запоріжжя`,//await GetFunnyStr('StrAddress'),
-                        strAddressFOXfromGoogle: ``,
-                        fromCompany: true,
-                        strInDate: ``,
-                        strOutDate: ``,
-
-                    }
-                },
+                // {
+                //     PointLoading : {
+                //         strAddressFOX: `Покровськ`,//await GetFunnyStr('StrAddress'),
+                //         strAddressFOXfromGoogle: ``,
+                //         fromCompany: false,
+                //         strInDate: ``,
+                //         strOutDate: ``,
+                //     }
+                // },
+                // {
+                //     PointLoading : {
+                //         strAddressFOX: `Запоріжжя`,//await GetFunnyStr('StrAddress'),
+                //         strAddressFOXfromGoogle: ``,
+                //         fromCompany: true,
+                //         strInDate: ``,
+                //         strOutDate: ``,
+                //
+                //     }
+                // },
             ],
             PointsUnLoading : [
                 {
@@ -474,6 +480,7 @@ class DataForTests {
             strTransporterCompanyCode : ``, // Заполнить ПЕРЕД выполнением Теста
             strTransporterCompanyID : ``, // Заполнить ПЕРЕД выполнением Теста
             strOurCompanyWithTransporter: ``,//CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
+            strTransporterDelay : ``, // Взять и проверить из соотв Договора
 
             strDriverFullName: ``,// Заполнить ПЕРЕД выполнением Теста
             strDriverPhone: ``,// Заполнить ПЕРЕД выполнением Теста

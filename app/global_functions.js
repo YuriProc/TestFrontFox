@@ -626,7 +626,9 @@ ElementGetAttribute = async function (page , Num, strAttribute ,MyXPath) {
         const MaxL = linkHandlers.length -1 ;
         let PropValue;
         if (Num > MaxL){
-            await console.log(`ElementGetAttribute("${strAttribute}")  -> Num=${Num} > MaxL=${MaxL}  return ""`);
+            await console.log(`Fail!!! -> ElementGetAttribute("${strAttribute}")  -> Num=${Num} > MaxL=${MaxL}  return ""`);
+            await console.log(`Fail!!! -> ElementGetAttribute(${MyXPath}) return ""`);
+
             return '';
         }else{
             PropValue = await page.evaluate((elm, strAttribute )=> elm.getAttribute(strAttribute), linkHandlers[Num], strAttribute);
@@ -2006,13 +2008,15 @@ ResponseListener = async function(page, requestUrl, setListener) {
                     const response = await request.response();
                     let resultJ = await response.json();
                     g_tempDataFromEventListener_json = resultJ;
+                    g_tempDataFromEventListener_response = response;
                     //await console.log(`-1-----------------------`);
                     // await console.log(resultJ); // JSON RESULT OK
                     // await console.log(`-2-----------------------`);
                     // await console.log(`requestUrl=   (${requestUrl})+++++`);
                     // await console.log(`request.url()=(${request.url()})++++++`);
                     // await console.log(`response.status()=(${response.status()})`);
-                    if(response.status() === 200) {
+                    // await console.dir(response, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
+                    if(response.status() === 200 && resultJ.data) {
                         g_tempDataFromEventListener_id = resultJ.data.id;
                         // await console.log(`g_tempDataFromEventListener=(${g_tempDataFromEventListener})`);
                     }else{
@@ -2034,6 +2038,7 @@ ResponseListener = async function(page, requestUrl, setListener) {
         };
         if (setListener) { // requestfinished  // response
             g_tempDataFromEventListener_id = ``;
+            g_tempDataFromEventListener_response = ``;
             g_tempDataFromEventListener_json = ``;
             g_tempDataEventListenerFunctionHandle = onRequestFinished;
 

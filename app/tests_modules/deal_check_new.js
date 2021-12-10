@@ -36,17 +36,18 @@ let DealCheckNew = async (browser, page, DealData) => {
         if (!resOk) {
             throw `FAIL => Добавить поле NewDealTable.DealTableFilterByField(ID, ${DealData.strDealID});`;
         }
+        let tempLenF = 13;
         // Проверить текущую сделку в таблице сделок
-        resOk = await NewDealTable.TableDealCheckOneCurrentDeal(); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
+        resOk = await NewDealTable.TableDealCheckOneCurrentDeal(tempLenF); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
         if (!resOk) {
             throw `FAIL => Проверить текущую сделку в таблице сделок NewDealTable.TableDealCheckOneCurrentDeal();`;
         }
-        resOk = await NewDealTable.Temp(); // temp
-        if (!resOk) {
-            throw `FAIL => NewDealTable.Temp();`;
-        }
+        // resOk = await NewDealTable.Temp(tempLenF); // temp
+        // if (!resOk) {
+        //     throw `FAIL => NewDealTable.Temp();`;
+        // }
 
-
+return true;
         if(!g_ShowActionInBrowser){
             await browser.close();
         }

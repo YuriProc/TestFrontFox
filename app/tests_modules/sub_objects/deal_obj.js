@@ -131,6 +131,12 @@ class Deal {
         this.xPaymentFormSelectedValue = this.xFieldSetPaymentForm + `//div[@class="crm-select__single-replica"]/span`;
         // Надпись "Поле Форма оплаты обязательно для заполнения"
         this.xPaymentFormRequired = this.xFieldSetPaymentForm + `//span[contains(text(), "Поле Форма оплаты обязательно для заполнения")]`;
+        // ФилСет "№ тел. топливо"
+        this.xFieldSetNPhoneToplyvo = `//fieldset[legend[contains(text(), "№ тел. топливо")]]`;
+        // Инпут "№ тел. топливо"
+        this.xInputNPhoneToplyvo = this.xFieldSetNPhoneToplyvo + `//input[@name="№ тел. топливо"]`;
+        // Номер Телефона Топливо !!!!
+        this.strNPhoneToplyvo = `380666188425`;
         // "Доп. условие оплаты" -----------------------------
         // Филд Сет "Доп. условие оплаты"
         this.xFieldSetAdditionalConditionPayment = `//fieldset[legend[contains(text(), "Доп. условие оплаты")]]`;
@@ -462,16 +468,16 @@ class Deal {
             if (!resOk) {
                 throw `FAIL => Заголовок "Создание сделки" WaitForElementIsPresentByXPath(${this.xHeaderCreateDeal})`;
             }
-            // Кнопка "Отдел продаж" Выбрана
-            resOk = await WaitForElementIsPresentByXPath(5000, this.page, this.xButtonSalesDepartmentSelected);
-            if (!resOk) {
-                throw `FAIL => Кнопка "Отдел продаж" Выбрана WaitForElementIsPresentByXPath(${this.xButtonSalesDepartmentSelected})`;
-            }
-            // Кнопка "Транспортный отдел" НЕ выбрана
-            resOk = await WaitForElementIsPresentByXPath(5000, this.page, this.xButtonTransportationDepartmentNotSelected);
-            if (!resOk) {
-                throw `FAIL => Кнопка "Транспортный отдел" НЕ выбрана WaitForElementIsPresentByXPath(${this.xButtonTransportationDepartmentNotSelected})`;
-            }
+            // // Кнопка "Отдел продаж" Выбрана // Должен быть пермишен "Выбор отдела в сделке"
+            // resOk = await WaitForElementIsPresentByXPath(5000, this.page, this.xButtonSalesDepartmentSelected);
+            // if (!resOk) {
+            //     throw `FAIL => Кнопка "Отдел продаж" Выбрана WaitForElementIsPresentByXPath(${this.xButtonSalesDepartmentSelected})`;
+            // }
+            // // Кнопка "Транспортный отдел" НЕ выбрана
+            // resOk = await WaitForElementIsPresentByXPath(5000, this.page, this.xButtonTransportationDepartmentNotSelected);
+            // if (!resOk) {
+            //     throw `FAIL => Кнопка "Транспортный отдел" НЕ выбрана WaitForElementIsPresentByXPath(${this.xButtonTransportationDepartmentNotSelected})`;
+            // }
             // Селект "Мониторинг (МЦ)" "Автоматически"
             resOk = await WaitForElementIsPresentByXPath(5000, this.page, this.xSelectMC);
             if (!resOk) {
@@ -978,10 +984,13 @@ class Deal {
                     throw `FAIL => Вводим "Форма оплаты" SetTextByXPath(${this.xSelectPaymentForm})`;
                 }
                 // ДропДаун с нужной строкой + `[contains(text(), "${XXX}")]`
+                let strPaymentForm = ``;
                 if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
                     xTemp = this.xPaymentFormDropDownNeedStr + `[contains(text(), "${this.DealData.ClientFreights[N].PaymentForm}")]`;
+                    strPaymentForm = this.DealData.ClientFreights[N].PaymentForm;
                 }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
                     xTemp = this.xPaymentFormDropDownNeedStr + `[contains(text(), "${this.DealData.TransporterFreights[N].PaymentForm}")]`;
+                    strPaymentForm = this.DealData.TransporterFreights[N].PaymentForm;
                 }
 
                 resOk = await ClickByXPath(this.page, xTemp);
@@ -990,6 +999,14 @@ class Deal {
                 }
                 // Подождать пока закроется дроп даун
                 await WaitRender(this.page);
+                // Если Форма оплаты "топливо" , нужно добавить № тел. топливо
+                if (strPaymentForm === `топливо`){
+                    // Инпут "№ тел. топливо"
+                    resOk = await SetTextByXPath(this.page, this.xInputNPhoneToplyvo , this.strNPhoneToplyvo);
+                    if (!resOk) {
+                        throw `FAIL => Инпут "№ тел. топливо" SetTextByXPath(${this.xInputNPhoneToplyvo})`;
+                    }
+                }
                 // Селект "Доп. условие оплаты" this.xSelectAdditionalConditionPayment
                 // Селект "Доп. условие оплаты" Стрелка вниз для раскрытия списка
                 resOk = await ClickByXPath(this.page, this.xAdditionalConditionPaymentArrowDown);

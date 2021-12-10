@@ -58,7 +58,7 @@ class DataCfoFields {
             ['Ф.О. нал (П)',                               'transporter_cash_true_payment_form',       '',  '',  '',  ''],
             ['Фрахт. безнал (П)',                          'transporter_cash_false',                   '',  '',  '',  ''],
             ['Ф.О. безнал (П)',                            'transporter_cash_false_payment_form',      '',  '',  '',  ''],
-            ['Отсрочка дней. (П)',                         'transporter_delay',                        '',  '',  '',  ''],
+            ['Отсрочка дней. (П)',                         'transporter_delay',                        '',  'strTransporterDelay',  '=',  ''],
             ['Заявка (П)',                                 'transporter_document_is_order',     '/button',  '',  '',  ''],
             ['№ карты (по софту) (П)',                     'transporter_soft_credit_card',             '',  '',  '',  ''],
             ['ФИО владельца карты (по софту) (П)',         'transporter_soft_name',                    '',  '',  '',  ''],

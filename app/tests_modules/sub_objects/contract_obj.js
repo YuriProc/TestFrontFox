@@ -41,7 +41,7 @@ class Contract{
         //Табличное редактирование, вкладка "Договора", кнопки "Корзина" (Удаление Договора) NUM
         this.xNumDelete = `//table[@role="table"][.//th[@role="columnheader"]/div[contains(text(),"# договора")]]//div[@class="delete-icon"]`;
         // Табличное редактирование, кнопка "+ Добавить Договора"
-        this.xPlusContract = `//div[@class="tab-pane active"]/div[@class="data-table-manager__tab-footer d-flex"]`;
+        this.xPlusContract = `//div[@class="tab-pane active"]//div[@class="data-table-manager__tab-footer d-flex"]`;
         this.xPlusContract+= `/button[@type="button"][contains(text(), "Добавить Договора")]`;
         //Модалка договора тайтл "Договор"
         this.xTitleContract = `//div[contains(@id, "company-order-creation")][@class="modal-body"]//h5[contains(text(), "Договор")]`;
@@ -58,8 +58,10 @@ class Contract{
         // Договор Отсрочка Инпут
         this.xPaymentDelay=`//fieldset[./legend[contains(text(), "Отсрочка")]]//input[@name="Отсрочка"][@type="number"]`;
         // Договор Кнопка "Создать договор"
-        this.xButtonCreateContract=`//div[contains(@id,"company-order-creation")]//button[@type="submit"][contains(text(), "Создать договор")]`;
+        // this.xButtonCreateContract=`//div[contains(@id,"company-order-creation")]//button[@type="submit"][contains(text(), "Создать договор")]`;
+        this.xButtonCreateContract=`//div[contains(@id,"company-order-creation")]//button[contains(text(), "Создать")][not(contains(text(), "остаться"))]`;
         // Договор Кнопка "Создать договор" Дизейблед
+        //this.xButtonCreateContractDisabled=`//div[contains(@id,"company-order-creation")]//button[@type="submit"][@disabled="disabled"]`;
         this.xButtonCreateContractDisabled=`//div[contains(@id,"company-order-creation")]//button[@type="submit"][@disabled="disabled"]`;
         // Кнопка "Редактировать договор"
         this.xButtonEditContract = `//button[contains(text(), "Редактировать договор")]`;

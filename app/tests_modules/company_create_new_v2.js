@@ -39,6 +39,22 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             throw 'NewCompany.CheckCompanyForm(); = FAIL!"';//<--специальный вызов ошибки!
         }
 // ------
+        resOk = await NewCompany.DeleteAllPresentCompanyTypes();
+        if (!resOk) {
+            throw 'NewCompany.DeleteAllPresentCompanyTypes(); = FAIL!"';//<--специальный вызов ошибки!
+        }
+        // --------------------------------------------------
+        resOk = await NewCompany.CheckAndSetResponsible();
+        if (!resOk) {
+            throw 'NewCompany.CheckAndSetResponsible(); = FAIL!"';//<--специальный вызов ошибки!
+        }
+        // --------------------------------------------------
+        // Да повторно ибо после установки Отв Компания перезагружается
+        resOk = await NewCompany.DeleteAllPresentCompanyTypes();
+        if (!resOk) {
+            throw 'NewCompany.DeleteAllPresentCompanyTypes(); = FAIL!"';//<--специальный вызов ошибки!
+        }
+
         resOk = await NewCompany.AddNewCompanyTypes();
         if (!resOk) {
             throw 'NewCompany.AddNewCompanyTypes(); = FAIL!"';//<--специальный вызов ошибки!
@@ -56,8 +72,8 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
             if (!resOk) {
                 throw 'NewCompany.DeleteAllPresentCargoTypes(); = FAIL!"';//<--специальный вызов ошибки!
             }
-        }// ------------------------------------------------
-
+        }
+        // ------------------------------------------------
         resOk = await NewCompany.CheckBossPresent();
         if (!resOk) {
             throw 'NewCompany.CheckBossPresent(); = FAIL!"';//<--специальный вызов ошибки!

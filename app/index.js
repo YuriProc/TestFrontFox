@@ -20,6 +20,7 @@ let OpenVariables = require('./data/data_for_tests.js');
 const fs_log = require('fs');
 
 let LPage = require('./tests_modules/login.js');
+let PGAPage = require('./tests_modules/auto_kiker.js');
 
 
 let UCNPage = require('./tests_modules/user_create_new');
@@ -162,24 +163,37 @@ let OpenFox = async () => {
 
 
 await console.log(`NumTests=${i}`);
-           // await WaitMS(5000);
-            Data.DealData1.strDealID = `33066`;
-            Data.DealData1.strStatusID = `2`;
-            Data.DealData1.strClientCompanyName = `ПРАТ "ВО "СТАЛЬКАНАТ-СІЛУР"`;//4316
-            Data.DealData1.strClientCompanyID = `4316`;
-            Data.DealData1.strClientCompanyCode = `26209430`;
-            Data.DealData1.strOurCompanyWithClient = `ТОВ "ТРАНСЛОЙД"`;
-            Data.DealData1.ClientFreights[0].Amount = `500`;
-            //Data.DealData1.PointsLoading[0].PointLoading.strAddressFOX = `Херсон`;
-            Data.DealData1.PointsLoading[0].PointLoading.strInDate = `26.07.2021 08:00`;
-            Data.DealData1.PointsUnLoading[1].PointUnLoading.strOutDate = `29.07.2021 15:00`;
-
-            Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
-            await TempStop(page);
-           //==========
-          //    Data.CompanyData1.strCompanyCode = `40253046`;
+           // // await WaitMS(5000);
+           //  Data.DealData1.strDealID = `33066`;
+           //  Data.DealData1.strStatusID = `2`;
+           //  Data.DealData1.strClientCompanyName = `ПРАТ "ВО "СТАЛЬКАНАТ-СІЛУР"`;//4316
+           //  Data.DealData1.strClientCompanyID = `4316`;
+           //  Data.DealData1.strClientCompanyCode = `26209430`;
+           //  Data.DealData1.strOurCompanyWithClient = `ТОВ "ТРАНСЛОЙД"`;
+           //  //Data.DealData1.ClientFreights[0].Amount = `500`;
+           //  //Data.DealData1.PointsLoading[0].PointLoading.strAddressFOX = `Херсон`;
+           //  Data.DealData1.PointsLoading[0].PointLoading.strInDate = `26.07.2021 08:00`;
+           //  Data.DealData1.PointsUnLoading[1].PointUnLoading.strOutDate = `29.07.2021 15:00`;
+           //  Data.DealData1.strClientDelay = `22`;
+           //  Data.DealData1.strNumberTransportation = ``;
+           //
+           //  Data.DealData1.strTransporterCompanyName = `ФОП Сіпко Сергій Олексійович`;
+           //  Data.DealData1.strTransporterCompanyCode = `2818821397`;
+           //  Data.DealData1.strDriverFullName = `Куров Олександр Вікторович`;
+           //  Data.DealData1.strDriverPhone = `380508608786`;
+           //  Data.DealData1.strOurCompanyWithTransporter = `ТОВ "ТРАНСЛОЙД"`;
+           //  Data.DealData1.strTransporterDelay = `2`;
+           //
+           //
+           //  Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
+           //  // await console.log(`-----StartNewBrowser`);
+           //  // let nbrowser = await PGAPage.StartNewBrowser(false);
+           //  // let nPGAPage = await PGAPage.NewBrowserGetPage(nbrowser, `http://10.10.10.232/pgadmin4/login`);
+           //  await TempStop(page);
+           // //==========
+          Data.CompanyData1.strCompanyCode = `2818821397`;//`38885174`;
             Data.CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData1);
-            // await TempStop(page);
+             await TempStop(page);
 
             if (!Data.CompanyData1.returnResult) {
                 //throw `Не получилось создать компанию (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
@@ -237,6 +251,7 @@ await console.log(`NumTests=${i}`);
             Data.DealData1.strClientCompanyCode = Data.CompanyData1.strCompanyCode;
             Data.DealData1.strClientCompanyID = Data.CompanyData1.strCompanyID;
             Data.DealData1.strOurCompanyWithClient =  Data.CompanyData1.ContractData.strContractOurCompany// `СТАВАНГЕР`;
+            Data.DealData1.strClientDelay = Data.CompanyData1.ContractData.strDelayDays;
             Data.DealData1.strCargoType = Data.CompanyData1.strCargoType;
             Data.DealData1.strCargoCost = Data.CompanyData1.strCargoCost;
             Data.DealData1.PointsLoading[0].PointLoading.strAddressFOX = Data.CompanyData1.LocationData1.strAddressFOX;
@@ -260,7 +275,7 @@ await console.log(`NumTests=${i}`);
             Data.DealData1.strTransporterCompanyCode = Data.CompanyData2.strCompanyCode; // Заполнить ПЕРЕД выполнением Теста
             Data.DealData1.strTransporterCompanyID = Data.CompanyData2.strCompanyID; // Заполнить ПЕРЕД выполнением Теста
             Data.DealData1.strOurCompanyWithTransporter = Data.CompanyData2.ContractData.strContractOurCompany; //`ПЕРЕВОЗ`;// `ТОВ "ТРАНСПАУЕР"`;//CompanyData2.ContractData.strContractOurCompany,//'СТАВАНГЕР',
-            Data.DealData1.strOurCompanyWithTransporter = Data.CompanyData2.ContractData.strContractOurCompany;//'СТАВАНГЕР',
+            Data.DealData1.strTransporterDelay = Data.CompanyData2.ContractData.strDelayDays;
             Data.DealData1.strDriverFullName = Data.CompanyData2.DriverData.strLastName + ` `
                                              + Data.CompanyData2.DriverData.strFirstName + ` `
                                              + Data.CompanyData2.DriverData.strMiddleName;
@@ -272,7 +287,7 @@ await console.log(`NumTests=${i}`);
             Data.DealData1.strTrailerID = Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleID;
 
             Data.DealData1 = await DealCNPage.DealCreateNew(browser, page, Data.DealData1);
-        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
+//        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
             //await TempStop(page);
             if (Data.DealData1.returnResult) {
 
@@ -295,7 +310,7 @@ await console.log(`NumTests=${i}`);
 
 // await console.log(`index TempStop`);
 // await TempStop(page);
-   //     } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
+        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
 
 
 

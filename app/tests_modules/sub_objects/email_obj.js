@@ -8,7 +8,7 @@ class Email {
         //Табличное редактирование ТАБ "Email"
         this.xTabEmail = `//li[@role="presentation"]/a[@role="tab"][@aria-selected="true"][contains(text(),"Email")]`;
         // Табличное редактирование Кнопка "+ Добавить Email"
-        this.xButtonPlusEmail = `//div[@class="tab-pane active"]/div[@class="data-table-manager__tab-footer d-flex"]`;
+        this.xButtonPlusEmail = `//div[@class="tab-pane active"]//div[@class="data-table-manager__tab-footer d-flex"]`;
         this.xButtonPlusEmail+= `/button[@type="button"][contains(text(), "Добавить Email")]`;
         // Заголовок в Модалке "E-mail адрес"
         this.xModalTitleEmailAddress=`//h5[@class="modal-title"][contains(text(), "E-mail адрес")]`;

@@ -256,7 +256,7 @@ class DealTable {
         }
     }//async DealTableFilterByField(FieldName, FieldValue)
     //----------------------------------------
-    async TableDealCheckOneCurrentDeal() {
+    async TableDealCheckOneCurrentDeal(AllFLen) {
         let resOk;
         let ColValue,DValue;
         try {
@@ -265,7 +265,7 @@ class DealTable {
             let LenColName,LenColValue;
             let ColName;
             let C,resC,sC;
-            AllFLen = 10;
+            //AllFLen = 13;
             for(let i=0 ; i < AllFLen; i++){
                 ColName = this.CFO.Fields[i][0];
                 LenColName = ColName.length;
@@ -274,10 +274,14 @@ class DealTable {
                 ColValue = await this.CFO.GetCellValue(0, ColName);
                 C = FRGB(0,1,4,1);
                 DValue = await this.GetDealValue(i);
+
                 if(ColValue === DValue){
                     C = FRGB(0,1,4,1);
                     await console.log(`${C}${ColName} = ${'.'.repeat(LenColName)}(${ColValue})${FRGB()}`);
-                }else {
+                }else if (DValue === `*skipped*`) {
+                    C = FRGB(0,1,1,1);
+                    await console.log(`${C}${ColName} = ${'.'.repeat(LenColName)}(${ColValue})${FRGB()}`);
+                }else{
                     C = FRGB(0,4,1,1);
                     await console.log(`${C}!!!->${ColName} = ${'.'.repeat(LenColName)}(${ColValue})!=(${DValue})${FRGB()}`);
                 }
@@ -303,12 +307,12 @@ class DealTable {
             }else if(DLogic === '1' || DLogic === 1){
                 return await this.GetDealCustomValue(this.CFO.Fields[NCF][1]);
 
-            }else {
-                return '';
+            }else if (DLogic === ''){
+                return '*skipped*';
             }
 
 
-            return true;
+            return ``;
         } catch (e) {
             await console.log(`${e} \n FAIL in GetDealValue(${NCF})`);
             return '';
@@ -330,10 +334,20 @@ class DealTable {
                     DValue = await this.GetDealInOutStrPoints(1); // 0 - In / 1 - Out
                     break;
                 case "client_cash_true":
-                    DValue = await this.GetDealFreightsAmount(0,0); //
+                    DValue = await this.GetDealFreightsAmount(0,0); // 0 - Client , 0 - Cash
                     break;
                 case "client_cash_true_payment_form":
-                    DValue = await this.GetDealFreightsPaymentForm(0,0); //
+                    DValue = await this.GetDealFreightsPaymentForm(0,0); // 0 - Client , 0 - Cash
+                    break;
+                case "client_cash_false":
+                    DValue = await this.GetDealFreightsAmount(0,1); // 0 - Client , 1 - CashLess
+                    break;
+                case "client_cash_false_payment_form":
+                    DValue = await this.GetDealFreightsPaymentForm(0,1); // 0 - Client , 1 - CashLess
+                    break;
+
+                case "client_debt":
+                    DValue = `не заполнено`;
                     break;
                 default:
                     throw `FAIL => Не найден столбец таблицы CFO GetDealCustomValue(${IName});`;
@@ -422,13 +436,17 @@ class DealTable {
                         this.DealData[keyFreights][i].PaymentForm === `з ПДВ 0%` ||
                         this.DealData[keyFreights][i].PaymentForm === `з ПДВ 20%` ){
                         Amount+= Number(this.DealData[keyFreights][i].Amount);
+                        //await console.log(`this.DealData[keyFreights][i].Amount=(${this.DealData[keyFreights][i].Amount})`);
                     }
                 }
             }// for (let i = 0; i < lengthPArray; ++i)
             if (Amount === 0 ){
                 resValue = ``;
             }else {
-                resValue = Amount.toFixed(2);
+               // console.log(new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2}).format(Amount));
+                //console.log(Amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& '));
+                // Это разделитель тысяч и две цифры после запятой
+                resValue = Amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ');
             }
             return resValue;
         } catch (e) {
@@ -472,7 +490,9 @@ class DealTable {
                         tempKey = this.DealData[keyFreights][i].PaymentForm;
                     }
                 }
-                //
+                if (tempKey === undefined){
+                    continue;
+                }
                 if (tempArray[tempKey] !== undefined)
                     ++tempArray[tempKey];
                 else
@@ -480,7 +500,7 @@ class DealTable {
             }// for (let i = 0; i < lengthPArray; ++i)
             let n = 0;
             for (let key in tempArray){
-                if (n !== 0){
+                if (n !== 0 && CCL !== 1){  // && CCL !== 1 - Временно, пока не пофиксят выдачу на фронте
                     resValue+= `; `;
                 }
                 resValue+= key;
@@ -493,7 +513,7 @@ class DealTable {
         }
     }//async GetDealFreightsPaymentForm(CT,CCL)
     //----------------------------------------
-    async Temp() {
+    async Temp(nStart = 0) {
         let resOk;
         let temp;
         try {
@@ -503,7 +523,7 @@ class DealTable {
             let tempColName;
             let n = 0;
             let Color,sC;
-            for(let i=0 ; i < tempLen; i++){
+            for(let i=nStart ; i < tempLen; i++){
                 tempColName = this.CFO.Fields[i][0];
                 tempLenColName = tempColName.length;
                 tempLenColName = 42 - tempLenColName;

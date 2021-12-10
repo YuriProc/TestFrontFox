@@ -4,6 +4,7 @@ global.g_height = 900;
 global.g_setListener = false;
 global.g_tempDataEventListenerFunctionHandle = null;
 global.g_tempDataFromEventListener_id = false;
+global.g_tempDataFromEventListener_response = ``;
 global.g_tempDataFromEventListener_json = ``;
 
 

@@ -13,7 +13,7 @@ class Location {
         this.xFirstButtonDelete = `//table[@role="table"][.//th[@role="columnheader"]/div[contains(text(),"Тип локации")]]//div[@data-id="0"][@class="delete-icon"]`;
         this.xAllButtonDelete = `//table[@role="table"][.//th[@role="columnheader"]/div[contains(text(),"Тип локации")]]//div[@class="delete-icon"]`;
         // Кнопка "+ Добавить Локации"
-        this.xButtonPlusLocations = `//div[@class="tab-pane active"]/div[@class="data-table-manager__tab-footer d-flex"]`;
+        this.xButtonPlusLocations = `//div[@class="tab-pane active"]//div[@class="data-table-manager__tab-footer d-flex"]`;
         this.xButtonPlusLocations+= `/button[@type="button"][contains(text(), "Добавить Локации")]`;
         //Проверка открытия модалки "Найти сущ. локацию"
         this.xModalHeaderFindExistsLocation = `//div[@id="MODAL::ADD_LOCATION_TO_COMPANY::SHOW___BV_modal_content_"]`;
@@ -28,7 +28,7 @@ class Location {
         // Кнопка "Добавить"
         this.xButtonAdd = this.xModalHeaderFindExistsLocation + `//button[contains(text(), "Добавить")][@type="button"]`;
         // Кнопка "Перейти в таблицу локаций"
-        this.xButtonGoToTableLocations = `//div[@class="tab-pane active"]/div[@class="data-table-manager__tab-footer d-flex"]`;
+        this.xButtonGoToTableLocations = `//div[@class="tab-pane active"]//div[@class="data-table-manager__tab-footer d-flex"]`;
         this.xButtonGoToTableLocations+= `/div[@class="d-flex"]/a[@href="/crm/locations"][contains(text(), "Перейти в таблицу локаций")]`;
         // Проверить , что мы на таблице локаций !!!!
         //section[@id="crm-table-location"]//table[@role="table"][@aria-busy="false"]//th[@role="columnheader"][@aria-colindex="4"]/div[contains(text(), "Тип локации")]

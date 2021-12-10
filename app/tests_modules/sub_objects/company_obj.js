@@ -4,6 +4,12 @@ class Company{
         this.browser = browser;
         this.page = page;
         this.CompanyData = CompanyData;
+        this.CurrentUser = {
+            user_id : ``,
+            contact_id : ``,
+            full_name: ``,
+            name_surname: ``,
+        }
         // Таблица Компаний "Загрузка"
         this.xCompanyTableLoading = `//div[@class="busy-table"]//strong[contains(text(), "Загрузка...")]`;
         // Верхнее меню "Компания +"
@@ -26,6 +32,30 @@ class Company{
         this.xHeaderDataContacts = `//h5[contains(text(), "Контактные данные")]`;
         // Хеадер "Имя Компании"
         this.xHeaderCompanyName = `//div[@class="company-head-info"]/..//div[@class="company-heading"]`;
+        // Кружочек "Менеджеры" (Ответственные)
+        this.xManagersCircles = `//div[@class="entity-img-selector"][div[contains(text(), "Менеджеры")]]/div[@class="d-flex"]`;
+        // Первый Кружочек ElementGetAttribute title
+        this.xManagersCircle_1 = this.xManagersCircles + `//div[@class="entity-img-selector__item"]//a[@class="link"]`;
+        // Второй Кружочек +N (может отсутствовать)
+        this.xManagersCircle_N = this.xManagersCircles + `//a[@class="entity-img-selector__show-more"]`;
+        // PopOverBodyItems (InnerText)
+        this.xPopOverBodyItems = `//div[@class="popover-body"]/div[@class="entity-img-selector__hidden-item"]/a`;
+        //Третий Кружочек +Добавить ( если +N НЕТ, то будет Вторым)
+        this.xManagersCircle_Add = this.xManagersCircles + `//a[@class="entity-img-selector__add"]`;
+        // PopOverBodyAdd Select
+        this.PopOverBodyAdd = `//div[@class="popover-body"][//fieldset[legend[contains(text(), "Добавить")]]]`;
+        // PopOverBodyAddArrowDown
+        this.PopOverBodyAddArrowDown = this.PopOverBodyAdd + `//div[@class="multiselect__select"]`;
+        // Инпут в Добавить Ответственного
+        this.PopOverBodyAddInput = this.PopOverBodyAdd + `//input[@placeholder="Выберите"]`;
+        // Отсутствующий Спиннер
+        this.PopOverBodyAddInputSpinner = this.PopOverBodyAdd + `//div[@class="multiselect__spinner"][@style="display: none;"]`;
+        // Нужная Строка + contains(text(), "${XXX}")
+        this.PopOverBodyAddNeedStr = this.PopOverBodyAdd + `//span`;// + contains(text(), "${XXX}")
+
+
+
+
         // ЕДРПОУ/ИНН
         this.xEDRPOUcode = `//div[div[@class="label"][contains(text(),"ЕДРПОУ/ИНН")]]/div[@class="value"]`;
         // Статус Компании
@@ -86,7 +116,7 @@ class Company{
         // Типы Грузов Корзина Удалить
         this.xDelCargoTypes = `//td[@aria-colindex="10"][@role="cell"]/div[@class="delete-icon"]`;
         // Табл редактирование Вкладка Типы Грузов Кнопка "+ Добавить Типы грузов"
-        //this.xPlusCargoType = `//div[@class="tab-pane active"]/div[@class="data-table-manager__tab-footer d-flex"]`;
+        //this.xPlusCargoType = `//div[@class="tab-pane active"]//div[@class="data-table-manager__tab-footer d-flex"]`;
         this.xPlusCargoType = this.xActiveTable + `//button[@type="button"][contains(text(), "Добавить Типы грузов")]`;
         // Заголовок Модалки Тип Груза
         this.xTitleModalCargoType = `//h5[@class="modal-title"][contains(text(), "Тип груза")]`;
@@ -129,7 +159,7 @@ class Company{
 
     async ClickCompanyCreateNewPlus(){
         try {
-            let xPath, resOk,strInnerText;
+            let xPath, resOk, strInnerText;
 
             await WaitRender(this.page);
             // //-----
@@ -148,7 +178,7 @@ class Company{
             await WaitRender(this.page);
             // Таблица Компаний "Загрузка"
             // Ждём пока не пропадёт
-            resOk = await WaitUntilXPathExist(this.page,5000, this.xCompanyTableLoading);
+            resOk = await WaitUntilXPathExist(this.page, 5000, this.xCompanyTableLoading);
 
             resOk = await ClickByXPath(this.page, this.xMenuCompanyPlus);
             if (!resOk) {
@@ -169,6 +199,9 @@ class Company{
             if (!resOk) {
                 throw `FAIL => Вводим код ЕДРПОУ SetTextByXPath(${this.xInputINN})`;
             }
+            // Выцепим Текущего Юзера из запроса "/api/auth-user"
+            await console.log('\x1b[38;5;3m\t', `Ставим Слушателя ..................`, '\x1b[0m');
+            resOk = await ResponseListener(this.page, `${g_BackCfoFoxURL}/api/auth-user`, true);
             // Жмём Кнопка "Проверить в базе" _PromiseAll
             //resOk = await ClickByXPath_PromiseAll(this.page, this.xButtonCheckInBase);
             resOk = await ClickByXPath(this.page, this.xButtonCheckInBase);
@@ -178,21 +211,22 @@ class Company{
             // Ждём Исчезновения Спиннера и Рендера страницы
             await SpinnerWait(this.page);
             await WaitRender(this.page);
-
-
-
             //----------------------------
-
 // проверим Вывод ошибки
-
             strInnerText = await WarningsRead(this.page, 4000);
-            if (strInnerText!==''){
+            // Убираем Слушателя
+            resOk = await ResponseListener(this.page, `${g_BackCfoFoxURL}/api/auth-user`, false);
+
+            if (strInnerText !== '') {
                 let strAlreadyCreated = "Данная компания уже создана!";
                 let strNotCorrect = "Вы ввели некоректный ЕДРПОУ компании!";
                 let strNotFind = "Данные не найдены!";
                 let strErrorActivity = "Trying to get property 'activities' of non-object";
                 if (strInnerText !== strAlreadyCreated) {
-                    await this.page.screenshot({ path: g_PathSS + `screenshot_ClickCompanyCreateNewPlus_checkInBase.png`, fullPage: true });
+                    await this.page.screenshot({
+                        path: g_PathSS + `screenshot_ClickCompanyCreateNewPlus_checkInBase.png`,
+                        fullPage: true
+                    });
                 }
                 await WarningsRemove(this.page);
                 switch (strInnerText) {
@@ -214,9 +248,22 @@ class Company{
                         g_StrOutLog += `=> \n     Кажется это новая компания, но это не точно. \n`;
                         break;
                 }
-            }else{
+            } else {
                 await console.log('\x1b[38;5;3m\t', `Странно нет сообщений => ClickCompanyCreateNewPlus_checkInBase`, '\x1b[0m');
             }
+            if (g_tempDataFromEventListener_response.status() === 200){
+                this.CurrentUser.user_id = g_tempDataFromEventListener_json.id;
+                this.CurrentUser.contact_id = g_tempDataFromEventListener_json.contact_id;
+                this.CurrentUser.full_name = g_tempDataFromEventListener_json.contact.full_name;
+                this.CurrentUser.name_surname = g_tempDataFromEventListener_json.contact.name_surname;
+            }
+            // await console.log(`----------- g_tempDataFromEventListener_json -----------`);
+            // await console.dir(g_tempDataFromEventListener_json);
+            // await console.dir(g_tempDataFromEventListener_json, { showHidden: true, depth: 3, colors: true });// depth: null - infinity
+            // await console.log(`----------- g_tempDataFromEventListener_json -----------`);
+            // await console.log(`this.CurrentUser.full_name=${this.CurrentUser.full_name}`);
+            // await TempStop(this.page, `Тут Компания`);
+
 //await console.log(`qqqqqqq`);
             return true;
         }catch (e) {
@@ -341,7 +388,7 @@ class Company{
         }
     }//async CheckCompanyForm()
     //------------------
-    async AddNewCompanyTypes(){
+    async DeleteAllPresentCompanyTypes(){
         try{
             let xPath, resOk, tStr;
             let TypesCompPres = [false,false,false,false];
@@ -388,6 +435,60 @@ class Company{
                     }
                 }
             }
+            return true;
+        }catch (e) {
+            await console.log(`${e} \n FAIL in DeleteAllPresentCompanyTypes`);
+            return false;
+        }
+    }//async DeleteAllPresentCompanyTypes()
+    //-------------------------
+    async AddNewCompanyTypes(){
+        try{
+            let xPath, resOk, tStr;
+            // let TypesCompPres = [false,false,false,false];
+            // //Проверяем заполнено ли поле тип компании
+            // //Типы Компании в шапке (после статуса)
+            // //проверяем по наличию на странице span(Заказчик, Перевозчик, Экспедитор, Контрагент ТО) class="multiselect__tag
+            // resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xTypesCompany);
+            // if (!resOk) {
+            //     //await TempStop(page);
+            //     throw `FAIL => Не вижу тега с типами компании (${this.xTypesCompany})`;
+            // }
+            //
+            // let StrAllTypesCompany = await ElementGetInnerText(this.page, 0, this.xTypesCompany);
+            // //if (StrAllTypesCompany !== '') {}
+            // TypesCompPres[0] = await SubStrIsPresent('Заказчик',      StrAllTypesCompany);
+            // TypesCompPres[1] = await SubStrIsPresent('Перевозчик',    StrAllTypesCompany);
+            // TypesCompPres[2] = await SubStrIsPresent('Экспедитор',    StrAllTypesCompany);
+            // TypesCompPres[3] = await SubStrIsPresent('Контрагент ТО', StrAllTypesCompany);
+            //
+            // //await console.log(`     (${TypesCompPres[0]}) | (${TypesCompPres[1]}) | (${TypesCompPres[2]}) | (${TypesCompPres[3]})`);
+            // //await TempStop(page);
+            //
+            // resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xTypesCompanyArrowDown);
+            // if (!resOk) {
+            //     //await TempStop(page);
+            //     tStr = `\n FAIL => После нажатия на кнопку (ПРОВЕРИТЬ В БАЗЕ) не прогрузилась страница `;
+            //     tStr+= `\n FAIL => Не вижу (${this.xTypesCompanyArrowDown})`;
+            //     await console.log(tStr);
+            //     throw tStr;//<--специальный вызов ошибки!
+            // }
+            // // Удаляем все типы Компании
+            // //await console.log(`StrAllTypesCompany[${StrAllTypesCompany}]`);
+            // let TypesCount = 0;
+            // for (let i = 0; i < 4; i++) {
+            //     if (TypesCompPres[i]) {
+            //         TypesCount++;
+            //         //await console.log(`TypesCompPres[${i}]`);
+            //         resOk = await ClickByXPath(this.page, this.xTypesCompanyDel);
+            //         if (!resOk) {
+            //             await this.page.screenshot({path: g_PathSS + `screenshot_del_company_type.png`, fullPage: true });
+            //             await console.log(`FAIL => Del "Тип Компании" крестик`);
+            //             //await TempStop(this.page);
+            //             throw `FAIL => Del "Тип Компании" крестик (${this.xTypesCompanyDel})`;
+            //         }
+            //     }
+            // }
             //await console.log(`     TypesCount=    (${TypesCount}) `);
             let xPathTypes;
             //await console.log(`     CompanyData.strCompanyTypes.length(${this.CompanyData.strCompanyTypes.length}) `);
@@ -767,6 +868,128 @@ class Company{
             return false;
         }
     }//async DeleteAllPresentCargoTypes()
+    //------------------
+    async CheckAndSetResponsible(){
+        let resOk;
+        let C;
+        let strFIOResponsible = ``;
+        try{
+
+            // // Первый Кружочек ElementGetAttribute title
+            // this.xManagersCircle_1 = this.xManagersCircles + `//div[@class="entity-img-selector__item"]//a[@class="link"]`;
+            // // Второй Кружочек +N (может отсутствовать)
+            // this.xManagersCircle_N = this.xManagersCircles + `//a[@class="entity-img-selector__show-more"]`;
+            // // PopOverBodyItems (InnerText)
+            // this.xPopOverBodyItems = `//div[@class="popover-body"]/div[@class="entity-img-selector__hidden-item"]/a`;
+            // //Третий Кружочек +Добавить ( если +N НЕТ, то будет Вторым)
+            // this.xManagersCircle_Add = this.xManagersCircles + `//a[@class="entity-img-selector__add"]`;
+            //========
+            // Узнаем Кто Ответственный в ПЕРВОМ Кружочке
+            strFIOResponsible = await ElementGetAttribute(this.page, 0, `title`, this.xManagersCircle_1);
+
+            await console.log(`strFIOResponsible=(${strFIOResponsible})`);
+            await console.log(`strFIOCurrentUser=(${this.CurrentUser.full_name})`);
+
+            if(strFIOResponsible === ``){
+                C = FRGB(0,4,1,1);
+                await console.log(`${C} Warning!!! -> Нет Ответственного в Компании и Не Сработало Автозаполнение!!!${FRGB()}`);
+            }
+            // Если В Первом Кружочке - Текущий Юзер , то ОК и выходим
+            if(strFIOResponsible === this.CurrentUser.full_name){
+                return true;
+            }
+            // Провери наличие ВТОРОГО Кружочка
+            let tempLen = await ElementGetLength(this.page, this.xManagersCircle_N);
+            if (tempLen>0){
+                // Если ВТОРОЙ кружочек есть, то кликнем на него
+                resOk = await ClickByXPath(this.page, this.xManagersCircle_N);
+                if(!resOk){
+                    C = FRGB(0,4,1,1);
+                    await console.log(`${C} Fail!!! -> Ответственные +ЕЩЁ (Кружочек) ClickByXPath(${this.xManagersCircle_N}) !!!${FRGB()}`);
+                }
+                // Подождём Дроп Даун с Итемами
+                resOk = WaitForElementIsPresentByXPath(1000, this.page, this.xPopOverBodyItems);
+                if(!resOk) {
+                    C = FRGB(0, 4, 1, 1);
+                    await console.log(`${C} Fail!!! -> Ответственные +ЕЩЁ (Выпадающий списо)\n WaitForElementIsPresentByXPath(${this.xPopOverBodyItems}) !!!${FRGB()}`);
+                }
+                // Узнаем количество итемов в Дропдауне
+                tempLen = await ElementGetLength(this.page, this.xPopOverBodyItems);
+                for(let i = 0; i < tempLen; i++){
+                    strFIOResponsible = await ElementGetInnerText(this.page, i, this.xPopOverBodyItems);
+                    strFIOResponsible = await strFIOResponsible.trim();
+                    if(strFIOResponsible === this.CurrentUser.full_name){
+                        return true; // Если Отв = тек Юзеру, то Ок - и выходим
+                    }
+                }// for(let i = 0; i < tempLen; i++)
+            }
+            // this.xManagersCircle_Add
+            // Кружок "Добавить ответственного"
+            resOk = await ClickByXPath(this.page, this.xManagersCircle_Add);
+            if (!resOk){
+                throw `Fail !!! -> Кружок "Добавить ответственного" ClickByXPath(${this.xManagersCircle_Add})`;
+            }
+            // PopOverBodyAdd Select
+            this.PopOverBodyAdd = `//div[@class="popover-body"][//fieldset[legend[contains(text(), "Добавить")]]]`;
+            // PopOverBodyAddArrowDown
+            this.PopOverBodyAddArrowDown = this.PopOverBodyAdd + `//div[@class="multiselect__select"]`;
+            // Нужная Строка + contains(text(), "${XXX}")
+            this.PopOverBodyAddNeedStr = this.PopOverBodyAdd + `//span`;// + [contains(text(), "${XXX}")]
+            // Ждём появление ПопОвера "Добавить" ответственного
+            resOk = await WaitForElementIsPresentByXPath(1000, this.page, this.PopOverBodyAdd);
+            if (!resOk){
+                throw `Fail !!! -> ПопОвер "Добавить" ответственного WaitForElementIsPresentByXPath(${this.PopOverBodyAdd})`;
+            }
+            // Стрелка вниз в Инпуте
+            resOk = await ClickByXPath(this.page, this.PopOverBodyAddArrowDown);
+            if (!resOk){
+                throw `Fail !!! -> Стрелка вниз в Инпуте ClickByXPath(${this.PopOverBodyAddArrowDown})`;
+            }
+            // Если Юзер простой, то в ДропДауне он будет Один и выбран Автоматом
+            let tempXP = this.PopOverBodyAddNeedStr + `[contains(text(), "${this.CurrentUser.full_name}")]`;
+            //await WaitRender(this.page);
+            resOk = await WaitForElementIsPresentByXPath(1000, this.page, tempXP);
+            if (!resOk){
+                // Если в селекте нет текущего Юзера, то Надо его ввести в Инпут и он должен появиться
+                // Инпут в Добавить Ответственного
+                resOk = await SetTextByXPath(this.page, this.PopOverBodyAddInput, this.CurrentUser.full_name);
+                if (!resOk){
+                    throw `Fail !!! -> Инпут в Добавить Ответственного SetTextByXPath(${this.PopOverBodyAddInput})`;
+                }
+                await WaitRender(this.page);
+                // Отсутствующий Спиннер в Добавить Ответственного
+                resOk = await WaitForElementIsPresentByXPath(1000, this.page, this.PopOverBodyAddInputSpinner);
+                if (!resOk){
+                    throw `Fail !!! -> Отсутствующий Спиннер в Добавить Ответственного WaitForElementIsPresentByXPath(${this.PopOverBodyAddInputSpinner})`;
+                }
+                // Повторно Ждём Появление текущего Юзера в Дропдауне
+                resOk = await WaitForElementIsPresentByXPath(1000, this.page, tempXP);
+                if (!resOk) {
+                    throw `Fail !!! -> ДропДаун с Текущим Юзером WaitForElementIsPresentByXPath(${tempXP})`;
+                }
+            }
+            resOk = await ClickByXPath(this.page, tempXP);
+            if (!resOk){
+                throw `Fail !!! -> ДропДаун "Добавить ответственного" Текущий Юзер ClickByXPath(${tempXP})`;
+            }
+
+            // class="spinner-border"
+            // Косяк на Фронте ДВА раза api/responsible вызывается и Два раза Get company
+            resOk = await SpinnerWait( this.page, 11000);
+            await WaitRender(this.page);
+            resOk = await SpinnerWait( this.page, 11000);
+
+            // await console.log('\x1b[38;5;1m\t', `Warning ( ${strFIOResponsible} ) - Warning !!!`, '\x1b[0m');
+            // await this.page.screenshot({path: g_PathSS + `screenshot_strFIOResponsible.png`, fullPage: true});
+            // await console.log(g_PathSS + `screenshot_strFIOResponsible.png`);
+
+// await TempStop(this.page, `----- CheckAndSetResponsible ---- `);
+            return true;
+        }catch (e) {
+            await console.log(`${e} \n FAIL in CheckAndSetResponsible`);
+            return false;
+        }
+    }//async CheckAndSetResponsible()
     //------------------
     async AddOneCargoType(){
         try{

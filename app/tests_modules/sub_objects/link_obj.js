@@ -8,7 +8,7 @@ class Link {
         //Табличное редактирование ТАБ "Ссылки"
         this.xTabLink = `//li[@role="presentation"]/a[@role="tab"][@aria-selected="true"][contains(text(),"Ссылки")]`;
         // Табличное редактирование Кнопка "+ Добавить Ссылки"
-        this.xButtonPlusLink = `//div[@class="tab-pane active"]/div[@class="data-table-manager__tab-footer d-flex"]`;
+        this.xButtonPlusLink = `//div[@class="tab-pane active"]//div[@class="data-table-manager__tab-footer d-flex"]`;
         this.xButtonPlusLink+= `/button[@type="button"][contains(text(), "Добавить Ссылки")]`;
         // Заголовок в Модалке "Ссылки"
         this.xModalTitleLink=`//h5[@class="modal-title"][contains(text(), "Ссылки")]`;
