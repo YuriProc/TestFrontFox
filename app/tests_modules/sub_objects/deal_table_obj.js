@@ -654,7 +654,7 @@ class DealTable {
     async GetDealStrCommissionAndPercent() {
         let resOk;
         let ClientSumR = 0, TransporterSumR = 0;
-        let Commission;
+        let Commission, Percent;
         let RC;
         let LenCF, LenTF;
         try {
@@ -707,7 +707,10 @@ class DealTable {
                 }// switch ( this.DealData.TransporterFreights[i].PaymentForm )
             } // for(let i=0; i < LenCF; i++ )
             Commission = ClientSumR - TransporterSumR;
-            await console.log(`Commission=(${Commission})`);
+            Percent = 100 * Commission / TransporterSumR;
+            resOk = Commission.toFixed(2)+`/ `+ Percent.toFixed(2)+ `%`;
+
+            await console.log(`Commission=(${Commission}) Percent=(${Percent})`);
 
             return resOk;
         } catch (e) {

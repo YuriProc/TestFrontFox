@@ -2,26 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f9b755b-153b-451e-a3a1-edd9dcea0179" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/tests_modules/get_new_edrpou.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/data/data_cfo_fields.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/data_cfo_fields.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/data/data_for_tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/data_for_tests.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/data/global_variables.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/global_variables.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/global_functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/global_functions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/sand_test.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/sand_test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/company_create_new_v2.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/company_create_new_v2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/deal_check_new.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/deal_check_new.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_table_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/contract_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/contract_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/link_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/link_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/location_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/location_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +54,7 @@
       <workItem from="1639570647071" duration="16767000" />
       <workItem from="1639988005572" duration="22649000" />
       <workItem from="1640160042878" duration="19535000" />
-      <workItem from="1640255763717" duration="15511000" />
+      <workItem from="1640255763717" duration="16054000" />
     </task>
     <servers />
   </component>
