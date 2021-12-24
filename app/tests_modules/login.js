@@ -229,7 +229,8 @@ let LoginCrm = async (page, browser, LoginData) => {
 
 
             //Проверим наличие иконки ФОКСА = УСПЕШНЫЙ ВХОД)
-            xPath = `//img[@src="/img/LogoFoXTop.0890cee9.svg"][@class="logo-menu"]`;
+            //xPath = `//img[@src="/img/LogoFoXTop.0890cee9.svg"][@class="logo-menu"]`;
+            xPath = `//img[@src="/img/christamsLogo.c97b7ba5.svg"][@class="logo-menu"]`;
             ElPresent = await WaitForElementIsPresentByXPath(12000, page, xPath);
             if (!ElPresent) {
                 await console.log('     Warning => Не вижу class="logo-menu"');

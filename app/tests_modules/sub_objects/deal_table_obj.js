@@ -658,9 +658,12 @@ class DealTable {
         let RC;
         let LenCF, LenTF;
         try {
-            LenCF = this.DealData.ClientFreights;
+            LenCF = this.DealData.ClientFreights.length;
+            await console.log(`ClientSumR=(${ClientSumR})----------------`);
             for(let i=0; i < LenCF; i++ ){
                 RC = 1;
+                await console.log(`ClientFreights[${i}].PaymentForm=(${this.DealData.ClientFreights[i].PaymentForm})`);
+                await console.log(`ClientFreights[${i}].Amount=(${this.DealData.ClientFreights[i].Amount})`);
                 switch ( this.DealData.ClientFreights[i].PaymentForm ) {
                     case "без ПДВ":
                         RC = 0.95;// * - умножить
@@ -675,16 +678,21 @@ class DealTable {
                     case "софт":
                     case "топливо":
                         RC = 1;
-                        ClientSumR = ClientSumR + this.DealData.ClientFreights[i].Amount;
+                        ClientSumR = ClientSumR + this.DealData.ClientFreights[i].Amount * RC;
                         break;
                     default:
                         // throw `Fail -> Неизвестный фрахт (${this.DealData.ClientFreights[i].PaymentForm})`;
                         await console.log(`Warning !!! -> Неизвестный фрахт (${this.DealData.ClientFreights[i].PaymentForm})`);
                 }// switch ( this.DealData.ClientFreights[i].PaymentForm )
+                await console.log(`ClientSumR=(${ClientSumR}) RC=(${RC})`);
+                await console.log(`-----------------------------`);
             } // for(let i=0; i < LenCF; i++ )
-            LenTF = this.DealData.TransporterFreights;
+            LenTF = this.DealData.TransporterFreights.length;
+            await console.log(`TransporterSumR=(${TransporterSumR})----------------`);
             for(let i=0; i < LenTF; i++ ){
                 RC = 1;
+                await console.log(`TransporterFreights[${i}].PaymentForm=(${this.DealData.TransporterFreights[i].PaymentForm})`);
+                await console.log(`TransporterFreights[${i}].Amount=(${this.DealData.TransporterFreights[i].Amount})`);
                 switch ( this.DealData.TransporterFreights[i].PaymentForm ) {
                     case "без ПДВ":
                         RC = 0.95;// * - умножить
@@ -699,12 +707,14 @@ class DealTable {
                     case "софт":
                     case "топливо":
                         RC = 1;
-                        TransporterSumR = TransporterSumR + this.DealData.TransporterFreights[i].Amount;
+                        TransporterSumR = TransporterSumR + this.DealData.TransporterFreights[i].Amount * RC;
                         break;
                     default:
                         // throw `Fail -> Неизвестный фрахт (${this.DealData.TransporterFreights[i].PaymentForm})`;
                         await console.log(`Warning !!! -> Неизвестный фрахт (${this.DealData.TransporterFreights[i].PaymentForm})`);
                 }// switch ( this.DealData.TransporterFreights[i].PaymentForm )
+                await console.log(`TransporterSumR=(${TransporterSumR}) RC=(${RC})`);
+                await console.log(`-----------------------------`);
             } // for(let i=0; i < LenCF; i++ )
             Commission = ClientSumR - TransporterSumR;
             Percent = 100 * Commission / TransporterSumR;
