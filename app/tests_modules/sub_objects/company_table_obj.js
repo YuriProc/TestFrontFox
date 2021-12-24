@@ -17,6 +17,8 @@ class CompanyTable {
         // Инпут "ЕДРПОУ"
         this.xInputEDRPOU = `//fieldset[contains(@class, "form-group")][legend[contains(text(), "ЕДРПОУ")]]`;
         this.xInputEDRPOU+= `//input[@name="ЕДРПОУ"]`;
+        // Ответственный Крестик Очистить поле
+        this.xClearResponsibleField = `//fieldset[legend[contains(text(), "Ответственный")]]//button[@title="Очистить поле"]`;
         // Кнопка "Фильтровать"
         this.xButtonFilter = `//button[@type="submit"][contains(text(), "Фильтровать")]`;
         // Заголовок в таблице содержащий "ЕДРПОУ"
@@ -28,6 +30,8 @@ class CompanyTable {
     //----------------------------------------
     async ClickMenuCompanies(){
         try{ let resOk;
+
+            await WaitRender(this.page);
             // Верхнее Меню "Компании"
             resOk = await ClickByXPath(this.page, this.xMenuCompany);
             if (!resOk) {
@@ -35,19 +39,24 @@ class CompanyTable {
             }
             await WaitRender(this.page);
             // Подождать пока Таблица начнёт грузиться
-            await WaitUntilXPathExist( this.page, 5000, this.xTableBusy);
+            await WaitUntilXPathExist( this.page, 12000, this.xTableBusy);
 
             // Подождать пока Таблица Загрузится
-            resOk = await WaitForElementIsPresentByXPath( 2000, this.page, this.xTableReady);
+            resOk = await WaitForElementIsPresentByXPath( 21000, this.page, this.xTableReady);
             if (!resOk) {
-                throw `FAIL => Подождать пока Таблица Загрузится(${this.xTableReady})`;
+                throw `FAIL => Подождать #1 пока Таблица Загрузится 21 сек(${this.xTableReady})`;
             }
 
-
+            await WaitRender(this.page);
             // Верхнее Меню "Компании"
             resOk = await ClickByXPath(this.page, this.xMenuCompany);
             if (!resOk) {
                 throw `FAIL => Верхнее Меню "Компании" ClickByXPath(${this.xMenuCompany})`;
+            }
+            // Подождать пока Таблица Загрузится
+            resOk = await WaitForElementIsPresentByXPath( 21000, this.page, this.xTableReady);
+            if (!resOk) {
+                throw `FAIL => Подождать #2 пока Таблица Загрузится 21 сек(${this.xTableReady})`;
             }
             await WaitRender(this.page);
             // Верхнее Меню "Компании" Активно
@@ -60,7 +69,8 @@ class CompanyTable {
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in ClickMenuCompanies `);
+            let strMsg = `${e} \n FAIL in ClickMenuCompanies `;
+            await ScreenLog(this.page, strMsg, 1);
             return false;
         }
     }//async ClickMenuCompanies()
@@ -86,32 +96,70 @@ class CompanyTable {
         }
     }//async ClickFilter()
     //----------------------------------------
-    async FilterInTableEDRPOU(){
+    async FilterInTableEDRPOU(strEDRPOU = ``){
+        let strFilterEDRPOU;
         try{ let resOk;
+            let strUrl = `${g_BackCfoFoxURL}/api/v2/user?page-limit=9999`;
+            resOk = await ResponseListener(this.page, strUrl, true);
             resOk = await this.ClickFilter();
             if (!resOk) {
                 throw `FAIL => ClickFilter`;
             }
-            // Инпут "ЕДРПОУ"
-            resOk = await SetTextByXPath(this.page, this.xInputEDRPOU, this.CompanyData.strCompanyCode); //strEDRPOU
-            if (!resOk) {
-                throw `FAIL => Инпут "ЕДРПОУ" TypeByXPath(${this.xInputEDRPOU})`;
+            resOk = await ResponseListenerWaitForResponse(21000);
+            if(!resOk){
+                throw `FAIL => ResponseListenerWaitForResponse(21000) (${strUrl})`;
             }
+            resOk = await ResponseListener(this.page, strUrl, false);
+            await WaitRender(this.page);
+            await WaitForElementIsPresentByXPath(1500, this.page, this.xClearResponsibleField);
+            if(0 < await ElementGetLength(this.page, this.xClearResponsibleField)){
+                // Ответственный Крестик Очистить поле
+                resOk = await ClickByXPathNum(this.page, 0, this.xClearResponsibleField);
+                await WaitRender(this.page);
+            }
+            // Инпут "ЕДРПОУ"
+            if(strEDRPOU === ``){
+                strFilterEDRPOU = this.CompanyData.strCompanyCode;
+            }else{
+                strFilterEDRPOU = strEDRPOU;
+            }
+            resOk = await SetTextByXPath(this.page, this.xInputEDRPOU, strFilterEDRPOU); //strEDRPOU
+            if (!resOk) {
+                throw `FAIL => Инпут "ЕДРПОУ" SetTextByXPath(${this.xInputEDRPOU})`;
+            }
+            await WaitRender(this.page);
+            //await ScreenLog(this.page, `Салихов, ЕДРПОУ: (${strEDRPOU})`);
+           // await TempStop(this.page, `Салихов`);
+            // ставим слушателя
+            let strRequest = `${g_BackCfoFoxURL}/api/company?search[code]`;
+            resOk = await ResponseListener(this.page, strRequest, true);
             // Кнопка "Фильтровать"
+            //await ScreenLog(this.page, `Салихов(${strFilterEDRPOU})`, 3);
             resOk = await ClickByXPath(this.page, this.xButtonFilter);
             if (!resOk) {
                 throw `FAIL => Кнопка "Фильтровать" ClickByXPath(${this.xButtonFilter})`;
             }
-            await WaitRender(this.page);
+            resOk =  await ResponseListenerWaitForResponse(21000);
+            if(!resOk){
+                throw `FAIL => Запрос(${strRequest}) ResponseListenerWaitForResponse(21000 ms)`;
+            }
+            await console.log(`g_tempDataFromEventListener_requestUrl=\n${g_tempDataFromEventListener_requestUrl}\n------------`);
+            // снимаем слушателя
+            resOk = await ResponseListener(this.page, strRequest, false);
 
+            await WaitRender(this.page);
+            await WaitRender(this.page);
+            //await ScreenLog(this.page, ` #2 Салихов, ЕДРПОУ: (${strEDRPOU})`);
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in FilterInTableEDRPOU`);
+
+            let strMsg = `${e} \n FAIL in FilterInTableEDRPOU(${strFilterEDRPOU})`;
+            await ScreenLog(this.page, strMsg, 1);
             return false;
         }
     }//async FilterInTableEDRPOU()
     //----------------------------------------
-    async CheckInTableEDRPOU(){ // Должна быть ТОЛЬКО одна строка с таким ЕДРПОУ
+    async CheckInTableEDRPOU(strEDRPOU = ``){ // Должна быть ТОЛЬКО одна строка с таким ЕДРПОУ
         try{ let resOk;
             // Заголовок в таблице содержащий "ЕДРПОУ"
             resOk = await WaitForElementIsPresentByXPath( 4000, this.page, this.xHeaderEDRPOU);
@@ -124,28 +172,81 @@ class CompanyTable {
             if (this.ColumnNumberEDRPOU === ``){
                 throw `FAIL => найти номер колонки с названием "ЕДРПОУ" ColumnNumber === \`\``;
             }
-
-            // Поле в строке "ЕДРПОУ" - определено в функции CheckInTableEDRPOU
-            this.xFieldInRowEDRPOU = `//td[@aria-colindex="${this.ColumnNumberEDRPOU}"][@role="cell"]/a[contains(text(), "${this.CompanyData.strCompanyCode}")]`;// ${strEDRPOU}
-            resOk = await WaitForElementIsPresentByXPath( 4000, this.page, this.xFieldInRowEDRPOU);
-            if (!resOk) {
-                throw `FAIL => Поле в строке "ЕДРПОУ" WaitForElementIsPresentByXPath(${this.xFieldInRowEDRPOU})`;
+            resOk = await WaitForElementIsPresentByXPath(12000, this.page , this.xTableReady);
+            if(!resOk){
+                throw `FAIL => Таблица Компаний не прогрузилась за 12 сек`;
             }
+            await WaitRender(this.page);
+            // Поле в строке "ЕДРПОУ" - определено в функции CheckInTableEDRPOU
+            let strNum;
+            if(strEDRPOU === ``) {
+                strNum = this.CompanyData.strCompanyCode;
+            }else{
+                strNum = strEDRPOU;
+            }
+            this.xFieldInRowEDRPOU = `//td[@aria-colindex="${this.ColumnNumberEDRPOU}"][@role="cell"]/a[contains(text(), "${strNum}")]`;// ${strEDRPOU}
+            await WaitForElementIsPresentByXPath( 1500, this.page, this.xFieldInRowEDRPOU);
+            await WaitRender(this.page);
+            // resOk = await WaitForElementIsPresentByXPath( 4000, this.page, this.xFieldInRowEDRPOU);
+            // if (!resOk) {
+            //     throw `FAIL => Поле в строке "ЕДРПОУ" WaitForElementIsPresentByXPath(${this.xFieldInRowEDRPOU})`;
+            // }
             // узнаем сколько таких строк, должна быть ТОЛЬКО ОДНА
             resOk = await ElementGetLength(this.page, this.xFieldInRowEDRPOU);
-            if (resOk !== 1) {
-                await console.log(`Поле в строке "ЕДРПОУ"=${this.CompanyData.strCompanyCode} , должна быть ТОЛЬКО ОДНА. ElementGetLength !== 1 (${resOk})`);
-               // throw `FAIL => Поле в строке "ЕДРПОУ"=${this.CompanyData.strCompanyCode} ElementGetLength !== 1 (${resOk})`;
-                return false;
-            }
-            // Запишем ID Компании в CompanyData.strCompanyID
-
-            return true;
+            // if (resOk !== 1) {
+            //     await console.log(`Поле в строке "ЕДРПОУ"=${this.CompanyData.strCompanyCode} , должна быть ТОЛЬКО ОДНА. ElementGetLength !== 1 (${resOk})`);
+            //    // throw `FAIL => Поле в строке "ЕДРПОУ"=${this.CompanyData.strCompanyCode} ElementGetLength !== 1 (${resOk})`;
+            //     return false;
+            // }
+            // // Запишем ID Компании в CompanyData.strCompanyID
+            // await ScreenLog(this.page, `Салихов(${strNum}) resOk=(${resOk})`, 3);
+            return resOk;
         }catch (e) {
-            await console.log(`${e} \n FAIL in CheckInTableEDRPOU`);
+            let strMsg = `${e} \n FAIL in CheckInTableEDRPOU`;
+            await ScreenLog(this.page, strMsg, 1);
             return false;
         }
     }//async CheckInTableEDRPOU()
+    //----------------------------------------
+    async GetNewEDRPOU(MaxTry, strEDRPOU){
+        let resOk;
+        let resNum;
+        try{
+            // Клик по Компании
+            resOk = await this.ClickMenuCompanies();
+            if (!resOk) {
+                throw `FAIL => this.ClickMenuCompanies`;//<--специальный вызов ошибки!
+            }
+            for (let i=0 ; i<MaxTry; i++) {
+                // Отфильтровать по ЕДРПОУ
+                resOk = await this.FilterInTableEDRPOU(strEDRPOU);
+                if (!resOk) {
+                    throw `FAIL => this.FilterInTableEDRPOU()`;//<--специальный вызов ошибки!
+                }
+
+                //Проверить, что в Таблице ТОЛЬКО одна строка с таким ЕДРПОУ
+                resNum = await this.CheckInTableEDRPOU(strEDRPOU);
+               // await console.log(`resNum=${resNum}`);
+                if (resNum === 0) {
+                    if( g_tempDataFromEventListener_json.data &&
+                        g_tempDataFromEventListener_json.data.data &&
+                        g_tempDataFromEventListener_json.data.data.length !== 0){
+                        await console.dir(g_tempDataFromEventListener_json.data.data, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
+                        await ScreenLog(this.page, `Салихов(${strEDRPOU}) Data.Length=(${g_tempDataFromEventListener_json.data.data.length})`, 1);
+                    }
+                    return strEDRPOU; // <- Успешный выход ТУТ !!!
+                }else{
+                    strEDRPOU = await GetFunnyStr('StrCompanyCodeArray');
+                    await console.log(`попытка № ${i+2}`);
+                }
+            }// for (let i=0 ; i<5; i++)
+
+            return false;
+        }catch (e) {
+            await console.log(`FAIL in GetNewEDRPOU ${e} \n`);
+            return false;
+        }
+    }//async GetNewEDRPOU(strEDRPOU)
     //----------------------------------------
     async OpenAndCheckCompany(){
         try{ let resOk, xPath, tempHref, tempID;

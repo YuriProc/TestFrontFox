@@ -58,16 +58,24 @@ class Link {
         try{ let resOk;
             // Клик по Кнопке "+ Добавить Ссылки"
             // Табличное редактирование Кнопка "+ Добавить Ссылки"
+            let strUrl = `api/link-type`;
+            await ResponseListener(this.page, strUrl, true);
             resOk = await ClickByXPath(this.page, this.xButtonPlusLink);
             if (!resOk){
                 //await TempStop(this.page);
                 throw `FAIL => Табличное редактирование Кнопка "+ Добавить Ссылки" ClickByXPath(${this.xButtonPlusLink})`;
             }
+            resOk = await ResponseListenerWaitForResponse(12000);
+            if(!resOk){
+                throw `FAIL => Табличное редактирование Кнопка "+ Добавить Ссылки" не дождались респонса 12000 ms`;
+            }
+            await ResponseListener(this.page, strUrl, false);
             await WaitRender(this.page);
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in clickPlusLinkInTable ${e} \n`);
+            let strMsg = `FAIL in clickPlusLinkInTable ${e} \n`;
+            await ScreenLog(this.page, strMsg, 1);
             return false;
         }
     }//async clickPlusLinkInTable()
@@ -90,7 +98,7 @@ class Link {
             if (!resOk){
                 throw `FAIL => Инпут "Ссылка" TypeByXPath(${this.xInputLink})`;
             }
-
+            await WaitRender(this.page);
             //await this.page.waitFor(4000);
             // await this.page.waitFor(200);
             // await this.page.keyboard.type(this.LinkData.strLink, {delay: 20});
@@ -100,7 +108,8 @@ class Link {
             if (!resOk){
                 throw `FAIL => Клик по Дропдаун "Тип ссылки"(${this.xInputLinkTypeDropDown})`;
             }
-            await this.page.waitFor(200);
+            // await this.page.waitFor(200);
+            await WaitRender(this.page);
             await this.page.keyboard.type(this.LinkData.strLinkType, {delay: 30});
             await WaitRender(this.page);
             // Дропдаун "Тип ссылки" Выбранный тип
@@ -123,7 +132,7 @@ class Link {
 
             return true;
         }catch (e) {
-            await console.log(`FAIL in EnterLinkDataInModalAndSave ${e} \n`);
+            await console.log(`${e} \n FAIL in EnterLinkDataInModalAndSave`);
             return false;
         }
     }//async EnterLinkDataInModalAndSave()

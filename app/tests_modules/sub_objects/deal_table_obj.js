@@ -26,6 +26,8 @@ class DealTable {
         this.xAddFieldSpinner = this.xFieldSetAddField + `//div[@class="multiselect__spinner"][@style="display: none;"]`;
         // "Добавить поле" ДропДаун нужная сторока +[text()="${Name}"] or [contains(text(), "${Name}")]]
         this.xAddFieldNeedStr = this.xFieldSetAddField + `//li[@class="multiselect__element"]/span/span`;
+        // Удалить поле для фильтрации
+        this.xDeleteField = `//div[@class="delete-field"][contains(text(), "Удалить")]`;
         // Фильтр Кнопка "Фильтровать"
         this.xFilterButtonFilter = `//button[contains(@class, "fox-button__primary")][contains(text(), "Фильтровать")]`;
         // Фильтр Кнопка со спиннером
@@ -171,7 +173,25 @@ class DealTable {
             return false;
         }
     }//async AddFilterFieldOld(FieldName, FieldValue)
-     //----------------------------------------
+    //----------------------------------------
+    async DeleteAllFilterFields() {
+        let resOk;
+        try {
+            // если есть такие кнопки, то понажимать на них
+            while (0 < await ElementGetLength(this.page, this.xDeleteField)){
+                resOk = await ClickByXPathNum(this.page, 0, this.xDeleteField);
+                if (!resOk) {
+                    throw `FAIL => Удалить поле для фильтрации ClickByXPathNum(${this.xDeleteField})`;
+                }
+                await WaitRender(this.page);
+            }
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in DeleteAllFilterFields()`);
+            return false;
+        }
+    }//async DeleteAllFilterFields()
+    //----------------------------------------
     async AddFilterField(FieldName, FieldValue) {
         let resOk;
         try {
@@ -232,6 +252,11 @@ class DealTable {
             if (!resOk) {
                 throw `FAIL => Открыть Фильтр this.OpenFilter();`;
             }
+            // удалить, если есть все выбранные поля
+            resOk = await this.DeleteAllFilterFields();
+            if (!resOk) {
+                throw `FAIL => удалить, если есть все выбранные поля this.DeleteAllFilterFields();`;
+            }
             // Добавить поле для Фильтрации
             resOk = await this.AddFilterField(FieldName, FieldValue);
             if (!resOk) {
@@ -257,10 +282,10 @@ class DealTable {
     }//async DealTableFilterByField(FieldName, FieldValue)
     //----------------------------------------
     async TableDealCheckOneCurrentDeal(AllFLen) {
-        let resOk;
+        let resOk = true;
+        let ColError = 0;
         let ColValue,DValue;
         try {
-
             let AllFLen = this.CFO.Fields.length;
             let LenColName,LenColValue;
             let ColName;
@@ -275,21 +300,40 @@ class DealTable {
                 C = FRGB(0,1,4,1);
                 DValue = await this.GetDealValue(i);
 
-                if(ColValue === DValue){
+                if(ColValue === DValue){ // OK
                     C = FRGB(0,1,4,1);
                     await console.log(`${C}${ColName} = ${'.'.repeat(LenColName)}(${ColValue})${FRGB()}`);
-                }else if (DValue === `*skipped*`) {
+
+                }else if (DValue === `*skipped*`) { // Пропущено
                     C = FRGB(0,1,1,1);
                     await console.log(`${C}${ColName} = ${'.'.repeat(LenColName)}(${ColValue})${FRGB()}`);
-                }else{
+                }else if (ColName === `Ф.О. нал (З)`||
+                          ColName === `Ф.О. безнал (З)`||
+                          ColName === `Ф.О. нал (П)`||
+                          ColName === `Ф.О. безнал (П)`){ // Кастомное сравнение
+                    resOk = await this.CustomComparePaymentForm(ColValue, DValue);
+                    if(resOk){ // OK
+                        C = FRGB(0,1,4,1);
+                        await console.log(`${C}${ColName} = ${'.'.repeat(LenColName)}(${ColValue})${FRGB()}`);
+                    }else{ // FAIL
+                        C = FRGB(0,4,1,1);
+                        await console.log(`${C}!!!->${ColName} = ${'.'.repeat(LenColName)}(${ColValue})!=(${DValue})${FRGB()}`);
+                        ColError++;
+                    }
+                }
+                else{ // FAIL
                     C = FRGB(0,4,1,1);
                     await console.log(`${C}!!!->${ColName} = ${'.'.repeat(LenColName)}(${ColValue})!=(${DValue})${FRGB()}`);
+                    ColError++;
                 }
+            }// for(let i=0 ; i < AllFLen; i++)
 
+            if (ColError !== 0){
+                C = FRGB(0,5,1,1);
+                resOk = false;
+                await console.log(`${C}!!!->В таблице Сделок найдены несоответствия данных (${ColError} шт.)${FRGB()}`);
             }
-
-
-            return true;
+            return resOk;
         } catch (e) {
             await console.log(`${e} \n FAIL in TableDealCheckOneCurrentDeal`);
             return false;
@@ -345,9 +389,34 @@ class DealTable {
                 case "client_cash_false_payment_form":
                     DValue = await this.GetDealFreightsPaymentForm(0,1); // 0 - Client , 1 - CashLess
                     break;
-
                 case "client_debt":
-                    DValue = `не заполнено`;
+                    //DValue = `не заполнено`;
+                    DValue = await this.GetDealFreightsAmount(0,2); // 0 - Client , 1 - CashLess 2 - all
+                    break;
+                case "transporter_numbers":
+                    DValue = await this.GetDealLicensePlates();
+                    break;
+                case "transporter_cash_true":
+                    DValue = await this.GetDealFreightsAmount(1,0); // 1 - Transporter , 0 - Cash
+                    break;
+                case "transporter_cash_true_payment_form":
+                    DValue = await this.GetDealFreightsPaymentForm(1,0); // 1 - Transporter , 0 - Cash
+                    break;
+                case "transporter_cash_false":
+                    DValue = await this.GetDealFreightsAmount(1,1); // 1 - Transporter , 1 - CashLess
+                    break;
+                case "transporter_cash_false_payment_form":
+                    DValue = await this.GetDealFreightsPaymentForm(1,1); // 1 - Transporter , 1 - CashLess
+                    break;
+                case "transporter_debt":
+                    DValue = await this.GetDealFreightsAmount(1,2); // 1 - Transporter , 1 - CashLess 2 - all
+                    break;
+                case "transporter_date_unloading":
+                    let Max = this.DealData.PointsUnLoading.length - 1;
+                    DValue = this.DealData.PointsUnLoading[Max].PointUnLoading.strOutDate;
+                    break;
+                case "commission":
+                    DValue = await this.GetDealStrCommissionAndPercent();
                     break;
                 default:
                     throw `FAIL => Не найден столбец таблицы CFO GetDealCustomValue(${IName});`;
@@ -404,7 +473,7 @@ class DealTable {
         }
     }//async GetDealInOutStrPoints()
     //----------------------------------------
-    async GetDealFreightsAmount(CT,CCL) { // CL - Client/Transporter (0,1) , CCL - Cash/CashLess (0,1)
+    async GetDealFreightsAmount(CT,CCL) { // CL - Client/Transporter (0,1) , CCL - Cash/CashLess (0,1,2) 2 - all
         let resOk;
         let resValue = ``;
         let keyFreights = ``;
@@ -420,7 +489,7 @@ class DealTable {
                 throw ` ошибка внутренняя CT !== 0 || 1 (${CT})`;
             }
             lengthFArray = this.DealData[keyFreights].length;
-            if (CCL !== 0 && CCL !== 1){
+            if (CCL !== 0 && CCL !== 1 && CCL !== 2){
                 throw ` ошибка внутренняя CCL !== 0 || 1 (${CCL})`;
             }
             for (let i = 0; i < lengthFArray; ++i)
@@ -431,13 +500,15 @@ class DealTable {
                         this.DealData[keyFreights][i].PaymentForm === `топливо` ){
                         Amount+= Number(this.DealData[keyFreights][i].Amount);
                     }
-                }else{ // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`
+                }else if (CCL === 1){ // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`
                     if (this.DealData[keyFreights][i].PaymentForm === `без ПДВ` ||
                         this.DealData[keyFreights][i].PaymentForm === `з ПДВ 0%` ||
                         this.DealData[keyFreights][i].PaymentForm === `з ПДВ 20%` ){
                         Amount+= Number(this.DealData[keyFreights][i].Amount);
                         //await console.log(`this.DealData[keyFreights][i].Amount=(${this.DealData[keyFreights][i].Amount})`);
                     }
+                }else{
+                    Amount+= Number(this.DealData[keyFreights][i].Amount);
                 }
             }// for (let i = 0; i < lengthPArray; ++i)
             if (Amount === 0 ){
@@ -455,7 +526,7 @@ class DealTable {
         }
     }//async GetDealFreightsAmount(CT,CCL)
     //-----------------------------------
-    async GetDealFreightsPaymentForm(CT,CCL) { // CL - Client/Transporter (0,1) , CCL - Cash/CashLess (0,1)
+    async GetDealFreightsPaymentForm(CT,CCL) { // CT - Client/Transporter (0,1) , CCL - Cash/CashLess (0,1)
         let resOk;
         let resValue = ``;
         let keyFreights = ``;
@@ -476,6 +547,7 @@ class DealTable {
                 throw ` ошибка внутренняя CCL !== 0 || 1 (${CCL})`;
             }
             for (let i = lengthFArray - 1; i >= 0 ; --i)
+            //for (let i = 0; i < lengthFArray; i++)
             {
                 if(CCL === 0){ // `нал`, `софт`, `топливо`,
                     if (this.DealData[keyFreights][i].PaymentForm === `нал` ||
@@ -500,7 +572,7 @@ class DealTable {
             }// for (let i = 0; i < lengthPArray; ++i)
             let n = 0;
             for (let key in tempArray){
-                if (n !== 0 && CCL !== 1){  // && CCL !== 1 - Временно, пока не пофиксят выдачу на фронте
+                if (n !== 0){  // && CCL !== 1 - Временно, пока не пофиксят выдачу на фронте
                     resValue+= `; `;
                 }
                 resValue+= key;
@@ -512,6 +584,137 @@ class DealTable {
             return ``;
         }
     }//async GetDealFreightsPaymentForm(CT,CCL)
+
+    //----------------------------------------
+    async GetDealLicensePlates() {
+        let resValue;
+        try {
+            resValue = this.DealData.strLicensePlate1 + ` / ` + this.DealData.strLicensePlate2;
+            return resValue;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in GetDealLicensePlates`);
+            return ``;
+        }
+    }//async GetDealLicensePlates()
+    //----------------------------------------
+    async CustomComparePaymentForm(TValue, DValue) { // T - Table, D - Deal Value
+        let resOk;
+        let TA,DA;
+        try {
+            let Separator = /\s*;\s*/; // разделитель `;` + трим пробелов
+            TA = TValue.split(Separator);
+            DA = DValue.split(Separator);
+            if(TA.length !== DA.length){
+                await console.log(`TA.length(${TA.length}) !== DA.length(${DA.length})`)
+                return false; // <--- EXIT !!!
+            }
+            // await console.log(`In---------`);
+            // await console.log(TA);
+            // for(let t = 0; t < TA.length; t++){
+            //     await console.log(`TA[${t}]=(${TA[t]})`);
+            // }// for(let t = 0; t < TA.length; t++)
+            // await console.log(`In---------`);
+            // await console.log(DA);
+            // for(let d = 0; d < DA.length; d++){
+            //     await console.log(`DA[${d}]=(${DA[d]})`);
+            // }// for(let d = 0; d < DA.length; d++)
+            // await console.log(`In---------`);
+            for(let d = 0; d < DA.length; d++){
+                resOk = false;
+                for(let t = 0; t < TA.length; t++){
+                    if( DA[d] === TA[t] ){
+                        resOk = true;
+                        break;
+                    }
+                }// for(let t = 0; t < TA.length; t++)
+                if(!resOk){
+                    return false; // <--- EXIT !!!
+                }
+            }// for(let d = 0; d < DA.length; d++)
+            // И ВТОРОЙ РАЗ для случая если один из массивов содержит одинаковые элементы
+            for(let t = 0; t < TA.length; t++){
+                resOk = false;
+                for(let d = 0; d < DA.length; d++){
+                    if( TA[t] === DA[d] ){
+                        resOk = true;
+                        break;
+                    }
+                }// for(let t = 0; t < TA.length; t++)
+                if(!resOk){
+                    return false; // <--- EXIT !!!
+                }
+            }// for(let d = 0; d < DA.length; d++)
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in CustomComparePaymentForm`);
+            return false;
+        }
+    }//async CustomComparePaymentForm()
+    //----------------------------------------
+    async GetDealStrCommissionAndPercent() {
+        let resOk;
+        let ClientSumR = 0, TransporterSumR = 0;
+        let Commission;
+        let RC;
+        let LenCF, LenTF;
+        try {
+            LenCF = this.DealData.ClientFreights;
+            for(let i=0; i < LenCF; i++ ){
+                RC = 1;
+                switch ( this.DealData.ClientFreights[i].PaymentForm ) {
+                    case "без ПДВ":
+                        RC = 0.95;// * - умножить
+                        ClientSumR = ClientSumR + this.DealData.ClientFreights[i].Amount * RC;
+                        break;
+                    case "з ПДВ 20%":
+                        RC = 1.2; // - разделить
+                        ClientSumR = ClientSumR + this.DealData.ClientFreights[i].Amount / RC;
+                        break;
+                    case "з ПДВ 0%":
+                    case "нал":
+                    case "софт":
+                    case "топливо":
+                        RC = 1;
+                        ClientSumR = ClientSumR + this.DealData.ClientFreights[i].Amount;
+                        break;
+                    default:
+                        // throw `Fail -> Неизвестный фрахт (${this.DealData.ClientFreights[i].PaymentForm})`;
+                        await console.log(`Warning !!! -> Неизвестный фрахт (${this.DealData.ClientFreights[i].PaymentForm})`);
+                }// switch ( this.DealData.ClientFreights[i].PaymentForm )
+            } // for(let i=0; i < LenCF; i++ )
+            LenTF = this.DealData.TransporterFreights;
+            for(let i=0; i < LenTF; i++ ){
+                RC = 1;
+                switch ( this.DealData.TransporterFreights[i].PaymentForm ) {
+                    case "без ПДВ":
+                        RC = 0.95;// * - умножить
+                        TransporterSumR = TransporterSumR + this.DealData.TransporterFreights[i].Amount * RC;
+                        break;
+                    case "з ПДВ 20%":
+                        RC = 1.2; // - разделить
+                        TransporterSumR = TransporterSumR + this.DealData.TransporterFreights[i].Amount / RC;
+                        break;
+                    case "з ПДВ 0%":
+                    case "нал":
+                    case "софт":
+                    case "топливо":
+                        RC = 1;
+                        TransporterSumR = TransporterSumR + this.DealData.TransporterFreights[i].Amount;
+                        break;
+                    default:
+                        // throw `Fail -> Неизвестный фрахт (${this.DealData.TransporterFreights[i].PaymentForm})`;
+                        await console.log(`Warning !!! -> Неизвестный фрахт (${this.DealData.TransporterFreights[i].PaymentForm})`);
+                }// switch ( this.DealData.TransporterFreights[i].PaymentForm )
+            } // for(let i=0; i < LenCF; i++ )
+            Commission = ClientSumR - TransporterSumR;
+            await console.log(`Commission=(${Commission})`);
+
+            return resOk;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in GetDealStrCommissionAndPercent`);
+            return ``;
+        }
+    }//async GetDealStrCommissionAndPercent()
     //----------------------------------------
     async Temp(nStart = 0) {
         let resOk;

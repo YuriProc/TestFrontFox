@@ -210,8 +210,8 @@ class DataForTests {
                             strTypeOwner: 'Компания', // 'Контакт',
                             strDocument: 'Договор купли-продажи', // 'Неформально', 'По доверенности', 'По тех-пасспорту', 'Договор аренды нотариальный', '', '',
                             strSubjectOwner: '', // Заполнить перед созданием объекта из CompanyData !!!
-                            strVehicleEmptyWeight: ``,
-                            strVehicleMaxWeight: ``,
+                            VehicleEmptyWeight: ``,
+                            VehicleMaxWeight: ``,
                         }
                     },
                     {
@@ -231,8 +231,8 @@ class DataForTests {
                             strTypeOwner: 'Компания', // 'Контакт',
                             strDocument: 'Договор купли-продажи', // 'Неформально', 'По доверенности', 'По тех-пасспорту', 'Договор аренды нотариальный', '', '',
                             strSubjectOwner: '', // Заполнить перед созданием объекта из CompanyData !!!
-                            strVehicleEmptyWeight: ``,
-                            strVehicleMaxWeight: ``,
+                            VehicleEmptyWeight: ``,
+                            VehicleMaxWeight: ``,
                         }
                     },
                 ],
@@ -340,6 +340,7 @@ class DataForTests {
             strClientCompanyName : ``, // Заполнить ПЕРЕД выполнением Теста
             strClientCompanyCode : ``, // Заполнить ПЕРЕД выполнением Теста
             strClientCompanyID : ``, // Заполнить ПЕРЕД выполнением Теста
+            objClientCompany: ``, // Объект Компании Перевозчика
             strOurCompanyWithClient: ``,//CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
             strClientDelay: ``, // Взять и проверить из соотв Договора
             isCrossDoc: true,//true, // false
@@ -384,19 +385,45 @@ class DataForTests {
                 {
                     Amount: '20',
                     PaymentForm: `топливо`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    strNPhoneToplyvo: `380666188425`,
                     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
                     Currency: 'UAH',
                 },
             ],
             TransporterFreights: [{
                 Amount: '7500',
-                PaymentForm: `софт`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                PaymentForm: `з ПДВ 20%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
                 AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
                 Currency: 'UAH',
             },
                 {
+                    Amount: '1500',
+                    PaymentForm: `з ПДВ 0%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
+                {
+                    Amount: '700',
+                    PaymentForm: `без ПДВ`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
+                {
                     Amount: '500',
                     PaymentForm: `софт`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
+                {
+                    Amount: '300',
+                    PaymentForm: `нал`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                    Currency: 'UAH',
+                },
+                {
+                    Amount: '250',
+                    PaymentForm: `топливо`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                    strNPhoneToplyvo: `380666188425`,
                     AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
                     Currency: 'UAH',
                 },
@@ -465,7 +492,9 @@ class DataForTests {
             strCommentLoadind: ``,
             strCommentUnLoadind: ``,
             strResponsibleFOX: `Тестін Сергій`,
+            strResponsibleFOX_inTable: `Сергій Тестін`,
             strLogist: ``,
+            strLogist_inTable: ``,
 
             //strLicensePlate : 'TEST 3245 NUM',
             // strPointLoading : 'Хераково', //Хреново е //Сучки //Блядово //Хераково //Бодуны //Еблі //(Хуй Хуй)
@@ -479,6 +508,7 @@ class DataForTests {
             strTransporterCompanyName : ``, // Заполнить ПЕРЕД выполнением Теста
             strTransporterCompanyCode : ``, // Заполнить ПЕРЕД выполнением Теста
             strTransporterCompanyID : ``, // Заполнить ПЕРЕД выполнением Теста
+            objTransporterCompany: ``, // Объект Компании Перевозчика
             strOurCompanyWithTransporter: ``,//CompanyData1.strContractOurCompany,//'СТАВАНГЕР',
             strTransporterDelay : ``, // Взять и проверить из соотв Договора
 
@@ -487,8 +517,14 @@ class DataForTests {
             strContactDriverID: ``, // Заполнить ПЕРЕД выполнением Теста
             strLicensePlate1: ``,//VehicleData1.strLicensePlate,//'BC3082EE',//DAF BC3082EE
             strVehicleID: ``, // Заполнить ПЕРЕД выполнением Теста
+            objVehicle: ``,
+            strVehicleSubType: ``, // Заполнить ПЕРЕД выполнением Теста
+            strCarBrand: ``, // Заполнить ПЕРЕД выполнением Теста
             strLicensePlate2: ``,//VehicleData2.strLicensePlate,//'BC7519XO',// KRONE BC7519XO
             strTrailerID: ``, // Заполнить ПЕРЕД выполнением Теста
+            objTrailer: ``,
+            strVehicleMaxCapacity: ``, //Расчитывается в сделке по данным из Авто и Прицепа
+            strVehicleVolume: ``, // Заполнить ПЕРЕД выполнением Теста
             strFoxResponsible: 'Тостер',
             strLogistXXX: 'Тостер',
             strDealID: '', // Появится потом автоматически

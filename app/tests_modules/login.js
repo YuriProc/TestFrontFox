@@ -210,16 +210,6 @@ let LoginCrm = async (page, browser, LoginData) => {
                 throw '     FAIL => ClickByXPath(page, \'//button[contains(text(), "Авторизироваться")]\');\n';
             }
 
-            // await WaitRender(page);
-            // resOk = await WarningCheck(page);
-            // if(resOk !== ''){
-            //     if (LoginData.ResolvedFailLogin) {
-            //         return false; //<-------------EXIT !!!
-            //     }else{
-            //         throw `FAIL => Login WarningCheck"${resOk}"`;
-            //     }
-            // }
-
             // Подождём пока не пропадёт спиннер на кнопке "Авторизоваться"
             resOk = await WaitUntilXPathExist(page, 10500, xButtonAuthorizeSpinner);
             if (!resOk) {
@@ -238,40 +228,18 @@ let LoginCrm = async (page, browser, LoginData) => {
             }
 
 
-
-            //--------------------------------------------
-            // myXPath = `//div[@class="notification-content"][contains(text(), "Неверный логин или пароль")]`;
-            // ElPresent = await WaitForElementIsPresentByXPath(1000, page, myXPath);
-            // if (ElPresent) {
-            //     if (LoginData.ResolvedFailLogin) {
-            //         await console.log('\x1b[38;5;2m', "         Вижу => (Неверный e-mail или пароль)", '\x1b[0m');
-            //         await console.log('\x1b[38;5;2m', "         Будем Логиниться под root'ом и пробовать снова", '\x1b[0m');
-            //         g_StatusCurrentTest = 'Пропущен';
-            //         await g_SuccessfulTests++;
-            //         await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
-            //         g_StrOutLog += `=> ${g_StatusCurrentTest} \n`;
-            //         return false; //<-------------EXIT !!!
-            //
-            //     }
-            //     await console.log('     FAIL => "Неверный e-mail или пароль"');
-            //     throw `FAIL => "Неверный e-mail или пароль"`;
-            // }
-            //--------------------------------------------
-
-            //await TempStop(page);
             //Проверим наличие иконки ФОКСА = УСПЕШНЫЙ ВХОД)
             xPath = `//img[@src="/img/LogoFoXTop.0890cee9.svg"][@class="logo-menu"]`;
-            ElPresent = await WaitForElementIsPresentByXPath(4000, page, xPath);
+            ElPresent = await WaitForElementIsPresentByXPath(12000, page, xPath);
             if (!ElPresent) {
                 await console.log('     Warning => Не вижу class="logo-menu"');
-                await TempStop(page);
+                //await TempStop(page);
                 g_StrOutLog += `\n => Warning => Не вижу class="logo-menu" \n`;
                 throw `FAIL => Не вижу "Не вижу class="logo-menu""`;
             }
             CountLogin++;
 
             //Дождёмся окончательной загрузки страницы
-            //pLOk = await WaitUntilPageLoads(page);
             await WaitRender(page);
 
             NeedReLogin = await ClickIfExistsUpdated(page);
@@ -300,18 +268,44 @@ let LoginCrm = async (page, browser, LoginData) => {
         if(TextName !== DataName) {
             throw `     FAIL => После Логина ${TextName} !== ${DataName} \n`;
         }
+        let reqUrl = `/api/cfo`;
+        resOk = await ResponseListener(page, reqUrl, true);
 
-        // await page.waitFor(3000);
-        // await console.log(`await page.keyboard.press('F12');`);
-        // //await page.keyboard.sendCharacter(String.fromCharCode(123)); //123 - F12; 32 - пробел; 13 - enter; 8 - Del
-        // await page.keyboard.press('F12');
-        // await page.keyboard.type('Hello World!');
-        // const context = await browser.defaultBrowserContext();
-        // await context.overridePermissions(g_FrontCrmFoxURL, ["notifications"]);
+        resOk = await ResponseListenerWaitForResponse(21000);
+        if(!resOk){
+            let strPSS = g_PathSS + `screenshot_login.png`;
+            await this.page.screenshot({path: strPSS, fullPage: true});
+            await console.log(`Скриншот: ${strPSS}`);
+            throw `FAIL => ResponseListenerWaitForResponse(${reqUrl})`;
+        }
+        resOk = await ResponseListener(page, reqUrl, false);
 
-        //await page.waitFor(500000);
+        resOk = await WaitUntilXPathExist(page, 12000, `//span[@class="spinner-border"]`);
+        await WaitRender(page);
+        resOk = await WaitUntilXPathExist(page, 12000, `//span[@class="spinner-border"]`);
+        await WaitRender(page);
 
-        //await console.log('\x1b[38;5;2m', `         Вижу => ${TextName}`, '\x1b[0m');
+
+        let tStr = `Процесс`;
+        let C = FRGB(0, 0, 0,5);
+        await process.stdout.write(`${tStr}`);
+        for(let i=0 ; i<10; i++){
+            await WaitMS(100);
+            //await process.stdout.write(`\x1B[0G${tStr} : ${i}%`);
+            await process.stdout.write(`\r${C}${tStr} : ${i}%${FRGB()}`);
+        }
+        C = FRGB(0, 0, 5,0);
+        await process.stdout.write(`\r${C}${tStr} - успешно завершён !${FRGB()}`);
+        await WaitMS(1000);
+        await process.stdout.write(`\r`);
+
+
+
+
+
+
+        // await console.timeEnd("Execution time took");
+
         g_StatusCurrentTest = 'Пройден';
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
@@ -323,8 +317,7 @@ let LoginCrm = async (page, browser, LoginData) => {
 
     }catch (err) {
         await console.log('\x1b[38;5;1m', "На странице ВХОД В СИСТЕМУ произошла ошибка", err, '\x1b[0m');
-        await page.screenshot({path: g_PathSS + `screenshot_Login.png`, fullPage: true });
-        await console.log(` Скриншот: (screenshot_Login.png)`);
+        await ScreenLog(page);
         g_StatusCurrentTest = 'Провален !!!';
         await g_FailedTests++;
         await console.log('\x1b[38;5;1m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');

@@ -4,6 +4,8 @@ class Deal {
         this.browser = browser;
         this.page = page;
         this.DealData = DealData;
+        // TopHeader
+        this.xTopHeader = `//div[@id="crm-top-header"]`;
         // Пункт Верхнего Меню "Сделки"
         this.xMenuDeals = `//a[@href="/cfo"][contains(text(), "Сделки")]`;
         // Пункт Верхнего Меню "Сделки +" Плюс
@@ -136,7 +138,7 @@ class Deal {
         // Инпут "№ тел. топливо"
         this.xInputNPhoneToplyvo = this.xFieldSetNPhoneToplyvo + `//input[@name="№ тел. топливо"]`;
         // Номер Телефона Топливо !!!!
-        this.strNPhoneToplyvo = `380666188425`;
+        // this.strNPhoneToplyvo = `380666188425`;
         // "Доп. условие оплаты" -----------------------------
         // Филд Сет "Доп. условие оплаты"
         this.xFieldSetAdditionalConditionPayment = `//fieldset[legend[contains(text(), "Доп. условие оплаты")]]`;
@@ -611,7 +613,7 @@ class Deal {
             // this.xNoClientsContract = this.xSectionDataOfClients + `//span[contains(text(), "Создайте хотя бы 1 договор для выбора юр. лица!")]`;
             // this.xNoClientsContractDisabled = this.xNoClientsContract + `[@style="display: none;"]`;
             //await console.log(`xPath=${this.xNoClientsContractDisabled}`);
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xNoClientsContractDisabled);
+            resOk = await WaitForElementIsPresentByXPath(21000, this.page, this.xNoClientsContractDisabled);
             if (!resOk) {
                 let TxtErr = `FAIL => У Компании Заказчика отсутствует Договор !!! \n`;
                     TxtErr+= `FAIL => НЕ вижу ПРОПАВШЕЙ надписи "Создайте хотя бы 1 договор для выбора юр. лица!" \n`;
@@ -1000,9 +1002,15 @@ class Deal {
                 // Подождать пока закроется дроп даун
                 await WaitRender(this.page);
                 // Если Форма оплаты "топливо" , нужно добавить № тел. топливо
+                let strNPhoneToplyvo = ``;
                 if (strPaymentForm === `топливо`){
+                    if (CT === 1) { // CT 1 or 2; Client = 1 ; Transporter = 2
+                        strNPhoneToplyvo = this.DealData.ClientFreights[N].strNPhoneToplyvo;
+                    }else{ // CT 1 or 2; Client = 1 ; Transporter = 2
+                        strNPhoneToplyvo = this.DealData.TransporterFreights[N].strNPhoneToplyvo;
+                    }
                     // Инпут "№ тел. топливо"
-                    resOk = await SetTextByXPath(this.page, this.xInputNPhoneToplyvo , this.strNPhoneToplyvo);
+                    resOk = await SetTextByXPath(this.page, this.xInputNPhoneToplyvo , strNPhoneToplyvo);
                     if (!resOk) {
                         throw `FAIL => Инпут "№ тел. топливо" SetTextByXPath(${this.xInputNPhoneToplyvo})`;
                     }
@@ -1231,7 +1239,7 @@ class Deal {
             // this.xNoClientsContract = this.xSectionDataOfClients + `//span[contains(text(), "Создайте хотя бы 1 договор для выбора юр. лица!")]`;
             // this.xNoClientsContractDisabled = this.xNoClientsContract + `[@style="display: none;"]`;
             //await console.log(`xPath=${this.xNoClientsContractDisabled}`);
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xNoTransporterContractDisabled);
+            resOk = await WaitForElementIsPresentByXPath(21000, this.page, this.xNoTransporterContractDisabled);
             if (!resOk) {
                 let TxtErr = `FAIL => У Компании Перевозчика отсутствует Договор !!! \n`;
                 TxtErr+= `FAIL => НЕ вижу ПРОПАВШЕЙ надписи "Создайте хотя бы 1 договор для выбора юр. лица!" \n`;
@@ -2240,22 +2248,31 @@ class Deal {
        // await this.page.waitFor(3000);
        g_tempDataFromEventListener_id = ``;
        await console.log('\x1b[38;5;3m\t', `Сохраняем Сделку..................`, '\x1b[0m');
-
-       resOk = await ResponseListener(this.page, `${g_BackCfoFoxURL}/api/v2/deal`, true);
+       let strDealSaveUrl = `${g_BackCfoFoxURL}/api/v2/deal`;
+       resOk = await ResponseListener(this.page, strDealSaveUrl, true);
        resOk = await ClickByXPath(this.page, this.xButtonDealSaveActive);
        if (!resOk) {
            throw `FAIL => Сделка Кнопка "Сохранить" Активная ClickByXPath(${this.xButtonDealSaveActive})`;
        }
+       resOk = await ResponseListenerWaitForResponse(12000);
+       if(!resOk){
+           await console.log('\x1b[38;5;1m\t', `FAIL -> ResponseListenerWaitForResponse(${strDealSaveUrl}) - FAIL !!!`, '\x1b[0m');
+           let strPSS = g_PathSS + `screenshot_ButtonDealSaveResponse.png`;
+           await this.page.screenshot({path: strPSS, fullPage: true});
+           await console.log(`Скриншот: ${strPSS}`);
+           throw `Сделка не сохранена !!!`;
+
+       }
     // Проверяем Варнинги
-    strWarning = await WarningsRead(this.page, 19000, false);
-       resOk = await ResponseListener(this.page, `${g_BackCfoFoxURL}/api/v2/deal`, false);
+    strWarning = await WarningsRead(this.page, 1000, false);
+       resOk = await ResponseListener(this.page, strDealSaveUrl, false);
 
     let warnDealSuccessfullyCreated = 'Сделка успешно создана!';
     let warnNoOriginalContract = 'Нет оригинала Договора №';
     let warnNoVehicleMaxWeight = 'У Автомобиля не указана допустимая масса';
     let warnNoTrailerMaxWeight = 'У прицепа не указана допустимая масса';
 
-    if (await SubStrIsPresent(warnDealSuccessfullyCreated, strWarning)) { // Сделка успешно создана!
+    if (await SubStrIsPresent(warnDealSuccessfullyCreated, strWarning) || strWarning === ``) { // Сделка успешно создана!
         this.DealData.strStatusID = `1`;
         await console.log('\x1b[38;5;2m\t', `Сообщение (${strWarning}) - OK !!!`, '\x1b[0m');
     } else if (await SubStrIsPresent(warnNoOriginalContract, strWarning)) { // Нет оригинала Договора
@@ -2287,7 +2304,10 @@ class Deal {
             }
             await console.log('\x1b[38;5;3m\t', `Будем Добавлять (${warnNoVehicleMaxWeight}) - Warning !!!`, '\x1b[0m');
             noVehicleWeight++;
-            await this.SetAutoMaxWeight(0, 7450, 12700);
+            this.DealData.objVehicle.VehicleEmptyWeight = 7450;
+            this.DealData.objVehicle.VehicleMaxWeight = 12700;
+
+            await this.SetAutoMaxWeight(0, this.DealData.objVehicle.VehicleEmptyWeight, this.DealData.objVehicle.VehicleMaxWeight);
         }
         if(await SubStrIsPresent(warnNoTrailerMaxWeight, strWarning)){
             if (noTrailerWeight > 0) {
@@ -2295,7 +2315,10 @@ class Deal {
             }
             await console.log('\x1b[38;5;3m\t', `Будем Добавлять (${warnNoTrailerMaxWeight}) - Warning !!!`, '\x1b[0m');
             noTrailerWeight++;
-            await this.SetAutoMaxWeight(1, 11350, 38750);
+            this.DealData.objTrailer.VehicleEmptyWeight = 11350;
+            this.DealData.objTrailer.VehicleMaxWeight = 38750;
+
+            await this.SetAutoMaxWeight(1, this.DealData.objTrailer.VehicleEmptyWeight, this.DealData.objTrailer.VehicleMaxWeight);
         }
         tempBoolean = true;
         await WaitRender(this.page);
@@ -2307,6 +2330,9 @@ class Deal {
 
     }
 }//while(tempBoolean)
+
+            await this.CalculateVehicleMaxCapacity();
+
             this.DealData.strDealID = '' + g_tempDataFromEventListener_id;
             if (this.DealData.strDealID === ''){
                 await console.log('\x1b[38;5;1m\t', `FAIL ! -> Получение ID Сделки (${this.DealData.strDealID}) - FAIL!`, '\x1b[0m');
@@ -2344,7 +2370,10 @@ class Deal {
             }else {
                 await console.log('\x1b[38;5;2m\t', `Сохранение Сделки -> Переход на таблицу Сделок - ОК`, '\x1b[0m');
             }
-            await ScrollByXPathNum(this.page, `//div[@id="crm-top-header"]`);
+            resOk = await ScrollByXPathNum(this.page, this.xTopHeader);
+            if(!resOk){
+                await console.log('\x1b[38;5;1m\t', `FAIL ! -> ScrollByXPathNum(${this.xTopHeader}) - FAIL!`, '\x1b[0m');
+            }
             // Ждём пока пропадёт спиннер таблицы сделок
             resOk = await WaitUntilXPathExist(this.page, 11000, this.xTableDealsBusy);
             if (!resOk) {
@@ -2583,11 +2612,11 @@ class Deal {
                 strTypeOwner: '',
                 strDocument: '',
                 strSubjectOwner: '',
-                strVehicleEmptyWeight: WeightEmpty, // <- Нужно
-                strVehicleMaxWeight: WeightFull, // <- Нужно
+                VehicleEmptyWeight: WeightEmpty, // <- Нужно
+                VehicleMaxWeight: WeightFull, // <- Нужно
             }
             let NewVehicle = new Vehicle(this.browser, pageVehicleCard, VehicleData);
-            await SpinnerWait(pageVehicleCard,12000);
+            await WaitSpinner(pageVehicleCard,12000);
             await WaitRender(pageVehicleCard);
             // await pageVehicleCard.screenshot({path: g_PathSS + `screenshot_TEMP.png`, fullPage: true});
             // await console.log(g_PathSS + `screenshot_TEMP.png`);
@@ -2611,6 +2640,50 @@ class Deal {
             return false;
         }
     }//async SetAutoMaxWeight()
+
+
+    //----------------------------------------
+    async CalculateVehicleMaxCapacity() {
+        /* strVehicleMaxCapacity: ``, //Расчитывается в сделке по данным из Авто и Прицепа
+    Для связки тягач и полуприцеп: 40т - (масса без нагрузки прицепа + масса без нагрузки тягача);
+    Для фургон и прицеп: 40т - (Масса без нагр. фургона + масса без нагр. прицепа);
+    Для фургона: Полная Масса - Масса без нагрузки;
+    Для буса: Полная Масса - Масса без нагрузки;
+    Для связки тягач и платформа: Полная масса платформы - (масса без нагрузки платформы + масса без нагрузки тягача);
+    Для связки тягач и контейнеровоз: 44т - (масса без нагрузки прицепа + масса без нагрузки тягача);
+    ВАЖНО! не забыть условие, если тоннаж транспорта вернулся пустой.
+    */
+        let resOk;
+        let MaxCapacity;
+        let strMaxCapacity;
+        let LastSymbol;
+        let LastPoint;
+        try {
+            MaxCapacity = 40000 - (this.DealData.objTrailer.VehicleEmptyWeight + this.DealData.objVehicle.VehicleEmptyWeight);
+            MaxCapacity = MaxCapacity/1000;
+            strMaxCapacity = MaxCapacity.toFixed(2);
+            // -------- Удаление последних Нулей после точки , если есть(включая точку)
+            //await console.log(`strMaxCapacity=(${strMaxCapacity})`);
+            if(await SubStrIsPresent(`.`, strMaxCapacity)){
+                LastSymbol = strMaxCapacity.length - 1;
+                while ( 0 < strMaxCapacity.indexOf('0', LastSymbol)){
+                    strMaxCapacity = strMaxCapacity.slice(0, LastSymbol);
+                    LastSymbol = strMaxCapacity.length - 1;
+                }
+            }
+            LastPoint = strMaxCapacity.indexOf('.', LastSymbol);
+            if(LastPoint === LastSymbol){
+                //await console.log(`LP=(${LastPoint})`);
+                strMaxCapacity = strMaxCapacity.slice(0, LastPoint);
+            }
+            //await console.log(`strMaxCapacity=(${strMaxCapacity})`);
+            this.DealData.strVehicleMaxCapacity = strMaxCapacity;
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in CalculateVehicleMaxCapacity`);
+            return false;
+        }
+    }//async CalculateVehicleMaxCapacity()
 
     //----------------------------------------
     async TemplateTemp() {

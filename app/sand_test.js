@@ -294,3 +294,25 @@ function waitForRequestToFinish(page, requestUrl, timeout) {
 };
 
  await waitForRequestToFinish(this.page,"https://dev.api.cfo.tl.ee/api/v2/deal", 12000);
+ //-----------------------------------------------
+ // вывод в КОНСОЛЬ
+let a = 1, b = "1";
+await console.assert(a === b, "A doesn't equal B");
+await console.time("Execution time took");
+// Some code to execute
+
+let tStr = `Процесс`;
+let C = FRGB(0, 0, 0,5);
+await process.stdout.write(`${tStr}`);
+for(let i=0 ; i<10; i++){
+    await WaitMS(100);
+    //await process.stdout.write(`\x1B[0G${tStr} : ${i}%`);
+    await process.stdout.write(`\r${C}${tStr} : ${i}%${FRGB()}`);
+}
+C = FRGB(0, 0, 5,0);
+await process.stdout.write(`\r${C}${tStr} - успешно завершён !${FRGB()}`);
+await WaitMS(1000);
+await process.stdout.write(`\r`);
+
+await console.timeEnd("Execution time took");
+//-----------------------------------------------

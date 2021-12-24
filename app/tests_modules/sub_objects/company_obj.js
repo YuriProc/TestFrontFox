@@ -178,16 +178,19 @@ class Company{
             await WaitRender(this.page);
             // Таблица Компаний "Загрузка"
             // Ждём пока не пропадёт
-            resOk = await WaitUntilXPathExist(this.page, 5000, this.xCompanyTableLoading);
+            resOk = await WaitUntilXPathExist(this.page, 21000, this.xCompanyTableLoading);
+            if (!resOk) {
+                throw `FAIL => Таблица Компаний "Загрузка" не пропала 21 сек(${this.xCompanyTableLoading})`;
+            }
 
             resOk = await ClickByXPath(this.page, this.xMenuCompanyPlus);
             if (!resOk) {
                 throw `FAIL => Верхнее меню "Компания +"(${this.xMenuCompanyPlus})`;
             }
             //Ждём появления Тайтл "Создание компании"
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xTitleCompanyCrteate);
+            resOk = await WaitForElementIsPresentByXPath(21000, this.page, this.xTitleCompanyCrteate);
             if (!resOk) {
-                throw `FAIL => Ждём появления Тайтл "Создание компании"(${this.xTitleCompanyCrteate})`;
+                throw `FAIL => Ждём появления Тайтл "Создание компании" 21 сек(${this.xTitleCompanyCrteate})`;
             }
             // Ждём появления Инпут "Введите ЕДРПОУ/ИНН"
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xInputINN);
@@ -200,22 +203,29 @@ class Company{
                 throw `FAIL => Вводим код ЕДРПОУ SetTextByXPath(${this.xInputINN})`;
             }
             // Выцепим Текущего Юзера из запроса "/api/auth-user"
+            let strUrl = `${g_BackCfoFoxURL}/api/auth-user`;
             await console.log('\x1b[38;5;3m\t', `Ставим Слушателя ..................`, '\x1b[0m');
-            resOk = await ResponseListener(this.page, `${g_BackCfoFoxURL}/api/auth-user`, true);
+            resOk = await ResponseListener(this.page, strUrl, true);
             // Жмём Кнопка "Проверить в базе" _PromiseAll
             //resOk = await ClickByXPath_PromiseAll(this.page, this.xButtonCheckInBase);
             resOk = await ClickByXPath(this.page, this.xButtonCheckInBase);
             if (!resOk) {
                 throw `FAIL => Жмём Кнопка "Проверить в базе" ClickByXPath(${this.xButtonCheckInBase})`;
             }
+            // await ScreenLog(this.page);
+            resOk = await ResponseListenerWaitForResponse(31000);
+            if(!resOk){
+                let strMsg = `Не дождались ответа ResponseListenerWaitForResponse(31000)`;
+                await ScreenLog(this.page, strMsg, 1);
+            }
             // Ждём Исчезновения Спиннера и Рендера страницы
-            await SpinnerWait(this.page);
+            await WaitSpinner(this.page);
             await WaitRender(this.page);
             //----------------------------
 // проверим Вывод ошибки
-            strInnerText = await WarningsRead(this.page, 4000);
+            strInnerText = await WarningsRead(this.page, 500);
             // Убираем Слушателя
-            resOk = await ResponseListener(this.page, `${g_BackCfoFoxURL}/api/auth-user`, false);
+            resOk = await ResponseListener(this.page, strUrl, false);
 
             if (strInnerText !== '') {
                 let strAlreadyCreated = "Данная компания уже создана!";
@@ -251,11 +261,13 @@ class Company{
             } else {
                 await console.log('\x1b[38;5;3m\t', `Странно нет сообщений => ClickCompanyCreateNewPlus_checkInBase`, '\x1b[0m');
             }
-            if (g_tempDataFromEventListener_response.status() === 200){
+            if (g_tempDataFromEventListener_response && g_tempDataFromEventListener_response.status() === 200){
                 this.CurrentUser.user_id = g_tempDataFromEventListener_json.id;
                 this.CurrentUser.contact_id = g_tempDataFromEventListener_json.contact_id;
                 this.CurrentUser.full_name = g_tempDataFromEventListener_json.contact.full_name;
                 this.CurrentUser.name_surname = g_tempDataFromEventListener_json.contact.name_surname;
+            }else{
+                throw `!!! FAIL -> Респонс от запроса (/api/auth-user) не пришёл`;
             }
             // await console.log(`----------- g_tempDataFromEventListener_json -----------`);
             // await console.dir(g_tempDataFromEventListener_json);
@@ -267,7 +279,8 @@ class Company{
 //await console.log(`qqqqqqq`);
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in ClickCompanyCreateNewPlus`);
+            let strMsg = `${e} \n FAIL in ClickCompanyCreateNewPlus`;
+            await ScreenLog(this.page, strMsg, 1);
             return false;
         }
     } // async ClickCompanyCreateNewPlus(){
@@ -313,6 +326,7 @@ class Company{
             if (!resOk) {
                 throw `FAIL => Хеадер "Имя Компании"(${this.xHeaderCompanyName}))`;
             }
+            await WaitRender(this.page);
             // ЕДРПОУ/ИНН
             let codeEDRPOU_fromPage = await ElementGetInnerText(this.page, 0, this.xEDRPOUcode);
             if(codeEDRPOU_fromPage === ``){
@@ -411,7 +425,7 @@ class Company{
             //await console.log(`     (${TypesCompPres[0]}) | (${TypesCompPres[1]}) | (${TypesCompPres[2]}) | (${TypesCompPres[3]})`);
             //await TempStop(page);
 
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xTypesCompanyArrowDown);
+            resOk = await WaitForElementIsPresentByXPath(6000, this.page, this.xTypesCompanyArrowDown);
             if (!resOk) {
                 //await TempStop(page);
                 tStr = `\n FAIL => После нажатия на кнопку (ПРОВЕРИТЬ В БАЗЕ) не прогрузилась страница `;
@@ -887,8 +901,8 @@ class Company{
             // Узнаем Кто Ответственный в ПЕРВОМ Кружочке
             strFIOResponsible = await ElementGetAttribute(this.page, 0, `title`, this.xManagersCircle_1);
 
-            await console.log(`strFIOResponsible=(${strFIOResponsible})`);
-            await console.log(`strFIOCurrentUser=(${this.CurrentUser.full_name})`);
+            // await console.log(`strFIOResponsible=(${strFIOResponsible})`);
+            // await console.log(`strFIOCurrentUser=(${this.CurrentUser.full_name})`);
 
             if(strFIOResponsible === ``){
                 C = FRGB(0,4,1,1);
@@ -975,9 +989,9 @@ class Company{
 
             // class="spinner-border"
             // Косяк на Фронте ДВА раза api/responsible вызывается и Два раза Get company
-            resOk = await SpinnerWait( this.page, 11000);
+            resOk = await WaitSpinner( this.page, 11000);
             await WaitRender(this.page);
-            resOk = await SpinnerWait( this.page, 11000);
+            resOk = await WaitSpinner( this.page, 11000);
 
             // await console.log('\x1b[38;5;1m\t', `Warning ( ${strFIOResponsible} ) - Warning !!!`, '\x1b[0m');
             // await this.page.screenshot({path: g_PathSS + `screenshot_strFIOResponsible.png`, fullPage: true});

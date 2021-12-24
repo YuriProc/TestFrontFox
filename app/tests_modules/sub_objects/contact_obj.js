@@ -232,11 +232,22 @@ class Contact {
     //----------------------------------------
     async MCCClickCheckInBase() {
         try { let resOk;
+        let reqUrl = `/api/search/contacts/phones`;
+            resOk = await ResponseListener(this.page, reqUrl,true);
+
             // Кнопка "Проверить в базе"
             resOk = await ClickByXPath(this.page, this.xMCCButtonCheckInBase);
             if (!resOk) {
                 throw `FAIL => MCCClickCheckInBase => Кнопка "Проверить в базе" ClickByXPath(${this.xMCCButtonCheckInBase})`;
             }
+            resOk = await ResponseListenerWaitForResponse(12000);
+            if (!resOk) {
+                throw `FAIL => MCCClickCheckInBase => ResponseListenerWaitForResponse(12000);`;
+            }
+            resOk = await ResponseListener(this.page, reqUrl,false);
+
+            await WaitRender(this.page);
+            await WaitSpinner(this.page, 12000);
             await WaitRender(this.page);
 
             return true;
@@ -250,8 +261,9 @@ class Contact {
     async CheckValidationModalContact() {
         try { let resOk;
             let resErrorText = ``;
+            await WaitRender(this.page);
             // Плашка Валидации Обязательных Полей
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xValidatorBody);
+            resOk = await WaitForElementIsPresentByXPath(11000, this.page, this.xValidatorBody);
             if (!resOk) {
                 resErrorText+= `FAIL => Плашка Валидации Обязательных Полей (${this.xValidatorBody}) \n`;
             }
@@ -392,10 +404,14 @@ class Contact {
     //----------------------------------------
     async EnterContactType() {
         try { let resOk;
+            await WaitProcessing(this.page,12000);
             await WaitRender(this.page);
             // Инпут "Тип контакта"
             //xMultiSelectContactType
-            await WaitForElementIsPresentByXPath(4000, this.page, this.xMultiSelectContactType);
+            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xMultiSelectContactType);
+            if (!resOk) {
+                throw `FAIL => EnterContactType => Инпут "Тип контакта" WaitForElementIsPresentByXPath(${this.xMultiSelectContactType})`;
+            }
             resOk = await ClickByXPath(this.page, this.xMultiSelectContactType);
             if (!resOk) {
                 throw `FAIL => EnterContactType => Инпут "Тип контакта" ClickByXPath(${this.xMultiSelectContactType})`;
@@ -403,7 +419,7 @@ class Contact {
             // подождать пока будет активен Селект "Тип контакта"
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xMultiSelectContactTypeActive);
             if (!resOk) {
-                throw `FAIL => EnterContactType => НЕ активен Селект "Тип контакта" ClickByXPath(${this.xMultiSelectContactType})`;
+                throw `FAIL => EnterContactType => НЕ активен Селект "Тип контакта" WaitForElementIsPresentByXPath(${this.xMultiSelectContactTypeActive})`;
             }
             await WaitRender(this.page);
 

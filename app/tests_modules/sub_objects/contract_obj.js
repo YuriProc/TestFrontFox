@@ -332,7 +332,13 @@ class Contract{
             //await WarningCheck(this.page);
             // подождать пока не пропадёт disabled="disabled" у button type="submit"
             // Договор Кнопка "Создать договор" Дизейблед
-            await WaitUntilXPathExist(this.page, 4000, this.xButtonCreateContractDisabled);
+            resOk = await WaitUntilXPathExist(this.page, 12000, this.xButtonCreateContractDisabled);
+            if(!resOk){
+                await console.log(`WaitUntilXPathExist(${this.xButtonCreateContractDisabled})`);
+                let strPSS = g_PathSS + `screenshot_ButtonCreateContract.png`;
+                await this.page.screenshot({path: strPSS, fullPage: true});
+                await console.log(`Скриншот: ${strPSS}`);
+            }
             resOk = await WarningsClick(this.page);
             if (resOk !== '') {
                 if ( await SubStrIsPresent(this.warnContractSuccessfullyCreated, resOk) ) {
@@ -344,7 +350,7 @@ class Contract{
             //await console.log(`Кнопка "Создать договор"раздизейблилась--------`);
             //await WaitUntilPageLoads(this.page);
             //Ждём в таблице ПЕРВЫЙ договор
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xFirstDelete);
+            resOk = await WaitForElementIsPresentByXPath(12000, this.page, this.xFirstDelete);
             if (!resOk) {
                 throw `FAIL => Ждём в таблице ПЕРВЫЙ договор(${this.xFirstDelete})`;
             }

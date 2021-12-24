@@ -345,50 +345,68 @@ class Location {
             if (!resOk) {
                 throw `FAIL => Инпут "Время на загрузку"(${this.xInputUnLoadTime})`;
             }
-
             // * ДропДаун "Тип локации"
-            // Клик, Тайп, Выбор
-            resOk = await ClickByXPath(this.pageTableLocations, this.xInputLocationType);
+            let NeedStr1 = this.LocationData.strLocationType;
+            const {MultiSelect: MultiSelect1} = require("../sub_objects/drop_down_obj.js");
+            //(browser, page, xForward ,LegendText, Required, NeedStr)
+            let FilterField1 = new MultiSelect1(this.browser, this.pageTableLocations, ``, `Тип локации`, true, NeedStr1);
+            resOk = await FilterField1.SetData();
             if (!resOk) {
-                // await console.log(`ДропДаун "Тип локации"`);
-                // await TempStop(this.pageTableLocations);
-
-                throw `FAIL => * ДропДаун "Тип локации" ClickByXPath(${this.xInputLocationType})`;
+                throw `FAIL => FilterField.SetData(${NeedStr1}); = FAIL!`;//<--специальный вызов ошибки!
             }
-            await this.pageTableLocations.waitFor(200);
-            resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strLocationType,20);
-            if (!resOk) {
-                throw `FAIL => * ДропДаун "Тип локации" TypeInPage(${this.xInputLocationType})`;
-            }
-            await this.pageTableLocations.waitFor(200);
-
-            // Селект в ДропДауне "Тип локации"
-            this.xSelectLocationType+= `[contains(text(), "${this.LocationData.strLocationType}")]`;
-            resOk = await ClickByXPath(this.pageTableLocations, this.xSelectLocationType);
-            if (!resOk) {
-                throw `FAIL => Селект в ДропДауне "Тип локации" ClickByXPath(${this.xSelectLocationType})`;
-            }
-
+            await WaitRender(this.pageTableLocations);
+            // * ДропДаун "Тип локации"
+            // // Клик, Тайп, Выбор
+            // resOk = await ClickByXPath(this.pageTableLocations, this.xInputLocationType);
+            // if (!resOk) {
+            //     // await console.log(`ДропДаун "Тип локации"`);
+            //     // await TempStop(this.pageTableLocations);
+            //
+            //     throw `FAIL => * ДропДаун "Тип локации" ClickByXPath(${this.xInputLocationType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
+            // resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strLocationType,20);
+            // if (!resOk) {
+            //     throw `FAIL => * ДропДаун "Тип локации" TypeInPage(${this.xInputLocationType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
+            //
+            // // Селект в ДропДауне "Тип локации"
+            // this.xSelectLocationType+= `[contains(text(), "${this.LocationData.strLocationType}")]`;
+            // resOk = await ClickByXPath(this.pageTableLocations, this.xSelectLocationType);
+            // if (!resOk) {
+            //     throw `FAIL => Селект в ДропДауне "Тип локации" ClickByXPath(${this.xSelectLocationType})`;
+            // }
             // * ДропДаун "Вид промышленности"
-            // Клик, Тайп, Выбор
-            resOk = await ClickByXPath(this.pageTableLocations, this.xInputIndustryType);
+            let NeedStr2 = this.LocationData.strIndustryType;
+            const {MultiSelect: MultiSelect2} = require("../sub_objects/drop_down_obj.js");
+            //(browser, page, xForward ,LegendText, Required, NeedStr)
+            let FilterField2 = new MultiSelect2(this.browser, this.pageTableLocations, ``, `Вид промышленности`, true, NeedStr2);
+            resOk = await FilterField2.SetData();
             if (!resOk) {
-                throw `FAIL => * ДропДаун "Вид промышленности" ClickByXPath(${this.xInputIndustryType})`;
+                throw `FAIL => FilterField.SetData(${NeedStr2}); = FAIL!`;//<--специальный вызов ошибки!
             }
-            await this.pageTableLocations.waitFor(200);
-            resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strIndustryType,20);
-            if (!resOk) {
-                throw `FAIL => * ДропДаун "Вид промышленности" TypeInPage(${this.xInputIndustryType})`;
-            }
-            await this.pageTableLocations.waitFor(200);
+            await WaitRender(this.pageTableLocations);
 
-            // Селект в ДропДауне "Вид промышленности"
-            this.xSelectIndustryType+= `[contains(text(), "${this.LocationData.strIndustryType}")]`;
-            resOk = await ClickByXPath(this.pageTableLocations, this.xSelectIndustryType);
-            if (!resOk) {
-                throw `FAIL => Селект в ДропДауне "Вид промышленности" ClickByXPath(${this.xSelectIndustryType})`;
-            }
-            await this.pageTableLocations.waitFor(200);
+            // // Клик, Тайп, Выбор
+            // resOk = await ClickByXPath(this.pageTableLocations, this.xInputIndustryType);
+            // if (!resOk) {
+            //     throw `FAIL => * ДропДаун "Вид промышленности" ClickByXPath(${this.xInputIndustryType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
+            // resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strIndustryType,20);
+            // if (!resOk) {
+            //     throw `FAIL => * ДропДаун "Вид промышленности" TypeInPage(${this.xInputIndustryType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
+            //
+            // // Селект в ДропДауне "Вид промышленности"
+            // this.xSelectIndustryType+= `[contains(text(), "${this.LocationData.strIndustryType}")]`;
+            // resOk = await ClickByXPath(this.pageTableLocations, this.xSelectIndustryType);
+            // if (!resOk) {
+            //     throw `FAIL => Селект в ДропДауне "Вид промышленности" ClickByXPath(${this.xSelectIndustryType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
             //Создаём НОВЫЙ Контакт через Локацию
             // Кнопка "Создать контакт"
             resOk = await ClickByXPath(this.pageTableLocations, this.xButtonCreateContact);
@@ -476,7 +494,7 @@ class Location {
             await this.pageTableLocations.evaluate(pageCursor);
             // !!!!!
             // Проверить , что мы на таблице локаций !!!!
-            resOk = await WaitForElementIsPresentByXPath(5000, this.pageTableLocations, this.xTableLocationReady);
+            resOk = await WaitForElementIsPresentByXPath(21000, this.pageTableLocations, this.xTableLocationReady);
             if (!resOk) {
                 let strPath = g_PathSS + 'screenshot_xTableLocationReady.png';
 
@@ -542,20 +560,22 @@ class Location {
     }//async clickMenuLocationsPlus()
     //----------------------------------------
     async EnterNewDataInLocation(){
-        try{ let resOk;
+        let resOk;
+        try{
+            resOk = await WaitSpinner(this.pageTableLocations, 21000);
+            if(!resOk){
+                throw `FAIL => WaitSpinner(this.pageTableLocations, 21000)`;
+            }
             // Заголовок "Создание локации"
-            resOk = await WaitForElementIsPresentByXPath(4000, this.pageTableLocations, this.xHeaderCreateLocation);
+            resOk = await WaitForElementIsPresentByXPath(21000, this.pageTableLocations, this.xHeaderCreateLocation);
             if (!resOk) {
                 throw `FAIL => Заголовок "Создание локации"(${this.xHeaderCreateLocation})`;
             }
         //  Проверить , что спиннер исчез на форме Создания локации
             //  Проверить , что спиннер исчез на форме Создания локации
-            resOk = await WaitUntilXPathExist(this.pageTableLocations,5000, this.xSpinnerCreateLocation);
+            resOk = await WaitUntilXPathExist(this.pageTableLocations,33000, this.xSpinnerCreateLocation);
             if (!resOk) {
-                let strPath = g_PathSS + 'screenshot_xSpinnerCreateLocation.png';
-                await this.pageTableLocations.screenshot({path: strPath, fullPage: true });
-                await console.log(` screenshot= ${strPath}`);
-                throw `FAIL => Проверить , что спиннер исчез на форме Создания локации(${this.xSpinnerCreateLocation})`;
+                throw `FAIL => Проверить , что спиннер исчез на форме Создания локации 33000 ms(${this.xSpinnerCreateLocation})`;
             }
 
             await WaitRender(this.pageTableLocations);
@@ -578,7 +598,8 @@ class Location {
             }
 
             // установим слушатель на Респонс // /api/address
-            resOk = await ResponseListener(this.pageTableLocations, `${g_BackCfoFoxURL}/api/address`, true);
+            let strUrl = g_BackCfoFoxURL + `/api/address`;
+            resOk = await ResponseListener(this.pageTableLocations, strUrl, true);
 
             // Дропдаун адресов Гугла // Добавить `[contains(text(), "XXXX")]`
             resOk = await WaitForElementIsPresentByXPath(4000, this.pageTableLocations ,this.xDropDownGoogleAddress);
@@ -593,12 +614,13 @@ class Location {
             if (!resOk) {
                 throw `FAIL => Дропдаун адресов Гугла ClickByXPathNum(${tempRand})(${this.xDropDownGoogleAddress})`;
             }
+            resOk = ResponseListenerWaitForResponse(2100);
             await WaitRender(this.pageTableLocations);
             // потом , сразу может быть не тот язык, птом Google переводит через ~1 сек
             // resOk = await ElementGetValue(this.pageTableLocations, 0, this.xInputAddressFOX);
             // this.LocationData.strAddressFOXfromGoogle = resOk;
             // Удалим слушатель на Респонс // /api/address
-            resOk = await ResponseListener(this.pageTableLocations, `${g_BackCfoFoxURL}/api/address`, false);
+            resOk = await ResponseListener(this.pageTableLocations, strUrl, false);
             if(g_tempDataFromEventListener_json && g_tempDataFromEventListener_json.data) {
                 //await console.dir(pageVehicleCard, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
                 //await console.dir(g_tempDataFromEventListener_json);
@@ -672,46 +694,66 @@ class Location {
             }
             await this.pageTableLocations.waitFor(100);
             // * ДропДаун "Тип локации"
-            // Клик, Тайп, Выбор
-            resOk = await ClickByXPath(this.pageTableLocations, this.xInputLocationType);
+            let NeedStr1 = this.LocationData.strLocationType;
+            const {MultiSelect:  MultiSelect1} = require("../sub_objects/drop_down_obj.js");
+            //(browser, page, xForward ,LegendText, Required, NeedStr)
+            let FilterField1 = new MultiSelect1(this.browser, this.pageTableLocations, ``, `Тип локации`, true, NeedStr1);
+            resOk = await FilterField1.SetData();
             if (!resOk) {
-
-                throw `FAIL => * ДропДаун "Тип локации" ClickByXPath(${this.xInputLocationType})`;
+                throw `FAIL => FilterField1.SetData(${NeedStr1}); = FAIL!`;//<--специальный вызов ошибки!
             }
-            await this.pageTableLocations.waitFor(200);
-            resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strLocationType,20);
-            if (!resOk) {
-                throw `FAIL => * ДропДаун "Тип локации" TypeInPage(${this.xInputLocationType})`;
-            }
-            await this.pageTableLocations.waitFor(200);
+            await WaitRender(this.pageTableLocations);
 
-            // Селект в ДропДауне "Тип локации"
-            this.xSelectLocationType+= `[contains(text(), "${this.LocationData.strLocationType}")]`;
-            resOk = await ClickByXPath(this.pageTableLocations, this.xSelectLocationType);
-            if (!resOk) {
-                throw `FAIL => Селект в ДропДауне "Тип локации" ClickByXPath(${this.xSelectLocationType})`;
-            }
-
+            // * ДропДаун "Тип локации"
+            // // Клик, Тайп, Выбор
+            // resOk = await ClickByXPath(this.pageTableLocations, this.xInputLocationType);
+            // if (!resOk) {
+            //
+            //     throw `FAIL => * ДропДаун "Тип локации" ClickByXPath(${this.xInputLocationType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
+            // resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strLocationType,20);
+            // if (!resOk) {
+            //     throw `FAIL => * ДропДаун "Тип локации" TypeInPage(${this.xInputLocationType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
+            //
+            // // Селект в ДропДауне "Тип локации"
+            // this.xSelectLocationType+= `[contains(text(), "${this.LocationData.strLocationType}")]`;
+            // resOk = await ClickByXPath(this.pageTableLocations, this.xSelectLocationType);
+            // if (!resOk) {
+            //     throw `FAIL => Селект в ДропДауне "Тип локации" ClickByXPath(${this.xSelectLocationType})`;
+            // }
             // * ДропДаун "Вид промышленности"
-            // Клик, Тайп, Выбор
-            resOk = await ClickByXPath(this.pageTableLocations, this.xInputIndustryType);
+            let NeedStr2 = this.LocationData.strIndustryType;
+            const {MultiSelect: MultiSelect2} = require("../sub_objects/drop_down_obj.js");
+            //(browser, page, xForward ,LegendText, Required, NeedStr)
+            let FilterField2 = new MultiSelect2(this.browser, this.pageTableLocations, ``, `Вид промышленности`, true, NeedStr2);
+            resOk = await FilterField2.SetData();
             if (!resOk) {
-                throw `FAIL => * ДропДаун "Вид промышленности" ClickByXPath(${this.xInputIndustryType})`;
+                throw `FAIL => FilterField2.SetData(${NeedStr2}); = FAIL!`;//<--специальный вызов ошибки!
             }
-            await this.pageTableLocations.waitFor(200);
-            resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strIndustryType,20);
-            if (!resOk) {
-                throw `FAIL => * ДропДаун "Вид промышленности" TypeInPage(${this.xInputIndustryType})`;
-            }
-            await this.pageTableLocations.waitFor(200);
-
-            // Селект в ДропДауне "Вид промышленности"
-            this.xSelectIndustryType+= `[contains(text(), "${this.LocationData.strIndustryType}")]`;
-            resOk = await ClickByXPath(this.pageTableLocations, this.xSelectIndustryType);
-            if (!resOk) {
-                throw `FAIL => Селект в ДропДауне "Вид промышленности" ClickByXPath(${this.xSelectIndustryType})`;
-            }
-            await this.pageTableLocations.waitFor(200);
+            await WaitRender(this.pageTableLocations);
+            //  // * ДропДаун "Вид промышленности"
+            // // Клик, Тайп, Выбор
+            // resOk = await ClickByXPath(this.pageTableLocations, this.xInputIndustryType);
+            // if (!resOk) {
+            //     throw `FAIL => * ДропДаун "Вид промышленности" ClickByXPath(${this.xInputIndustryType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
+            // resOk = await TypeInPage(this.pageTableLocations, this.LocationData.strIndustryType,20);
+            // if (!resOk) {
+            //     throw `FAIL => * ДропДаун "Вид промышленности" TypeInPage(${this.xInputIndustryType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
+            //
+            // // Селект в ДропДауне "Вид промышленности"
+            // this.xSelectIndustryType+= `[contains(text(), "${this.LocationData.strIndustryType}")]`;
+            // resOk = await ClickByXPath(this.pageTableLocations, this.xSelectIndustryType);
+            // if (!resOk) {
+            //     throw `FAIL => Селект в ДропДауне "Вид промышленности" ClickByXPath(${this.xSelectIndustryType})`;
+            // }
+            // await this.pageTableLocations.waitFor(200);
             // * Инпут ДропДаун "Контакты"
             resOk = await ClickByXPath(this.pageTableLocations, this.xInputContacts);
             if (!resOk) {
@@ -809,7 +851,8 @@ class Location {
 
             return true;
         }catch (e) {
-            await console.log(`${e} \n FAIL in EnterNewDataInLocation`);
+            let strMsg = `${e} \n FAIL in EnterNewDataInLocation`;
+            await ScreenLog(this.pageTableLocations, strMsg, 1);
             return false;
         }
     }//async EnterNewDataInLocation()
@@ -844,13 +887,18 @@ class Location {
                 // Подбор Точки на карте
                 resOk = await this.RetrySelectPointAndSaveLocation();
                 if (!resOk) {
+
                         throw `FAIL => Подбор Точки на карте this.RetrySelectPointAndSaveLocation();`;
                     }
             }else{
                 if( await SubStrIsPresent('Локация успешно сохранена!', strWarning)) {
                     await console.log('\x1b[38;5;2m\t', `Сообщение (${strWarning}) - OK !!!`, '\x1b[0m');
                 }else{
-                    await console.log('\x1b[38;5;1m\t', `WARNING !!! - Неизвестное сообщение (${strWarning}) - WARNING !!!`, '\x1b[0m');
+                    if (strWarning !== ``) {
+                        await console.log('\x1b[38;5;1m\t', `WARNING !!! - Неизвестное сообщение (${strWarning}) - WARNING !!!`, '\x1b[0m');
+                    }else{
+                        await console.log('\x1b[38;5;3m\t', `Странно - нет сообщений об успешном сохранении- WARNING !!!`, '\x1b[0m');
+                    }
                 }
             }
             await console.log('\x1b[38;5;2m\t', `Сохранили Локацию: ${this.LocationData.strAddressFOX} - OK`, '\x1b[0m');
@@ -867,7 +915,7 @@ class Location {
         }
     }//async clickSaveLocation()
     //----------------------------------------
-    async RetrySelectPointAndSaveLocation(Count = 5){
+    async RetrySelectPointAndSaveLocation(Count = 7){
         try{ let resOk;
             // Область Карты []
             // resOk = await ClickByXPath(this.pageTableLocations, this.xMapArea);
@@ -905,9 +953,20 @@ class Location {
 
                 RX = Box.x + Box.width / 20 + await randomInt(0, Box.width * 0.8);
                 RY = Box.y + Box.height / 10 + await randomInt(0, Box.height * 0.85);
+                let strUrl = `${g_BackCfoFoxURL}/api/address`;
+                resOk = await ResponseListener(this.pageTableLocations, strUrl, true);
 
                 // await this.pageTableLocations.mouse.click(RX, RY);
                 await MouseClickXY(this.pageTableLocations, RX, RY);
+                resOk = await ResponseListenerWaitForResponse(31000);
+                if(!resOk) {
+                    let strMsg = `Не дождались ответа ResponseListenerWaitForResponse(31000)`;
+                    await ScreenLog(this.pageTableLocations, strMsg, 1);
+                    throw strMsg;
+                }
+                resOk = await ResponseListener(this.pageTableLocations, strUrl, false);
+
+                await WaitRender(this.pageTableLocations);
                 await WaitRender(this.pageTableLocations);
                 tempStr2 = await ElementGetValue(this.pageTableLocations, 0, tempX1);
                 // await console.log(`tempStr1=(${tempStr1})`);
@@ -916,7 +975,7 @@ class Location {
             await WarningsRemove(this.pageTableLocations);
 
             resOk = await ClickByXPath(this.pageTableLocations, this.xButtonSaveLocationActive);
-            let strWarning = await WarningsRead(this.pageTableLocations, 2000);
+            let strWarning = await WarningsRead(this.pageTableLocations, 21000);
             if( await SubStrIsPresent('Локация успешно сохранена!', strWarning)) {
                 await console.log('\x1b[38;5;2m\t', `Сообщение (${strWarning}) - OK !`, '\x1b[0m');
             }else{

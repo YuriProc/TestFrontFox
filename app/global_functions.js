@@ -56,17 +56,17 @@ WaitUntilXPathExist = async function (page, mSec, xPath, print = false) {
     }
 };
 //-----------------------------------------------------------------------------------
-SpinnerWait = async function (page, mSec=31000, print=false) {
+WaitSpinner = async function (page, mSec=31000, print=false) {
     let xPath = `//span[@class="spinner-border"]`;
     let startTime = await Date.now();
     try {
         if (!await WaitForElementIsPresentByXPath(500, page, xPath)){
             if (print) {
-                await console.log(`SpinnerWait - не вижу (${xPath})`);
+                await console.log(`WaitSpinner - не вижу (${xPath})`);
             }
         }else{
             if (print) {
-                await console.log(`SpinnerWait - ВИЖУ ОК (${xPath})`);
+                await console.log(`WaitSpinner - ВИЖУ ОК (${xPath})`);
             }
         }
         while (await ElementIsPresent(page, xPath)){ // Ждём пока xPath присутствует
@@ -77,7 +77,35 @@ SpinnerWait = async function (page, mSec=31000, print=false) {
         }
         return true;
     } catch (e) {
-        await console.log(`SpinnerWait ERROR (${e})`);
+        await console.log(`WaitSpinner ERROR (${e})`);
+        return false;
+    }
+};
+//-------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+WaitProcessing = async function (page, mSec=31000, print=false) {
+    // section class="crm-view crm-view--contact crm-view__processing"
+    let xPath = `//section[contains(@class, "processing")]`;
+    let startTime = await Date.now();
+    try {
+        if (!await WaitForElementIsPresentByXPath(500, page, xPath)){
+            if (print) {
+                await console.log(`WaitProcessing - не вижу (${xPath})`);
+            }
+        }else{
+            if (print) {
+                await console.log(`WaitProcessing - ВИЖУ ОК (${xPath})`);
+            }
+        }
+        while (await ElementIsPresent(page, xPath)){ // Ждём пока xPath присутствует
+            await page.waitFor(100);
+            if(await Date.now() - startTime > mSec) { // Если прошло больше mSec сек то выход!!!
+                return false;
+            }
+        }
+        return true;
+    } catch (e) {
+        await console.log(`WaitProcessing ERROR (${e})`);
         return false;
     }
 };
@@ -342,7 +370,7 @@ WaitRender = async function (page, timeout = 30000) {
 
         //console.log('last: ', lastHTMLSize, ' <> curr: ', currentHTMLSize, " body html size: ", bodyHTMLSize);
 
-        if(lastHTMLSize != 0 && currentHTMLSize == lastHTMLSize)
+        if(lastHTMLSize !== 0 && currentHTMLSize === lastHTMLSize)
             countStableSizeIterations++;
         else
             countStableSizeIterations = 0; //reset the counter
@@ -353,7 +381,8 @@ WaitRender = async function (page, timeout = 30000) {
         }
 
         lastHTMLSize = currentHTMLSize;
-        await page.waitFor(checkDurationMsecs);
+        //await page.waitFor(checkDurationMsecs);
+        await WaitMS(checkDurationMsecs);
     }
 };
 //------------------------------------------------------------------------------------
@@ -2007,6 +2036,7 @@ ResponseListener = async function(page, requestUrl, setListener) {
                 if (request.url().includes(requestUrl)) {
                     const response = await request.response();
                     let resultJ = await response.json();
+                    g_tempDataFromEventListener_requestUrl = request.url();
                     g_tempDataFromEventListener_json = resultJ;
                     g_tempDataFromEventListener_response = response;
                     //await console.log(`-1-----------------------`);
@@ -2038,6 +2068,7 @@ ResponseListener = async function(page, requestUrl, setListener) {
         };
         if (setListener) { // requestfinished  // response
             g_tempDataFromEventListener_id = ``;
+            g_tempDataFromEventListener_requestUrl = ``;
             g_tempDataFromEventListener_response = ``;
             g_tempDataFromEventListener_json = ``;
             g_tempDataEventListenerFunctionHandle = onRequestFinished;
@@ -2056,6 +2087,88 @@ ResponseListener = async function(page, requestUrl, setListener) {
         return false;
     }
 }//async ResponseListener(requestUrl, setListener)
+//----------------------------------------
+ResponseListenerWaitForResponse = async function (timeMS = 4000){
+    let startTime = await Date.now();
+    try {
+        while (true) {
+            if (g_tempDataFromEventListener_response !== ``) {
+                return true;
+            }else {
+                if ((await Date.now() - startTime) > timeMS) {
+                    return false;
+                }else {
+                    await WaitMS(100);
+                }
+            }
+        }
+
+    }catch (e) {
+        await console.log(`${e} \n FAIL in ResponseListenerWaitForResponse(${tMS})`);
+        return false;
+    }
+}// ResponseListenerWaitForResponse = async function (tMS = 4000)
+//----------------------------------------
+TempGetCallerFuncName = async function(str){
+    //let CN = TempGetFName.caller().name;
+    let CN = (new Error().stack.split("at ")[2]).trim();
+    let S1 = `.` , S2 = ` (`;
+    let N1 = CN.indexOf(S1) + S1.length , N2 = CN.indexOf(S2);
+    let FN = CN.slice(0, N2);
+    FN = FN.replace('Object','Тест');
+       // await console.log(new Error().stack);
+    //await console.log("DEBUG", (new Error().stack.split("at ")[2]).trim(), ">>>", str);
+    //await console.log("DEBUG", (new Error().stack.split("Object.")[1]).trim(), ">>>", str);
+    //await console.log("DEBUG", (new Error().stack));
+    await console.log(`---(${str})--->(${FN})`);
+    await console.log(`+(${CN})+`);
+}
+//----------------------------------------
+ScreenLog = async function(page, Msg = '', Color = 0){ // 123 RGY
+   try {
+       let FullError = new Error().stack;
+       let CurrentErrorStr = (FullError.split("at ")[2]).trim();
+       let S2 = ` (`;
+       let N2 = CurrentErrorStr.indexOf(S2);
+       let FuncName = CurrentErrorStr.slice(0, N2);
+       let strSSNum = ``;
+       let strSSNumLength;
+       strSSNum = strSSNum + g_SSNum; // ScreenShotNumber
+       strSSNumLength = 3-strSSNum.length;
+       strSSNum = '0'.repeat(strSSNumLength < 0 ? 0: strSSNumLength) + strSSNum;
+       FuncName = FuncName.replace('Object', 'Тест');
+       let strPSS = g_PathSS + `screenshot${strSSNum}_${FuncName}.png`;
+       await page.screenshot({path: strPSS, fullPage: true});
+       let Col0 = FRGB(0,5, 5, 0),
+           Col1 = FRGB(1,1, 1, 4),
+           Col2 = FRGB(0,3, 3, 0),
+           Col  = FRGB();
+       if(Msg !== ''){
+           let C = `` , C0 = ``;
+           if (Color !== 0){
+               C0 = FRGB();
+               switch (Color) {
+                   case 1:
+                       C = FRGB(0, 5, 0, 0);
+                       break;
+                   case 2:
+                       C = FRGB(0, 0, 5, 0);
+                       break;
+                   case 3:
+                       C = FRGB(0, 5, 5, 0);
+                       break;
+                   default:
+                       break;
+               }// switch (Color)
+           }
+           await console.log(C,Msg,C0);
+       }
+       await console.log(` ${Col0}${Col1}[O]${Col} ${Col2}Скриншот: ${strPSS}${Col}`);
+       g_SSNum++; // <---- +1 !!!!!!! делать после скрина !!!
+   }catch (e) {
+       await console.log(`Ошибка внутренняя ScreenLog\n${e}`);
+   }
+}
 //----------------------------------------
 GetDealMarshrut = async function(DealData){
     try {

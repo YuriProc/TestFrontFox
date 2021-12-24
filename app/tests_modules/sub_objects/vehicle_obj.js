@@ -165,7 +165,7 @@ class Vehicle {
                 resErrorText+= `FAIL => Инпут "Серия и номер тех. паспорта" ${this.xInputRegistrationCertificateNumber} \n`;
             }
             // Картинка "Пример тех паспорта"
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xImageSampleRegistrationCertificateNumber);
+            resOk = await WaitForElementIsPresentByXPath(21000, this.page, this.xImageSampleRegistrationCertificateNumber);
             if(!resOk){
                 resErrorText+= `FAIL => Картинка "Пример тех паспорта" ${this.xImageSampleRegistrationCertificateNumber} \n`;
             }
@@ -221,6 +221,7 @@ class Vehicle {
         let resOk;
         let resErrorText = ``;
         try {
+
             if (Num === 0) {
                 // Заголовок ВСЕЙ Модалки "Создание нового автомобиля"
                 resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xModalHeader0);
@@ -241,9 +242,9 @@ class Vehicle {
                 resErrorText+= `FAIL => Инпут "Гос. номера" ${this.xInputLicensePlate} \n`;
             }
             // Картинка "Пример автомобильного номера"
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xImageSampleLicensePlate);
+            resOk = await WaitForElementIsPresentByXPath(21000, this.page, this.xImageSampleLicensePlate);
             if(!resOk){
-                resErrorText+= `FAIL => Картинка "Пример тех паспорта" ${this.xImageSampleLicensePlate} \n`;
+                resErrorText+= `FAIL => Картинка "Пример автомобильного номера" ${this.xImageSampleLicensePlate} \n`;
             }
             // Кнопка "Проверить в базе" Disabled // !!!!!!!! NOT DISABLED
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xButtonCheckInBaseActive);
@@ -296,11 +297,12 @@ class Vehicle {
         let resOk;
         let resErrorText = ``;
         try {
-
+            resOk = await WaitProcessing(this.page, 21000);
+            await WaitRender(this.page);
             // Проверяем что есть Инпут "Тип транспорта" *
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xInputVehicleType);
+            resOk = await WaitForElementIsPresentByXPath(21000, this.page, this.xInputVehicleType);
             if(!resOk){
-                resErrorText+= `FAIL => Инпут "Тип транспорта" * ${this.xInputCarBrand} \n`;
+                resErrorText+= `FAIL => Инпут "Тип транспорта" *  21 сек${this.xInputCarBrand} \n`;
             }
             // Проверяем что есть Инпут "Марка" *
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xInputCarBrand);
@@ -842,21 +844,21 @@ class Vehicle {
                 throw `FAIL => Инпут "Масса без груза (кг)" WaitForElementIsPresentByXPath(${this.xInputEmptyWeight})`;
             }
 
-            resOk = await SetTextByXPath(this.page, this.xInputEmptyWeight, this.VehicleData.strVehicleEmptyWeight);
+            resOk = await SetTextByXPath(this.page, this.xInputEmptyWeight, this.VehicleData.VehicleEmptyWeight);
             if (!resOk) {
                 throw `FAIL => Инпут "Масса без груза (кг)" SetTextByXPath(${this.xInputEmptyWeight})`;
             }
-            await console.log('\x1b[38;5;2m\t', `Масса без груза (кг) добавлена (${this.VehicleData.strVehicleEmptyWeight}) - OK !!!`, '\x1b[0m');
+            await console.log('\x1b[38;5;2m\t', `Масса без груза (кг) добавлена (${this.VehicleData.VehicleEmptyWeight}) - OK !!!`, '\x1b[0m');
             // Инпут "Полная масса (кг)"
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xInputMaxWeight);
             if (!resOk) {
                 throw `FAIL => Инпут "Полная масса (кг)" WaitForElementIsPresentByXPath(${this.xInputMaxWeight})`;
             }
-            resOk = await SetTextByXPath(this.page, this.xInputMaxWeight, this.VehicleData.strVehicleMaxWeight);
+            resOk = await SetTextByXPath(this.page, this.xInputMaxWeight, this.VehicleData.VehicleMaxWeight);
             if (!resOk) {
                 throw `FAIL => Инпут "Полная масса (кг)" SetTextByXPath(${this.xInputMaxWeight})`;
             }
-            await console.log('\x1b[38;5;2m\t', `Полная масса (кг) добавлена (${this.VehicleData.strVehicleMaxWeight}) - OK !!!`, '\x1b[0m');
+            await console.log('\x1b[38;5;2m\t', `Полная масса (кг) добавлена (${this.VehicleData.VehicleMaxWeight}) - OK !!!`, '\x1b[0m');
 
             return true;
         } catch (e) {

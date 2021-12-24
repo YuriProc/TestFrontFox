@@ -25,8 +25,19 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
     await page.setViewport({width: g_width, height: g_height});
 
 
-        var {Company} = require("../tests_modules/sub_objects/company_obj.js");
+        let {Company} = require("../tests_modules/sub_objects/company_obj.js");
         let NewCompany = new Company(browser, page , CompanyData);
+        let {CompanyTable} = require("../tests_modules/sub_objects/company_table_obj.js");
+        let NewCompanyTable = new CompanyTable( page , CompanyData);
+
+        // resOk = await NewCompanyTable.GetNewEDRPOU(CompanyData.strCompanyCode);
+        // if(resOk === false){
+        //     throw 'NewCompanyTable.GetNewEDRPOU() = 5 попыток FAIL!"';//<--специальный вызов ошибки!
+        // }else {
+        //     CompanyData.strCompanyCode = resOk;
+        //     NewCompany.CompanyData.strCompanyCode = resOk;
+        // }
+
         resOk = await NewCompany.ClickCompanyCreateNewPlus();
         if (!resOk) {
             throw 'NewCompany.ClickCompanyCreateNewPlus(); = FAIL!"';//<--специальный вызов ошибки!
@@ -200,16 +211,14 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         }
 
     }catch (err) {
-        await console.log('\x1b[38;5;1m', "!!!! Ошибка на странице Компании : ",err , '\x1b[0m');
+        let SErr = `!!!! Ошибка на странице Компании : ${err}`;
+        await ScreenLog(page, SErr, 1);
         g_StatusCurrentTest = 'Провален !!!';
         await g_FailedTests++;
         await console.log('\x1b[38;5;1m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
         CompanyData.returnResult = false;
         //await page.waitFor(5001111);
-    }
-    if(!CompanyData.returnResult){
-        await page.screenshot({path: g_PathSS + 'screenshot_CompanyCreateNewV2.png', fullPage: true });
     }
     //await WaitRender(page);
     await WarningsRemove(page);

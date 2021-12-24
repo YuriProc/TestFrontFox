@@ -26,6 +26,8 @@ let PGAPage = require('./tests_modules/auto_kiker.js');
 let UCNPage = require('./tests_modules/user_create_new');
 let UCEPage = require('./tests_modules/user_check_exist');
 let CCNPage = require('./tests_modules/company_create_new');
+
+let GNEPage = require('./tests_modules/get_new_edrpou');
 let CCNV2Page = require('./tests_modules/company_create_new_v2');
 let CCheckNV2Page = require('./tests_modules/company_check_new_v2');
 
@@ -163,7 +165,7 @@ let OpenFox = async () => {
 
 
 await console.log(`NumTests=${i}`);
-           // // await WaitMS(5000);
+           // // // await WaitMS(5000);
            //  Data.DealData1.strDealID = `33066`;
            //  Data.DealData1.strStatusID = `2`;
            //  Data.DealData1.strClientCompanyName = `ПРАТ "ВО "СТАЛЬКАНАТ-СІЛУР"`;//4316
@@ -182,18 +184,40 @@ await console.log(`NumTests=${i}`);
            //  Data.DealData1.strDriverFullName = `Куров Олександр Вікторович`;
            //  Data.DealData1.strDriverPhone = `380508608786`;
            //  Data.DealData1.strOurCompanyWithTransporter = `ТОВ "ТРАНСЛОЙД"`;
+           //  Data.DealData1.strVehicleSubType = `Тент`;
+           //  Data.DealData1.strCargoWeight = `12`;
+           //  Data.DealData1.strVehicleVolume = `92`;
+           //  Data.DealData1.strCarBrand = `MAN`;
+           //  Data.DealData1.strLicensePlate1 = `AX1424CA`;
+           //  Data.DealData1.strLicensePlate2 = `AX4074XT`;
+           //  Data.DealData1.strCargoType = `Метал`;
+           //  Data.DealData1.strCargoCost = `450000`;
+           //
            //  Data.DealData1.strTransporterDelay = `2`;
+           //
+           //  Data.DealData1.strResponsibleFOX = `Світлана Малуха`;
+           //  Data.DealData1.strLogist = `Олександр Саліхов`;
            //
            //
            //  Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
-           //  // await console.log(`-----StartNewBrowser`);
-           //  // let nbrowser = await PGAPage.StartNewBrowser(false);
-           //  // let nPGAPage = await PGAPage.NewBrowserGetPage(nbrowser, `http://10.10.10.232/pgadmin4/login`);
+           // //  // await console.log(`-----StartNewBrowser`);
+           // //  // let nbrowser = await PGAPage.StartNewBrowser(false);
+           // //  // let nPGAPage = await PGAPage.NewBrowserGetPage(nbrowser, `http://10.10.10.232/pgadmin4/login`);
+           //  if(!g_ShowActionInBrowser){
+           //      await browser.close();
+           //  }
            //  await TempStop(page);
-           // //==========
-          Data.CompanyData1.strCompanyCode = `2818821397`;//`38885174`;
+           // // //==========
+          Data.CompanyData1.strCompanyCode = `41269680`;//`38885174`;
+            let MaxTry = 10;
+            resOk = await GNEPage.CompanyTableGetNewEDRPOU(browser, page, MaxTry, Data.CompanyData1.strCompanyCode);
+            if (resOk === false){
+                throw `FAIL => CompanyTableGetNewEDRPOU c ${MaxTry} попыток не удалось найти новый номер ЕДРПОУ`;//<--специальный вызов ошибки!
+            }
+            Data.CompanyData1.strCompanyCode = resOk;
+
             Data.CompanyData1 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData1);
-             await TempStop(page);
+            // await TempStop(page);
 
             if (!Data.CompanyData1.returnResult) {
                 //throw `Не получилось создать компанию (${Data.CompanyData1.strCompanyCode})`;//<--специальный вызов ошибки!
@@ -208,6 +232,12 @@ await console.log(`NumTests=${i}`);
 
             // X) создаём тестовую компанию CompanyData2
           //  Data.CompanyData2.strCompanyCode = '00190928';//'14180856';//'43092634';//'14180856';
+            MaxTry = 10;
+            resOk = await GNEPage.CompanyTableGetNewEDRPOU(browser, page, MaxTry, Data.CompanyData2.strCompanyCode);
+            if (resOk === false){
+                throw `FAIL => CompanyTableGetNewEDRPOU c ${MaxTry} попыток не удалось найти новый номер ЕДРПОУ`;//<--специальный вызов ошибки!
+            }
+            Data.CompanyData2.strCompanyCode = resOk;
             Data.CompanyData2 = await CCNV2Page.CompanyCreateNewV2(browser, page, Data.CompanyData2);
             if (!Data.CompanyData2.returnResult) {
                 //throw `Не получилось создать компанию (${Data.CompanyData2.strCompanyCode})`;//<--специальный вызов ошибки!
@@ -266,8 +296,10 @@ await console.log(`NumTests=${i}`);
             Data.DealData1.PointsUnLoading[1].PointUnLoading.strAddressFOX = `Одеса`;
             Data.DealData1.PointsUnLoading[1].PointUnLoading.strAddressFOXfromGoogle = `Хутірська вулиця, 70, Одеса, Одеська область, Україна, 65000`;
             Data.DealData1.PointsUnLoading[1].PointUnLoading.fromCompany = false;
-            Data.DealData1.strResponsibleFOX = `Тестін Сергій`;
+            // Data.DealData1.strResponsibleFOX = `Тестін Сергій`; // определено в data_for_tests.js
+            // Data.DealData1.strResponsibleFOX_inTable = `Сергій Тестін`;
             Data.DealData1.strLogist = Data.LoginDataT.strUserLastName + ` ` + Data.LoginDataT.strUserFirstName + ` ` + Data.LoginDataT.strUserMiddleName;
+            Data.DealData1.strLogist_inTable = Data.LoginDataT.strUserFirstName + ` ` + Data.LoginDataT.strUserLastName;
 
 
             Data.DealData1.PointsUnLoading[0].PointUnLoading.strAddressFOXfromGoogle = Data.CompanyData1.LocationData2.strAddressFOXfromGoogle;
@@ -283,8 +315,13 @@ await console.log(`NumTests=${i}`);
             Data.DealData1.strDriverPhone = Data.CompanyData2.DriverData.PhoneData.strPhoneNumber;
             Data.DealData1.strLicensePlate1 = Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strLicensePlate;
             Data.DealData1.strVehicleID = Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strVehicleID;
+            Data.DealData1.objVehicle = Data.CompanyData2.DriverData.Vehicles[0].VehicleData;
+            Data.DealData1.objTrailer = Data.CompanyData2.DriverData.Vehicles[1].VehicleData;
+            Data.DealData1.strVehicleSubType = Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleSubType;
+            Data.DealData1.strCarBrand = Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strCarBrand;
             Data.DealData1.strLicensePlate2 = Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strLicensePlate;
             Data.DealData1.strTrailerID = Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleID;
+            Data.DealData1.strVehicleVolume = Data.CompanyData2.DriverData.Vehicles[1].VehicleData.strVehicleVolume;
 
             Data.DealData1 = await DealCNPage.DealCreateNew(browser, page, Data.DealData1);
 //        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
@@ -295,7 +332,7 @@ await console.log(`NumTests=${i}`);
                 Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
 
             }
-
+        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
 
             if(!g_ShowActionInBrowser){
                 await browser.close();
@@ -310,7 +347,7 @@ await console.log(`NumTests=${i}`);
 
 // await console.log(`index TempStop`);
 // await TempStop(page);
-        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
+//        } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
 
 
 
