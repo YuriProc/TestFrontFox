@@ -353,80 +353,80 @@ class DataForTests {
             strNumberTransportation: `NT-` + await + await randomInt(90010010, 99899899), // NT-92345678
             strNumberInSet: await GetRandomStr('StrArrayNumberInSet'),
             ClientFreights: [{
-                Amount: '10500',
+                Amount: '2000',
                 PaymentForm: `з ПДВ 20%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
                 AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, `По сканокопіям`, `По ТТН`, ``, ``,
                 Currency: 'UAH',
             },
-                {
-                    Amount: '10700',
-                    PaymentForm: `з ПДВ 0%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
-                {
-                    Amount: '300',
-                    PaymentForm: `без ПДВ`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
-                {
-                    Amount: '100',
-                    PaymentForm: `софт`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
-                {
-                    Amount: '1500',
-                    PaymentForm: `нал`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
-                {
-                    Amount: '20',
-                    PaymentForm: `топливо`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    strNPhoneToplyvo: `380666188425`,
-                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
+                // {
+                //     Amount: '10700',
+                //     PaymentForm: `з ПДВ 0%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
+                // {
+                //     Amount: '300',
+                //     PaymentForm: `без ПДВ`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
+                // {
+                //     Amount: '100',
+                //     PaymentForm: `софт`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
+                // {
+                //     Amount: '1500',
+                //     PaymentForm: `нал`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
+                // {
+                //     Amount: '20',
+                //     PaymentForm: `топливо`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     strNPhoneToplyvo: `380666188425`,
+                //     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
             ],
             TransporterFreights: [{
-                Amount: '7500',
+                Amount: '1000',
                 PaymentForm: `з ПДВ 20%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
                 AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
                 Currency: 'UAH',
             },
-                {
-                    Amount: '1500',
-                    PaymentForm: `з ПДВ 0%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
-                {
-                    Amount: '700',
-                    PaymentForm: `без ПДВ`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
-                {
-                    Amount: '500',
-                    PaymentForm: `софт`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
-                {
-                    Amount: '300',
-                    PaymentForm: `нал`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
-                {
-                    Amount: '250',
-                    PaymentForm: `топливо`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
-                    strNPhoneToplyvo: `380666188425`,
-                    AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
-                    Currency: 'UAH',
-                },
+                // {
+                //     Amount: '1500',
+                //     PaymentForm: `без ПДВ`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
+                // {
+                //     Amount: '700',
+                //     PaymentForm: `без ПДВ`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
+                // {
+                //     Amount: '500',
+                //     PaymentForm: `софт`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
+                // {
+                //     Amount: '300',
+                //     PaymentForm: `нал`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
+                // {
+                //     Amount: '250',
+                //     PaymentForm: `топливо`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
+                //     strNPhoneToplyvo: `380666188425`,
+                //     AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
+                //     Currency: 'UAH',
+                // },
             ],
             PointsLoading : [
                 { // Харків (2); Покровськ; Запоріжжя
@@ -449,25 +449,25 @@ class DataForTests {
 
                     }
                 },
-                // {
-                //     PointLoading : {
-                //         strAddressFOX: `Покровськ`,//await GetFunnyStr('StrAddress'),
-                //         strAddressFOXfromGoogle: ``,
-                //         fromCompany: false,
-                //         strInDate: ``,
-                //         strOutDate: ``,
-                //     }
-                // },
-                // {
-                //     PointLoading : {
-                //         strAddressFOX: `Запоріжжя`,//await GetFunnyStr('StrAddress'),
-                //         strAddressFOXfromGoogle: ``,
-                //         fromCompany: true,
-                //         strInDate: ``,
-                //         strOutDate: ``,
-                //
-                //     }
-                // },
+                {
+                    PointLoading : {
+                        strAddressFOX: `Покровськ`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOXfromGoogle: ``,
+                        fromCompany: false,
+                        strInDate: ``,
+                        strOutDate: ``,
+                    }
+                },
+                {
+                    PointLoading : {
+                        strAddressFOX: `Запоріжжя`,//await GetFunnyStr('StrAddress'),
+                        strAddressFOXfromGoogle: ``,
+                        fromCompany: true,
+                        strInDate: ``,
+                        strOutDate: ``,
+
+                    }
+                },
             ],
             PointsUnLoading : [
                 {

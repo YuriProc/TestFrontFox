@@ -281,7 +281,7 @@ class DealTable {
         }
     }//async DealTableFilterByField(FieldName, FieldValue)
     //----------------------------------------
-    async TableDealCheckOneCurrentDeal(AllFLen) {
+    async TableDealCheckOneCurrentDeal() {
         let resOk = true;
         let ColError = 0;
         let ColValue,DValue;
@@ -290,7 +290,6 @@ class DealTable {
             let LenColName,LenColValue;
             let ColName;
             let C,resC,sC;
-            //AllFLen = 13;
             for(let i=0 ; i < AllFLen; i++){
                 ColName = this.CFO.Fields[i][0];
                 LenColName = ColName.length;
@@ -654,7 +653,7 @@ class DealTable {
     async GetDealStrCommissionAndPercent() {
         let resOk;
         let ClientSumR = 0, TransporterSumR = 0;
-        let Commission, Percent;
+        let Commission, strCommission, Percent;
         let RC;
         let LenCF, LenTF;
         try {
@@ -718,7 +717,11 @@ class DealTable {
             } // for(let i=0; i < LenCF; i++ )
             Commission = ClientSumR - TransporterSumR;
             Percent = 100 * Commission / TransporterSumR;
-            resOk = Commission.toFixed(2)+`/ `+ Percent.toFixed(2)+ `%`;
+            // Это разделитель тысяч и две цифры после запятой
+            // resValue = Amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ');
+            strCommission = Commission.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ');
+            // resOk = Commission.toFixed(2)+`/ `+ Percent.toFixed(2)+ `%`;
+            resOk = strCommission + `/ `+ Percent.toFixed(2)+ `%`;
 
             await console.log(`Commission=(${Commission}) Percent=(${Percent})`);
 
@@ -728,6 +731,39 @@ class DealTable {
             return ``;
         }
     }//async GetDealStrCommissionAndPercent()
+    //----------------------------------------
+    async ClickTwoStatus(strDeal_ID) {
+        let resOk;
+        let ColName, ColValue;
+        let xPath;
+        try {
+            ColName = this.CFO.Fields[0][0];
+            ColValue = await this.CFO.GetCellValue(0, ColName);
+            if(ColValue !== strDeal_ID){
+                await console.log(`${FRGB(0,5,1,1)}ColValue(${ColValue}) !== strDeal_ID(${strDeal_ID})${FRGB()}`);
+            }else{
+               // await console.log(`ColValue(${ColValue}) === strDeal_ID(${strDeal_ID})`);
+            }
+            ColName = this.CFO.Fields[1][0];
+            ColValue = await this.CFO.GetCellValue(0, ColName);
+            if(ColValue !== `1`){
+                await console.log(`${FRGB(0,5,1,1)}Статус Сделки должен быть "В обработке "ColValue(${ColValue}) !== "1"${FRGB()}`);
+            }else{
+                // await console.log(`ColValue(${ColValue}) === strDeal_ID(${strDeal_ID})`);
+            }
+            xPath = await this.CFO.GetCellValue(0, ColName, true);
+            resOk = await ClickByXPath(this.page, xPath);
+            if (!resOk){
+                await console.log(`${FRGB(0,5,1,1)}FAIL -> Статус Сделки ClickByXPath${FRGB()}`);
+            }
+
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in ClickTwoStatus`);
+            return false;
+        }
+    }//async ClickTwoStatus()
     //----------------------------------------
     async Temp(nStart = 0) {
         let resOk;

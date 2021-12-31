@@ -269,10 +269,20 @@ let LoginCrm = async (page, browser, LoginData) => {
         if(TextName !== DataName) {
             throw `     FAIL => После Логина ${TextName} !== ${DataName} \n`;
         }
-        let reqUrl = `/api/cfo`;
+        //
+       // await console.log(`Prepeare- StartReload`);
+        //await WaitMS(11000);
+       // await console.log(`StartReload`);
+        // Перезагрузить Страницу
+
+        // await page.reload();
+        // await console.log(`EndReload`);
+        //
+        let reqUrl = `${g_BackCfoFoxURL}/api/cfo`;
+
         resOk = await ResponseListener(page, reqUrl, true);
 
-        resOk = await ResponseListenerWaitForResponse(21000);
+        resOk = await ResponseListenerWaitForResponse(65000);
         if(!resOk){
             let strPSS = g_PathSS + `screenshot_login.png`;
             await this.page.screenshot({path: strPSS, fullPage: true});
@@ -288,7 +298,7 @@ let LoginCrm = async (page, browser, LoginData) => {
 
 
         let tStr = `Процесс`;
-        let C = FRGB(0, 0, 0,5);
+        let C = FRGB(0, 5, 5,1);
         await process.stdout.write(`${tStr}`);
         for(let i=0 ; i<10; i++){
             await WaitMS(100);
@@ -300,9 +310,47 @@ let LoginCrm = async (page, browser, LoginData) => {
         await WaitMS(1000);
         await process.stdout.write(`\r`);
 
+        await console.log(`\n`);
 
+// Нажмём на кнопку "Обновить" и замерим время первого респонса
+        let xPerRage = `//div[@class="perPage"]`;
+        let xPerPageSelect = xPerRage + `/select`;
+        await ClickByXPath(page, xPerRage);
+        await WaitRender(page);
+        let Handle = await page.$x(xPerPageSelect);
+        // await Handle[0].type(`1`);
+        let ValSelect = `100`;
+        await Handle[0].select(ValSelect);
+        //await WaitMS(1000);
+        //await WaitRender(page);
+        let xButtonReload = `//button[@class="refresh-cfo-btn"][span[contains(text(), "Обновить")]]`;
+        let CfoUrl = `${g_BackCfoFoxURL}/api/cfo`;
+        resOk = await ResponseListener(page, CfoUrl, true);
+        // let TimerStart = new Date(Date.now());
+        let TimerStart = Date.now();
+       // await console.log(`ResponseListener \nTimerStart:${TimerStart}`);
+       //  resOk = await ClickByXPath(page, xButtonReload);
+       //  if(!resOk){
+       //      throw `Fail -> ClickByXPath(${xButtonReload})`;
+       //  }
+        resOk = await ResponseListenerWaitForResponse(65000);
+        if(!resOk){
+            throw `Fail -> ResponseListenerWaitForResponse(${CfoUrl})(65000 ms)`;
+        }
+        resOk = await ResponseListener(page, CfoUrl, false);
+       // let TimerEnd = new Date(Date.now());
+        let TimerEnd = Date.now();
+        //await console.log(`ResponseListener \nTimerEnd:${TimerEnd}`);
+        let dtAll = TimerEnd - TimerStart;
+         // цвет сообщения
 
-
+        if (dtAll<2000){    C = FRGB(0, 1, 5,1);} // Зелёный
+        else if(dtAll<3000){C = FRGB(0, 5, 5,0);} // Жёлтый
+        else {              C = FRGB(0, 5, 1,1);} // Красный
+        let strDtAll = msToMMSSMS(dtAll);
+        await console.log(`${C}ResponseListener(${CfoUrl}) - ${ValSelect} сделок${FRGB()}`);
+        //await console.log(`${C}Времени от начала: ${dtAll}${FRGB()}`);
+        await console.log(`${C}Время загрузки: ${strDtAll}   |          ( ${dtAll} ms ) ${FRGB()}`);
 
 
         // await console.timeEnd("Execution time took");

@@ -123,7 +123,7 @@ class DataCfoFields {
         }
     }// async #GetNumElemInArray(ColName, Num=1) { // Num = 0 или 1 !!!
     //-----------------------------
-    async GetCellValue(NumRow,ColName) {
+    async GetCellValue(NumRow,ColName, getXP=false) {
         let Value;
         const cnPref = `column speedyKey_`;
         const hRow = `hiddenRow`;
@@ -153,6 +153,9 @@ class DataCfoFields {
             if(arrItem3 === ``){ // [``, ``, X]  X= `` - standard logic;
                 xPath = await GetHeaderXP(IName, ColName);
                 xPath+= `//div[contains(@class, "cell")]`;
+                if(getXP){
+                    return xPath;
+                }
                 Value = await ElementGetInnerText(this.page, NumRow, xPath);
                 return Value;
             }else if(arrItem3 === 1 || arrItem3 === `1`) {// [``, ``, X]  X= 1 || `1` - custom logic; else `/a` - part of XPATH
@@ -176,6 +179,11 @@ class DataCfoFields {
                         } else {
                             throw `FAIL => Не известный "Статус ID" = (${Value}) GetCellValue(${ColName});`;
                         }
+                        if(getXP){
+                            xPath = await GetHeaderXP(IName, ColName);
+                            xPath += `//div[@class="deal-status-switcher"]//button[not (contains(@disabled, "disabled"))]`;
+                            // return xPath;
+                        }
                         break;
                     case "Номера машины/полуприцепа (П)":
                         xPath = await GetHeaderXP(IName, ColName);
@@ -197,6 +205,9 @@ class DataCfoFields {
             }
             if (Value !== ``){
                 Value = Value.trim();
+            }
+            if(getXP){
+                return xPath;
             }
             return Value;// <------- ТУТ Вывод значения !!!!
         }catch (e) {

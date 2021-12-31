@@ -185,7 +185,7 @@ await console.log(`NumTests=${i}`);
            //  Data.DealData1.strDriverPhone = `380508608786`;
            //  Data.DealData1.strOurCompanyWithTransporter = `ТОВ "ТРАНСЛОЙД"`;
            //  Data.DealData1.strVehicleSubType = `Тент`;
-           //  Data.DealData1.strCargoWeight = `12`;
+           //  Data.DealData1.strCargoWeight = `21`;
            //  Data.DealData1.strVehicleVolume = `92`;
            //  Data.DealData1.strCarBrand = `MAN`;
            //  Data.DealData1.strLicensePlate1 = `AX1424CA`;
@@ -196,18 +196,21 @@ await console.log(`NumTests=${i}`);
            //  Data.DealData1.strTransporterDelay = `2`;
            //
            //  Data.DealData1.strResponsibleFOX = `Світлана Малуха`;
+           //  Data.DealData1.strResponsibleFOX_inTable = `Світлана Малуха`;
            //  Data.DealData1.strLogist = `Олександр Саліхов`;
+           //  Data.DealData1.strLogist_inTable = `Олександр Саліхов`;
            //
            //
-           //  Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
+           //  Data.DealData1 = await DealCheckNPage.DealCheckNewInTable(browser, page, Data.DealData1);
            // //  // await console.log(`-----StartNewBrowser`);
            // //  // let nbrowser = await PGAPage.StartNewBrowser(false);
            // //  // let nPGAPage = await PGAPage.NewBrowserGetPage(nbrowser, `http://10.10.10.232/pgadmin4/login`);
+           //  Data.DealData1 = await DealCheckNPage.NewDealSetStatusInTable(browser, page, Data.DealData1);
            //  if(!g_ShowActionInBrowser){
            //      await browser.close();
            //  }
            //  await TempStop(page);
-           // // //==========
+           // //==========
           Data.CompanyData1.strCompanyCode = `41269680`;//`38885174`;
             let MaxTry = 10;
             resOk = await GNEPage.CompanyTableGetNewEDRPOU(browser, page, MaxTry, Data.CompanyData1.strCompanyCode);

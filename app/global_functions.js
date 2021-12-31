@@ -1312,6 +1312,14 @@ dragAndDropXpath = async function(page, originXPath, oNum, destinationXPath, dNu
 };//dragAndDropXpath ----
 //------------
 pageCursor = async () => {
+    // width: 50px;
+    // height: 50px;
+    // https://img.icons8.com/dusk/512/penis.png
+    // margin-left: -20px;
+    // margin-top: -4px;
+    //-----
+    // background: rgba(255,0,0,0.5);
+    // transition: none;
         const box = document.createElement('div');
         box.classList.add('mouse-helper');
         const styleElement = document.createElement('style');
@@ -1321,22 +1329,27 @@ pageCursor = async () => {
     position: absolute;
     top: 0;
     left: 0;
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     background-color: transparent;
     border-radius: 50%;
-    background-image: url('https://icons.iconarchive.com/icons/iconsmind/outline/512/One-Finger-icon.png'); 
+    background-image: url('https://img.icons8.com/dusk/512/penis.png'); 
+    
     background-repeat: no-repeat;
     background-position: center;
     background-size: 50px;
-    margin-left: -20px;
-    margin-top: -4px;
-    transition: background .2s, border-radius .2s, border-color .2s;
+    margin-left: -14px;
+    margin-top: -12px;
+    transition: background .2s, border-radius .2s, border-color .2s, transform 1s, margin-left 1s;
     z-index: 10000;
+    transform: rotateY(180deg);
   }
   .mouse-helper.button-1 {
-    transition: none;
-    background: rgba(255,0,0,0.5); 
+    
+    
+    transform: rotateY(0deg);
+    margin-left: -54px;
+    transition: background .2s, border-radius .2s, border-color .2s, transform .0s, margin-left .0s;
   }
   .mouse-helper.button-2 {
     transition: none;
@@ -1772,6 +1785,36 @@ msToHHMMSS = function(ms_num) {
     //return hours+':'+minutes+':'+seconds;
     //return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
     return hours+' час, '+minutes+' мин, '+seconds+' сек';
+}
+msToHHMMSSMS = function(ms_num) {
+    let sec_num =Math.floor(ms_num / 1000);
+    let hours = Math.floor(sec_num / 3600);
+    let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    let seconds = sec_num - (hours * 3600) - (minutes * 60);
+    let m_seconds = ms_num - (seconds * 1000) - (hours * 3600 * 1000) - (minutes * 60 * 1000);
+    if (hours < 10) {hours = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    if (m_seconds < 10) {m_seconds = "00"+m_seconds;}
+    else if(m_seconds < 100) {m_seconds = "0"+m_seconds;}
+    //return hours+':'+minutes+':'+seconds;
+    //return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
+    return hours+' час, '+minutes+' мин, '+seconds+' сек, '+m_seconds+' мс';
+}
+msToMMSSMS = function(ms_num) {
+    let sec_num =Math.floor(ms_num / 1000);
+    let hours = Math.floor(sec_num / 3600);
+    let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    let seconds = sec_num - (hours * 3600) - (minutes * 60);
+    let m_seconds = ms_num - (seconds * 1000) - (hours * 3600 * 1000) - (minutes * 60 * 1000);
+    if (hours < 10) {hours = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    if (m_seconds < 10) {m_seconds = "00"+m_seconds;}
+    else if(m_seconds < 100) {m_seconds = "0"+m_seconds;}
+    //return hours+':'+minutes+':'+seconds;
+    //return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
+    return minutes+' мин, '+seconds+' сек, '+m_seconds+' мс';
 }
 FRGB = function (FB,R,G,B) { // FB  - 0/1, (R G B - 0..5)
     if (FB === undefined) {return `\x1b[0m`;}
