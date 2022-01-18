@@ -360,7 +360,7 @@ WaitRender = async function (page, timeout = 30000) {
     let checkCounts = 1;
     let countStableSizeIterations = 0;
     const minStableSizeIterations = 3;
-    await page.waitFor(checkDurationMsecs);
+    await WaitMS(checkDurationMsecs);
 
     while(checkCounts++ <= maxChecks){
         let html = await page.content();
@@ -587,7 +587,7 @@ ElementIsPresent = async function (page , MyXPath) {
            return false;
          }
     }catch (e) {
-        await console.log(`catch Error => WaitForElementIsPresentByXPath(${MyXPath})`);
+        await console.log(`catch Error => ElementIsPresent(${MyXPath})`);
         await console.log(`ERROR => ${e}`);
         return false;
     }
@@ -891,7 +891,7 @@ ClickByXPathW = async function (page , MyXPath) {
                 if ((await Date.now() - startTime) > timeMS) {
                     TimeOver = true;
                 }else{
-                    // await page.waitFor(200);
+                     await WaitMS(200);
                 }
             }
         }// while (!ElPresent && !TimeOver )
@@ -1311,15 +1311,27 @@ dragAndDropXpath = async function(page, originXPath, oNum, destinationXPath, dNu
   }
 };//dragAndDropXpath ----
 //------------
-pageCursor = async () => {
+pageCursor = async (big = false) => {
     // width: 50px;
     // height: 50px;
+    // width: 70px;
+    // height: 70px;
     // https://img.icons8.com/dusk/512/penis.png
     // margin-left: -20px;
     // margin-top: -4px;
+    // border-radius: 50%;
     //-----
     // background: rgba(255,0,0,0.5);
     // transition: none;
+    //let big = true;
+    let WH=70;
+    let BGS=50;
+    if (big){
+        WH=200;
+        BGS=200;
+    }else{
+
+    }
         const box = document.createElement('div');
         box.classList.add('mouse-helper');
         const styleElement = document.createElement('style');
@@ -1329,15 +1341,15 @@ pageCursor = async () => {
     position: absolute;
     top: 0;
     left: 0;
-    width: 70px;
-    height: 70px;
+    width: ${WH}px;
+    height: ${WH}px;
     background-color: transparent;
-    border-radius: 50%;
+    
     background-image: url('https://img.icons8.com/dusk/512/penis.png'); 
     
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 50px;
+    background-size: ${BGS}px;
     margin-left: -14px;
     margin-top: -12px;
     transition: background .2s, border-radius .2s, border-color .2s, transform 1s, margin-left 1s;
@@ -1635,9 +1647,10 @@ TypeByXPath = async function (page , MyXPath, MyText) {
         await linkHandlers[0].type(MyText);
         return true;
     }else{
+        await console.log(`Error => In TypeByXPath: length ${linkHandlers.length} !== 1`);
         return false;
     }
-}
+}// TypeByXPath = async function (page , MyXPath, MyText)
 // Дождаться появления
 
 //-----------------------------------------------------------------------------------
@@ -1689,6 +1702,7 @@ SetTextByXPath = async function (page , MyXPath, MyText) {
             // await console.log(`LastText:(${LastText})`);
 
             await page.evaluate((el, value) => el.value = value, linkHandlers[0], TempText);
+            await WaitRender(page);
             //await TypeByXPath(page , MyXPath, ' ');
 
             // await page.keyboard.sendCharacter(String.fromCharCode(32)); //32 - пробел; 13 - enter; 8 - Del
@@ -1914,6 +1928,49 @@ GetFunnyUrl = async function(MyArrayName) {
     return g_ArrayURL[MyArrayName][RandNum];
 };
 //-----------------------------------------------------------------------------------
+GetRandomDriverLicenseNumber = async function() {
+    let AA = `ABCEKMOTHPIXЯУ`;
+    let N1,N2,N3, Num;
+    let low = 100001;
+    let high = 999999;
+    let Res;
+    N1 = await randomInt(0, AA.length - 1);
+    N2 = await randomInt(0, AA.length - 1);
+    N3 = await randomInt(0, AA.length - 1);
+    Num = Math.floor(Math.random() * (high + 1 - low) + low);
+    Res = AA[N1] + AA[N2] + AA[N3] + Num;
+    return Res;
+}
+//-----------------------------------------------------------------------------------
+GetRandomLicensePlate = async function() {
+    let AA = `ABCEKMOTHPIX`;
+    let N1,N2,N3,N4, Num;
+    let low = 1000;
+    let high = 9999;
+    let Res;
+    N1 = await randomInt(0, AA.length - 1);
+    N2 = await randomInt(0, AA.length - 1);
+    N3 = await randomInt(0, AA.length - 1);
+    N4 = await randomInt(0, AA.length - 1);
+    Num = Math.floor(Math.random() * (high + 1 - low) + low);
+    Res = AA[N1] + AA[N2] + Num + AA[N3] + AA[N4];
+    return Res;
+}
+//-----------------------------------------------------------------------------------
+GetRandomRegistrationCertificateNumber = async function() {
+    let AA = `ABCEKMOTHPIX`;
+    let N1,N2,N3, Num;
+    let low = 100000;
+    let high = 999999;
+    let Res;
+    N1 = await randomInt(0, AA.length - 1);
+    N2 = await randomInt(0, AA.length - 1);
+    N3 = await randomInt(0, AA.length - 1);
+    Num = Math.floor(Math.random() * (high + 1 - low) + low);
+    Res = AA[N1] + AA[N2] + AA[N3] + Num;
+    return Res;
+}
+//-----------------------------------------------------------------------------------
 InsertPhoto = async function(browser , page, MyArrayName, Num, MyXPath) {
     try {
         let MyFilePath = await SaveTempPictureFromRandomURL(browser, MyArrayName, Num);
@@ -2076,7 +2133,7 @@ ResponseListener = async function(page, requestUrl, setListener) {
                     return true;
                 }
 
-                if (request.url().includes(requestUrl)) {
+                if (request.url().includes(g_tempDataFromEventListener_requestUrl_func)) {
                     const response = await request.response();
                     let resultJ = await response.json();
                     g_tempDataFromEventListener_requestUrl = request.url();
@@ -2092,7 +2149,7 @@ ResponseListener = async function(page, requestUrl, setListener) {
                     if(response.status() === 200 && resultJ.data) {
                         g_tempDataFromEventListener_id = resultJ.data.id;
                         // await console.log(`g_tempDataFromEventListener=(${g_tempDataFromEventListener})`);
-                    }else{
+                    }else {
                         // await console.log(`response.status()=(${response.status()})`);
                         // if(resultJ.messages) {
                         //     for(let i=0; i<resultJ.messages.length;i++) {
@@ -2100,6 +2157,7 @@ ResponseListener = async function(page, requestUrl, setListener) {
                         //     }
                         // }
                     }
+
                     await done(page, g_tempDataEventListenerFunctionHandle);// <- тут сработает !!!
 
                     return true;
@@ -2111,6 +2169,7 @@ ResponseListener = async function(page, requestUrl, setListener) {
         };
         if (setListener) { // requestfinished  // response
             g_tempDataFromEventListener_id = ``;
+            g_tempDataFromEventListener_requestUrl_func = requestUrl;
             g_tempDataFromEventListener_requestUrl = ``;
             g_tempDataFromEventListener_response = ``;
             g_tempDataFromEventListener_json = ``;
@@ -2147,10 +2206,151 @@ ResponseListenerWaitForResponse = async function (timeMS = 4000){
         }
 
     }catch (e) {
-        await console.log(`${e} \n FAIL in ResponseListenerWaitForResponse(${tMS})`);
+        await console.log(`${e} \n FAIL in ResponseListenerWaitForResponse(${timeMS})`);
         return false;
     }
-}// ResponseListenerWaitForResponse = async function (tMS = 4000)
+}// ResponseListenerWaitForResponse = async function (timeMS = 4000)
+//----------------------------------------
+ResponsesListener = async function(page, requestUrls, setListener, Q = 0) { // Q = 0 - Error  /// <- NEW !!!!!!!
+    let resOk;
+    try {
+        g_RecEventListener.setListener = setListener;
+
+
+        async function done(page, fName) {
+            if( g_RecEventListener.EventListenerFunctionHandle === null){
+                return false;
+            }
+            if(page) { // response requestfinished
+
+                // await page.removeListener('requestfinished', fName);
+                await page.removeListener('requestfinished', fName);
+                g_RecEventListener.EventListenerFunctionHandle = null;
+                return true;
+            }else{
+                await console.log(`page=NOT`);
+                return false;
+            }
+        };
+        async function onRequestFinished(request) {
+            // https://question-it.com/questions/130241/kuklovod-kak-zhdat-tolko-pervyj-otvet-html
+            try {
+                // await console.log(`onRequestFinished g_setListener=(${g_setListener})`);
+                // await console.log(`requestUrl=   (${requestUrl})`);
+                // await console.log(`request.url()=(${request.url()})`);
+                if(!g_RecEventListener.setListener){
+                    await done(page, g_RecEventListener.EventListenerFunctionHandle); // <- тут сработает !!!
+                    return true;
+                }
+
+                for (let i=0;i<g_RecEventListener.requestUrlsArrayLength; i++) {
+                    if (request.url().includes(g_RecEventListener.requestUrls[i])) {
+                        const response = await request.response();
+                        let resultJ = await response.json();
+                        g_RecEventListener.EventListener_requestUrls[i] = request.url();
+                        g_RecEventListener.EventListener_jsons[i] = resultJ;
+                        g_RecEventListener.EventListener_responses[i] = response;
+                        //await console.log(`-1-----------------------`);
+                        // await console.log(resultJ); // JSON RESULT OK
+                        // await console.log(`-2-----------------------`);
+                        // await console.log(`requestUrl=   (${requestUrl})+++++`);
+                        // await console.log(`request.url()=(${request.url()})++++++`);
+                        // await console.log(`response.status()=(${response.status()})`);
+                        // await console.dir(response, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
+                        // if (response.status() === 200 && resultJ.data) {
+                        //     g_tempDataFromEventListener_id = resultJ.data.id;
+                        //     // await console.log(`g_tempDataFromEventListener=(${g_tempDataFromEventListener})`);
+                        // } else {
+                        //     // await console.log(`response.status()=(${response.status()})`);
+                        //     // if(resultJ.messages) {
+                        //     //     for(let i=0; i<resultJ.messages.length;i++) {
+                        //     //         await console.log(`messages[${i}]=(${resultJ.messages[i]})`);
+                        //     //     }
+                        //     // }
+                        // }
+                        // await done(page, g_RecEventListener.EventListenerFunctionHandle);// <- тут сработает !!!
+
+                        return true;
+                    }
+                } // for (let i=1;i<g_RecEventListener.requestUrlsArrayLength; i++)
+
+
+            }catch (e) {
+                await console.log(`*Ошибка в onRequestFinished (${e})`);
+                return false;
+            }
+        };
+        if (setListener) { // requestfinished  // response
+            if (Q > 10 || Q < 1){
+                throw `Внутренняя ошибка Q = ${Q}`;
+            }
+            let len = requestUrls.length;
+            if (len !== Q) {
+                throw `Внутренняя ошибка (len = ${len}) <> (Q = ${Q})`;
+            }
+            g_RecEventListener.requestUrlsArrayLength = Q;
+            for(let i=0;i < 10; i++) {
+                g_RecEventListener.requestUrls[i] = ``;
+                g_RecEventListener.EventListener_requestUrls[i] = ``;
+                g_RecEventListener.EventListener_jsons[i] = ``;
+                g_RecEventListener.EventListener_responses[i] = ``;
+            }
+            for(let i=0;i < len; i++) {
+                g_RecEventListener.requestUrls[i] = requestUrls[i];
+            }
+
+            g_RecEventListener.EventListenerFunctionHandle = onRequestFinished;
+
+            //await console.log(`g_tempDataEventListenerFunctionHandle=(${g_tempDataEventListenerFunctionHandle})`);
+            g_RecEventListener.timeAll = ``;
+            g_RecEventListener.startTime = await Date.now();
+
+            await page.on('requestfinished', g_RecEventListener.EventListenerFunctionHandle);
+        }else{
+            // await console.log(`else setListener(${setListener})`);
+            await done(page, g_RecEventListener.EventListenerFunctionHandle);// <- тут не сработает !!! (Уже сработает)
+        }
+        return true;
+    } catch (e) {
+        await console.log(`${e} \n FAIL in ResponsesListener(----------`);
+        await console.dir(requestUrls,{ showHidden: true, depth: 3, colors: true }); // depth: null - infinity
+        await console.log(`, setListener:${setListener}, Q:${Q});------------`);
+
+        return false;
+    }
+}//async ResponsesListener(page, requestUrls, setListener, Q = 0)
+//----------------------------------------
+ResponsesListenerWaitForAllResponses = async function (timeMS = 4000){
+    // let startTime = await Date.now();
+    // g_RecEventListener.startTime Устанавливается в установщике прослушивателя !!!!!
+    let EmptyResponse = false;
+    try {
+        while (true) {
+            EmptyResponse = false;
+            for (let i = 1; i < g_RecEventListener.requestUrlsArrayLength; i++) {
+                if (g_RecEventListener.EventListener_responses[i] === ``) {
+                    EmptyResponse = true;
+                }
+            } // for (let i = 1; i < g_RecEventListener.requestUrlsArrayLength; i++)
+            if(!EmptyResponse){ // Если нет пустых Респонсов, значит всё выполнено !!!!!
+                g_RecEventListener.timeAll = await Date.now() - g_RecEventListener.startTime;
+                // let strDtAll = msToMMSSMS(dtAll);
+               return true;  // <--- Тут ПОЛОЖИТЕЛЬНЫЙ ВЫХОД !!!!!!
+            }
+            if ((await Date.now() - g_RecEventListener.startTime) > timeMS) {
+                g_RecEventListener.timeAll = await Date.now() - g_RecEventListener.startTime;
+                return false;
+            } else {
+                await WaitMS(100);
+            }
+        } // while (true)
+
+    }catch (e) {
+        g_RecEventListener.timeAll = await Date.now() - startTime;
+        await console.log(`${e} \n FAIL in ResponsesListenerWaitForAllResponses(${timeMS})`);
+        return false;
+    }
+}// ResponsesListenerWaitForAllResponses = async function (timeMS = 4000)
 //----------------------------------------
 TempGetCallerFuncName = async function(str){
     //let CN = TempGetFName.caller().name;
@@ -2167,7 +2367,7 @@ TempGetCallerFuncName = async function(str){
     await console.log(`+(${CN})+`);
 }
 //----------------------------------------
-ScreenLog = async function(page, Msg = '', Color = 0){ // 123 RGY
+ScreenLog = async function(page, Msg = '', Color = 0){ // 1,2,3 - R,G,Y
    try {
        let FullError = new Error().stack;
        let CurrentErrorStr = (FullError.split("at ")[2]).trim();

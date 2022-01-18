@@ -265,18 +265,33 @@ class Contract{
     }// async deleteAllContracts()
     //---------------------------------------------
     async AddNewContract(){
-        // Табличное редактирование, кнопка "+ Добавить Договора"
+        let resOk;
+
         try {
-            let resOk;
+            let strUrls = [
+                `${g_BackCfoFoxURL}/api/company?filter[is_our]=true&page-limit=9999`,
+                `${g_BackCfoFoxURL}/api/v2/payment-condition`,
+            ];
+            resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
+            // Табличное редактирование, кнопка "+ Добавить Договора"
             resOk = await ClickByXPath(this.page, this.xPlusContract);
             if (!resOk) {
                 throw `FAIL => Табличное редактирование, кнопка "+ Добавить Договора"(${this.xPlusContract})`;
             }
+            // Ждём завершения всех запросов по открытию Модалки договора
+            resOk = await ResponsesListenerWaitForAllResponses(31000);
+            if(!resOk){
+                throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+            }
+            // Снимаем слушателя
+            resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
+
             //Модалка договора тайтл "Договор"
             resOk = await WaitForElementIsPresentByXPath(4000 , this.page, this.xTitleContract);
             if (!resOk){
                 throw `FAIL => Модалка договора тайтл "Договор"(${this.xTitleContract})`;
             }
+            await WaitRender(this.page);
             //ДропДаун "От какой фирмы работаем с контактом" ?? Компанией
             // await ClickByXPath(this.page, this.xOurCompanyInput);
             // await this.page.waitFor(200);

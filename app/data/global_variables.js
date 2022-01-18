@@ -4,9 +4,23 @@ global.g_height = 900;
 global.g_setListener = false;
 global.g_tempDataEventListenerFunctionHandle = null;
 global.g_tempDataFromEventListener_id = false;
+global.g_tempDataFromEventListener_requestUrl_func = ``;
 global.g_tempDataFromEventListener_requestUrl = ``;
 global.g_tempDataFromEventListener_response = ``;
 global.g_tempDataFromEventListener_json = ``;
+//---
+global.g_RecEventListener = {
+    setListener : false,
+    startTime:``,
+    timeAll:``,
+    EventListenerFunctionHandle : null,
+    requestUrlsArrayLength: 0, // 0 .. 10 , 0 - массив очищен
+    requestUrls:              [``,``,``,``,``,``,``,``,``,``], // 10 штук // Передаваемый в слушатель реквест для поиска и сравнения
+    EventListener_responses:  [``,``,``,``,``,``,``,``,``,``], // 10 штук
+    EventListener_jsons:      [``,``,``,``,``,``,``,``,``,``], // 10 штук
+    EventListener_requestUrls:[``,``,``,``,``,``,``,``,``,``], // 10 штук // Фактический Реквест на который сработал слушатель
+
+};
 
 
 global.g_strDialogMessage = ``;
@@ -128,14 +142,14 @@ global.g_ArrayURL = {
 
     ],
     'Contract_1_URL': [
-        'https://lh6.googleusercontent.com/proxy/GGnRZL242s_hMJtmXqSObMmC8d9ffCw8omGNq2n-nXI8fppeu1yz6AFoywtsJo1W84CRJX3NKBlnfk9kmj6FlldBq7j2Ok12wQ6ZpEpYIUaf',
+        'https://diletant.media/upload/medialibrary/c5b/c5b25a724cc62642151667bee79b56cf.jpg',
         'https://oreldes.ru/assets/images/stage-2.png',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4phOrz77RtihDocgkmyI0Syg6t2HdaIda7B6s_Ek2V01dpvAkwQ&s',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBgUYKqoSoL5zJzRaoQLZ2T9_gXdxr1cdvgt3c8j6_6S_s7mXKmg&s',
         'https://lh5.googleusercontent.com/proxy/LSgbkqzobsGF2VyTrIKx5pnKo5iFcriaDlvc6LIsL7nehS7CEeFCm_jMv0D4DxpEZavMCQU',
-        'https://lh5.googleusercontent.com/proxy/LSgbkqzobsGF2VyTrIKx5pnKo5iFcriaDlvc6LIsL7nehS7CEeFCm_jMv0D4DxpEZavMCQU',
+        'https://img.cataloxy.ru/upload/board/829/10781/shutochnyy-dogovor-s-samim-soboy_107805777.jpg',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQd_Wid7Af-dLWoEiWxJIP-qBp31w2j5or2Y5PPX8c4q8XHLjay',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTvRohBd-JHjsmH6ioF3QkN1rKymtYWdWBS1YzoZ_iGdHsAtd_r',
+        'https://i1.stat01.com/1/807/8068198/afacdb/dogovor-teshhi-i-zata.jpg',
         'http://patstalom.com/uploads/images/f/3/0/e/30/432f711aad.jpg',
 
 
@@ -285,6 +299,9 @@ global.g_ArraySTR = {
         'Хозяин',
         'Юрист',
     ], // StrContactType // ------------------------------------------------------------------------
+    'StrOurCompanyArray' : [
+        'ТОВ "ТРАНСЛОЙД"', 'ТОВ "СТАВАНГЕР"', 'ТОВ "ОБРАТКА"', 'ТОВ "ПЕРЕВОЗ"', 'ТОВ "ТРАНСПАУЕР"', 'ТОВ "ТРАНСБЛУМЕНТАЛЬ"',
+    ],
     'StrLevelMonitoringMC' : [
         // 'Автоматически',
         'Максимальный (Ночью на охраняемых)',
@@ -295,6 +312,10 @@ global.g_ArraySTR = {
         'Средний (Ночью на охраняемых)',
         'Контроль загрузки и выгрузки',
     ], // 'StrLevelMonitoringMC' -------------------------------------------------------------------
+    'StrCargoTypeArray' : [
+        'Алкоголь', 'Будматеріали', 'Запчастини', 'Метал', 'Напої', 'Пиломатеріали', 'Пляшка', 'Продукти',// 'Добрива',
+        'Побутова техніка', 'Обладнання', 'ТНВ', 'Труби', 'Пошта', 'Вода', 'ЛГВ',
+    ],
     'StrArrayNumberInSet' : [
         'KF01',
         'KF02',
@@ -306,6 +327,15 @@ global.g_ArraySTR = {
         'KF23',
         'KF24',
         'KF25',
+    ],
+    'StrArrayCarBrandAuto' : [
+        'DAF', 'MAN', 'VOLVO', 'IVECO', 'RENAULT', 'SCANIA', 'MERCEDES-BENZ',
+    ],
+    'StrArrayCarBrandVehicle' : [
+        'SCHMITZ', 'TRAILOR', 'KOEGEL', 'KRONE', 'WIELTON', 'SCHWARZMULLER', 'LIFTLUX', 'LAMBERET', 'BERGER',
+    ],
+    'StrArrayVehicleSubType' : [
+        `Тент`, `Реф`, `Ізотерм`, `Цільномет`,
     ],
     'StrAddressFunny' : [
         'Хреново',
@@ -433,6 +463,7 @@ global.g_ArraySTR = {
         'Евробляхер',
         'Ёксель',
         'Жопоклюев',
+        'Заднеприводный',
         'Засос',
         'Ишаков',
         'Йух',
@@ -445,6 +476,7 @@ global.g_ArraySTR = {
         'Лоховцев',
         'ЛиСиЦин',
         'Мартышко',
+        'Мошонкин',
         'Мух',
         'Наливайко',
         'Отсос',
@@ -455,6 +487,7 @@ global.g_ArraySTR = {
         'Пердак',
         'Пендаль',
         'Пиптик',
+        'Пихарь',
         'Робокоп',
         'Сквиртобрызгов',
         'Сракоблудный',

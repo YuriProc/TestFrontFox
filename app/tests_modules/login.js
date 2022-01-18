@@ -352,7 +352,6 @@ let LoginCrm = async (page, browser, LoginData) => {
         //await console.log(`${C}Времени от начала: ${dtAll}${FRGB()}`);
         await console.log(`${C}Время загрузки: ${strDtAll}   |          ( ${dtAll} ms ) ${FRGB()}`);
 
-
         // await console.timeEnd("Execution time took");
 
         g_StatusCurrentTest = 'Пройден';
@@ -360,7 +359,7 @@ let LoginCrm = async (page, browser, LoginData) => {
         await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
 
-        await page.evaluate(pageCursor);
+        await page.evaluate(pageCursor, false); // true - BIG курсор )))
 
         return true; //<-------------EXIT !!!
 

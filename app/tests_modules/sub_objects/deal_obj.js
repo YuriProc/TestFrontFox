@@ -406,8 +406,24 @@ class Deal {
         // Заголовок "Создание заявки с перевозчиком"
         this.xHeaderCreateOrderTransporter = `//span[@class="title"][contains(text(),"Создание заявки с перевозчиком")]`;
         // "Создание заявки с перевозчиком" кнопка "Создать" Активная
-        this.xButtonCreateOrderActive = `//button[@type="submit"][contains(text(),"Создать")][not(contains(@disabled , "disabled"))]`;
+        this.xButtonCreateOrderActive = `//button[@type="submit"][contains(text(),"Создать")][not(contains(@disabled, "disabled"))]`;
         // -- END --- Заявка с Перевозчиком ----
+        // Время первого прозвона
+        this.xFieldSetFirstCallTime = `//fieldset[legend[contains(text(),"Время первого прозвона")]]`;
+        this.xFirstCallTimeWrapper = this.xFieldSetFirstCallTime + `//div[@class="fox-book-time-input__wrapper"]`;
+        this.xFirstCallTimeInput = this.xFirstCallTimeWrapper + `/div[@id="fox-book-time-input-target"]`;
+        this.xFirstCallTimeButton = this.xFieldSetFirstCallTime + `//button[contains(text(),"Подтвердить")]`;
+        this.xFirstCallTimeButtonActive = this.xFirstCallTimeButton + `[not(contains(@disabled, "disabled"))]`;
+
+        this.xFirstCallTimePresentDay = this.xFieldSetFirstCallTime + `//div[@class="sub-title"]`;
+
+        this.xFirstCallTimeItemActive = this.xFieldSetFirstCallTime + `//div[@class="book-time-picker__item"][not(contains(@class , "disabled"))]`;
+        // Скролл на час
+        this.xFirstCallTimeHourAdd = this.xFieldSetFirstCallTime + `//div[@class="handle-change-hours-btn add"]`;
+        // Скролл на День
+        this.xFirstCallTimeDayAdd = this.xFieldSetFirstCallTime + `//div[@class="handle-date-btn add"]`;
+
+
         // Сделка Кнопка "Сохранить" Активная
         this.xButtonDealSaveActive = `//div[contains(@class , "text-center")][button[contains(text(),"Сохранить и остаться")]]`;
         this.xButtonDealSaveActive+= `/button[contains(text(),"Сохранить") and not(contains(text(),"Сохранить и остаться"))][not(contains(@disabled , "disabled"))]`;
@@ -772,6 +788,7 @@ class Deal {
         let resOk;
         let strGetCargoType = ``;
         let strGetCargoCost = ``;
+        let strGetCargoWeight = ``;
         let strErr = ``;
         try {
                 // strCargoType: 'Алкоголь',
@@ -794,12 +811,23 @@ class Deal {
                 await console.log('\x1b[38;5;2m\t', `Автовыбор "Стоимость груза" (${this.DealData.strCargoCost} грн.) - OK`, '\x1b[0m');
             }
             // Тоннаж клиента *
-            resOk = await SetTextByXPath(this.page, this.xInputCargoWeight, this.DealData.strCargoWeight);
+            // resOk = await SetTextByXPath(this.page, this.xInputCargoWeight, this.DealData.strCargoWeight);
+            // SetTextByXPath <- Не всегда работает (21.7) так как этот инпут не принимает "21." а потом "7"
+            resOk = await TypeByXPath(this.page, this.xInputCargoWeight, this.DealData.strCargoWeight);
+
+            await WaitRender(this.page);
+
             if (!resOk) {
                 strErr+= '\x1b[38;5;1m\t', `FAIL -> Инпут "Тоннаж клиента *" SetTextByXPath(${this.xInputCargoWeight})`, '\x1b[0m';
             }else {
-                await console.log('\x1b[38;5;2m\t', `Тоннаж клиента * (${this.DealData.strCargoWeight}) - OK`, '\x1b[0m');
+                strGetCargoWeight = await ElementGetValue(this.page, 0, this.xInputCargoWeight);
+                if (strGetCargoWeight !== this.DealData.strCargoWeight){
+                    strErr+= `\x1b[38;5;1m\t Инпут "Тоннаж клиента *" Введённое значение FAIL => (${strGetCargoWeight})!==(${this.DealData.strCargoWeight})\n`;
+                }else{
+                    await console.log('\x1b[38;5;2m\t', `Тоннаж клиента * (${this.DealData.strCargoWeight}) - OK`, '\x1b[0m');
+                }
             }
+
             if(strErr!==``){
                 throw strErr; // вывод суммарной ошибки и выход
             }
@@ -2304,8 +2332,8 @@ class Deal {
             }
             await console.log('\x1b[38;5;3m\t', `Будем Добавлять (${warnNoVehicleMaxWeight}) - Warning !!!`, '\x1b[0m');
             noVehicleWeight++;
-            this.DealData.objVehicle.VehicleEmptyWeight = 7450;
-            this.DealData.objVehicle.VehicleMaxWeight = 12700;
+            this.DealData.objVehicle.VehicleEmptyWeight = await randomInt(700, 970) * 10 ;// 7450;
+            this.DealData.objVehicle.VehicleMaxWeight = await randomInt(1100, 1290) * 10 ;//12700;
 
             await this.SetAutoMaxWeight(0, this.DealData.objVehicle.VehicleEmptyWeight, this.DealData.objVehicle.VehicleMaxWeight);
         }
@@ -2315,8 +2343,8 @@ class Deal {
             }
             await console.log('\x1b[38;5;3m\t', `Будем Добавлять (${warnNoTrailerMaxWeight}) - Warning !!!`, '\x1b[0m');
             noTrailerWeight++;
-            this.DealData.objTrailer.VehicleEmptyWeight = 11350;
-            this.DealData.objTrailer.VehicleMaxWeight = 38750;
+            this.DealData.objTrailer.VehicleEmptyWeight = await randomInt(1135, 1290) * 10 ;// 11350;
+            this.DealData.objTrailer.VehicleMaxWeight = await randomInt(3275, 3875) * 10 ; // 38750;
 
             await this.SetAutoMaxWeight(1, this.DealData.objTrailer.VehicleEmptyWeight, this.DealData.objTrailer.VehicleMaxWeight);
         }
@@ -2685,6 +2713,87 @@ class Deal {
         }
     }//async CalculateVehicleMaxCapacity()
 
+    //----------------------------------------
+    async SetTimeFirstCall() {
+        let resOk;let tempXP;
+        try {
+            // Раскрыть Дейт Пикер "Время первого прозвона"
+            resOk = await ScrollByXPathNum(this.page, this.xFirstCallTimeInput);
+            resOk = await ClickByXPath(this.page, this.xFirstCallTimeInput);
+            // Скролл до кнопки, ибо не влазит на экран
+            resOk = await ScrollByXPathNum(this.page, this.xFirstCallTimeButton);
+            // Проверка что на ДейтПикере есть свободное время
+            let NumClickHour = 0;
+            let NumClickDay = 0;
+            let MaxTry = false;
+            let FreeTime;
+            let NumItem;
+            // В Сегодняшнем Дне нельзя выбирать первое свободное время (1/5 может упасть)(если минуты равны текущему времени)
+            let strPresentDay = await ElementGetInnerText(this.page, 0, this.xFirstCallTimePresentDay);
+            if (await SubStrIsPresent(`Сегодня`, strPresentDay)){
+                NumItem = 1; // Обезопасим себя от ошибки
+            }else {
+                NumItem = 0;
+            }
+            FreeTime = await WaitForElementIsPresentByXPathNum(500, NumItem,this.page, this.xFirstCallTimeItemActive);
+
+            while (!FreeTime && !MaxTry){
+                NumItem = 0;
+                if (NumClickHour > 3) {
+                    resOk = await ClickByXPath(this.page, this.xFirstCallTimeDayAdd);
+                    await WaitRender(this.page);
+                    NumClickDay++;
+                    NumClickHour = 0;
+                }else{
+                    resOk = await ClickByXPath(this.page, this.xFirstCallTimeHourAdd);
+                    await WaitRender(this.page);
+                    NumClickHour++;
+                }
+                if(NumClickDay > 3){
+                    MaxTry = true;
+                }
+                FreeTime = await WaitForElementIsPresentByXPathNum(500, 0,this.page, this.xFirstCallTimeItemActive);
+
+            }// while (!FreeTime && !MaxTry)
+
+            // Клик по свободному времени
+            resOk = await ClickByXPathNum(this.page, NumItem, this.xFirstCallTimeItemActive);
+            if (!resOk) {
+                throw `FAIL -> Не нашли свободного времени`;
+            }
+
+            await WaitRender(this.page);
+            // Нажать на кнопку "Подтвердить"
+            resOk = await ClickByXPath(this.page, this.xFirstCallTimeButtonActive);
+            if(!resOk){
+                throw `FAIL -> Нажать на кнопку "Подтвердить" ClickByXPath(this.page, this.xFirstCallTimeButtonActive);`;
+            }
+            await WaitRender(this.page);
+            let strTimeFirstCall = await ElementGetInnerText(this.page, 0, this.xFirstCallTimeInput);
+            if (strTimeFirstCall !== ``) {
+                await console.log('\x1b[38;5;2m\t', `Установка "Время первого прозвона" (${strTimeFirstCall}) - OK !!!`, '\x1b[0m');
+            }else{
+                throw `"Время первого прозвона" - НЕ Установилось - пустое значение !!!`;
+            }
+
+            resOk = await HoverByXPathNum(this.page, 0, this.xButtonDealSaveActive);
+
+            await WaitRender(this.page);
+
+            // Сохраняем Сделку
+            // resOk = await ClickByXPath(this.page, this.xButtonDealSaveActive);
+            resOk = await this.SaveDealAndWaitTableDeals();
+            if(!resOk){
+                throw `FAIL -> this.SaveDealAndWaitTableDeals();`;
+            }
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in SetTimeFirstCall`);
+            await ScreenLog(this.page, `Ошибка при установке времени первого звонка`, 1);
+            return false;
+        }
+    }//async SetTimeFirstCall()
     //----------------------------------------
     async TemplateTemp() {
         let resOk;

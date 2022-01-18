@@ -88,6 +88,7 @@ class MultiSelect {
             if (!resOk) {
                 throw `FAIL => ДропДаун Активный WaitForElementIsPresentByXPath(${this.xDropDownActive})`;
             }
+            await WaitRender(this.page);
             return true;
         }catch (e) {
             await console.log(`${e} \n FAIL in OpenDropDown`);
@@ -108,6 +109,7 @@ class MultiSelect {
             if (!resOk) {
                 throw `FAIL => Ждём пока пропадёт спиннер WaitForElementIsPresentByXPath(${this.xSpinnerNone})`;
             }
+            await WaitRender(this.page);
             return true;
         }catch (e) {
             await console.log(`${e} \n FAIL in EnterTextToInput`);
@@ -120,7 +122,7 @@ class MultiSelect {
             // Выбор в ДропДауне Нужная Строка Подсвеченная
             resOk = await ClickByXPathW(this.page, this.xDropDownNeedStr);
             if (!resOk) {
-                throw `FAIL => Выбор в ДропДауне Нужная Строка Подсвеченная ClickByXPathW(${this.xMultiSelectArrowDown})`;
+                throw `FAIL => Выбор в ДропДауне Нужная Строка Подсвеченная ClickByXPathW(${this.xDropDownNeedStr})`;
             }
             // Ждём закрытия ДропДауна
             // ДропДаун Закрытый
@@ -189,7 +191,7 @@ class MultiSelect {
             // Выбор в ДропДауне Нужная Строка Подсвеченная
             resOk = await ClickByXPathW(this.page, this.xDropDownNeedStr);
             if (!resOk) {
-                throw `FAIL => Выбор в ДропДауне Нужная Строка Подсвеченная ClickByXPathW(${this.xMultiSelectArrowDown})`;
+                throw `FAIL => Выбор в ДропДауне Нужная Строка Подсвеченная ClickByXPathW(${this.xDropDownNeedStr})`;
             }
             // При выборе в дропдауне значения меняется Легенда самого Дропдауна
             await this.InitLegend(NewLegendText);

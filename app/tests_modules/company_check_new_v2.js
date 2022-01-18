@@ -21,6 +21,7 @@ let CompanyCheckNewV2 = async (browser, page, CompanyData) => {
     let findCreatedCompanyOk = false;
     try{
         await page.setViewport({width: g_width, height: g_height});
+        //await page.evaluate(pageCursor, true);
 
         // //Клик по LOGO
         // resOk = await LogoClick(page);

@@ -89,6 +89,9 @@ class Contact {
         this.xModalFindExistsCompanyButtonSave = this.xModalFindExistsCompany + `//button[@type="button"][contains(text(), "Сохранить")]`;
         // Закрыть модалку Добавить "Работает на"
         this.xButtonCloseOnCompany = `//button[@class="custom-modal-close"]`;
+        // Добавить файл
+        this.xButtonAddFile = `//button[@class="file-name"]`;
+        this.xButtonPlusAddFile = `//div[@class="files-manager__add-input-btn"][contains(text(), "+ Добавить")]`;
         // Блок "Водительские данные"
         // Инпут "Номер водительского удостоверения"
         this.xInputDriverLicenseNumber = `//fieldset[legend[contains(text(), "Номер водительского удостоверения")][span[@class="required"][contains(text(), "*")]]]`;
@@ -751,6 +754,11 @@ class Contact {
             }
             // Чистим Варнинги
             await WarningsRemove(this.page);
+
+            let strUrls = [
+                `${g_BackCfoFoxURL}/api/constructor/contact-driver`,
+            ];
+            resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
             // в Контакт Кнопка "Сохранить"
             //this.xButtonSaveContact = `//button[@type="button"][contains(@class, "primary")][contains(text(), "Сохранить")]`;
             resOk = await ClickByXPath(this.page, this.xButtonSaveContact);
@@ -760,6 +768,13 @@ class Contact {
                 //await TempStop(this.page);
                 throw `FAIL => ModalCreateContactSaveContact => в Контакт Кнопка "Сохранить" ClickByXPathWithScroll(${this.xButtonSaveContact})`;
             }
+            // Ждём завершения всех запросов по сохранению Контакта
+            resOk = await ResponsesListenerWaitForAllResponses(31000);
+            if(!resOk){
+                throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+            }
+            // Снимаем слушателя
+            resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
             await console.log('\x1b[38;5;2m\t', `Сохранили контакт `,
                                                 `${this.ContactData.strLastName} `,
                                                 `${this.ContactData.strFirstName} `,
@@ -785,6 +800,9 @@ class Contact {
                 // await this.page.evaluate('document.body.innerHTML = document.body.innerHTML');
                 // await this.page.waitFor(500000);
                // throw `FAIL => ModalCreateContactSaveContact => в Контакт Кнопка "Сохранить" WarningsRead`;
+            }else {
+                await console.log(`WarningText=(${WarningText}) - Пустой !!!`);
+                returnResult = true;
             }
            // await WaitRender(this.page);
             await WarningsRemove(this.page, 4000);
@@ -841,7 +859,7 @@ class Contact {
             // Сохраним Контакт
             resOk = await this.CreateContactSaveContact();
             if (!resOk){
-                throw `FAIL => this.ModalCreateContactSaveContact`;
+                throw `FAIL => this.CreateContactSaveContact();`;
             }
 
             return true;
@@ -903,6 +921,12 @@ class Contact {
             if (!resOk){
                 throw `FAIL => this.EnterDriverLicenseNumber`;
             }
+            // Загрузим Файл Доков
+            resOk = await this.LoadNewFileInContact();
+            if(!resOk){
+                throw `FAIL !!! -> this.LoadNewFileInContact();`;
+            }
+
             // Проверим отсутствие Валидации и Возможность Сохранить
             // ....
             // Добавим Тягач
@@ -922,7 +946,7 @@ class Contact {
             // Сохраним Контакт
             resOk = await this.CreateContactSaveContact();
             if (!resOk){
-                throw `FAIL => this.ModalCreateContactSaveContact`;
+                throw `FAIL => Сохраним Контакт (после тягача и прицепа) -> this.CreateContactSaveContact();`;
             }
 
 
@@ -972,7 +996,7 @@ class Contact {
             // Сохраним Контакт
             resOk = await this.CreateContactSaveContact();
             if (!resOk){
-                throw `FAIL => this.ModalCreateContactSaveContact`;
+                throw `FAIL => this.CreateContactSaveContact();`;
             }
 
 
@@ -982,6 +1006,52 @@ class Contact {
             return false;
         }
     }//async CreateNewContactFromLocation()
+    //----------------------------------------
+    async LoadNewFileInContact() {
+        let resOk;
+        let xPathFileButton = ``;
+        let MyFilePath;
+        try {
+            // Загружаем и сохраняем на диск Файл Доков Контакта
+            MyFilePath = await SaveTempPictureFromRandomURL(this.browser, 'DriverDocURL', -1);
+            // Проверить какая кнопка на форме -> Добавить файл
+            if (await ElementIsPresent(this.page, this.xButtonAddFile)){
+                xPathFileButton = this.xButtonAddFile;
+            }else if(await ElementIsPresent(this.page, this.xButtonPlusAddFile)){
+                xPathFileButton = this.xButtonPlusAddFile;
+            }else {
+                throw `FAIL !!! -> Не Найдена ни одна кнопка загрузки Файлов`;
+            }
+
+
+            if (MyFilePath !== '') {
+                let strUrls = [
+                    `${g_BackCfoFoxURL}/api/constructor/contact-driver`,
+                ];
+                resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
+                const [fileChooserDocs] = await Promise.all([
+                    this.page.waitForFileChooser(),
+                    ClickByXPath(this.page, xPathFileButton)
+
+                ]);
+                await fileChooserDocs.accept([MyFilePath]);
+                // Ждём завершения всех запросов по Загрузке Файла
+                resOk = await ResponsesListenerWaitForAllResponses(31000);
+                // Снимаем слушателя
+                await ResponsesListener(this.page, strUrls, false, strUrls.length);
+                if(!resOk){
+                    throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+                }
+                await WaitRender(this.page);
+            }else{
+                throw `FAIL => SaveTempPictureFromRandomURL(DriverDocURL)`;
+            }
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in LoadNewFileInContact`);
+            return false;
+        }
+    }//async LoadNewFileInContact()
     //----------------------------------------
     async TemplateTemp() {
         try {

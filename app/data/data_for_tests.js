@@ -27,6 +27,14 @@ class DataForTests {
             strPassword: 'e5oF7',
         };//this.LoginDataR
         //--------------------------------------------------------------
+        // Юзер 2 Данные для логина
+        this.LoginDataP = {
+            strUserLastName: 'Ярін',
+            strUserFirstName: 'Кирило',
+            strUserMiddleName: 'Олександрович',
+            strEmail: 'parfenova.a@transloyd.com',
+            strPassword: '1111',
+        };//this.LoginDataR
         //--------------------------------------------------------------
         this.CompanyData1 = {
             strCompanyCode: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
@@ -34,8 +42,10 @@ class DataForTests {
             strCompanyHref: '', // <= Заполнится автоматически при проверке Компании !!!
             strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes: ['Заказчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
-            strCargoType: 'Запчастини',
-            strCargoCost: '100500',
+            strCargoType: await GetFunnyStr('StrCargoTypeArray'),// 'Запчастини',
+            strCargoCost: '' + (await randomInt(1005, 19700) * 100), //'100500',
+            // strCargoType: 'Запчастини',
+            // strCargoCost: '100500',
             strCargoVehicleType: `Тент`,
             strCargoVehicleCapacity0: `20`,
             strCargoVehicleCapacity1: `22`,
@@ -46,14 +56,14 @@ class DataForTests {
             boolNeedCheck: false,
             strManagers: [this.LoginDataT.strUserLastName, 'Гриневич'],
             ContractData: {
-                strContractOurCompany: `ТОВ "СТАВАНГЕР"`, //'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД // ТОВ "ТРАНСЛОЙД"
+                strContractOurCompany: await GetFunnyStr('StrOurCompanyArray'),// `ТОВ "СТАВАНГЕР"`, //'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД // ТОВ "ТРАНСЛОЙД"
                 strTransportationType: 'По Украине', // 'По Украине', 'Международная'
                 strContractOurCompanyIs: 'Перевозчик', // 'Заказчик' , 'Перевозчик'
-                strDelayDays: '7',
+                strDelayDays: '' + await randomInt(5, 30),//'7',
                 strPaymentCondition: 'По банковским', // 'По банковским', 'По календарным'
             },
             LocationData1: {
-                strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', `Бухалово`,'StrAddress'
+                strAddressFOX: `Мамедова Щель`,//await GetFunnyStr('StrAddressFunny'),//'Дрочево', `Бухалово`,'StrAddress'
                 strAddressFOXfromGoogle: ``,
                 strAddressTTN: `Юридический адрес (Для ТТН и заявок)`,
                 strCategory: ['Грузополучатель', 'Грузоотправитель', 'Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
@@ -169,10 +179,10 @@ class DataForTests {
             boolNeedCheck: false,
             strManagers: [this.LoginDataT.strUserLastName, 'Гриневич'],
             ContractData: {
-                strContractOurCompany: `ТОВ "ПЕРЕВОЗ"`,//'ПЕРЕВОЗ',//'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
+                strContractOurCompany: await GetFunnyStr('StrOurCompanyArray'),//`ТОВ "ПЕРЕВОЗ"`,//'ПЕРЕВОЗ',//'СТАВАНГЕР',// СТАВАНГЕР // ТРАНСЛОЙД //
                 strTransportationType: 'По Украине', // 'По Украине', 'Международная'
                 strContractOurCompanyIs: 'Заказчик', // 'Заказчик' , 'Перевозчик'
-                strDelayDays: '3',
+                strDelayDays: '' + await randomInt(1, 7),// '3',
                 strPaymentCondition: 'По календарным', // 'По банковским', 'По календарным'
             },
             DriverData: { // Водила <------- !!!!!!
@@ -196,15 +206,18 @@ class DataForTests {
                 strContactID : ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
                 strWorkOnCompany: ``, // Заполнить в перед созданием объекта из CompanyData !!!
                 strWorkOnCompanyEDRPOU: ``, // Заполнить перед созданием объекта из CompanyData !!!
-                strDriverLicenseNumber: `ПРВ` + await randomInt(100001, 999999),
+                // strDriverLicenseNumber: `ПРВ` + await randomInt(100001, 999999),
+                strDriverLicenseNumber: await GetRandomDriverLicenseNumber(),
                 Vehicles: [
                     {
                         VehicleData: {
-                            strLicensePlate: 'FF' + await randomInt(1000, 9999) + 'KK',
+                            // strLicensePlate: 'FF' + await randomInt(1000, 9999) + 'KK',
+                            strLicensePlate: await GetRandomLicensePlate(),
                             strVehicleID: ``, // Заполнить ПЕРЕД выполнением Теста
-                            strRegistrationCertificateNumber: `XXX` + await randomInt(100000, 999999), // 3+6 !!!!
+                            // strRegistrationCertificateNumber: `XXX` + await randomInt(100000, 999999), // 3+6 !!!!
+                            strRegistrationCertificateNumber: await GetRandomRegistrationCertificateNumber(),
                             strVehicleType: 'Тягач',
-                            strCarBrand: 'DAF', // 'MAN', 'VOLVO', 'IVECO', 'RENAULT', 'SCANIA',
+                            strCarBrand:  await GetFunnyStr('StrArrayCarBrandAuto'),//'DAF', // 'MAN', 'VOLVO', 'IVECO', 'RENAULT', 'SCANIA',
                             strModel: 'XF ' + await randomInt(10, 99) + '.' + await randomInt(100, 999), //'XF 95 430', // 'XF 105.460',
                             strQuantityAxles: '2', // тягач, фургон 1-2 , прицепы 1-3 у остальных нет
                             strTypeOwner: 'Компания', // 'Контакт',
@@ -216,16 +229,18 @@ class DataForTests {
                     },
                     {
                         VehicleData: {
-                            strLicensePlate: 'PP' + await randomInt(1000, 9999) + 'TT',
+                            // strLicensePlate: 'PP' + await randomInt(1000, 9999) + 'TT',
+                            strLicensePlate: await GetRandomLicensePlate(),
                             strVehicleID: ``, // Заполнить ПЕРЕД выполнением Теста
-                            strRegistrationCertificateNumber: `ZZZ` + await randomInt(100000, 999999), // 3+6 !!!!
+                            // strRegistrationCertificateNumber: `ZZZ` + await randomInt(100000, 999999), // 3+6 !!!!
+                            strRegistrationCertificateNumber: await GetRandomRegistrationCertificateNumber(),
                             strVehicleType: 'Напівпричіп',
-                            strVehicleSubType: `Ізотерм`,//`Тент`, // `Реф`, `Ізотерм`, `Цільномет`, // `Контейнеровоз`,  (20,40,45 Футов)
+                            strVehicleSubType:  await GetFunnyStr('StrArrayVehicleSubType'),//`Ізотерм`,//`Тент`, // `Реф`, `Ізотерм`, `Цільномет`, // `Контейнеровоз`,  (20,40,45 Футов)
                             strContainerType: `40 футів`, // `20 футів`, `40 футів`, `45 футів`,
-                            strVehicleCapacity: `20`,
-                            strVehicleVolume: `86`,
+                            strVehicleCapacity: ''+ await randomInt(20, 23),//`20`,
+                            strVehicleVolume: ''+ await randomInt(65, 95),//`86`,
                             strLoadingTypes: ['Бокова', 'Задня',], // `Верхня`, `Повна`,
-                            strCarBrand: 'SCHMITZ', // 'TRAILOR', 'KOEGEL', 'KRONE', 'WIELTON', 'SCHWARZMULLER',
+                            strCarBrand: await GetFunnyStr('StrArrayCarBrandVehicle'), //'SCHMITZ', // 'TRAILOR', 'KOEGEL', 'KRONE', 'WIELTON', 'SCHWARZMULLER',
                             strModel: 'XF ' + await randomInt(10, 99) + '.' + await randomInt(100, 999), //'XF 95 430', // 'XF 105.460',
                             strQuantityAxles: '2', // тягач, фургон 1-2 , прицепы 1-3 у остальных нет
                             strTypeOwner: 'Компания', // 'Контакт',
@@ -346,14 +361,15 @@ class DataForTests {
             isCrossDoc: true,//true, // false
             strCargoType: ``, // `Поліетилен`, //'Алкоголь', // Заполнить ПЕРЕД выполнением Теста
             strCargoCost: ``, // `450000`, //'100500', // Заполнить ПЕРЕД выполнением Теста
-            strCargoWeight: `22.53`,  // `22.53`, // Заполнить ПЕРЕД выполнением Теста
+            strCargoWeight: '' + (await randomInt(2000, 2400) / 100), //`22.53`,  // `22.53`, // Заполнить ПЕРЕД выполнением Теста
+            //strCargoWeight: '' + (2170 / 100), //`22.53`,  // `22.53`, // Заполнить ПЕРЕД выполнением Теста
             AutoCompleteCargo: true, // false
             strLevelMonitoringMC: 'Максимальный (Ночью на охраняемых)', // 'Автоматически', 'Максимальный (Ночью на охраняемых)', 'Максимальный (Движение ночью разрешено)',
             // 'Средний (Движение ночью разрешено)', 'Низкий', 'Не контролировать', 'Средний (Ночью на охраняемых)', 'Контроль загрузки и выгрузки',
             strNumberTransportation: `NT-` + await + await randomInt(90010010, 99899899), // NT-92345678
             strNumberInSet: await GetRandomStr('StrArrayNumberInSet'),
             ClientFreights: [{
-                Amount: '2000',
+                Amount: '' + (await randomInt(100, 150) * 100), // 10 000 .. 15 000// '2000',
                 PaymentForm: `з ПДВ 20%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
                 AdditionalConditionPayment: 'По оригіналам',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, `По сканокопіям`, `По ТТН`, ``, ``,
                 Currency: 'UAH',
@@ -391,7 +407,7 @@ class DataForTests {
                 // },
             ],
             TransporterFreights: [{
-                Amount: '1000',
+                Amount: '' + (await randomInt(50, 90) * 100),// 5 000 .. 9 000 //'1000',
                 PaymentForm: `з ПДВ 20%`, // 'без ПДВ', `з ПДВ 0%`, `з ПДВ 20%`, `нал`, `софт`, `топливо`,
                 AdditionalConditionPayment: 'По завантаженню',// `Аванс`, `Інше`, `По завантаженню`, `По оригіналам`, ``, ``, ``, ``,
                 Currency: 'UAH',
@@ -449,25 +465,24 @@ class DataForTests {
 
                     }
                 },
-                {
-                    PointLoading : {
-                        strAddressFOX: `Покровськ`,//await GetFunnyStr('StrAddress'),
-                        strAddressFOXfromGoogle: ``,
-                        fromCompany: false,
-                        strInDate: ``,
-                        strOutDate: ``,
-                    }
-                },
-                {
-                    PointLoading : {
-                        strAddressFOX: `Запоріжжя`,//await GetFunnyStr('StrAddress'),
-                        strAddressFOXfromGoogle: ``,
-                        fromCompany: true,
-                        strInDate: ``,
-                        strOutDate: ``,
-
-                    }
-                },
+                // {
+                //     PointLoading : {
+                //         strAddressFOX: `Покровськ`,//await GetFunnyStr('StrAddress'),
+                //         strAddressFOXfromGoogle: ``,
+                //         fromCompany: false,
+                //         strInDate: ``,
+                //         strOutDate: ``,
+                //     }
+                // },
+                // {
+                //     PointLoading : {
+                //         strAddressFOX: `Запоріжжя`,//await GetFunnyStr('StrAddress'),
+                //         strAddressFOXfromGoogle: ``,
+                //         fromCompany: true,
+                //         strInDate: ``,
+                //         strOutDate: ``,
+                //     }
+                // },
             ],
             PointsUnLoading : [
                 {
@@ -553,8 +568,8 @@ let SetAllDataVariables = async () => {
             strHref: '', // <= Заполнится автоматически при проверке Компании !!!
             strCompanyName: 'XXX',// <= Заполнится автоматически при создании Компании !!!
             strCompanyTypes: ['Заказчик'],//['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',], //['Заказчик','Перевозчик','Экспедитор','Контрагент ТО',]
-            strCargoType: 'Запчастини',
-            strCargoCost: '100500',
+            strCargoType: await GetFunnyStr('StrCargoTypeArray'),// 'Запчастини',
+            strCargoCost: '' + (await randomInt(1005, 19700) * 100), //'100500',
             strCargoVehicleType: `Тент`,
             strCargoVehicleCapacity0: `20`,
             strCargoVehicleCapacity1: `22`,

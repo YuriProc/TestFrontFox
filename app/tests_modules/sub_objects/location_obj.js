@@ -614,7 +614,10 @@ class Location {
             if (!resOk) {
                 throw `FAIL => Дропдаун адресов Гугла ClickByXPathNum(${tempRand})(${this.xDropDownGoogleAddress})`;
             }
-            resOk = ResponseListenerWaitForResponse(2100);
+            resOk = await ResponseListenerWaitForResponse(29100);
+            if (!resOk){
+                throw `FAIL => ResponseListenerWaitForResponse(29100)(${strUrl})`;
+            }
             await WaitRender(this.pageTableLocations);
             // потом , сразу может быть не тот язык, птом Google переводит через ~1 сек
             // resOk = await ElementGetValue(this.pageTableLocations, 0, this.xInputAddressFOX);
@@ -625,7 +628,24 @@ class Location {
                 //await console.dir(pageVehicleCard, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
                 //await console.dir(g_tempDataFromEventListener_json);
                 this.LocationData.strAddressFOX = g_tempDataFromEventListener_json.data.short_address;
+                if (this.LocationData.strAddressFOX === null){
+                    this.LocationData.strAddressFOX = g_tempDataFromEventListener_json.data.address;
+                }
+            }else{
+                await console.log(`Адрес=(${this.LocationData.strAddressFOX})-----------------------------------------------`);
+                if (!g_tempDataFromEventListener_json.data){
+                    await console.log(`g_tempDataFromEventListener_json.data------------------------------------------------`);
+                    await console.dir(g_tempDataFromEventListener_json.data)
+                }
+                if (!g_tempDataFromEventListener_json){
+                    await console.log(`g_tempDataFromEventListener_json------------------------------------------------`);
+                    await console.dir(g_tempDataFromEventListener_json)
+                }
+                await console.log(`g_tempDataFromEventListener_response------------------------------------------------`);
+                await console.dir(g_tempDataFromEventListener_response);
+                throw `FAIL => Адрес в создании локации(g_tempDataFromEventListener_json && g_tempDataFromEventListener_json.data)`;
             }
+
 
             // if(!g_ShowActionInBrowser){
             //     await this.browser.close();

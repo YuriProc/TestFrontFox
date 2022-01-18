@@ -77,7 +77,7 @@ let DealCheckNewInTable = async (browser, page, DealData) => {
     return DealData;//<------------------EXIT !!!
 
 };//==============================================================================
-let NewDealSetStatusInTable = async (browser, page, DealData) => {
+let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
     let tempAdr = await GetDealMarshrut(DealData);
     const nameTest = NameFunction()+'->"'+'ID:'+DealData.strDealID +
         '=>' + tempAdr +'"';
@@ -89,9 +89,22 @@ let NewDealSetStatusInTable = async (browser, page, DealData) => {
     let xPath;
     let ElPresent, ElPresent1, ElPresent2, ElPresent3;
     let resOk;
+    let resultRecord = {
+        resOk: false,
+        message: ``,
+    };
     let MyFilePath = '';
     let returnResult = false;
-    let enableError = false;
+    let enableError = true;
+    let NumTry = 0;
+    let NumErrorNoTimeFirstCall = 0;
+    let NumErrorTimeFirstCallIsBusy = 0;
+    let NumErrorNoFileTransporter = 0;
+    let NumErrorNoEmailTransporter = 0;
+    let NumErrorTimeFirstCallCannotBeInThePast = 0;
+    let NumNeedCheckDriverDocs = 0;
+
+
     try {
         await page.setViewport({width: g_width, height: g_height});
         // Сделка отфильтрована в предыдущем тесте
@@ -116,8 +129,123 @@ let NewDealSetStatusInTable = async (browser, page, DealData) => {
         if (!resOk) {
             throw `FAIL => Добавить поле NewDealTable.DealTableFilterByField(ID, ${DealData.strDealID});`;
         }
-        // Проверить текущую сделку в таблице сделок
-        resOk = await NewDealTable.ClickTwoStatus(DealData.strDealID); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
+        // Попытка перевести сделку во второй статус
+
+
+        while (enableError) { // -------------------------------------
+            resOk = await NewDealTable.ClickTwoStatus(DealData.strDealID, NumTry, resultRecord); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
+            if (!resOk) {
+                throw `FAIL => Попытка перевести сделку во второй статус NewDealTable.ClickTwoStatus(${DealData.strDealID}, resultRecord);`;
+            }
+            NumTry++;
+
+            // await console.log(`resultRecord.resOk=${resultRecord.resOk}`);
+            await console.log('\x1b[38;5;3m\t', `Перевод сделки во второй статус=${resultRecord.message}`, '\x1b[0m');
+
+            let {Deal} = require("../tests_modules/sub_objects/deal_obj.js");
+            let NewDeal = new Deal(browser, page, DealData);
+
+            switch (resultRecord.message) { // текст с Бека. На фронте  "Ошибка обновления статуса сделки! " + Бек
+                case "Не указано время первого звонка":
+                    NumErrorNoTimeFirstCall++;
+                    if(NumErrorNoTimeFirstCall > 1){
+                        await console.log('\x1b[38;5;1m\t', `WARNING !!! Количество таких ошибок (${NumErrorNoTimeFirstCall}) -> Перевод сделки во второй статус=${resultRecord.message}`, '\x1b[0m')
+                    }
+                    if(NumErrorNoTimeFirstCall > 3){
+                        throw `FAIL !!! Количество таких ошибок (${NumErrorNoTimeFirstCall}) -> Перевод сделки во второй статус=${resultRecord.message}`;
+                    }
+                    // Открыть сделку и выбрать время первого звонка Водителю
+                    resOk = await NewDealTable.ClickDealID(DealData.strDealID, resultRecord); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
+                    if (!resOk) {
+                        throw `FAIL => Открыть сделку NewDealTable.ClickDealID(${DealData.strDealID}, resultRecord);`;
+                    }
+                    // Установить время первого звонка
+                    resOk = await NewDeal.SetTimeFirstCall();
+                    if(!resOk){
+                        throw `FAIL => Не указано время первого звонка -> Установить время первого звонка NewDeal.SetTimeFirstCall();`;
+                    }
+
+                    break;
+                case "Время первого прозвона занято, выберите другое время!":
+                    NumErrorTimeFirstCallIsBusy++;
+                    if(NumErrorTimeFirstCallIsBusy > 1){
+                        await console.log('\x1b[38;5;1m\t', `WARNING !!! Количество таких ошибок (${NumErrorTimeFirstCallIsBusy}) -> Перевод сделки во второй статус=${resultRecord.message}`, '\x1b[0m')
+                    }
+                    if(NumErrorTimeFirstCallIsBusy > 3){
+                        throw `FAIL !!! Количество таких ошибок (${NumErrorTimeFirstCallIsBusy}) -> Перевод сделки во второй статус=${resultRecord.message}`;
+                    }
+                    // Открыть сделку и выбрать ДРУГОЕ время первого звонка Водителю
+                    resOk = await NewDealTable.ClickDealID(DealData.strDealID, resultRecord); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
+                    if (!resOk) {
+                        throw `FAIL => Время первого прозвона занято -> Открыть сделку NewDealTable.ClickDealID(${DealData.strDealID}, resultRecord);`;
+                    }
+                    resOk = await NewDeal.SetTimeFirstCall();
+                    if(!resOk){
+                        throw `FAIL => Время первого прозвона занято -> Установить время первого звонка NewDeal.SetTimeFirstCall();`;
+                    }
+                    break;
+                case "Выбраное время следующего звонка водителю не может быть в прошлом!":
+                    NumErrorTimeFirstCallCannotBeInThePast++;
+                    if(NumErrorTimeFirstCallCannotBeInThePast > 3){
+                        throw `FAIL !!! Количество таких ошибок (${NumErrorTimeFirstCallCannotBeInThePast}) -> Перевод сделки во второй статус=${resultRecord.message}`;
+                    }
+                    // Открыть сделку и выбрать ДРУГОЕ время первого звонка Водителю
+                    resOk = await NewDealTable.ClickDealID(DealData.strDealID, resultRecord); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
+                    if (!resOk) {
+                        throw `FAIL => Время первого прозвона не может быть в прошлом! -> Открыть сделку NewDealTable.ClickDealID(${DealData.strDealID}, resultRecord);`;
+                    }
+                    resOk = await NewDeal.SetTimeFirstCall();
+                    if(!resOk){
+                        throw `FAIL => Время первого прозвона не может быть в прошлом! -> Установить время первого звонка NewDeal.SetTimeFirstCall();`;
+                    }
+
+                    break;
+                case "У перевозчика не полная контактная информация! Нехватает: email-а":
+                    NumErrorNoEmailTransporter++;
+                    if(NumErrorNoEmailTransporter > 1){
+                        throw `FAIL !!! Количество таких ошибок (${NumErrorNoEmailTransporter}) -> Перевод сделки во второй статус=${resultRecord.message}`;
+                    }
+                    // Открыть Перевозчика и добавить email
+                    throw `не дописано Открыть Перевозчика и добавить email`;
+                    break;
+                case "Документы водителя требуют проверки!":
+                    NumNeedCheckDriverDocs++;
+                    if(NumNeedCheckDriverDocs > 1){
+                        throw `FAIL !!! Количество таких ошибок (${NumNeedCheckDriverDocs}) -> Перевод сделки во второй статус=${resultRecord.message}`;
+                    }
+                    // Открыть новый экземпляр Браузера и залогиниться под Парфёновой
+                    resOk = await SetDriverCheck(LoginData);
+
+                    break;
+                case "Нельзя передать сделку под контроль МЦ без подписанной Заявки с Перевозчиком! Загрузите файл !":
+                    NumErrorNoFileTransporter++;
+                    if(NumErrorNoFileTransporter > 1){
+                        throw `FAIL !!! Количество таких ошибок (${NumErrorNoFileTransporter}) -> Перевод сделки во второй статус=${resultRecord.message}`;
+                    }
+                    // Скролл до кнопки "Заявка (П) и загрузка файла"
+                    resOk = await NewDealTable.AddDealOrderTransporter(DealData.strDealID, resultRecord); // после фильтра по ID должна быть ТОЛЬКО ОДНА строка
+                    if (!resOk) {
+                        throw `FAIL => Открыть Модалку Файлов "Заявка (П)" NewDealTable.ClickDealID(${DealData.strDealID}, resultRecord);`;
+                    }
+                    //await TempStop(page);
+                    // resOk = await NewDeal.SetTimeFirstCall();
+                    break;
+                case "Статус сделки успешно изменен!":
+                    enableError = false;
+                    break;
+                default:
+                    enableError = false;// на всякий пожарный случай )))
+                    // Какая то хуета случилась
+                    throw `FAIL !!! НЕИЗВЕСТНОЕ СООБЩЕНИЕ -> Перевод сделки во второй статус=${resultRecord.message}`;
+                    break;
+
+            }// switch (resultRecord.message)
+
+
+
+        } // while (true) -------------------------------------------
+
+
         // if (!resOk) {
         //     throw `FAIL => Проверить текущую сделку в таблице сделок NewDealTable.TableDealCheckOneCurrentDeal();`;
         // }
@@ -156,6 +284,25 @@ let NewDealSetStatusInTable = async (browser, page, DealData) => {
     }
     return DealData;//<------------------EXIT !!!
 
+}; // ТЕСТ let NewDealSetStatusInTable = async (browser, page, DealData)
+
+SetDriverCheck = async function(LoginData){
+    let xPath, resOk;
+    try {
+        let NewB = require('../tests_modules/login.js');
+        let NewBrowser = await NewB.StartBrowser();
+        let NewPage = await NewB.BrowserGetPage(NewBrowser, g_FrontCfoFoxURL);
+        resOk = await NewB.LoginCrm(NewPage, NewBrowser, LoginData);
+        await WaitRender(NewPage);
+        await WaitMS(5000);
+        await ScreenLog(NewPage, "Новый Браузер", 3);
+        await WaitRender(NewPage);
+        await NewBrowser.close();
+        return true;
+    }catch (e) {
+        await console.log(e);
+        return false;
+    }
 };
 
 module.exports.DealCheckNewInTable = DealCheckNewInTable;

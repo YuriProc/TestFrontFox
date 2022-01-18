@@ -24,6 +24,8 @@ class Company{
         this.xBlockButtonWantFirst = `//div[@class="lock-button"][contains(text(), "Хочу быть первым")]`;
         // Плашка блокировки одновременного редактирования Кнопка "Кикнуть первого"
         this.xBlockButtonKickFirst = `//div[@class="lock-button"][contains(text(), "Кикнуть первого")]`;
+        // Плашка Ограниченных Данных
+        this.xNoResponsible = `//span[@class="warning-block__name"][contains(text(), "Карточка содержит ограниченные данные и доступна только для чтения, так как вы не являетесь ответственным!")]`;
         // Проверка, что нет спиннера на форме компании
         this.xCompanyFormSpinner = `//section[@class="crm-view crm-view--company crm-view__processing"]//span[@class="spinner-border"]`;
         // Хеадер "Данные о компании"
@@ -68,7 +70,8 @@ class Company{
         //Тип Компании стрелка вниз
         this.xTypesCompanyArrowDown = `//fieldset/legend[contains(text(), "Тип компании")]/..//div[@class="multiselect__select"]`;
         //Тип Компании Крестик удалить
-        this.xTypesCompanyDel = `//div[@class="crm-select__delete-tag-btn"]/i[@class="icon-cancel"]`;
+        // this.xTypesCompanyDel = `//div[@class="crm-select__delete-tag-btn"]/i[@class="icon-cancel"]`;
+        this.xTypesCompanyDel = `//div[@class="crm-select__delete-tag-btn"]/i[@class="icon-close"]`;
         // Контактные данные -> Контакты
         this.ContactDataContacts = `//div[@class="relations__item"][label[contains(text(),"Контакты")]]`;
         // Контактные данные -> Контакты "Plus"
@@ -392,6 +395,16 @@ class Company{
                     await WaitRender(this.page);
                 }
             }
+            // Проверить плашку Ограниченных данных
+            elPresent = await WaitForElementIsPresentByXPath(0, this.page, this.xNoResponsible);
+            if (elPresent) {
+                resOk = await this.CheckAndSetResponsible();
+                if (!resOk) {
+                    throw 'this.CheckAndSetResponsible(); = FAIL!"';//<--специальный вызов ошибки!
+                }
+
+            }
+
             await console.log('\x1b[38;5;2m\t',`OK => CheckCompanyForm`,'\x1b[0m');
 
         return true;

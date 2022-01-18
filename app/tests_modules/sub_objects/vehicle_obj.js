@@ -200,15 +200,30 @@ class Vehicle {
                 throw ` FAIL => Инпут "Серия и номер тех. паспорта" SetTextByXPath(${this.xInputRegistrationCertificateNumber})`;
             }
             await WaitRender(this.page);
+            // https://dev.api.cfo.tl.ee/api/opendatabot/full-vehicle?force=false&registration_certificate_number=
+            // https://dev.api.cfo.tl.ee/api/opendatabot/full-vehicle?force=false&license_plate=
+            let strUrls = [
+                `${g_BackCfoFoxURL}/api/opendatabot/full-vehicle?force=false&registration_certificate_number=`,
+            ];
+            resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
 
             // Кнопка "Проверить в базе"
             resOk = await ClickByXPath(this.page, this.xButtonCheckInBaseActive);
-            if (!resOk){
+            if (!resOk){ // НЕ Удачное нажатие - Снять слушателя
+                // Снимаем слушателя
+                resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
                 await this.page.screenshot({path: g_PathSS + 'screenshot_xButtonCheckInBaseActiveCF.png', fullPage: true });
                 await console.log(` Скриншот: (screenshot_xButtonCheckInBaseActiveCF.png)`);
                 throw ` FAIL => Кнопка "Проверить в базе" ClickByXPath(${this.xButtonCheckInBaseActive})`;
             }
-
+            // Ждём завершения всех запросов по карточки Транспорта
+            resOk = await ResponsesListenerWaitForAllResponses(31000);
+            if(!resOk){
+                throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+            }
+            // Снимаем слушателя
+            resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
+            await WaitRender(this.page);
 
             return true;
         } catch (e) {
@@ -268,6 +283,7 @@ class Vehicle {
     async EnterLicensePlateNumber() {// ГОС НОМЕР
         let resOk;
         try {
+            await WaitRender(this.page);
             // Инпут "Гос. номера"
             resOk = await SetTextByXPath(this.page, this.xInputLicensePlate, this.VehicleData.strLicensePlate);
             if (!resOk){
@@ -276,14 +292,28 @@ class Vehicle {
                 throw ` FAIL => Инпут "Гос. номера" SetTextByXPath(${this.xInputLicensePlate})`;
             }
             await WaitRender(this.page);
-
+            // https://dev.api.cfo.tl.ee/api/opendatabot/full-vehicle?force=false&registration_certificate_number=
+            // https://dev.api.cfo.tl.ee/api/opendatabot/full-vehicle?force=false&license_plate=
+            let strUrls = [
+                `${g_BackCfoFoxURL}/api/opendatabot/full-vehicle?force=false&license_plate=`,
+            ];
+            resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
             // Кнопка "Проверить в базе"
             resOk = await ClickByXPath(this.page, this.xButtonCheckInBaseActive);
-            if (!resOk){
+            if (!resOk){ // НЕ удачное нажатие
+                // Снимаем слушателя
+                resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
                 await this.page.screenshot({path: g_PathSS + 'screenshot_xButtonCheckInBaseActiveLP.png', fullPage: true });
                 await console.log(` Скриншот: (screenshot_xButtonCheckInBaseActiveLP.png)`);
                 throw ` FAIL => Кнопка "Проверить в базе" ClickByXPath(${this.xButtonCheckInBaseActive})`;
             }
+            // Ждём завершения всех запросов по карточки Транспорта
+            resOk = await ResponsesListenerWaitForAllResponses(31000);
+            if(!resOk){
+                throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+            }
+            // Снимаем слушателя
+            resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
 
 
             return true;
@@ -815,6 +845,16 @@ class Vehicle {
             if (!resOk) {
                 throw `FAIL => Ввод "Компания/Контакт владельца" this.EnterSubjectOwner();`;
             }
+            // Если мы не задали в Данных , то ->
+            // Прочитаем и запишем "Масса без груза (кг)" и Полная масса (кг)
+            if (this.VehicleData.VehicleEmptyWeight === ``) {
+                //let WeightEmpty = await ElementGetValue(this.page, 0, this.xInputEmptyWeight);
+                this.VehicleData.VehicleEmptyWeight = await ElementGetValue(this.page, 0, this.xInputEmptyWeight);
+            }
+            if (this.VehicleData.VehicleMaxWeight === ``) {
+                //let WeightFull = await ElementGetValue(this.page, 0, this.xInputMaxWeight);
+                this.VehicleData.VehicleMaxWeight = await ElementGetValue(this.page, 0, this.xInputMaxWeight);
+            }
 
             resOk = await this.LoadNewFileInVehicle();
             if (!resOk) {
@@ -839,9 +879,9 @@ class Vehicle {
         try {
 
             // Инпут "Масса без груза (кг)"
-            resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xInputEmptyWeight);
+            resOk = await WaitForElementIsPresentByXPath(24000, this.page, this.xInputEmptyWeight);
             if (!resOk) {
-                throw `FAIL => Инпут "Масса без груза (кг)" WaitForElementIsPresentByXPath(${this.xInputEmptyWeight})`;
+                throw `FAIL => Инпут "Масса без груза (кг)" WaitForElementIsPresentByXPath(24000)(${this.xInputEmptyWeight})`;
             }
 
             resOk = await SetTextByXPath(this.page, this.xInputEmptyWeight, this.VehicleData.VehicleEmptyWeight);

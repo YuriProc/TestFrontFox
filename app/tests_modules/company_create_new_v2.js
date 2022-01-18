@@ -23,6 +23,7 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
     let ResErrors = false;
     try {
     await page.setViewport({width: g_width, height: g_height});
+        // await page.evaluate(pageCursor, false);
 
 
         let {Company} = require("../tests_modules/sub_objects/company_obj.js");

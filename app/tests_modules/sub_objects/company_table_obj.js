@@ -143,7 +143,7 @@ class CompanyTable {
             if(!resOk){
                 throw `FAIL => Запрос(${strRequest}) ResponseListenerWaitForResponse(21000 ms)`;
             }
-            await console.log(`g_tempDataFromEventListener_requestUrl=\n${g_tempDataFromEventListener_requestUrl}\n------------`);
+            // await console.log(`g_tempDataFromEventListener_requestUrl=\n${g_tempDataFromEventListener_requestUrl}\n------------`);
             // снимаем слушателя
             resOk = await ResponseListener(this.page, strRequest, false);
 

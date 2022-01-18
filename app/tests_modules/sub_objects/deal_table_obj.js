@@ -37,6 +37,13 @@ class DealTable {
         // Таблица ---------------------
         this.xTable = `//div[@data-qa-table="speedy_table"]`;
         //--------------
+        // Модалка Заявок (П)
+        this.xModealOrderDeal = `//div[@class="modal-content"][header[h5[@class="modal-title"][contains(text(), "Управление файлами по сделке")]]]`;
+        this.xModealOrderDealClose = this.xModealOrderDeal + `//button[@class="close"]`;
+
+        this.xButtonAddOrderFile =  this.xModealOrderDeal + `//div[@class="file"]`;
+
+        //----------------------
         const {DataCfoFields} = require("../../data/data_cfo_fields.js");
         this.CFO = new DataCfoFields(browser, page);
 
@@ -658,11 +665,11 @@ class DealTable {
         let LenCF, LenTF;
         try {
             LenCF = this.DealData.ClientFreights.length;
-            await console.log(`ClientSumR=(${ClientSumR})----------------`);
+            // + await console.log(`ClientSumR=(${ClientSumR})----------------`);
             for(let i=0; i < LenCF; i++ ){
                 RC = 1;
-                await console.log(`ClientFreights[${i}].PaymentForm=(${this.DealData.ClientFreights[i].PaymentForm})`);
-                await console.log(`ClientFreights[${i}].Amount=(${this.DealData.ClientFreights[i].Amount})`);
+                // + await console.log(`ClientFreights[${i}].PaymentForm=(${this.DealData.ClientFreights[i].PaymentForm})`);
+                // + await console.log(`ClientFreights[${i}].Amount=(${this.DealData.ClientFreights[i].Amount})`);
                 switch ( this.DealData.ClientFreights[i].PaymentForm ) {
                     case "без ПДВ":
                         RC = 0.95;// * - умножить
@@ -683,15 +690,15 @@ class DealTable {
                         // throw `Fail -> Неизвестный фрахт (${this.DealData.ClientFreights[i].PaymentForm})`;
                         await console.log(`Warning !!! -> Неизвестный фрахт (${this.DealData.ClientFreights[i].PaymentForm})`);
                 }// switch ( this.DealData.ClientFreights[i].PaymentForm )
-                await console.log(`ClientSumR=(${ClientSumR}) RC=(${RC})`);
-                await console.log(`-----------------------------`);
+                // + await console.log(`ClientSumR=(${ClientSumR}) RC=(${RC})`);
+                // + await console.log(`-----------------------------`);
             } // for(let i=0; i < LenCF; i++ )
             LenTF = this.DealData.TransporterFreights.length;
-            await console.log(`TransporterSumR=(${TransporterSumR})----------------`);
+            // + await console.log(`TransporterSumR=(${TransporterSumR})----------------`);
             for(let i=0; i < LenTF; i++ ){
                 RC = 1;
-                await console.log(`TransporterFreights[${i}].PaymentForm=(${this.DealData.TransporterFreights[i].PaymentForm})`);
-                await console.log(`TransporterFreights[${i}].Amount=(${this.DealData.TransporterFreights[i].Amount})`);
+                // + await console.log(`TransporterFreights[${i}].PaymentForm=(${this.DealData.TransporterFreights[i].PaymentForm})`);
+                // + await console.log(`TransporterFreights[${i}].Amount=(${this.DealData.TransporterFreights[i].Amount})`);
                 switch ( this.DealData.TransporterFreights[i].PaymentForm ) {
                     case "без ПДВ":
                         RC = 0.95;// * - умножить
@@ -712,8 +719,8 @@ class DealTable {
                         // throw `Fail -> Неизвестный фрахт (${this.DealData.TransporterFreights[i].PaymentForm})`;
                         await console.log(`Warning !!! -> Неизвестный фрахт (${this.DealData.TransporterFreights[i].PaymentForm})`);
                 }// switch ( this.DealData.TransporterFreights[i].PaymentForm )
-                await console.log(`TransporterSumR=(${TransporterSumR}) RC=(${RC})`);
-                await console.log(`-----------------------------`);
+                // + await console.log(`TransporterSumR=(${TransporterSumR}) RC=(${RC})`);
+                // + await console.log(`-----------------------------`);
             } // for(let i=0; i < LenCF; i++ )
             Commission = ClientSumR - TransporterSumR;
             Percent = 100 * Commission / TransporterSumR;
@@ -723,7 +730,7 @@ class DealTable {
             // resOk = Commission.toFixed(2)+`/ `+ Percent.toFixed(2)+ `%`;
             resOk = strCommission + `/ `+ Percent.toFixed(2)+ `%`;
 
-            await console.log(`Commission=(${Commission}) Percent=(${Percent})`);
+            // + await console.log(`Commission=(${Commission}) Percent=(${Percent})`);
 
             return resOk;
         } catch (e) {
@@ -732,7 +739,7 @@ class DealTable {
         }
     }//async GetDealStrCommissionAndPercent()
     //----------------------------------------
-    async ClickTwoStatus(strDeal_ID) {
+    async ClickTwoStatus(strDeal_ID, NumTry=0, resultRecord) {
         let resOk;
         let ColName, ColValue;
         let xPath;
@@ -751,19 +758,246 @@ class DealTable {
             }else{
                 // await console.log(`ColValue(${ColValue}) === strDeal_ID(${strDeal_ID})`);
             }
+            // получить xPath кнопки перевода статуса сделки (getXP: true)
             xPath = await this.CFO.GetCellValue(0, ColName, true);
+            // Ставим слушателя
+            let strUrl = `${g_BackCfoFoxURL}/api/deal/update-status`;
+            resOk = await ResponseListener(this.page, strUrl, true);
+            // Клик по Переводу Статуса сделки в Таблице
             resOk = await ClickByXPath(this.page, xPath);
             if (!resOk){
                 await console.log(`${FRGB(0,5,1,1)}FAIL -> Статус Сделки ClickByXPath${FRGB()}`);
             }
+            resOk = await ResponseListenerWaitForResponse(31000);
+            if(!resOk){
+                throw `Fail -> ResponseListenerWaitForResponse(31000)(${strUrl})`;
+            }
+            // await console.log(`--------`);
+            // await console.dir(g_tempDataFromEventListener_json, { showHidden: true, depth: 3, colors: true }); // depth: null - infinity
+            // await console.log(`--------`);
+            // //await console.log(g_tempDataFromEventListener_response);
+            // await console.log(`--------`);
+
+            let strTextWarn = await WarningsRead(this.page, 500, false );
+            let strNoTimeFirstCall = `Ошибка обновления статуса сделки! Не указано время первого звонка`;
+            if (NumTry === 0 && !await SubStrIsPresent(strNoTimeFirstCall, strTextWarn)){
+                await console.log(`Warning -> НЕТ СООБЩЕНИЯ (${strNoTimeFirstCall})`);
+                await console.log(`Вместо этого есть сообщение (${strTextWarn})`);
+            }
+
+            // Снимаем слушателя
+            resOk = await ResponseListener(this.page, strUrl, false);
+
+            resultRecord.resOk = true;
+            resultRecord.message = g_tempDataFromEventListener_json.messages[0];
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in ClickTwoStatus`);
+            resultRecord.resOk = false;
+            return false;
+        }
+    }//async ClickTwoStatus(strDeal_ID, NumTry=0, resultRecord)
+    //----------------------------------------
+    async ClickDealID(strDeal_ID, resultRecord) {
+        let resOk;
+        let ColName, ColValue;
+        let xPath;
+        try {
+            ColName = this.CFO.Fields[0][0];
+            ColValue = await this.CFO.GetCellValue(0, ColName);
+            if(ColValue !== strDeal_ID){
+                await console.log(`${FRGB(0,5,1,1)}ColValue(${ColValue}) !== strDeal_ID(${strDeal_ID})${FRGB()}`);
+            }else{
+                // await console.log(`ColValue(${ColValue}) === strDeal_ID(${strDeal_ID})`);
+            }
+
+            // получить xPath ID сделки (getXP: true)
+            xPath = await this.CFO.GetCellValue(0, ColName, true);
+            // Ставим слушателя
+
+            let strUrls = [
+                `${g_BackCfoFoxURL}/api/auth-user`,
+                `${g_BackCfoFoxURL}/api/data-global`,
+                `${g_BackCfoFoxURL}/api/deal/${strDeal_ID}?request-type=deal`,
+                `${g_BackCfoFoxURL}/api/deal/separated-vehicles/`,
+                `${g_BackCfoFoxURL}/api/get-contacts/dispatcherFor/`,
+                `${g_BackCfoFoxURL}/api/vehicle-calculator/`,
+            ];
+            resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
+            // Клик по Переводу Статуса сделки в Таблице
+            resOk = await ClickByXPath(this.page, xPath);
+            if (!resOk){
+                await console.log(`${FRGB(0,5,1,1)}FAIL -> Статус Сделки ClickByXPath${FRGB()}`);
+            }
+            // Ждём завершения всех запросов по открытию сделки
+            resOk = await ResponsesListenerWaitForAllResponses(31000);
+            if(!resOk){
+                throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+            }
+            // Снимаем слушателя
+            resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
+            // await console.log(`--------`);
+            // await console.dir(g_RecEventListener.setListener, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.dir(g_RecEventListener.EventListenerFunctionHandle, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.dir(g_RecEventListener.requestUrlsArrayLength, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.dir(g_RecEventListener.requestUrls, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.dir(g_RecEventListener.EventListener_requestUrls, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.log(`--------`);
+            // for (let i = 0; i< strUrls.length; i++) {
+            //     await console.log(`i(${i})==========================================================================================`);
+            //     await console.dir(g_RecEventListener.EventListener_jsons[i], {showHidden: true, depth: 4, colors: true}); // depth: null - infinity
+            // }
+
+            // await console.log(`----------------------------------------------------------------------`);
+            let strDtAll = msToMMSSMS(g_RecEventListener.timeAll);
+            await console.log('\x1b[38;5;3m\t', `Открытие сделки ${strDtAll}` , '\x1b[0m');
+            // await console.log(`----------------------------------------------------------------------`);
+
+            await WaitRender(this.page);
+
+            resultRecord.resOk = true;
+            resultRecord.message = ``;
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in ClickDealID`);
+            resultRecord.resOk = false;
+            resultRecord.message = ``;
+            return false;
+        }
+    }//async ClickDealID()
+    //----------------------------------------
+    async AddDealOrderTransporter(strDeal_ID, resultRecord) {
+        let resOk;
+        let ColName, ColValue;
+        let xPath;
+        try {
+            // проверка, что отфильтрована ОДНА сделка с правильным ID
+            ColName = this.CFO.Fields[0][0];
+            ColValue = await this.CFO.GetCellValue(0, ColName);
+            if(ColValue !== strDeal_ID){
+                await console.log(`${FRGB(0,5,1,1)}ColValue(${ColValue}) !== strDeal_ID(${strDeal_ID})${FRGB()}`);
+            }else{
+                // await console.log(`ColValue(${ColValue}) === strDeal_ID(${strDeal_ID})`);
+            }
+            ColName = this.CFO.Fields[52][0]; // 'Заявка (П)'
+            // получить xPath ID сделки (getXP: true)
+            xPath = await this.CFO.GetCellValue(0, ColName, true);
+            // Ставим слушателя
+
+            let strUrls = [
+                `${g_BackCfoFoxURL}/api/v2/deal/${strDeal_ID}`,
+            ];
+            resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
+            // Клик по 'Заявка (П)' в Таблице
+            resOk = await ClickByXPath(this.page, xPath);
+            if (!resOk){
+                await console.log(`${FRGB(0,5,1,1)}FAIL -> Статус Сделки ClickByXPath${FRGB()}`);
+            }
+            // Ждём завершения всех запросов по Открытию Модалки Заявки (П)
+            resOk = await ResponsesListenerWaitForAllResponses(31000);
+            if(!resOk){
+                throw `Fail -> Ждём завершения всех запросов по Открытию Модалки Заявки (П) ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+            }
+            // Снимаем слушателя
+            resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
+            // await console.log(`--------`);
+            // await console.dir(g_RecEventListener.setListener, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.dir(g_RecEventListener.EventListenerFunctionHandle, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.dir(g_RecEventListener.requestUrlsArrayLength, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.dir(g_RecEventListener.requestUrls, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.dir(g_RecEventListener.EventListener_requestUrls, { showHidden: true, depth: 4, colors: true }); // depth: null - infinity
+            // await console.log(`--------`);
+            // for (let i = 0; i< strUrls.length; i++) {
+            //     await console.log(`i(${i})==========================================================================================`);
+            //     await console.dir(g_RecEventListener.EventListener_jsons[i], {showHidden: true, depth: 4, colors: true}); // depth: null - infinity
+            // }
+
+            // await console.log(`----------------------------------------------------------------------`);
+            let strDtAll = msToMMSSMS(g_RecEventListener.timeAll);
+            await console.log('\x1b[38;5;3m\t', `Запрос на Открытие Модалки Заявки (П) ${strDtAll}` , '\x1b[0m');
+            // await console.log(`----------------------------------------------------------------------`);
+
+            await WaitRender(this.page);
+
+            resOk = await WaitForElementIsPresentByXPath(1000, this.page, this.xModealOrderDeal);
+            if(!resOk){
+                throw `FAIL !!! -> Открытие Модалки Заявка (П) WaitForElementIsPresentByXPath(1000)(${this.xModealOrderDeal})`;
+            }
+            resOk = await this.LoadNewFileInOrder();
+            if(!resOk){
+                throw `FAIL !!! -> this.LoadNewFileInOrder();`;
+            }
+            resOk = await WaitForElementIsPresentByXPath(1000, this.page, this.xModealOrderDealClose);
+            resOk = await ClickByXPath(this.page, this.xModealOrderDealClose);
+            await WaitRender(this.page);
+
+
+            resultRecord.resOk = true;
+            resultRecord.message = ``;
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in AddDealOrderTransporter`);
+            resultRecord.resOk = false;
+            resultRecord.message = ``;
+            return false;
+        }
+    }//async AddDealOrderTransporter()
+    //----------------------------------------
+    async LoadNewFileInOrder() {
+        let resOk;
+        let MyFilePath;
+        try {
+            // Загружаем и сохраняем на диск Скрин Подписанной Заявки
+            MyFilePath = await SaveTempPictureFromRandomURL(this.browser, 'Contract_1_URL', -1);
+            //await console.log(`Путь:(${MyFilePath})`);
+
+            // Кнопка "Добавить файл"
+            // resOk = await ClickByXPath(this.page, this.xButtonAddFile);
+            // if (!resOk) {
+            //     throw `FAIL => Кнопка "Добавить файл" LoadNewFileInVehicle ClickByXPath(${this.xButtonAddFile})`;
+            // }
+
+
+            // await console.log(`Клик`);
+            // await this.page.waitFor(6000);
+             // await console.log(`Старт Промис`);
+            if (MyFilePath !== '') {
+                let strUrls = [
+                    `${g_BackCfoFoxURL}/api/store-file`,
+                    `${g_BackCfoFoxURL}/api/cfo`,
+                ];
+                resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
+                const [fileChooserDocs] = await Promise.all([
+                    this.page.waitForFileChooser(),
+                    ClickByXPath(this.page, this.xButtonAddOrderFile)
+
+                ]);
+                 // await console.log(`Сер Промис`);
+                // await this.page.waitFor(6000);
+
+                await fileChooserDocs.accept([MyFilePath]);
+
+                // Ждём завершения всех запросов по Загрузке Файла
+                resOk = await ResponsesListenerWaitForAllResponses(31000);
+                // Снимаем слушателя
+                await ResponsesListener(this.page, strUrls, false, strUrls.length);
+                if(!resOk){
+                    throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+                }
+
+
+            }else{
+                throw `FAIL => SaveTempPictureFromRandomURL(DriverDocURL)`;
+            }
+             // await console.log(`End Промис`);
 
 
             return true;
         } catch (e) {
-            await console.log(`${e} \n FAIL in ClickTwoStatus`);
+            await console.log(`${e} \n FAIL in LoadNewFileInOrder`);
             return false;
         }
-    }//async ClickTwoStatus()
+    }//async LoadNewFileInOrder()
     //----------------------------------------
     async Temp(nStart = 0) {
         let resOk;

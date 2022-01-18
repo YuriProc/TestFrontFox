@@ -159,15 +159,16 @@ let OpenFox = async () => {
         for(let i=1;i<=1000;i++) {
 
              await Data.SetAllDataVariables(); // <---- OK
-
+//await console.log(`VN=(${Data.CompanyData2.DriverData.Vehicles[0].VehicleData.strLicensePlate})`);
 
 
 
 
 await console.log(`NumTests=${i}`);
            // // // await WaitMS(5000);
-           //  Data.DealData1.strDealID = `33066`;
-           //  Data.DealData1.strStatusID = `2`;
+           //  Data.DealData1.strDealID = `45633`;
+           //  Data.DealData1.strStatusID = `1`;
+
            //  Data.DealData1.strClientCompanyName = `ПРАТ "ВО "СТАЛЬКАНАТ-СІЛУР"`;//4316
            //  Data.DealData1.strClientCompanyID = `4316`;
            //  Data.DealData1.strClientCompanyCode = `26209430`;
@@ -205,13 +206,14 @@ await console.log(`NumTests=${i}`);
            // //  // await console.log(`-----StartNewBrowser`);
            // //  // let nbrowser = await PGAPage.StartNewBrowser(false);
            // //  // let nPGAPage = await PGAPage.NewBrowserGetPage(nbrowser, `http://10.10.10.232/pgadmin4/login`);
+           //
            //  Data.DealData1 = await DealCheckNPage.NewDealSetStatusInTable(browser, page, Data.DealData1);
            //  if(!g_ShowActionInBrowser){
            //      await browser.close();
            //  }
            //  await TempStop(page);
            // //==========
-          Data.CompanyData1.strCompanyCode = `41269680`;//`38885174`;
+          //Data.CompanyData1.strCompanyCode = `41269680`;//`38885174`;
             let MaxTry = 10;
             resOk = await GNEPage.CompanyTableGetNewEDRPOU(browser, page, MaxTry, Data.CompanyData1.strCompanyCode);
             if (resOk === false){
@@ -332,9 +334,14 @@ await console.log(`NumTests=${i}`);
             if (Data.DealData1.returnResult) {
 
                 //12.1) Проверяем новую сделку
-                Data.DealData1 = await DealCheckNPage.DealCheckNew(browser, page, Data.DealData1);
+                Data.DealData1 = await DealCheckNPage.DealCheckNewInTable(browser, page, Data.DealData1);
 
             }
+            Data.DealData1 = await DealCheckNPage.NewDealSetStatusInTable(browser, page, Data.DealData1, Data.LoginDataP);
+             // if(!g_ShowActionInBrowser){
+             //     await browser.close();
+             // }
+           //  await TempStop(page);
         } // for(let i=1;i<=1000;i++) --------------------------------------------------------------
 
             if(!g_ShowActionInBrowser){
