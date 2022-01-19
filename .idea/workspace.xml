@@ -7,18 +7,12 @@
       <change beforePath="$PROJECT_DIR$/app/data/global_variables.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/global_variables.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/global_functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/global_functions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/company_check_new_v2.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/company_check_new_v2.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/company_create_new_v2.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/company_create_new_v2.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/deal_check_new.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/deal_check_new.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_table_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/contract_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/contract_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/drop_down_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/drop_down_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/location_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/location_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +73,8 @@
       <workItem from="1641974590297" duration="9343000" />
       <workItem from="1642162523663" duration="9159000" />
       <workItem from="1642408155413" duration="16702000" />
-      <workItem from="1642494835421" duration="16046000" />
+      <workItem from="1642494835421" duration="16222000" />
+      <workItem from="1642580195402" duration="18871000" />
     </task>
     <servers />
   </component>

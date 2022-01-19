@@ -836,7 +836,7 @@ ElementIsChecked = async function (page , Num, MyXPath) {
 };
 //-----------------------------------------------------------------------------------
 //
-ClickByXPath = async function (page , MyXPath) {
+ClickByXPath = async function (page , MyXPath, strUrls=null, wMS=31000) {
     try {let resOk;
        //  resOk = await WaitForElementIsPresentByXPath(4000, page, MyXPath);
        //  //https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagewaitforxpathxpath-options
@@ -847,7 +847,9 @@ ClickByXPath = async function (page , MyXPath) {
        //     await console.log(`Ошибка внутр ClickByXPath/WaitForElementIsPresentByXPath:${MyXPath}`,'\n');
        //     return false;
        // }
-
+        if(strUrls !== null){
+            await ResponsesListener(page, strUrls, true, strUrls.length);
+        }
        resOk = await ElementIsVisible(page, MyXPath);
         if (!resOk) {
             await console.log(`Ошибка внутр ClickByXPath/ElementIsVisible:${MyXPath}`,'\n');
@@ -863,13 +865,26 @@ ClickByXPath = async function (page , MyXPath) {
             await linkHandlers[0].click();
             //await linkHandlers[0]._scrollIntoViewIfNeeded()
             //await page.evaluate(el => el.click(), linkHandlers[0]);
+            if(strUrls !== null){
+                resOk = await ResponsesListenerWaitForAllResponses(wMS);
+                await ResponsesListener(page, strUrls, false, strUrls.length);
+                if(!resOk){
+                    throw `Fail -> ResponsesListenerWaitForAllResponses(${wMS})(${strUrls})`;
+                }
+            }
             return true;
         } else {
             await console.log('Ошибка внутр ClickByXPath:( linkHandlers.length=',linkHandlers.length , ')','\n',`XPath=`,MyXPath,'\n');
+            if(strUrls !== null){
+                await ResponsesListener(page, strUrls, false, strUrls.length);
+            }
             return false;
         }
     }catch (e) {
         await console.log(`Ошибка внутр ClickByXPath:${MyXPath}`, e ,'\n');
+        if(strUrls !== null){
+            await ResponsesListener(page, strUrls, false, strUrls.length);
+        }
         return false;
     }
 };

@@ -2719,7 +2719,15 @@ class Deal {
         try {
             // Раскрыть Дейт Пикер "Время первого прозвона"
             resOk = await ScrollByXPathNum(this.page, this.xFirstCallTimeInput);
+            // /api/list-of-call-times/
+            let strUrls = [
+                `${g_BackCfoFoxURL}/api/list-of-call-times/`,
+            ];
+            resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
             resOk = await ClickByXPath(this.page, this.xFirstCallTimeInput);
+            resOk = await ResponsesListenerWaitForAllResponses(31000);
+            await ResponsesListener(this.page, strUrls, false, strUrls.length);
+
             // Скролл до кнопки, ибо не влазит на экран
             resOk = await ScrollByXPathNum(this.page, this.xFirstCallTimeButton);
             // Проверка что на ДейтПикере есть свободное время
@@ -2740,12 +2748,19 @@ class Deal {
             while (!FreeTime && !MaxTry){
                 NumItem = 0;
                 if (NumClickHour > 3) {
+                    resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
                     resOk = await ClickByXPath(this.page, this.xFirstCallTimeDayAdd);
+                    resOk = await ResponsesListenerWaitForAllResponses(31000);
+                    await ResponsesListener(this.page, strUrls, false, strUrls.length);
+
                     await WaitRender(this.page);
                     NumClickDay++;
                     NumClickHour = 0;
                 }else{
+                    resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
                     resOk = await ClickByXPath(this.page, this.xFirstCallTimeHourAdd);
+                    resOk = await ResponsesListenerWaitForAllResponses(31000);
+                    await ResponsesListener(this.page, strUrls, false, strUrls.length);
                     await WaitRender(this.page);
                     NumClickHour++;
                 }
@@ -2762,8 +2777,10 @@ class Deal {
                 throw `FAIL -> Не нашли свободного времени`;
             }
 
-            await WaitRender(this.page);
+
             // Нажать на кнопку "Подтвердить"
+            await WaitForElementIsPresentByXPath(1000, this.page, this.xFirstCallTimeButtonActive);
+            await WaitRender(this.page);
             resOk = await ClickByXPath(this.page, this.xFirstCallTimeButtonActive);
             if(!resOk){
                 throw `FAIL -> Нажать на кнопку "Подтвердить" ClickByXPath(this.page, this.xFirstCallTimeButtonActive);`;

@@ -314,7 +314,7 @@ class Vehicle {
             }
             // Снимаем слушателя
             resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
-
+            await WaitRender(this.page);
 
             return true;
         } catch (e) {
@@ -459,7 +459,7 @@ class Vehicle {
     //----------------------------------------
     async SelectLoadingTypes() {
         try { let resOk;
-            //await WaitRender(this.page);
+            await WaitRender(this.page);
 
             // Кнопки "Тип загрузки"
             for(let i=0 ; i<this.VehicleData.strLoadingTypes.length; i++ ) {

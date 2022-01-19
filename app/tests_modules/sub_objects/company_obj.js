@@ -32,6 +32,10 @@ class Company{
         this.xHeaderDataCompany = `//h5[contains(text(), "Данные о компании")]`;
         // Хеадер "Контактные данные"
         this.xHeaderDataContacts = `//h5[contains(text(), "Контактные данные")]`;
+        // Лого Загрузить
+        this.xCompanyHeadInfo = `//div[@class="company-head-info"]`;
+        this.xLoadLogo = this.xCompanyHeadInfo + `//div[@class="crm-avatar__empty"][contains(text(), "Загрузить")]`;
+        this.xEditLogo = this.xCompanyHeadInfo + `//div[@class="crm-avatar__edit"]`;
         // Хеадер "Имя Компании"
         this.xHeaderCompanyName = `//div[@class="company-head-info"]/..//div[@class="company-heading"]`;
         // Кружочек "Менеджеры" (Ответственные)
@@ -91,6 +95,8 @@ class Company{
         this.ContactDataDocumentWriterPlus = this.ContactDataDocumentWriter + `//div[@class="add-button"][i[@class="icon-plus"]]`;
         //Проверка открытия ТАБА Подписанты
         this.xTabDocumentWriters = `//li[@role="presentation"]/a[@role="tab"][@aria-selected="true"][contains(text(),"Подписанты")]`;
+        // Хеадер Таблицы Подписанты
+        this.xHeaderTableWriter = `//div[@class="modal-content"][header[h5[span[contains(text(), "Подписанты")]]]]`;
         //Табличное редактирование, строки ячейки ФИО Подписанта [Num]
         this.xStrDocumentWriterFIO = this.xActiveTable + `//tr[@role="row"]/td[@aria-colindex="2"][@role="cell"]`;
         // Табл редактирование Вкладка Подписанты Кнопка "+ Добавить Подписанты"
@@ -107,7 +113,8 @@ class Company{
         this.xDocumentWriterDropDownStrings = this.xDocumentWriterDropDownActive + `//li/span/span`;
         // Кнопка "Добавить подписанта" активная
         this.xButtonAddDocumentWriter = this.xModalAddDocumentWriter + `//button[contains(text(), "Добавить подписанта")][not (contains(@disabled, "disabled"))]`;
-
+        // Закрыть таблицу Подписанты
+         this.xCloseTableWriter = this.xHeaderTableWriter + `//button[@type="button"][@class="close"]`;
 
         // закроем таблицу
         // Закрыть Таблицу табличное редактирование
@@ -612,10 +619,11 @@ class Company{
                     throw `FAIL => Не получилось Добавить Подписанта => this.AddDocumentWriter();)`;
                 }
             }
+            await WaitRender(this.page);
             // закроем таблицу
-            resOk = await ClickByXPath(this.page, this.xCloseTable);
+            resOk = await ClickByXPath(this.page, this.xCloseTableWriter);
             if (!resOk){
-                throw `FAIL => Клик "закрыть таблицу Подписанты"  (${this.xCloseTable})`;
+                throw `FAIL => Клик "закрыть таблицу Подписанты"  (${this.xCloseTableWriter})`;
             }
             await WaitRender(this.page);
 
@@ -763,6 +771,7 @@ class Company{
                 DriverData.strContactID = `_FAIL__FAIL__FAIL_`;
             }else{
                 await console.log('\x1b[38;5;2m\t', `Линк на Контакт Водителя (${tempHref}) - OK`, '\x1b[0m');
+                DriverData.strLink = tempHref;
                 DriverData.strContactID = await GetIDFromHref(tempHref);
             }
             await WaitRender(this.page);
@@ -1173,6 +1182,53 @@ class Company{
             return false;
         }
     }//async CloseModalTableCargoTypes()
+    //----------------------------------------
+    async LoadLogoInCompany() {
+        let resOk;
+        let xPathFileButton = ``;
+        let MyFilePath;
+        try {
+            // Лого Загрузить
+            MyFilePath = await SaveTempPictureFromRandomURL(this.browser, 'LogoURL', -1);
+            // Проверить какая кнопка на форме -> Добавить файл
+            if (await ElementIsPresent(this.page, this.xLoadLogo)){
+                xPathFileButton = this.xLoadLogo;
+            }else if(await ElementIsPresent(this.page, this.xEditLogo)){
+                xPathFileButton = this.xEditLogo;
+            }else {
+                throw `FAIL !!! -> Не Найдена ни одна кнопка загрузки Файлов Лого в Компании`;
+            }
+            await HoverByXPathNum(this.page, 0, xPathFileButton);
+            await WaitRender(this.page);
+
+            if (MyFilePath !== '') {
+                let strUrls = [
+                    `${g_BackCfoFoxURL}/api/upload-file`,
+                ];
+                resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
+                const [fileChooserDocs] = await Promise.all([
+                    this.page.waitForFileChooser(),
+                    ClickByXPath(this.page, xPathFileButton)
+
+                ]);
+                await fileChooserDocs.accept([MyFilePath]);
+                // Ждём завершения всех запросов по Загрузке Файла
+                resOk = await ResponsesListenerWaitForAllResponses(31000);
+                // Снимаем слушателя
+                await ResponsesListener(this.page, strUrls, false, strUrls.length);
+                if(!resOk){
+                    throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+                }
+                await WaitRender(this.page);
+            }else{
+                throw `FAIL => SaveTempPictureFromRandomURL(LogoURL)`;
+            }
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in LoadLogoInCompany`);
+            return false;
+        }
+    }//async LoadLogoInCompany()
     //------------------
     async AddNewPhoneNumber(){
         try{let resOk;

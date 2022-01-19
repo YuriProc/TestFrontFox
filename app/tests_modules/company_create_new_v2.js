@@ -94,6 +94,10 @@ let CompanyCreateNewV2 = async (browser, page, CompanyData) => {
         if (!resOk) {
             throw 'NewCompany.CheckDocumentWriterPresent(); = FAIL!"';//<--специальный вызов ошибки!
         }
+        resOk = await NewCompany.LoadLogoInCompany();
+        if (!resOk){
+            throw `FAIL => NewCompany.LoadLogoInCompany();`;
+        }
         resOk = await NewCompany.AddNewPhoneNumber();
         if (!resOk){
             throw `FAIL => NewCompany.AddNewPhoneNumber`;

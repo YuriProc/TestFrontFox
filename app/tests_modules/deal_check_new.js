@@ -140,7 +140,11 @@ let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
             NumTry++;
 
             // await console.log(`resultRecord.resOk=${resultRecord.resOk}`);
-            await console.log('\x1b[38;5;3m\t', `Перевод сделки во второй статус=${resultRecord.message}`, '\x1b[0m');
+            if(resultRecord.message === `Статус сделки успешно изменен!`){
+                await console.log('\x1b[38;5;2m\t', `Перевод сделки во второй статус=${resultRecord.message}`, '\x1b[0m');
+            }else {
+                await console.log('\x1b[38;5;3m\t', `Перевод сделки во второй статус=${resultRecord.message}`, '\x1b[0m');
+            }
 
             let {Deal} = require("../tests_modules/sub_objects/deal_obj.js");
             let NewDeal = new Deal(browser, page, DealData);
@@ -214,7 +218,8 @@ let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
                         throw `FAIL !!! Количество таких ошибок (${NumNeedCheckDriverDocs}) -> Перевод сделки во второй статус=${resultRecord.message}`;
                     }
                     // Открыть новый экземпляр Браузера и залогиниться под Парфёновой
-                    resOk = await SetDriverCheck(LoginData);
+
+                    resOk = await SetDriverCheck(LoginData, DealData.objTransporterCompany.DriverData);
 
                     break;
                 case "Нельзя передать сделку под контроль МЦ без подписанной Заявки с Перевозчиком! Загрузите файл !":
@@ -241,31 +246,19 @@ let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
 
             }// switch (resultRecord.message)
 
+        } // while (enableError) -------------------------------------------
+        let strTmpError = `БАГ !!! -> При переводе статуса сделки не было требования о`;
+        if(NumErrorNoTimeFirstCall < 1){
+            await console.log('\x1b[38;5;1m\t', `${strTmpError}б Установке Времени Первого звонка Водителю !!!`, '\x1b[0m');
+        }
+        if(NumErrorNoFileTransporter < 1) {
+            await console.log('\x1b[38;5;1m\t', `${strTmpError} Подписанной Заявке с Перевозчиком !!!`, '\x1b[0m');
+        }
+        if(NumNeedCheckDriverDocs < 1){
+            await console.log('\x1b[38;5;1m\t', `${strTmpError} Проверке документов Водителя !!!` , '\x1b[0m');
+        }
 
 
-        } // while (true) -------------------------------------------
-
-
-        // if (!resOk) {
-        //     throw `FAIL => Проверить текущую сделку в таблице сделок NewDealTable.TableDealCheckOneCurrentDeal();`;
-        // }
-
-
-        // resOk = await NewDealTable.Temp(tempLenF); // temp
-        // if (!resOk) {
-        //     throw `FAIL => NewDealTable.Temp();`;
-        // }
-
-
-        // if (!GetTempStr.includes(DealData.strLogistician)) {
-        //     enableError = true;
-        //     g_StrOutLog+=`     FAIL => ("ЛОГІСТ")["${DealData.strLogistician}" Не найдено в =>"${GetTempStr}"]\n`;
-        //     //throw `     FAIL => ("ЛОГІСТ")["${DealData.strLogistician}" Не найдено в =>"${GetTempStr}"]`;//<--специальный вызов ошибки!
-        // }
-        // //await TempStop(page);
-        // if (enableError){
-        //     throw `При проверке Ранее Созданной Сделки Были Несоответствия Данных`;
-        // }
         g_StatusCurrentTest = 'Пройден';
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
@@ -286,7 +279,7 @@ let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
 
 }; // ТЕСТ let NewDealSetStatusInTable = async (browser, page, DealData)
 
-SetDriverCheck = async function(LoginData){
+SetDriverCheck = async function(LoginData, ContactData){
     let xPath, resOk;
     try {
         let NewB = require('../tests_modules/login.js');
@@ -294,16 +287,63 @@ SetDriverCheck = async function(LoginData){
         let NewPage = await NewB.BrowserGetPage(NewBrowser, g_FrontCfoFoxURL);
         resOk = await NewB.LoginCrm(NewPage, NewBrowser, LoginData);
         await WaitRender(NewPage);
-        await WaitMS(5000);
-        await ScreenLog(NewPage, "Новый Браузер", 3);
+       // await WaitMS(5000);
+        let {Contact} = require('../tests_modules/sub_objects/contact_obj.js');
+        let NewContact = new Contact(NewBrowser, NewPage, ContactData);
+        // // Клик по пункту верхнего меню "Водители"
+        // let xMenuDrivers = `//a[@href="/crm/drivers"][contains(text(), "Водители")]`;
+        // resOk = await ClickByXPath(NewPage, xMenuDrivers, );
+
+        // Переход по Линку на контакт Водителя
+        // await console.log(`ContactData.strLink=(${ContactData.strLink})`);
+        let strUrls = [
+            `${g_BackCfoFoxURL}/api/auth-user`,
+            `${g_BackCfoFoxURL}/api/personal-stats`,
+            `${g_BackCfoFoxURL}/api/contact-type`,
+            `${g_BackCfoFoxURL}/api/constructor/contact/${ContactData.strContactID}`,
+        ];
+        resOk = await ResponsesListener(NewPage, strUrls, true, strUrls.length);
+        await NewPage.goto(ContactData.strLink);
+        resOk = await ResponsesListenerWaitForAllResponses(31000);
+        // Снимаем слушателя
+        await ResponsesListener(NewPage, strUrls, false, strUrls.length);
+        if(!resOk){
+            throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+        }
+        await WaitRender(NewPage);
+
+        //await WaitMS(5000);
+
+        let xNeedCheck = `//span[@class="fox-checkbox-label"][contains(text(), "Требует проверки")]`;
+        await WaitForElementIsPresentByXPath(5000, NewPage, xNeedCheck);
+        resOk = await HoverByXPathNum(NewPage, 0, xNeedCheck);
+        await WaitRender(NewPage);
+        resOk = await ClickByXPath(NewPage, xNeedCheck);
+        if(!resOk){
+            throw `Fail -> Снять Пометку "Требует проверки" ClickByXPath(${xNeedCheck})`;
+        }
+        await WaitRender(NewPage);
+
+        let xButtonSaveContact = `//div[@class="crm-contact__store"]//button[@type="button"][contains(@class, "primary")][contains(text(), "Сохранить")]`;
+
+
+        // await ScreenLog(NewPage, "Новый Браузер", 3);
+        resOk = await ClickByXPath(NewPage, xButtonSaveContact);
+        if(!resOk){
+            throw `Fail -> Сохранить контакт Водителя ClickByXPath(${xButtonSaveContact})`;
+        }
+
+
+        // await ScreenLog(NewPage, "Новый Браузер", 3);
         await WaitRender(NewPage);
         await NewBrowser.close();
         return true;
     }catch (e) {
         await console.log(e);
+        await ScreenLog(NewPage, "Новый Браузер -> SetDriverCheck", 1);
         return false;
     }
-};
+}; // SetDriverCheck
 
 module.exports.DealCheckNewInTable = DealCheckNewInTable;
 module.exports.NewDealSetStatusInTable = NewDealSetStatusInTable;

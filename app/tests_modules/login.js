@@ -1,20 +1,19 @@
-let StartBrowser = async () => {
+let StartBrowser = async (ShowText=false) => {
     try {
 
 
-        await console.log("StartBrowser");
+        if(ShowText){ await console.log("StartBrowser");}
         const puppeteer = require('puppeteer');
         // let width = 1700;
         // let height = 950;
         let StartBrowserInHeadLessMode;
-        await console.log('\x1b[38;5;2m', "g_ShowActionInBrowser=>", g_ShowActionInBrowser, '\x1b[0m');
+        if(ShowText){ await console.log('\x1b[38;5;2m', "g_ShowActionInBrowser=>", g_ShowActionInBrowser, '\x1b[0m');}
         if (await g_ShowActionInBrowser) {
             StartBrowserInHeadLessMode = false;
-            await console.log('\x1b[38;5;2m', "StartBrowserInHeadLessModeF=>", StartBrowserInHeadLessMode, '\x1b[0m');
         } else {
             StartBrowserInHeadLessMode = true;
-            await console.log('\x1b[38;5;2m', "StartBrowserInHeadLessModeT=>", StartBrowserInHeadLessMode, '\x1b[0m');
         }
+        if(ShowText){ await console.log('\x1b[38;5;2m', "StartBrowserInHeadLessModeF=>", StartBrowserInHeadLessMode, '\x1b[0m');}
 
         let browser = await puppeteer.launch({
             //headless: false,
@@ -45,7 +44,7 @@ let StartBrowser = async () => {
 
         });
         let tempBV = await browser.version();
-        await console.log(`tempBV=${tempBV}`);
+        if(ShowText){ await console.log(`tempBV=${tempBV}`);}
 
 // '--dns-prefetch-disable',
 //         '--no-sandbox',
@@ -141,13 +140,13 @@ let BrowserGetPage = async (browser, strPageURL) => {
     }
 };
 
-let LoginCrm = async (page, browser, LoginData) => {
+let LoginCrm = async (page, browser, LoginData, SpeedTest= false ) => {
     const nameTest = NameFunction() +'"'+ LoginData.strUserLastName+'"';
     try {
 
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
-    await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');
+        if(SpeedTest){ await console.log('\x1b[38;5;2m', "Тест[", nameTest,"]=>" ,g_StatusCurrentTest , '\x1b[0m');}
     g_StrOutLog+=`Тест[ ${nameTest} ]=> ${g_StatusCurrentTest} `;
 
     let ElPresent;
@@ -287,6 +286,7 @@ let LoginCrm = async (page, browser, LoginData) => {
             let strPSS = g_PathSS + `screenshot_login.png`;
             await this.page.screenshot({path: strPSS, fullPage: true});
             await console.log(`Скриншот: ${strPSS}`);
+            await ResponseListener(page, reqUrl, false);
             throw `FAIL => ResponseListenerWaitForResponse(${reqUrl})`;
         }
         resOk = await ResponseListener(page, reqUrl, false);
@@ -296,67 +296,74 @@ let LoginCrm = async (page, browser, LoginData) => {
         resOk = await WaitUntilXPathExist(page, 12000, `//span[@class="spinner-border"]`);
         await WaitRender(page);
 
+if(SpeedTest) {
+    let tStr = `Процесс`;
+    let C = FRGB(0, 5, 5, 1);
+    await process.stdout.write(`${tStr}`);
+    for (let i = 0; i < 10; i++) {
+        await WaitMS(100);
+        //await process.stdout.write(`\x1B[0G${tStr} : ${i}%`);
+        await process.stdout.write(`\r${C}${tStr} : ${i}%${FRGB()}`);
+    }
+    C = FRGB(0, 0, 5, 0);
+    await process.stdout.write(`\r${C}${tStr} - успешно завершён !${FRGB()}`);
+    await WaitMS(1000);
+    await process.stdout.write(`\r`);
 
-        let tStr = `Процесс`;
-        let C = FRGB(0, 5, 5,1);
-        await process.stdout.write(`${tStr}`);
-        for(let i=0 ; i<10; i++){
-            await WaitMS(100);
-            //await process.stdout.write(`\x1B[0G${tStr} : ${i}%`);
-            await process.stdout.write(`\r${C}${tStr} : ${i}%${FRGB()}`);
-        }
-        C = FRGB(0, 0, 5,0);
-        await process.stdout.write(`\r${C}${tStr} - успешно завершён !${FRGB()}`);
-        await WaitMS(1000);
-        await process.stdout.write(`\r`);
-
-        await console.log(`\n`);
+    await console.log(`\n`);
 
 // Нажмём на кнопку "Обновить" и замерим время первого респонса
-        let xPerRage = `//div[@class="perPage"]`;
-        let xPerPageSelect = xPerRage + `/select`;
-        await ClickByXPath(page, xPerRage);
-        await WaitRender(page);
-        let Handle = await page.$x(xPerPageSelect);
-        // await Handle[0].type(`1`);
-        let ValSelect = `100`;
-        await Handle[0].select(ValSelect);
-        //await WaitMS(1000);
-        //await WaitRender(page);
-        let xButtonReload = `//button[@class="refresh-cfo-btn"][span[contains(text(), "Обновить")]]`;
-        let CfoUrl = `${g_BackCfoFoxURL}/api/cfo`;
-        resOk = await ResponseListener(page, CfoUrl, true);
-        // let TimerStart = new Date(Date.now());
-        let TimerStart = Date.now();
-       // await console.log(`ResponseListener \nTimerStart:${TimerStart}`);
-       //  resOk = await ClickByXPath(page, xButtonReload);
-       //  if(!resOk){
-       //      throw `Fail -> ClickByXPath(${xButtonReload})`;
-       //  }
-        resOk = await ResponseListenerWaitForResponse(65000);
-        if(!resOk){
-            throw `Fail -> ResponseListenerWaitForResponse(${CfoUrl})(65000 ms)`;
-        }
-        resOk = await ResponseListener(page, CfoUrl, false);
-       // let TimerEnd = new Date(Date.now());
-        let TimerEnd = Date.now();
-        //await console.log(`ResponseListener \nTimerEnd:${TimerEnd}`);
-        let dtAll = TimerEnd - TimerStart;
-         // цвет сообщения
+    let xPerRage = `//div[@class="perPage"]`;
+    let xPerPageSelect = xPerRage + `/select`;
+    await ClickByXPath(page, xPerRage);
+    await WaitRender(page);
+    let Handle = await page.$x(xPerPageSelect);
+    // await Handle[0].type(`1`);
+    let ValSelect = `100`;
+    await Handle[0].select(ValSelect);
+    //await WaitMS(1000);
+    //await WaitRender(page);
+    let xButtonReload = `//button[@class="refresh-cfo-btn"][span[contains(text(), "Обновить")]]`;
+    let CfoUrl = `${g_BackCfoFoxURL}/api/cfo`;
+    resOk = await ResponseListener(page, CfoUrl, true);
+    // let TimerStart = new Date(Date.now());
+    let TimerStart = Date.now();
+    // await console.log(`ResponseListener \nTimerStart:${TimerStart}`);
+    //  resOk = await ClickByXPath(page, xButtonReload);
+    //  if(!resOk){
+    //      throw `Fail -> ClickByXPath(${xButtonReload})`;
+    //  }
+    resOk = await ResponseListenerWaitForResponse(65000);
+    if (!resOk) {
+        throw `Fail -> ResponseListenerWaitForResponse(${CfoUrl})(65000 ms)`;
+    }
+    resOk = await ResponseListener(page, CfoUrl, false);
+    // let TimerEnd = new Date(Date.now());
+    let TimerEnd = Date.now();
+    //await console.log(`ResponseListener \nTimerEnd:${TimerEnd}`);
+    let dtAll = TimerEnd - TimerStart;
+    // цвет сообщения
 
-        if (dtAll<2000){    C = FRGB(0, 1, 5,1);} // Зелёный
-        else if(dtAll<3000){C = FRGB(0, 5, 5,0);} // Жёлтый
-        else {              C = FRGB(0, 5, 1,1);} // Красный
-        let strDtAll = msToMMSSMS(dtAll);
-        await console.log(`${C}ResponseListener(${CfoUrl}) - ${ValSelect} сделок${FRGB()}`);
-        //await console.log(`${C}Времени от начала: ${dtAll}${FRGB()}`);
-        await console.log(`${C}Время загрузки: ${strDtAll}   |          ( ${dtAll} ms ) ${FRGB()}`);
+    if (dtAll < 2000) {
+        C = FRGB(0, 1, 5, 1);
+    } // Зелёный
+    else if (dtAll < 3000) {
+        C = FRGB(0, 5, 5, 0);
+    } // Жёлтый
+    else {
+        C = FRGB(0, 5, 1, 1);
+    } // Красный
+    let strDtAll = msToMMSSMS(dtAll);
+    await console.log(`${C}ResponseListener(${CfoUrl}) - ${ValSelect} сделок${FRGB()}`);
+    //await console.log(`${C}Времени от начала: ${dtAll}${FRGB()}`);
+    await console.log(`${C}Время загрузки: ${strDtAll}   |          ( ${dtAll} ms ) ${FRGB()}`);
 
-        // await console.timeEnd("Execution time took");
+    // await console.timeEnd("Execution time took");
+}// if(SpeedTest)
 
         g_StatusCurrentTest = 'Пройден';
         await g_SuccessfulTests++;
-        await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
+        if(SpeedTest){ await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');}
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
 
         await page.evaluate(pageCursor, false); // true - BIG курсор )))

@@ -29,9 +29,9 @@ class DataForTests {
         //--------------------------------------------------------------
         // Юзер 2 Данные для логина
         this.LoginDataP = {
-            strUserLastName: 'Ярін',
-            strUserFirstName: 'Кирило',
-            strUserMiddleName: 'Олександрович',
+            strUserLastName: 'Колнаус',
+            strUserFirstName: 'Альона',
+            strUserMiddleName: 'Миколаївна',
             strEmail: 'parfenova.a@transloyd.com',
             strPassword: '1111',
         };//this.LoginDataR
@@ -63,7 +63,7 @@ class DataForTests {
                 strPaymentCondition: 'По банковским', // 'По банковским', 'По календарным'
             },
             LocationData1: {
-                strAddressFOX: `Мамедова Щель`,//await GetFunnyStr('StrAddressFunny'),//'Дрочево', `Бухалово`,'StrAddress'
+                strAddressFOX: await GetFunnyStr('StrAddressFunny'),//'Дрочево', `Бухалово`,'StrAddress'
                 strAddressFOXfromGoogle: ``,
                 strAddressTTN: `Юридический адрес (Для ТТН и заявок)`,
                 strCategory: ['Грузополучатель', 'Грузоотправитель', 'Перевозчик'], // ['Грузополучатель','Грузоотправитель','Перевозчик'],
@@ -87,6 +87,8 @@ class DataForTests {
                         isDefault: true,
                         isFormer: false,
                     },
+                    strContactID : ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
+                    strLink: ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
                     strINN: '' + await randomInt(1001001001, 9991999199),
                     strContactType: `Логист`, // `Логист`,//`Кладовщик`, `Хозяин`, //
                     strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
@@ -121,6 +123,8 @@ class DataForTests {
                         isDefault: true,
                         isFormer: false,
                     },
+                    strContactID : ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
+                    strLink: ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
                     strINN: '' + await randomInt(1001001001, 9991999199),
                     strContactType: `Логист`, // `Логист`,//`Кладовщик`, // `Хозяин`,
                     strLastName: await GetFunnyStr('StrLastNameFunny'),//Фамилия
@@ -204,6 +208,7 @@ class DataForTests {
                 strMiddleName: await GetFunnyStr('StrMiddleNameFunny'),//Отчество
                 strFIO : ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
                 strContactID : ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
+                strLink: ``, // <= Заполнится автоматически после создания Водителя из Компании !!!
                 strWorkOnCompany: ``, // Заполнить в перед созданием объекта из CompanyData !!!
                 strWorkOnCompanyEDRPOU: ``, // Заполнить перед созданием объекта из CompanyData !!!
                 // strDriverLicenseNumber: `ПРВ` + await randomInt(100001, 999999),

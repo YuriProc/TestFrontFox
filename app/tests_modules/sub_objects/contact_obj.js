@@ -89,6 +89,10 @@ class Contact {
         this.xModalFindExistsCompanyButtonSave = this.xModalFindExistsCompany + `//button[@type="button"][contains(text(), "Сохранить")]`;
         // Закрыть модалку Добавить "Работает на"
         this.xButtonCloseOnCompany = `//button[@class="custom-modal-close"]`;
+        // Фото Загрузить
+        this.xContactBaseInfo = `//div[@class="contact-base-info"]`;
+        this.xLoadPhoto = this.xContactBaseInfo + `//div[@class="crm-avatar__empty"][contains(text(), "Загрузить")]`;
+        this.xEditPhoto = this.xContactBaseInfo + `//div[@class="crm-avatar__edit"]`;
         // Добавить файл
         this.xButtonAddFile = `//button[@class="file-name"]`;
         this.xButtonPlusAddFile = `//div[@class="files-manager__add-input-btn"][contains(text(), "+ Добавить")]`;
@@ -775,6 +779,7 @@ class Contact {
             }
             // Снимаем слушателя
             resOk = await ResponsesListener(this.page, strUrls, false, strUrls.length);
+            //
             await console.log('\x1b[38;5;2m\t', `Сохранили контакт `,
                                                 `${this.ContactData.strLastName} `,
                                                 `${this.ContactData.strFirstName} `,
@@ -921,6 +926,11 @@ class Contact {
             if (!resOk){
                 throw `FAIL => this.EnterDriverLicenseNumber`;
             }
+            // Загрузим Файл Аватара
+            resOk = await this.LoadPhotoInContact();
+            if(!resOk){
+                throw `FAIL !!! -> this.LoadPhotoInContact();`;
+            }
             // Загрузим Файл Доков
             resOk = await this.LoadNewFileInContact();
             if(!resOk){
@@ -1007,6 +1017,55 @@ class Contact {
         }
     }//async CreateNewContactFromLocation()
     //----------------------------------------
+
+    //----------------------------------------
+    async LoadPhotoInContact() {
+        let resOk;
+        let xPathFileButton = ``;
+        let MyFilePath;
+        try {
+            // Фото Загрузить
+            MyFilePath = await SaveTempPictureFromRandomURL(this.browser, 'TrollFaceURL', -1);
+            // Проверить какая кнопка на форме -> Добавить файл
+            if (await ElementIsPresent(this.page, this.xLoadPhoto)){
+                xPathFileButton = this.xLoadPhoto;
+            }else if(await ElementIsPresent(this.page, this.xEditPhoto)){
+                xPathFileButton = this.xEditPhoto;
+            }else {
+                throw `FAIL !!! -> Не Найдена ни одна кнопка загрузки Файлов Аватара`;
+            }
+            await HoverByXPathNum(this.page, 0, xPathFileButton);
+            await WaitRender(this.page);
+
+            if (MyFilePath !== '') {
+                let strUrls = [
+                    `${g_BackCfoFoxURL}/api/upload-file`,
+                ];
+                resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
+                const [fileChooserDocs] = await Promise.all([
+                    this.page.waitForFileChooser(),
+                    ClickByXPath(this.page, xPathFileButton)
+
+                ]);
+                await fileChooserDocs.accept([MyFilePath]);
+                // Ждём завершения всех запросов по Загрузке Файла
+                resOk = await ResponsesListenerWaitForAllResponses(31000);
+                // Снимаем слушателя
+                await ResponsesListener(this.page, strUrls, false, strUrls.length);
+                if(!resOk){
+                    throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+                }
+                await WaitRender(this.page);
+            }else{
+                throw `FAIL => SaveTempPictureFromRandomURL(TrollFaceURL)`;
+            }
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in LoadPhotoInContact`);
+            return false;
+        }
+    }//async LoadPhotoInContact()
+    //----------------------------------------
     async LoadNewFileInContact() {
         let resOk;
         let xPathFileButton = ``;
@@ -1020,9 +1079,10 @@ class Contact {
             }else if(await ElementIsPresent(this.page, this.xButtonPlusAddFile)){
                 xPathFileButton = this.xButtonPlusAddFile;
             }else {
-                throw `FAIL !!! -> Не Найдена ни одна кнопка загрузки Файлов`;
+                throw `FAIL !!! -> Не Найдена ни одна кнопка загрузки Файлов Документов`;
             }
-
+            await HoverByXPathNum(this.page, 0, xPathFileButton);
+            await WaitRender(this.page);
 
             if (MyFilePath !== '') {
                 let strUrls = [

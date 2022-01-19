@@ -82,7 +82,12 @@ global.g_ArrayURL = {
         'https://www.memesmonkey.com/images/memesmonkey/6a/6a584bd506df92a1f1b2aa930a126ad7.jpeg',
         'https://c7.hotpng.com/preview/974/294/484/league-of-legends-internet-meme-lol-deviantart-lol-transparent-png-thumbnail.jpg',
         'https://c7.hotpng.com/preview/146/301/204/rage-comic-internet-meme-trollface-know-your-meme-face-thumbnail.jpg',
-        'https://c7.hotpng.com/preview/250/312/876/cat-mobile-phones-troll-ripndip-telephone-cat-thumbnail.jpg'
+        'https://c7.hotpng.com/preview/250/312/876/cat-mobile-phones-troll-ripndip-telephone-cat-thumbnail.jpg',
+        'https://sun9-79.userapi.com/c10314/g35763097/a_6b3c370a.jpg',
+        'https://demotivation.me/images/20090611/wmk7b3b0xj5h.jpg',
+        'https://static10.tgstat.ru/channels/_0/80/8011b2fa69888065bf932add0aacf054.jpg',
+        'https://i.pinimg.com/236x/5d/57/bc/5d57bc5576c04566921e261086cbb86f.jpg',
+        'https://image.freepik.com/free-vector/cool-warrior-logo_10051-117.jpg',
     ],
     'DriverFaceURL': [
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK0ZMv9e4BR6dc8964TN4u2hB5wXTUXLAqldJgAyQE88OdZbI4&s',
@@ -137,6 +142,11 @@ global.g_ArrayURL = {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTejWKSvyiSWrn9CViuurhwk9VCDGUgDtJbtQkh6Cz3DfztuFhC',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRhrqg0tDFP75PuBLo7o2UPoxzxRY85kuuOgvwlQokHY531MYdP',
         'https://images-na.ssl-images-amazon.com/images/I/61nGYc5e7tL._SL500_AA300_.png',
+        'https://cameralabs.org/media/lab15/post/02-15/16/logotipy-kompaniy-kurezy_2.jpg',
+        'https://avatanplus.com/files/resources/original/579274da88854156141875bf.png',
+        'https://i1.i.ua/prikol/pic/3/1/397413.jpg',
+        'https://avtoshark.com/wp-content/uploads/2020/12/shildik-krug-harlej-%E2%84%962.jpg',
+        'https://i1.i.ua/prikol/pic/3/1/397413_380848.jpg',
 
 
 
@@ -459,6 +469,7 @@ global.g_ArraySTR = {
         'Гексель',
         'Дроссель',
         'Доренко',
+        'Долбочёс',
         'Драчук',
         'Евробляхер',
         'Ёксель',
@@ -487,6 +498,7 @@ global.g_ArraySTR = {
         'Пердак',
         'Пендаль',
         'Пиптик',
+        'Писькаструй',
         'Пихарь',
         'Робокоп',
         'Сквиртобрызгов',

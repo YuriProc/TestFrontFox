@@ -90,7 +90,7 @@ let OpenFox = async () => {
             throw 'Ошибка OpenConfig !!!';//<--специальный вызов ошибки!
         }
         g_StrOutLog += `Тесты ========================================\n`;
-        browser = await LPage.StartBrowser();
+        browser = await LPage.StartBrowser(true);
 
         //let strLoginCrmFoxURL = g_FrontCrmFoxURL + '/login';
         let strLoginCrmFoxURL = g_FrontCfoFoxURL;// g_FrontCrmFoxURL;
@@ -110,7 +110,7 @@ let OpenFox = async () => {
 
         // Логинимся под ТОСТЕРОМ
         Data.LoginDataT.ResolvedFailLogin = false;//true;// <- Можно или нельзя Фейлиться по Email или Пароль
-        returnResult = await LPage.LoginCrm(page, browser, Data.LoginDataT);
+        returnResult = await LPage.LoginCrm(page, browser, Data.LoginDataT, true);
         if (!returnResult) { // Если не получилось то логинимся под ROOT`ом
             if(Data.LoginDataT.ResolvedFailLogin){
             returnResult = await LPage.LoginCrm(page, browser, Data.LoginDataR);
@@ -308,6 +308,7 @@ await console.log(`NumTests=${i}`);
 
 
             Data.DealData1.PointsUnLoading[0].PointUnLoading.strAddressFOXfromGoogle = Data.CompanyData1.LocationData2.strAddressFOXfromGoogle;
+            Data.DealData1.objTransporterCompany = Data.CompanyData2; // <-- !!! FULL OBJECT
             Data.DealData1.strTransporterCompanyName = Data.CompanyData2.strCompanyName; // Заполнить ПЕРЕД выполнением Теста
             Data.DealData1.strTransporterCompanyCode = Data.CompanyData2.strCompanyCode; // Заполнить ПЕРЕД выполнением Теста
             Data.DealData1.strTransporterCompanyID = Data.CompanyData2.strCompanyID; // Заполнить ПЕРЕД выполнением Теста
