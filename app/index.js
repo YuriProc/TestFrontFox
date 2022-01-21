@@ -20,7 +20,7 @@ let OpenVariables = require('./data/data_for_tests.js');
 const fs_log = require('fs');
 
 let LPage = require('./tests_modules/login.js');
-let PGAPage = require('./tests_modules/auto_kiker.js');
+let PGA = require('./tests_modules/pga.js');
 
 
 let UCNPage = require('./tests_modules/user_create_new');
@@ -166,8 +166,11 @@ let OpenFox = async () => {
 
 await console.log(`NumTests=${i}`);
            // // // await WaitMS(5000);
-           //  Data.DealData1.strDealID = `45633`;
+           //  Data.DealData1.strDealID = `45643`;
            //  Data.DealData1.strStatusID = `1`;
+           //  Data.CompanyData2.DriverData.strLink = `https://dev.cfo.tl.ee/crm/contact/41085`;
+           //  Data.CompanyData2.DriverData.strContactID = `41085`;
+           //  Data.DealData1.objTransporterCompany = Data.CompanyData2; // <-- !!! FULL OBJECT
 
            //  Data.DealData1.strClientCompanyName = `ПРАТ "ВО "СТАЛЬКАНАТ-СІЛУР"`;//4316
            //  Data.DealData1.strClientCompanyID = `4316`;
@@ -204,10 +207,10 @@ await console.log(`NumTests=${i}`);
            //
            //  Data.DealData1 = await DealCheckNPage.DealCheckNewInTable(browser, page, Data.DealData1);
            // //  // await console.log(`-----StartNewBrowser`);
-           // //  // let nbrowser = await PGAPage.StartNewBrowser(false);
-           // //  // let nPGAPage = await PGAPage.NewBrowserGetPage(nbrowser, `http://10.10.10.232/pgadmin4/login`);
+            let resPGA = await PGA.TempSetPass(true);
+            await TempStop(page);
            //
-           //  Data.DealData1 = await DealCheckNPage.NewDealSetStatusInTable(browser, page, Data.DealData1);
+           //  Data.DealData1 = await DealCheckNPage.NewDealSetStatusInTable(browser, page, Data.DealData1, Data.LoginDataP);
            //  if(!g_ShowActionInBrowser){
            //      await browser.close();
            //  }

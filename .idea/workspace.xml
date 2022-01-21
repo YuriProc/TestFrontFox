@@ -2,17 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f9b755b-153b-451e-a3a1-edd9dcea0179" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/tests_modules/pga.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/pga_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/data/data_for_tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/data_for_tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/data/global_variables.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/global_variables.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/global_functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/global_functions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/company_create_new_v2.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/company_create_new_v2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests_modules/auto_kiker.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/deal_check_new.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/deal_check_new.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,8 +25,23 @@
       <executable />
     </execution>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="1ZDr8tQI85LdSDTMmgtyVsz6snJ" />
   <component name="ProjectViewState">
@@ -34,6 +49,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -74,7 +90,9 @@
       <workItem from="1642162523663" duration="9159000" />
       <workItem from="1642408155413" duration="16702000" />
       <workItem from="1642494835421" duration="16222000" />
-      <workItem from="1642580195402" duration="18871000" />
+      <workItem from="1642580195402" duration="19004000" />
+      <workItem from="1642665437792" duration="18322000" />
+      <workItem from="1642752817924" duration="16129000" />
     </task>
     <servers />
   </component>

@@ -534,7 +534,8 @@ WaitForElementIsPresentByXPath  = async function (timeMS, page, MyXPath) {
                     // if(MyXPath===`//button[@type="button"][@class="close"]`){
                     //     await console.log(`0`);
                     // }
-                    await page.waitFor(200);
+                    // await page.waitFor(200);
+                    await WaitMS(200);
                 }
             }
         }
@@ -869,7 +870,7 @@ ClickByXPath = async function (page , MyXPath, strUrls=null, wMS=31000) {
                 resOk = await ResponsesListenerWaitForAllResponses(wMS);
                 await ResponsesListener(page, strUrls, false, strUrls.length);
                 if(!resOk){
-                    throw `Fail -> ResponsesListenerWaitForAllResponses(${wMS})(${strUrls})`;
+                    throw `Fail -> ResponsesListenerWaitForAllResponses(${wMS})`;
                 }
             }
             return true;
@@ -1030,11 +1031,11 @@ DoubleClickByXPath = async function (page , MyXPath) {
             //await page.evaluate(el => el.click(), linkHandlers[0]);
             return true;
         } else {
-            //await console.log('Ошибка внутр ClickByXPath:(linkHandlers.length=',linkHandlers.length , ')','\n');
+            await console.log('Ошибка внутр ClickByXPath:(linkHandlers.length=',linkHandlers.length , ')','\n');
             return false;
         }
     }catch (e) {
-        //await console.log('Ошибка внутр ClickByXPath:', e ,'\n');
+        await console.log('Ошибка внутр ClickByXPath:', e ,'\n');
         return false;
     }
 };
@@ -2259,7 +2260,7 @@ ResponsesListener = async function(page, requestUrls, setListener, Q = 0) { // Q
                 }
 
                 for (let i=0;i<g_RecEventListener.requestUrlsArrayLength; i++) {
-                    if (request.url().includes(g_RecEventListener.requestUrls[i])) {
+                    if (request.url().includes(g_RecEventListener.requestUrls[i]) && g_RecEventListener.EventListener_responses[i] === ``) {
                         const response = await request.response();
                         let resultJ = await response.json();
                         g_RecEventListener.EventListener_requestUrls[i] = request.url();
@@ -2339,8 +2340,9 @@ ResponsesListenerWaitForAllResponses = async function (timeMS = 4000){
     // let startTime = await Date.now();
     // g_RecEventListener.startTime Устанавливается в установщике прослушивателя !!!!!
     let EmptyResponse = false;
+    let TimeOk = true;
     try {
-        while (true) {
+        while (TimeOk) { // -------------------------------
             EmptyResponse = false;
             for (let i = 1; i < g_RecEventListener.requestUrlsArrayLength; i++) {
                 if (g_RecEventListener.EventListener_responses[i] === ``) {
@@ -2354,15 +2356,27 @@ ResponsesListenerWaitForAllResponses = async function (timeMS = 4000){
             }
             if ((await Date.now() - g_RecEventListener.startTime) > timeMS) {
                 g_RecEventListener.timeAll = await Date.now() - g_RecEventListener.startTime;
-                return false;
+                TimeOk = false;
             } else {
                 await WaitMS(100);
             }
-        } // while (true)
+        } // while (TimeOk) ----------------------------
+
+        EmptyResponse = false;
+        let strError = ``;
+        for (let i = 1; i < g_RecEventListener.requestUrlsArrayLength; i++) {
+            if (g_RecEventListener.EventListener_responses[i] === ``) {
+                EmptyResponse = true;
+                strError+= `\t Empty -> requestUrl[${i}]=(${g_RecEventListener.requestUrls[i]})\n`;
+            }
+        } // for (let i = 1; i < g_RecEventListener.requestUrlsArrayLength; i++)
+        if(EmptyResponse){ let C = FRGB(0, 5, 2, 2);
+            throw `\t${C} Нет ответа по запросу(ам):${FRGB()}\n${strError}`;
+        }
 
     }catch (e) {
-        g_RecEventListener.timeAll = await Date.now() - startTime;
-        await console.log(`${e} \n FAIL in ResponsesListenerWaitForAllResponses(${timeMS})`);
+        g_RecEventListener.timeAll = await Date.now() - g_RecEventListener.startTime;
+        await console.log(`${e} \n\t FAIL in ResponsesListenerWaitForAllResponses(${g_RecEventListener.timeAll} ms)`);
         return false;
     }
 }// ResponsesListenerWaitForAllResponses = async function (timeMS = 4000)
@@ -2443,6 +2457,74 @@ GetDealMarshrut = async function(DealData){
         await console.log(`${e} \n FAIL in GetDealMarshrut`);
         return ``;
     }
+}
+//----------------------------------------
+BlockEditCheck = async function(page, btnN=1, OutText=``, MakeSS =false){
+    try {
+        let resOk;
+        let xBlockUserName = `//div[@class="lock-info"]//div[contains(text(), "пользователь")]/strong`;
+        // btnN=0 -> Плашка блокировки одновременного редактирования Кнопка "Хочу быть первым"
+        let xBlockButtonWantFirst = `//div[@class="lock-button"][contains(text(), "Хочу быть первым")]`;
+        // btnN=1 ->Плашка блокировки одновременного редактирования Кнопка "Кикнуть первого"
+        let xBlockButtonKickFirst = `//div[@class="lock-button"][contains(text(), "Кикнуть первого")]`;
+        await WaitRender(page);
+        let elPresent = await WaitForElementIsPresentByXPath(0, page, xBlockButtonKickFirst);
+        let i = 0;
+        let strMsg = ``;
+        let xP = ``;
+        while (elPresent && i<10) {
+            let strUserName = await ElementGetInnerText(page,0, xBlockUserName);
+            if(btnN === 0 || btnN === `0`){
+                xP = xBlockButtonWantFirst;
+            }else {
+                xP = xBlockButtonKickFirst;
+            }
+            if (OutText !== ``){ strMsg = `\t ` + OutText + ` -> Карточку уже открыл пользователь ${strUserName}`;}
+            if (MakeSS){
+                await HoverByXPath(page, xP);
+                await ScreenLog(page, strMsg, 3);
+            }else if(OutText){
+                await console.log(FRGB(0,5,5,0), strMsg , FRGB());
+            }
+            resOk = await ClickByXPath(page, xP);
+            if(!resOk){
+                throw `Fail -> ClickByXPath(${xP})`;
+            }
+            i++;
+            await WaitRender(page);
+            await WaitRender(page);
+            await WaitRender(page);
+            elPresent = await WaitForElementIsPresentByXPath(0, page, xBlockButtonKickFirst);
+            if (!elPresent) {
+                await WaitRender(page);
+                await WaitRender(page);
+                await WaitRender(page);
+            }
+        }// while (elPresent && i<10)
+        return true;
+    }catch (e) {
+        await console.log(`${e} \n FAIL in BlockEditCheck(btnN="${btnN}")`);
+        return false;
+    }
+} // BlockEditCheck = async function(page, btnN, OutText=false, MakeSS =false)
+//----------------------------------------
+MyJob = async function(mText) {
+        let tEnd = msToMMSSMS(await Date.now() - g_tempTimeStart);
+       await console.log(`MyJob -> mText=${mText} time=(${tEnd})--------------------------`);
+
+}
+// //----------------------------------------
+// MySetWork = async function(ms=0) {
+//     setTimeout(function timeout() {
+//         console.log(`MyWork -> timeout(${ms})--------------------------`);
+//     }, ms);
+// }
+//----------------------------------------
+MySetWork = async function(t, ms=0) {
+    g_tempTimeStart = await Date.now();
+    setTimeout(function XYZtimeoutXYZ() {
+       MyJob(t);
+    }, ms);
 }
 //----------------------------------------
 array_flip = async function ( trans )

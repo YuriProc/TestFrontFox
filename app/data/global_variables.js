@@ -9,6 +9,8 @@ global.g_tempDataFromEventListener_requestUrl = ``;
 global.g_tempDataFromEventListener_response = ``;
 global.g_tempDataFromEventListener_json = ``;
 //---
+global.g_tempTimeStart = ``;
+//---
 global.g_RecEventListener = {
     setListener : false,
     startTime:``,
@@ -484,6 +486,7 @@ global.g_ArraySTR = {
         'Косяков',
         'Кидалов',
         'Карачун',
+        'Кендюх',
         'Лоховцев',
         'ЛиСиЦин',
         'Мартышко',
@@ -491,6 +494,7 @@ global.g_ArraySTR = {
         'Мух',
         'Наливайко',
         'Отсос',
+        'Паразит',
         'Поднасралов',
         'Педрищенко',
         'Пересунько',

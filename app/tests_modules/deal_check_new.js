@@ -84,6 +84,8 @@ let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
     g_StatusCurrentTest = 'Запущен';
     g_LaunchedTests++;
     await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
+
+    await MySetWork(`Тест_Таймаут_Таймера`, 35000);
     g_StrOutLog += `Тест[ ${nameTest} ]=> ${g_StatusCurrentTest} `;
 
     let xPath;
@@ -219,8 +221,13 @@ let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
                     }
                     // Открыть новый экземпляр Браузера и залогиниться под Парфёновой
 
-                    resOk = await SetDriverCheck(LoginData, DealData.objTransporterCompany.DriverData);
-
+                    resOk = await UnSetDriverCheck(LoginData, DealData.objTransporterCompany.DriverData);
+                    if(!resOk){
+                        throw `Fail -> Не удалось снять пометку "Требует проверки"`;
+                    }
+                    let strFIO = LoginData.strUserLastName + ` ` + LoginData.strUserFirstName + ` ` + LoginData.strUserMiddleName;
+                    let C1= `\x1b[38;5;2m`, C2 = FRGB(0,0,5,0), C0 = `\x1b[0m`;
+                    await console.log(`${C1}\t`, `Проверка документов Водителя - Пользователь(${C2} ${strFIO} ${C1}) Успешно снял пометку "Требует проверки" в карточке Водителя - OK`, `${C0}`);
                     break;
                 case "Нельзя передать сделку под контроль МЦ без подписанной Заявки с Перевозчиком! Загрузите файл !":
                     NumErrorNoFileTransporter++;
@@ -248,7 +255,7 @@ let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
 
         } // while (enableError) -------------------------------------------
         let strTmpError = `БАГ !!! -> При переводе статуса сделки не было требования о`;
-        if(NumErrorNoTimeFirstCall < 1){
+        if(NumErrorNoTimeFirstCall < 1 && NumErrorTimeFirstCallCannotBeInThePast < 1){
             await console.log('\x1b[38;5;1m\t', `${strTmpError}б Установке Времени Первого звонка Водителю !!!`, '\x1b[0m');
         }
         if(NumErrorNoFileTransporter < 1) {
@@ -279,12 +286,12 @@ let NewDealSetStatusInTable = async (browser, page, DealData, LoginData) => {
 
 }; // ТЕСТ let NewDealSetStatusInTable = async (browser, page, DealData)
 
-SetDriverCheck = async function(LoginData, ContactData){
-    let xPath, resOk;
+UnSetDriverCheck = async function(LoginData, ContactData){
+    let NewBrowser, NewPage, xPath, resOk;
     try {
         let NewB = require('../tests_modules/login.js');
-        let NewBrowser = await NewB.StartBrowser();
-        let NewPage = await NewB.BrowserGetPage(NewBrowser, g_FrontCfoFoxURL);
+        NewBrowser = await NewB.StartBrowser();
+        NewPage = await NewB.BrowserGetPage(NewBrowser, g_FrontCfoFoxURL);
         resOk = await NewB.LoginCrm(NewPage, NewBrowser, LoginData);
         await WaitRender(NewPage);
        // await WaitMS(5000);
@@ -308,10 +315,16 @@ SetDriverCheck = async function(LoginData, ContactData){
         // Снимаем слушателя
         await ResponsesListener(NewPage, strUrls, false, strUrls.length);
         if(!resOk){
-            throw `Fail -> ResponsesListenerWaitForAllResponses(31000)(${strUrls})`;
+            throw `Fail -> ResponsesListenerWaitForAllResponses(31000)`;
         }
         await WaitRender(NewPage);
-
+        await NewPage.evaluate(pageCursor, false); // true - BIG курсор )))
+        await WaitRender(NewPage);
+        // Плашка блокировки одновременного редактирования Кнопка "Кикнуть первого"
+        resOk = await BlockEditCheck(NewPage, 0, `UnSetDriverCheck` , true);
+        if(!resOk){
+            throw `Fail -> Плашка блокировки одновременного редактирования BlockEditCheck(UnSetDriverCheck)`;
+        }
         //await WaitMS(5000);
 
         let xNeedCheck = `//span[@class="fox-checkbox-label"][contains(text(), "Требует проверки")]`;
@@ -333,17 +346,17 @@ SetDriverCheck = async function(LoginData, ContactData){
             throw `Fail -> Сохранить контакт Водителя ClickByXPath(${xButtonSaveContact})`;
         }
 
-
         // await ScreenLog(NewPage, "Новый Браузер", 3);
         await WaitRender(NewPage);
         await NewBrowser.close();
         return true;
     }catch (e) {
         await console.log(e);
-        await ScreenLog(NewPage, "Новый Браузер -> SetDriverCheck", 1);
+        await ScreenLog(NewPage, "Новый Браузер -> UnSetDriverCheck", 1);
+        await NewBrowser.close();
         return false;
     }
-}; // SetDriverCheck
+}; // UnSetDriverCheck
 
 module.exports.DealCheckNewInTable = DealCheckNewInTable;
 module.exports.NewDealSetStatusInTable = NewDealSetStatusInTable;

@@ -119,7 +119,7 @@ let BrowserGetPage = async (browser, strPageURL) => {
 
         page.on('dialog', async dialog => {
             g_strDialogMessage = dialog.message();
-            await console.log('\x1b[38;5;3m\t', g_strDialogInitiator + ` => АВТО_ПОДТВЕРЖДЕНИЕ:` + dialog.message() + ` [ OK ]`, '\x1b[0m');
+            await console.log(`${FRGB(0,2,2,5)}\t`, g_strDialogInitiator + ` => АВТО_ПОДТВЕРЖДЕНИЕ:` + dialog.message() + ` [ OK ]`, FRGB());
             //await dialog.dismiss()
             await dialog.accept();
         })
@@ -492,9 +492,24 @@ let LoginCfo = async (page, LoginData) => {
     }
 
 };
+//--------
+//---------------------------------------------------------------------------------------------
+let tempLoginPGA = async (page, LoginData) => {
+    try {
+
+        return true; //<-------------EXIT !!!
+
+    }catch (e) {
+
+        return false; //<-------------EXIT !!!
+
+    }
+
+};// LoginPGA
 //-----------------------------------------------------------------------------------------------
 
 module.exports.StartBrowser = StartBrowser;
 module.exports.BrowserGetPage = BrowserGetPage;
 module.exports.LoginCrm = LoginCrm;
 module.exports.LoginCfo = LoginCfo;
+module.exports.tempLoginPGA = tempLoginPGA;

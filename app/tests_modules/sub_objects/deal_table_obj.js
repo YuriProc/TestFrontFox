@@ -754,7 +754,7 @@ class DealTable {
             ColName = this.CFO.Fields[1][0];
             ColValue = await this.CFO.GetCellValue(0, ColName);
             if(ColValue !== `1`){
-                await console.log(`${FRGB(0,5,1,1)}Статус Сделки должен быть "В обработке "ColValue(${ColValue}) !== "1"${FRGB()}`);
+                await console.log(`${FRGB(0,5,1,1)}Статус Сделки должен быть "В обработке" ColValue(${ColValue}) !== "1"${FRGB()}`);
             }else{
                 // await console.log(`ColValue(${ColValue}) === strDeal_ID(${strDeal_ID})`);
             }

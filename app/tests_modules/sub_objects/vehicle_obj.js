@@ -283,7 +283,7 @@ class Vehicle {
     async EnterLicensePlateNumber() {// ГОС НОМЕР
         let resOk;
         try {
-            await WaitRender(this.page);
+            await WaitRender(this.page);await WaitRender(this.page);
             // Инпут "Гос. номера"
             resOk = await SetTextByXPath(this.page, this.xInputLicensePlate, this.VehicleData.strLicensePlate);
             if (!resOk){
@@ -291,7 +291,7 @@ class Vehicle {
                 await console.log(` Скриншот: (screenshot_EnterLicensePlateNumber.png)`);
                 throw ` FAIL => Инпут "Гос. номера" SetTextByXPath(${this.xInputLicensePlate})`;
             }
-            await WaitRender(this.page);
+            await WaitRender(this.page);await WaitRender(this.page);
             // https://dev.api.cfo.tl.ee/api/opendatabot/full-vehicle?force=false&registration_certificate_number=
             // https://dev.api.cfo.tl.ee/api/opendatabot/full-vehicle?force=false&license_plate=
             let strUrls = [

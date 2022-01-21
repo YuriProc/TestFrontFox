@@ -384,23 +384,28 @@ class Company{
             }
 
             // Плашка блокировки одновременного редактирования Кнопка "Кикнуть первого"
-            elPresent = await WaitForElementIsPresentByXPath(0, this.page, this.xBlockButtonKickFirst);
-            let i= 10;
-            while (elPresent && i>0) {
-
-                await ClickByXPath(this.page, this.xBlockButtonKickFirst);
-
-                await this.page.screenshot({path: g_PathSS + `screenshot_block${i}.png`, fullPage: true });
-                i--;
-                await WaitRender(this.page);
-                await WaitRender(this.page);
-                await WaitRender(this.page);
-                elPresent = await WaitForElementIsPresentByXPath(0, this.page, this.xBlockButtonKickFirst);
-                if (!elPresent) {
-                    await WaitRender(this.page);
-                    await WaitRender(this.page);
-                    await WaitRender(this.page);
-                }
+            // elPresent = await WaitForElementIsPresentByXPath(0, this.page, this.xBlockButtonKickFirst);
+            // let i= 10;
+            // while (elPresent && i>0) {
+            //
+            //     await ClickByXPath(this.page, this.xBlockButtonKickFirst);
+            //
+            //     await this.page.screenshot({path: g_PathSS + `screenshot_block${i}.png`, fullPage: true });
+            //     i--;
+            //     await WaitRender(this.page);
+            //     await WaitRender(this.page);
+            //     await WaitRender(this.page);
+            //     elPresent = await WaitForElementIsPresentByXPath(0, this.page, this.xBlockButtonKickFirst);
+            //     if (!elPresent) {
+            //         await WaitRender(this.page);
+            //         await WaitRender(this.page);
+            //         await WaitRender(this.page);
+            //     }
+            // }
+            // Плашка блокировки одновременного редактирования Кнопка "Кикнуть первого"
+            resOk = await BlockEditCheck(this.page, 1,`CheckCompanyForm`, true);
+            if(!resOk){
+                throw `Fail -> Плашка блокировки одновременного редактирования BlockEditCheck(CheckCompanyForm)`;
             }
             // Проверить плашку Ограниченных данных
             elPresent = await WaitForElementIsPresentByXPath(0, this.page, this.xNoResponsible);
