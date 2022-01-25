@@ -216,6 +216,10 @@ class Vehicle {
                 await console.log(` Скриншот: (screenshot_xButtonCheckInBaseActiveCF.png)`);
                 throw ` FAIL => Кнопка "Проверить в базе" ClickByXPath(${this.xButtonCheckInBaseActive})`;
             }
+            resOk = await WaitSpinner(this.page);
+            if(!resOk){
+                throw `Fail -> WaitSpinner(this.page , 31 сек);`;
+            }
             // Ждём завершения всех запросов по карточки Транспорта
             resOk = await ResponsesListenerWaitForAllResponses(31000);
             if(!resOk){
@@ -307,6 +311,10 @@ class Vehicle {
                 await console.log(` Скриншот: (screenshot_xButtonCheckInBaseActiveLP.png)`);
                 throw ` FAIL => Кнопка "Проверить в базе" ClickByXPath(${this.xButtonCheckInBaseActive})`;
             }
+            resOk = await WaitSpinner(this.page);
+            if(!resOk){
+                throw `Fail -> WaitSpinner(this.page , 31 сек);`;
+            }
             // Ждём завершения всех запросов по карточки Транспорта
             resOk = await ResponsesListenerWaitForAllResponses(31000);
             if(!resOk){
@@ -372,7 +380,7 @@ class Vehicle {
             // подождать пока будет активен Селект "Тип транспорта"
             resOk = await WaitForElementIsPresentByXPath(4000, this.page, this.xSelectVehicleTypeActive);
             if (!resOk) {
-                throw `FAIL => НЕ активен Селект "Тип транспорта" ClickByXPath(${this.xSelectVehicleType})`;
+                throw `FAIL => НЕ активен Селект "Тип транспорта" WaitForElementIsPresentByXPath(4000, ${this.xSelectVehicleTypeActive})`;
             }
             //await WaitRender(this.page);
 

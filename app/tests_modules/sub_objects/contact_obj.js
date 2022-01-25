@@ -123,6 +123,10 @@ class Contact {
 
         // Табличное Редактирование Закрыть "X"
         this.xTabEditClose = `//div[contains(@id, "data-table-contact-modal")]//button[@class="close"][contains(text(), "×")]`;
+        // Кнопка "Скопировать всё"
+        this.xButtonCopyAll = `//button[i[@class="icon-copy"]][contains(text(), "Скопировать всё")]`;
+        // Текст Ареа "Комментарий"
+        this.xComment = `//header[@class="crm-view__header crm-contact__header"]//fieldset[legend[contains(text(), "Комментарий")]]//textarea`;
 
         // в Контакт Кнопка "Сохранить"
         this.xButtonSaveContact = `//div[@class="crm-contact__store"]//button[@type="button"][contains(@class, "primary")][contains(text(), "Сохранить")]`;
@@ -950,9 +954,18 @@ class Contact {
             if (!resOk){
                 throw `FAIL => this.AddVehicleFromDriver(1)`;
             }
+
             await WaitRender(this.page);
+
             // await console.log(`TEMP________ CreateNewDriverWithVehicles`);
             // await TempStop(this.page);
+
+            // Кнопка "Скопировать всё"
+            resOk = await this.DriverInfoCopyAll();
+            if (!resOk){
+                throw `FAIL => this.DriverInfoCopyAll();`;
+            }
+
             // Сохраним Контакт
             resOk = await this.CreateContactSaveContact();
             if (!resOk){
@@ -962,7 +975,8 @@ class Contact {
 
             return true;
         } catch (e) {
-            await console.log(`${e} \n FAIL in CreateNewDriverWithVehicles`);
+            let Msg = `${e} \n FAIL in CreateNewDriverWithVehicles`;
+            await ScreenLog(this.page, Msg, 1);
             return false;
         }
     }//async CreateNewDriverWithVehicles()
@@ -1112,10 +1126,47 @@ class Contact {
             return false;
         }
     }//async LoadNewFileInContact()
+     //----------------------------------------
+    async DriverInfoCopyAll() {
+        let resOk;
+        try {
+            await WaitRender(this.page);
+            const context = this.browser.defaultBrowserContext();
+            await context.overridePermissions(g_FrontCfoFoxURL, ['clipboard-read', 'clipboard-write']);
+            // Кнопка "Скопировать всё"
+            resOk = await ClickByXPath(this.page, this.xButtonCopyAll);
+            if (!resOk){
+                throw `FAIL => ClickByXPath(this.page, this.xButtonCopyAll);`;
+            }
+            await WaitRender(this.page);
+            let strClip = await this.page.evaluate(() => navigator.clipboard.readText());
+            // await console.log(`strClip=${strClip}`);
+            // Текст Ареа "Комментарий"
+            resOk = await ClickByXPath(this.page, this.xComment);
+            if (!resOk){
+                throw `FAIL => ClickByXPath(this.page, this.xComment);`;
+            }
+            await WaitRender(this.page);
+
+
+            resOk = await SetTextByXPath(this.page, this.xComment, strClip);
+            if (!resOk){
+                await console.log(`FAIL => SetTextByXPath(this.page, this.xComment, strClip);`);
+            }
+            await WaitRender(this.page);
+            // await ScreenLog(this.page, `Коммент`, 3);
+
+            return true;
+        } catch (e) {
+            await console.log(`${e} \n FAIL in DriverInfoCopyAll`);
+            return false;
+        }
+    }//async DriverInfoCopyAll()
     //----------------------------------------
     async TemplateTemp() {
+        let resOk;
         try {
-            let resOk;
+
 
             return true;
         } catch (e) {

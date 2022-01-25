@@ -46,6 +46,7 @@ let DriverCheckNV2Page = require('./tests_modules/driver_check_new_v2');
 let VehicleCNPage = require('./tests_modules/vehicle_create_new');
 let VehicleCNV2Page = require('./tests_modules/vehicle_create_new_v2');
 let VehicleCheckNV2Page = require('./tests_modules/vehicle_check_new_v2');
+let MCPage = require('./tests_modules/mc_clear_call_list');
 
 let DealCNPage = require('./tests_modules/deal_create_new');
 let DealCheckNPage = require('./tests_modules/deal_check_new');
@@ -77,6 +78,16 @@ let OpenFox = async () => {
         let {DataForTests} = require("./data/data_for_tests.js");
         let Data = new DataForTests();
         await Data.SetAllDataVariables();
+
+        //--------
+
+        // await console.log(`----- StartNewBrowser PGA.TempSetPass--------`);
+        // let resPGA = await PGA.TempSetPass(true);
+        // await TempStop(page);
+        //-------
+
+
+
         resOk = await DeleteAllScreenshots(g_PathSS);
         if(!resOk){
             await console.log('\x1b[38;5;1m', `Ошибка удаления файлов Скринов (${g_PathSS})`, '\x1b[0m');
@@ -90,6 +101,16 @@ let OpenFox = async () => {
             throw 'Ошибка OpenConfig !!!';//<--специальный вызов ошибки!
         }
         g_StrOutLog += `Тесты ========================================\n`;
+
+
+        //-----
+       resOk = await MCPage.MC_Clear_Call_List(Data.LoginDataM, Data.DealData1);
+await WaitStop(`Тут index--------------------------------------------`);
+await console.log(`Какого хрена !!!`);
+
+
+        //-----
+
         browser = await LPage.StartBrowser(true);
 
         //let strLoginCrmFoxURL = g_FrontCrmFoxURL + '/login';
@@ -101,8 +122,6 @@ let OpenFox = async () => {
 
 
         RNum = randomInt(1000, 9999);
-
-
 
     if(true){    // <-temp!!!!!
         //------------START Для тестов--------------------------------------------------------------
@@ -206,10 +225,8 @@ await console.log(`NumTests=${i}`);
            //
            //
            //  Data.DealData1 = await DealCheckNPage.DealCheckNewInTable(browser, page, Data.DealData1);
-           // //  // await console.log(`-----StartNewBrowser`);
-            let resPGA = await PGA.TempSetPass(true);
-            await TempStop(page);
-           //
+
+
            //  Data.DealData1 = await DealCheckNPage.NewDealSetStatusInTable(browser, page, Data.DealData1, Data.LoginDataP);
            //  if(!g_ShowActionInBrowser){
            //      await browser.close();
@@ -217,6 +234,7 @@ await console.log(`NumTests=${i}`);
            //  await TempStop(page);
            // //==========
           //Data.CompanyData1.strCompanyCode = `41269680`;//`38885174`;
+
             let MaxTry = 10;
             resOk = await GNEPage.CompanyTableGetNewEDRPOU(browser, page, MaxTry, Data.CompanyData1.strCompanyCode);
             if (resOk === false){

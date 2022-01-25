@@ -2,17 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f9b755b-153b-451e-a3a1-edd9dcea0179" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/tests_modules/pga.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/pga_obj.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/tests_modules/mc_clear_call_list.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/data/global_variables.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/global_variables.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/data/data_for_tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/data_for_tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/global_functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/global_functions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/auto_kiker.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/deal_check_new.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/deal_check_new.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/company_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/location_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/location_obj.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/mc_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/mc_table_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -92,7 +91,10 @@
       <workItem from="1642494835421" duration="16222000" />
       <workItem from="1642580195402" duration="19004000" />
       <workItem from="1642665437792" duration="18322000" />
-      <workItem from="1642752817924" duration="16129000" />
+      <workItem from="1642752817924" duration="16221000" />
+      <workItem from="1643013149111" duration="1221000" />
+      <workItem from="1643024538076" duration="10410000" />
+      <workItem from="1643097234276" duration="11420000" />
     </task>
     <servers />
   </component>

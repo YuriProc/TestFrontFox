@@ -1479,6 +1479,55 @@ TempStop = async function(page, WarnText=``){
     }
     await page.waitFor(98765400);
 };
+//------------------------
+WaitStop = async function(WarnText=``){
+    let dtEnd = new Date(Date.now());
+    await console.log(`Временно СТОП \nDT:${dtEnd}`);
+    let dtAll = dtEnd - g_StartTimeMS;
+    let strDtAll = msToHHMMSS(dtAll);
+    await console.log(`Времени от начала: ${strDtAll}`);
+    if(WarnText!==``){
+        await console.log(WarnText);
+    }
+    await WaitMS(98765400);
+};
+//--------------------
+
+//--------------------
+DateTimeNow = async function(){
+    let date_ob = new Date();
+    function IntTwoChars(i) { // Добавляет "0" если цифра одна (5 => 05)
+        return (`0${i}`).slice(-2);
+    }
+// current date
+// adjust 0 before single digit date
+    let day = IntTwoChars(date_ob.getDate());
+
+// current month
+    let month = IntTwoChars(date_ob.getMonth());
+
+// current year
+    let year = date_ob.getFullYear();
+
+// current hours
+    let hours = IntTwoChars(date_ob.getHours());
+
+// current minutes
+    let minutes = IntTwoChars(date_ob.getMinutes());
+
+// current seconds
+    let seconds = IntTwoChars(date_ob.getSeconds());
+
+// prints date in YYYY-MM-DD format
+//     console.log(year + "-" + month + "-" + day);
+
+// prints date & time in YYYY-MM-DD HH:MM:SS format
+ //    console.log(year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds);
+
+// prints time in HH:MM format
+ //    console.log(hours + ":" + minutes);
+   return day + "." + month + "." + year + " " + hours + ":" + minutes + ":" + seconds;
+};
 //--------------------
 LogoClick = async function(page){
   let resOk, xPath;
@@ -1702,6 +1751,19 @@ TypeByXPath__PromiseAll = async function (page , MyXPath, MyText) {
         return false;
     }
 }
+//-----------------------------------------
+SetFocusByXPath = async function (page , xPath, Num = 0) {
+    let linkHandlers;
+    try {
+        linkHandlers = await page.$x(xPath);
+        if (linkHandlers.length > Num) {
+            await linkHandlers[Num].focus();
+        }
+    }catch (e) {
+        await console.log(`Ошибка внутр SetFocusByXPath(linkHandlers.length=${linkHandlers.length}, xPath=${xPath})`);
+    }
+}
+
 //-----------------------------------------------------------------------------------
 SetTextByXPath = async function (page , MyXPath, MyText) {
     try {

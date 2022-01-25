@@ -2776,11 +2776,13 @@ class Deal {
             if (!resOk) {
                 throw `FAIL -> Не нашли свободного времени`;
             }
-
+            await WaitRender(this.page);
 
             // Нажать на кнопку "Подтвердить"
-            await WaitForElementIsPresentByXPath(1000, this.page, this.xFirstCallTimeButtonActive);
-            await WaitRender(this.page);
+            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xFirstCallTimeButtonActive);
+            if(!resOk){
+                throw `FAIL -> Нажать на кнопку "Подтвердить" WaitForElementIsPresentByXPath(2000, this.page, this.xFirstCallTimeButtonActive);`;
+            }
             resOk = await ClickByXPath(this.page, this.xFirstCallTimeButtonActive);
             if(!resOk){
                 throw `FAIL -> Нажать на кнопку "Подтвердить" ClickByXPath(this.page, this.xFirstCallTimeButtonActive);`;
@@ -2788,7 +2790,8 @@ class Deal {
             await WaitRender(this.page);
             let strTimeFirstCall = await ElementGetInnerText(this.page, 0, this.xFirstCallTimeInput);
             if (strTimeFirstCall !== ``) {
-                await console.log('\x1b[38;5;2m\t', `Установка "Время первого прозвона" (${strTimeFirstCall}) - OK !!!`, '\x1b[0m');
+                let strTN = await DateTimeNow();
+                await console.log('\x1b[38;5;2m\t', `Установка "Время первого прозвона" (${strTimeFirstCall}) - сейчас (${strTN}) - OK !!!`, '\x1b[0m');
             }else{
                 throw `"Время первого прозвона" - НЕ Установилось - пустое значение !!!`;
             }

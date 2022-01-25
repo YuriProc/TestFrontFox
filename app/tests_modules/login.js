@@ -44,6 +44,7 @@ let StartBrowser = async (ShowText=false) => {
 
         });
         let tempBV = await browser.version();
+
         if(ShowText){ await console.log(`tempBV=${tempBV}`);}
 
 // '--dns-prefetch-disable',
@@ -277,19 +278,19 @@ let LoginCrm = async (page, browser, LoginData, SpeedTest= false ) => {
         // await page.reload();
         // await console.log(`EndReload`);
         //
-        let reqUrl = `${g_BackCfoFoxURL}/api/cfo`;
-
-        resOk = await ResponseListener(page, reqUrl, true);
-
-        resOk = await ResponseListenerWaitForResponse(65000);
-        if(!resOk){
-            let strPSS = g_PathSS + `screenshot_login.png`;
-            await this.page.screenshot({path: strPSS, fullPage: true});
-            await console.log(`Скриншот: ${strPSS}`);
-            await ResponseListener(page, reqUrl, false);
-            throw `FAIL => ResponseListenerWaitForResponse(${reqUrl})`;
-        }
-        resOk = await ResponseListener(page, reqUrl, false);
+        // let reqUrl = `${g_BackCfoFoxURL}/api/cfo`;
+        //
+        // resOk = await ResponseListener(page, reqUrl, true);
+        //
+        // resOk = await ResponseListenerWaitForResponse(65000);
+        // if(!resOk){
+        //     let strPSS = g_PathSS + `screenshot_login.png`;
+        //     await page.screenshot({path: strPSS, fullPage: true});
+        //     await console.log(`Скриншот: ${strPSS}`);
+        //     await ResponseListener(page, reqUrl, false);
+        //     throw `FAIL => ResponseListenerWaitForResponse(${reqUrl})`;
+        // }
+        // resOk = await ResponseListener(page, reqUrl, false);
 
         resOk = await WaitUntilXPathExist(page, 12000, `//span[@class="spinner-border"]`);
         await WaitRender(page);

@@ -36,6 +36,15 @@ class DataForTests {
             strPassword: '1111',
         };//this.LoginDataR
         //--------------------------------------------------------------
+        // Юзер 3 Данные для логина
+        this.LoginDataM = {
+            strUserLastName: 'Желтоухова',
+            strUserFirstName: 'Наталя',
+            strUserMiddleName: 'Вікторівна',
+            strEmail: 'zheltouhova.n@transloyd.com',
+            strPassword: 'wfU2z',
+        };//this.LoginDataR
+        //--------------------------------------------------------------
         this.CompanyData1 = {
             strCompanyCode: await GetFunnyStr('StrCompanyCodeArray'),//'41038088'// '35054264',//'38351188', //CodeCompany, //CodeCompany, //38462049 нет сокр названия
             strCompanyID: '', // <= Заполнится автоматически при проверке Компании !!!

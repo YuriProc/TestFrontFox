@@ -907,7 +907,6 @@ class Location {
                 // Подбор Точки на карте
                 resOk = await this.RetrySelectPointAndSaveLocation();
                 if (!resOk) {
-
                         throw `FAIL => Подбор Точки на карте this.RetrySelectPointAndSaveLocation();`;
                     }
             }else{
@@ -929,6 +928,7 @@ class Location {
 
             return true;
         }catch (e) {
+            await ScreenLog(this.pageTableLocations, `clickSaveLocation` , 3);
             await this.pageTableLocations.close();// например, закрыть
             await console.log(`${e} \n FAIL in clickSaveLocation`);
             return false;
@@ -995,6 +995,9 @@ class Location {
             await WarningsRemove(this.pageTableLocations);
 
             resOk = await ClickByXPath(this.pageTableLocations, this.xButtonSaveLocationActive);
+            if(!resOk){
+                throw `FAIL -> ClickByXPath(this.pageTableLocations, this.xButtonSaveLocationActive);`;
+            }
             let strWarning = await WarningsRead(this.pageTableLocations, 21000);
             if( await SubStrIsPresent('Локация успешно сохранена!', strWarning)) {
                 await console.log('\x1b[38;5;2m\t', `Сообщение (${strWarning}) - OK !`, '\x1b[0m');
