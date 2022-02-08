@@ -81,6 +81,11 @@ let OpenFox = async () => {
 
         //--------
 
+        let strMC = await getMCNeedTime(1000*60*(3+0.5)); // за 3 мин + время на скрипты
+        await console.log(`getMCNeedTime=(${strMC})`);
+        process.exit(0);
+
+        await WaitStop(`Тут index 0 --------------------------------------------`);
         // await console.log(`----- StartNewBrowser PGA.TempSetPass--------`);
         // let resPGA = await PGA.TempSetPass(true);
         // await TempStop(page);
@@ -104,9 +109,10 @@ let OpenFox = async () => {
 
 
         //-----
-       resOk = await MCPage.MC_Clear_Call_List(Data.LoginDataM, Data.DealData1);
-await WaitStop(`Тут index--------------------------------------------`);
-await console.log(`Какого хрена !!!`);
+//        resOk = await MCPage.MC_Clear_Call_List(Data.LoginDataM, Data.DealData1);
+//
+// await WaitStop(`Тут index--------------------------------------------`);
+// await console.log(`Какого хрена !!!`);
 
 
         //-----
@@ -160,7 +166,11 @@ await console.log(`Какого хрена !!!`);
 
 
 
-
+        Data.DealData1.strDealID = `46846`;
+        Data.DealData1.strStatusID = `1`;
+        Data.DealData1 = await DealCheckNPage.NewDealSetStatusInTable(browser, page, Data.DealData1, Data.LoginDataP);
+        await WaitStop(`Тут index 2 --------------------------------------------`);
+        await console.log(`Какого хрена 2 !!!`);
 // await TempStop(page, `---- BEFORE -----`);
         //--------
 
@@ -512,7 +522,7 @@ await console.log(`NumTests=${i}`);
 
     dtEnd = new Date(Date.now());
     dtAll = dtEnd - dtStart;
-    strDtAll = msToHHMMSS(dtAll);
+    strDtAll = msToTextHHMMSS(dtAll);
 
     if (g_OutToLogFile) {
         try {

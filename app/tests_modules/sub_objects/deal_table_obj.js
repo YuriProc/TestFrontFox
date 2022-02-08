@@ -849,7 +849,7 @@ class DealTable {
             // }
 
             // await console.log(`----------------------------------------------------------------------`);
-            let strDtAll = msToMMSSMS(g_RecEventListener.timeAll);
+            let strDtAll = msToTextMMSSMS(g_RecEventListener.timeAll);
             await console.log('\x1b[38;5;3m\t', `Открытие сделки ${strDtAll}` , '\x1b[0m');
             // await console.log(`----------------------------------------------------------------------`);
 
@@ -913,7 +913,7 @@ class DealTable {
             // }
 
             // await console.log(`----------------------------------------------------------------------`);
-            let strDtAll = msToMMSSMS(g_RecEventListener.timeAll);
+            let strDtAll = msToTextMMSSMS(g_RecEventListener.timeAll);
             await console.log('\x1b[38;5;3m\t', `Запрос на Открытие Модалки Заявки (П) ${strDtAll}` , '\x1b[0m');
             // await console.log(`----------------------------------------------------------------------`);
 

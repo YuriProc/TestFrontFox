@@ -408,20 +408,20 @@ class Deal {
         // "Создание заявки с перевозчиком" кнопка "Создать" Активная
         this.xButtonCreateOrderActive = `//button[@type="submit"][contains(text(),"Создать")][not(contains(@disabled, "disabled"))]`;
         // -- END --- Заявка с Перевозчиком ----
-        // Время первого прозвона
-        this.xFieldSetFirstCallTime = `//fieldset[legend[contains(text(),"Время первого прозвона")]]`;
-        this.xFirstCallTimeWrapper = this.xFieldSetFirstCallTime + `//div[@class="fox-book-time-input__wrapper"]`;
-        this.xFirstCallTimeInput = this.xFirstCallTimeWrapper + `/div[@id="fox-book-time-input-target"]`;
-        this.xFirstCallTimeButton = this.xFieldSetFirstCallTime + `//button[contains(text(),"Подтвердить")]`;
-        this.xFirstCallTimeButtonActive = this.xFirstCallTimeButton + `[not(contains(@disabled, "disabled"))]`;
-
-        this.xFirstCallTimePresentDay = this.xFieldSetFirstCallTime + `//div[@class="sub-title"]`;
-
-        this.xFirstCallTimeItemActive = this.xFieldSetFirstCallTime + `//div[@class="book-time-picker__item"][not(contains(@class , "disabled"))]`;
-        // Скролл на час
-        this.xFirstCallTimeHourAdd = this.xFieldSetFirstCallTime + `//div[@class="handle-change-hours-btn add"]`;
-        // Скролл на День
-        this.xFirstCallTimeDayAdd = this.xFieldSetFirstCallTime + `//div[@class="handle-date-btn add"]`;
+        // // Время первого прозвона // в объекте mc_call_time_input_obj
+        // this.xFieldSetFirstCallTime = `//fieldset[legend[contains(text(),"Время первого прозвона")]]`;
+        // this.xFirstCallTimeWrapper = this.xFieldSetFirstCallTime + `//div[@class="fox-book-time-input__wrapper"]`;
+        // this.xFirstCallTimeInput = this.xFirstCallTimeWrapper + `/div[@id="fox-book-time-input-target"]`;
+        // this.xFirstCallTimeButton = this.xFieldSetFirstCallTime + `//button[contains(text(),"Подтвердить")]`;
+        // this.xFirstCallTimeButtonActive = this.xFirstCallTimeButton + `[not(contains(@disabled, "disabled"))]`;
+        //
+        // this.xFirstCallTimePresentDay = this.xFieldSetFirstCallTime + `//div[@class="sub-title"]`;
+        //
+        // this.xFirstCallTimeItemActive = this.xFieldSetFirstCallTime + `//div[@class="book-time-picker__item"][not(contains(@class , "disabled"))]`;
+        // // Скролл на час
+        // this.xFirstCallTimeHourAdd = this.xFieldSetFirstCallTime + `//div[@class="handle-change-hours-btn add"]`;
+        // // Скролл на День
+        // this.xFirstCallTimeDayAdd = this.xFieldSetFirstCallTime + `//div[@class="handle-date-btn add"]`;
 
 
         // Сделка Кнопка "Сохранить" Активная
@@ -2325,7 +2325,9 @@ class Deal {
         }
     } else if(await SubStrIsPresent(warnNoVehicleMaxWeight, strWarning) || await SubStrIsPresent(warnNoTrailerMaxWeight, strWarning) ){
 
-        await WarningsRemove(this.page);
+        let sE = await WarningsRemove(this.page);
+       // await console.log(`EEE=(${sE})`);
+
         if(await SubStrIsPresent(warnNoVehicleMaxWeight, strWarning)){
             if (noVehicleWeight > 0) {
                 throw `\x1b[38;5;1m\tFAIL -> Повторная ошибка(${warnNoVehicleMaxWeight})  - FAIL !!!\x1b[0m`;
@@ -2717,81 +2719,34 @@ class Deal {
     async SetTimeFirstCall() {
         let resOk;let tempXP;
         try {
-            // Раскрыть Дейт Пикер "Время первого прозвона"
-            resOk = await ScrollByXPathNum(this.page, this.xFirstCallTimeInput);
-            // /api/list-of-call-times/
-            let strUrls = [
-                `${g_BackCfoFoxURL}/api/list-of-call-times/`,
-            ];
-            resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
-            resOk = await ClickByXPath(this.page, this.xFirstCallTimeInput);
-            resOk = await ResponsesListenerWaitForAllResponses(31000);
-            await ResponsesListener(this.page, strUrls, false, strUrls.length);
 
-            // Скролл до кнопки, ибо не влазит на экран
-            resOk = await ScrollByXPathNum(this.page, this.xFirstCallTimeButton);
-            // Проверка что на ДейтПикере есть свободное время
-            let NumClickHour = 0;
-            let NumClickDay = 0;
-            let MaxTry = false;
-            let FreeTime;
-            let NumItem;
-            // В Сегодняшнем Дне нельзя выбирать первое свободное время (1/5 может упасть)(если минуты равны текущему времени)
-            let strPresentDay = await ElementGetInnerText(this.page, 0, this.xFirstCallTimePresentDay);
-            if (await SubStrIsPresent(`Сегодня`, strPresentDay)){
-                NumItem = 1; // Обезопасим себя от ошибки
-            }else {
-                NumItem = 0;
+
+            const {MCCallTimeInput} = require("../sub_objects/mc_call_time_input_obj.js");
+            let NewMCCallTimeInput = new MCCallTimeInput(this.browser, this.page, `Время первого прозвона`);
+            resOk = await NewMCCallTimeInput.OpenInput();
+            let strNeedFreeMcTime = await getMCNeedTime(1000*60*(3+0.5)); // за 3 мин + время на скрипты
+            resOk = await NewMCCallTimeInput.SelectNeededFreeTime(strNeedFreeMcTime);
+            if (resOk === ``){
+                await console.log(`\tБудем освобождать нужное время в таблице МЦ`);
             }
-            FreeTime = await WaitForElementIsPresentByXPathNum(500, NumItem,this.page, this.xFirstCallTimeItemActive);
+            // Тут пишу <- !!!!!!!!!!
 
-            while (!FreeTime && !MaxTry){
-                NumItem = 0;
-                if (NumClickHour > 3) {
-                    resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
-                    resOk = await ClickByXPath(this.page, this.xFirstCallTimeDayAdd);
-                    resOk = await ResponsesListenerWaitForAllResponses(31000);
-                    await ResponsesListener(this.page, strUrls, false, strUrls.length);
 
-                    await WaitRender(this.page);
-                    NumClickDay++;
-                    NumClickHour = 0;
-                }else{
-                    resOk = await ResponsesListener(this.page, strUrls, true, strUrls.length);
-                    resOk = await ClickByXPath(this.page, this.xFirstCallTimeHourAdd);
-                    resOk = await ResponsesListenerWaitForAllResponses(31000);
-                    await ResponsesListener(this.page, strUrls, false, strUrls.length);
-                    await WaitRender(this.page);
-                    NumClickHour++;
-                }
-                if(NumClickDay > 3){
-                    MaxTry = true;
-                }
-                FreeTime = await WaitForElementIsPresentByXPathNum(500, 0,this.page, this.xFirstCallTimeItemActive);
 
-            }// while (!FreeTime && !MaxTry)
+             // resOk = await NewMCCallTimeInput.SelectNearestFreeTime();
+            let strTimeFirstCall = await NewMCCallTimeInput.ClickConfirm();
 
-            // Клик по свободному времени
-            resOk = await ClickByXPathNum(this.page, NumItem, this.xFirstCallTimeItemActive);
-            if (!resOk) {
-                throw `FAIL -> Не нашли свободного времени`;
-            }
-            await WaitRender(this.page);
 
-            // Нажать на кнопку "Подтвердить"
-            resOk = await WaitForElementIsPresentByXPath(2000, this.page, this.xFirstCallTimeButtonActive);
-            if(!resOk){
-                throw `FAIL -> Нажать на кнопку "Подтвердить" WaitForElementIsPresentByXPath(2000, this.page, this.xFirstCallTimeButtonActive);`;
-            }
-            resOk = await ClickByXPath(this.page, this.xFirstCallTimeButtonActive);
-            if(!resOk){
-                throw `FAIL -> Нажать на кнопку "Подтвердить" ClickByXPath(this.page, this.xFirstCallTimeButtonActive);`;
-            }
-            await WaitRender(this.page);
-            let strTimeFirstCall = await ElementGetInnerText(this.page, 0, this.xFirstCallTimeInput);
             if (strTimeFirstCall !== ``) {
-                let strTN = await DateTimeNow();
+                let strTN = DateTimeNow();
                 await console.log('\x1b[38;5;2m\t', `Установка "Время первого прозвона" (${strTimeFirstCall}) - сейчас (${strTN}) - OK !!!`, '\x1b[0m');
+                let DT = Date.parse(strTimeFirstCall);
+                let TN = Date.parse(strTN);
+                let time_stampDealTimeFirstCall = new Date(Date.parse(strTimeFirstCall)).toString();
+                let time_stampTN = new Date(Date.parse(strTN)).toString();
+                await console.log(`Deal:${time_stampDealTimeFirstCall} (${DT})`);
+                await console.log(`Time:${time_stampTN} (${TN})`);
+                await getMCNeedTime();
             }else{
                 throw `"Время первого прозвона" - НЕ Установилось - пустое значение !!!`;
             }

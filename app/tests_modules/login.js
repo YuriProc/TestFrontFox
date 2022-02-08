@@ -20,8 +20,13 @@ let StartBrowser = async (ShowText=false) => {
             //headless: true,
             headless: StartBrowserInHeadLessMode,
             slowMo: 0,
+            //executablePath: 'node_modules/puppeteer/.local-chromium/mac-706915/chrome-mac/Chromium.app',
+            //executablePath: '/Users/urupa/WebstormProjects/TestFront/TestFrontFox/node_modules/puppeteer/.local-chromium/mac-706915/chrome-mac/Chromium.app',
+            //executablePath: 'node_modules/puppeteer/.local-chromium/mac-706915/chrome-mac/Chromium',
             //executablePath: 'node_modules/puppeteer/.local-chromium/mac-722234/chrome-mac/Chromium.app/Contents/MacOS/Chromium',
            // executablePath: 'node_modules/puppeteer/.local-chromium/mac-722234/chrome-mac/Chromium-copy2.app/Contents/MacOS/Chromium',
+            // executablePath: '/Applications/Google Chrome.app',
+          //  userDataDir: '~/.config/chromium',
             ignoreHTTPSErrors: true,
             //devtools: true,
             //ignoreDefaultArgs: ['--disable-extensions'],
@@ -34,9 +39,11 @@ let StartBrowser = async (ShowText=false) => {
                 '--ignore-certificate-errors',
                 '--disable-setuid-sandbox',
                 //'--disable-dns-over-https',
-                '--disable-web-security',
+             //   '--disable-web-security', // -- Ломает Сокет сервер !!!!!!!!!
                 //'--start-fullscreen',
-                //'--disable-web-security',
+             //   '--disable-web-security',
+             //   '--user-data-dir',
+              //  '--user-data-dir=~/.config/chromium',
                 //'--disable-safe-dns'
                 '--disable-notifications',
                 //'--profile-directory="Default"',
@@ -124,6 +131,9 @@ let BrowserGetPage = async (browser, strPageURL) => {
             //await dialog.dismiss()
             await dialog.accept();
         })
+       // page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
+
+
         //height = height - 120;
         // let width = 1700;
         // let height = 950;
@@ -304,7 +314,18 @@ if(SpeedTest) {
     for (let i = 0; i < 10; i++) {
         await WaitMS(100);
         //await process.stdout.write(`\x1B[0G${tStr} : ${i}%`);
-        await process.stdout.write(`\r${C}${tStr} : ${i}%${FRGB()}`);
+        // "\n \b \r \t"
+         // await process.stdout.write('\033[F'); // переместить курсор на строку вверх
+        // await process.stdout.write('\033[K'); // очистить строку
+        // await process.stdout.write(`\b`); // переместить курсор на один символ назад
+         // await process.stdout.write(`\r`); // переместить курсор в начало строки
+         // await process.stdout.write(`\f`); // переместить курсор на строку вниз, с сохранением текущей позиции по X (\v)
+         //await process.stdout.write('\x1B[10;5H'); // ??
+        // await process.stdout.write('\033[2K'); // очистить строку
+        // await process.stdout.write('\x1B[2J'); // ??
+        // await process.stdout.write('\x1B[1;1H'); // ??
+        await process.stdout.write('\033[K');
+            await process.stdout.write(`\r${C}${tStr} : ${i}%${FRGB()}`);
     }
     C = FRGB(0, 0, 5, 0);
     await process.stdout.write(`\r${C}${tStr} - успешно завершён !${FRGB()}`);
@@ -354,7 +375,7 @@ if(SpeedTest) {
     else {
         C = FRGB(0, 5, 1, 1);
     } // Красный
-    let strDtAll = msToMMSSMS(dtAll);
+    let strDtAll = msToTextMMSSMS(dtAll);
     await console.log(`${C}ResponseListener(${CfoUrl}) - ${ValSelect} сделок${FRGB()}`);
     //await console.log(`${C}Времени от начала: ${dtAll}${FRGB()}`);
     await console.log(`${C}Время загрузки: ${strDtAll}   |          ( ${dtAll} ms ) ${FRGB()}`);

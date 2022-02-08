@@ -2,17 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f9b755b-153b-451e-a3a1-edd9dcea0179" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/tests_modules/mc_clear_call_list.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/mc_call_time_input_obj.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/w_temp_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/data/data_for_tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/data_for_tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/global_functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/global_functions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/contact_obj.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests_modules/mc_clear_call_list.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/mc_clear_call_list.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/location_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/location_obj.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/deal_table_obj.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/mc_table_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/mc_table_obj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests_modules/sub_objects/vehicle_obj.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +93,15 @@
       <workItem from="1642752817924" duration="16221000" />
       <workItem from="1643013149111" duration="1221000" />
       <workItem from="1643024538076" duration="10410000" />
-      <workItem from="1643097234276" duration="11420000" />
+      <workItem from="1643097234276" duration="12048000" />
+      <workItem from="1643617366264" duration="22008000" />
+      <workItem from="1643706251743" duration="2255000" />
+      <workItem from="1643709907810" duration="12910000" />
+      <workItem from="1643793544539" duration="17770000" />
+      <workItem from="1643900199784" duration="1710000" />
+      <workItem from="1643966816158" duration="5935000" />
+      <workItem from="1644223264241" duration="701000" />
+      <workItem from="1644310864063" duration="19499000" />
     </task>
     <servers />
   </component>

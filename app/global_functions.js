@@ -44,7 +44,8 @@ WaitUntilXPathExist = async function (page, mSec, xPath, print = false) {
             }
         }
         while (await ElementIsPresent(page, xPath)){ // Ждём пока xPath присутствует
-            await page.waitFor(100);
+            // await page.waitFor(100);
+            await WaitMS(100);
             if(await Date.now() - startTime > mSec) { // Если прошло больше mSec сек то выход!!!
                 return false;
             }
@@ -241,30 +242,47 @@ WarningsRead = async function (page, timeout = 1000, print = true) {
 }
 //-----------------------------------------------------------------------------------
 WarningsRemove = async function (page, timeout = 1000) {
-
+    let myXPath = `//div[@class="notification-content"]`;
+    let xPWarn;
+    let ResOk;
+    let strInnerText;
+    let strAddWarning = ``;
+    let qLength;
+    let tn=0;
     try {
-        let myXPath = `//div[@class="notification-content"]`;
-        let ResOk;
-        let strInnerText;
-        let qLength;
-
         ResOk = await WaitForElementIsPresentByXPath(timeout, page, myXPath );
         if (!ResOk){
             return '';
         }else {
             qLength = await ElementGetLength(page, myXPath);
             strInnerText = await ElementGetInnerText(page, qLength-1, myXPath);
+            strAddWarning+= strInnerText;
+            xPWarn = myXPath + `[contains(text(), "${strInnerText}")]`;
             //await console.log('\x1b[38;5;3m', `         WarningsClick => (${strInnerText})`, '\x1b[0m');
             ResOk = await ClickByXPathNum(page, qLength-1, myXPath);
+            await WaitUntilXPathExist(page, 1000, xPWarn);
+            // if(!ResOk){
+            //     await console.log(`#ONE WarningsRemove qLength=(${qLength})`);
+            // }
+            await WaitRender(page);
             //await WaitUntilPageLoads(page);
             qLength = await ElementGetLength(page, myXPath);
             while (qLength>0) {
-                strInnerText+= `; ${await ElementGetInnerText(page, qLength-1, myXPath)}`;
+                strInnerText = await ElementGetInnerText(page, qLength-1, myXPath);
+                strAddWarning+= `; ${strInnerText}`;
+                xPWarn = myXPath + `[contains(text(), "${strInnerText}")]`;
                 ResOk = await ClickByXPathNum(page, qLength-1, myXPath);
+                await WaitUntilXPathExist(page, 1000, xPWarn);
+                // tn++;
+                // if(!ResOk){
+                //     await console.log(`#(${tn}) WarningsRemove qLength=(${qLength})`);
+                //     await ScreenLog(page, `SS #(${tn}) WarningsRemove`, 3);
+                // }
+                await WaitRender(page);
                 //await WaitUntilPageLoads(page);
                 qLength = await ElementGetLength(page, myXPath);
-            }
-            return strInnerText;
+            } // while (qLength>0)
+            return strAddWarning;
         }
     }catch (e) {
         await console.log('\x1b[38;5;1m', "WarningsRemove => error=>",e, '\x1b[0m');
@@ -853,8 +871,7 @@ ClickByXPath = async function (page , MyXPath, strUrls=null, wMS=31000) {
         }
        resOk = await ElementIsVisible(page, MyXPath);
         if (!resOk) {
-            await console.log(`Ошибка внутр ClickByXPath/ElementIsVisible:${MyXPath}`,'\n');
-            return false;
+            throw `Ошибка внутр ClickByXPath/ElementIsVisible:${MyXPath}\n`;
         }
         //await console.log(`ElementIsVisible${resOk}`,'\n');
     const linkHandlers = await page.$x(MyXPath);
@@ -883,6 +900,41 @@ ClickByXPath = async function (page , MyXPath, strUrls=null, wMS=31000) {
         }
     }catch (e) {
         await console.log(`Ошибка внутр ClickByXPath:${MyXPath}`, e ,'\n');
+        if(strUrls !== null){
+            await ResponsesListener(page, strUrls, false, strUrls.length);
+        }
+        return false;
+    }
+};
+//-----------------------------------------------------------------------------------
+ClickByXPathNum = async function (page ,Num ,MyXPath, strUrls=null, wMS=31000) { // Отсчёт с 0 !!!
+    try {let resOk;
+        if(strUrls !== null){
+            await ResponsesListener(page, strUrls, true, strUrls.length);
+        }
+        resOk = await ElementIsVisible(page, MyXPath);
+        if (!resOk) {
+            throw `Ошибка внутр ClickByXPathNum/ElementIsVisible:${MyXPath}`;
+        }
+
+        const linkHandlers = await page.$x(MyXPath);
+        if (await linkHandlers.length > Num) {
+            //await linkHandlers[0].click({ clickCount:20, delay: 500 });
+            await linkHandlers[Num].click();
+            //await page.evaluate(el => el.click(), linkHandlers[0]);
+            if(strUrls !== null){
+                resOk = await ResponsesListenerWaitForAllResponses(wMS);
+                await ResponsesListener(page, strUrls, false, strUrls.length);
+                if(!resOk){
+                    throw `Fail -> ResponsesListenerWaitForAllResponses(${wMS})`;
+                }
+            }
+            return true;
+        } else {
+            throw `linkHandlers.length(${linkHandlers.length}) < Num(${Num})+1`;
+        }
+    }catch (e) {
+        await console.log(`Ошибка внутр ClickByXPathNum:${MyXPath}\n`, e ,'\n');
         if(strUrls !== null){
             await ResponsesListener(page, strUrls, false, strUrls.length);
         }
@@ -1040,16 +1092,16 @@ DoubleClickByXPath = async function (page , MyXPath) {
     }
 };
 //-----------------------------------------------------------------------------------
-HoverByXPath = async function (page , MyXPath) {
+HoverByXPath = async function (page , MyXPath , Num = 0) {
     const linkHandlers = await page.$x(MyXPath);
     try {
-        if ((await linkHandlers.length) > 0) {
+        if ((await linkHandlers.length) > Num) {
 
-            await linkHandlers[0].hover();
+            await linkHandlers[Num].hover();
 
             return true;
         } else {
-            await console.log('Ошибка внутр HoverByXPath:(linkHandlers.length=',linkHandlers.length , ')','\n');
+            await console.log(`Ошибка внутр HoverByXPath:Num(${Num}):(linkHandlers.length=${linkHandlers.length})`,'\n');
             return false;
         }
     }catch (e) {
@@ -1078,22 +1130,7 @@ HoverByXPathNum = async function (page, Num, MyXPath) {
         return false;
     }
 };
-//-----------------------------------------------------------------------------------
-ClickByXPathNum = async function (page ,Num ,MyXPath) { // Отсчёт с 0 !!!
-    const linkHandlers = await page.$x(MyXPath);
-    try {
-        if (await linkHandlers.length > Num) {
-            //await linkHandlers[0].click({ clickCount:20, delay: 500 });
-            await linkHandlers[Num].click();
-            //await page.evaluate(el => el.click(), linkHandlers[0]);
-            return true;
-        } else {
-            return false;
-        }
-    }catch (e) {
-        return false;
-    }
-};
+
 //-----------------------------------------------------------------------------------
 ScrollByXPathNum = async function (page , MyXPath, Num=0) { // Num с Нуля !!!
     let elHandle;let resOk;
@@ -1472,7 +1509,7 @@ TempStop = async function(page, WarnText=``){
     let dtEnd = new Date(Date.now());
     await console.log(`Временно СТОП \nDT:${dtEnd}`);
     let dtAll = dtEnd - g_StartTimeMS;
-    let strDtAll = msToHHMMSS(dtAll);
+    let strDtAll = msToTextHHMMSS(dtAll);
     await console.log(`Времени от начала: ${strDtAll}`);
     if(WarnText!==``){
         await console.log(WarnText);
@@ -1484,51 +1521,14 @@ WaitStop = async function(WarnText=``){
     let dtEnd = new Date(Date.now());
     await console.log(`Временно СТОП \nDT:${dtEnd}`);
     let dtAll = dtEnd - g_StartTimeMS;
-    let strDtAll = msToHHMMSS(dtAll);
+    let strDtAll = msToTextHHMMSS(dtAll);
     await console.log(`Времени от начала: ${strDtAll}`);
     if(WarnText!==``){
         await console.log(WarnText);
     }
     await WaitMS(98765400);
 };
-//--------------------
 
-//--------------------
-DateTimeNow = async function(){
-    let date_ob = new Date();
-    function IntTwoChars(i) { // Добавляет "0" если цифра одна (5 => 05)
-        return (`0${i}`).slice(-2);
-    }
-// current date
-// adjust 0 before single digit date
-    let day = IntTwoChars(date_ob.getDate());
-
-// current month
-    let month = IntTwoChars(date_ob.getMonth());
-
-// current year
-    let year = date_ob.getFullYear();
-
-// current hours
-    let hours = IntTwoChars(date_ob.getHours());
-
-// current minutes
-    let minutes = IntTwoChars(date_ob.getMinutes());
-
-// current seconds
-    let seconds = IntTwoChars(date_ob.getSeconds());
-
-// prints date in YYYY-MM-DD format
-//     console.log(year + "-" + month + "-" + day);
-
-// prints date & time in YYYY-MM-DD HH:MM:SS format
- //    console.log(year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds);
-
-// prints time in HH:MM format
- //    console.log(hours + ":" + minutes);
-   return day + "." + month + "." + year + " " + hours + ":" + minutes + ":" + seconds;
-};
-//--------------------
 LogoClick = async function(page){
   let resOk, xPath;
     try {
@@ -1865,8 +1865,81 @@ NameNameFunction = function() {
 randomInt = async function(low, high) {
     return Math.floor(Math.random() * (high + 1 - low) + low);
 }
+//--------------------------------------------------------------------------------
+//--------------------
+function IntTwoChars(i) { // Добавляет "0" если цифра одна (5 => 05)
+    return (`0${i}`).slice(-2);
+}
+//--------------------
+TimeNowMMSS = async function(){
+    let date_ob = new Date();
+
+// current hours
+    let hours = IntTwoChars(date_ob.getHours());
+
+// current minutes
+    let minutes = IntTwoChars(date_ob.getMinutes());
+
+    return hours + ":" + minutes;
+};
+
+//--------------------
+DateTimeNow = function(){
+    let date_ob = new Date();
+// current date
+// adjust 0 before single digit date
+    let day = IntTwoChars(date_ob.getDate());
+
+// current month
+    let month = IntTwoChars(date_ob.getMonth() + 1);
+
+// current year
+    let year = date_ob.getFullYear();
+
+// current hours
+    let hours = IntTwoChars(date_ob.getHours());
+
+// current minutes
+    let minutes = IntTwoChars(date_ob.getMinutes());
+
+// current seconds
+    let seconds = IntTwoChars(date_ob.getSeconds());
+
+// prints date in YYYY-MM-DD format
+//     console.log(year + "-" + month + "-" + day);
+
+// prints date & time in YYYY-MM-DD HH:MM:SS format
+    //    console.log(year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds);
+
+// prints time in HH:MM format
+    //    console.log(hours + ":" + minutes);
+    return day + "." + month + "." + year + " " + hours + ":" + minutes + ":" + seconds;
+};
+//--------------------
 //-----------------------------------------------------------------------------------
-msToHHMMSS = function(ms_num) {
+msToHHMMSS = function(ms_num) { // 1000 , 3600 , 86400
+
+    // 24 часа , 60 мин , 60 сек , 1000 мсек
+    // 1644278400000
+    // 1644325580631
+
+
+    let sec_num = Math.floor(ms_num / 1000);
+
+    let days = Math.floor(sec_num / 86400);
+    //let hours_num = Math.floor((sec_num - (days * 86400)) / 60);
+     let hours = Math.floor((sec_num - (days * 86400)) / 3600);
+    let minutes = Math.floor((sec_num - (days * 86400) - (hours * 3600)) / 60);
+
+    let seconds = sec_num - (days * 86400) - (hours * 3600) - (minutes * 60);
+    if (hours < 10) {hours = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    //return hours+':'+minutes+':'+seconds;
+    //return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
+    return days+':'+hours+':'+minutes+':'+seconds;
+}
+msToTextHHMMSS = function(ms_num) {
     let sec_num =Math.floor(ms_num / 1000);
     let hours = Math.floor(sec_num / 3600);
     let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
@@ -1878,7 +1951,7 @@ msToHHMMSS = function(ms_num) {
     //return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
     return hours+' час, '+minutes+' мин, '+seconds+' сек';
 }
-msToHHMMSSMS = function(ms_num) {
+msToTextHHMMSSMS = function(ms_num) {
     let sec_num =Math.floor(ms_num / 1000);
     let hours = Math.floor(sec_num / 3600);
     let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
@@ -1893,7 +1966,7 @@ msToHHMMSSMS = function(ms_num) {
     //return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
     return hours+' час, '+minutes+' мин, '+seconds+' сек, '+m_seconds+' мс';
 }
-msToMMSSMS = function(ms_num) {
+msToTextMMSSMS = function(ms_num) {
     let sec_num =Math.floor(ms_num / 1000);
     let hours = Math.floor(sec_num / 3600);
     let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
@@ -1908,6 +1981,70 @@ msToMMSSMS = function(ms_num) {
     //return 'Ч:'+hours+' М:'+minutes+' С:'+seconds;
     return minutes+' мин, '+seconds+' сек, '+m_seconds+' мс';
 }
+msToMinutes = function (ms_num) {
+    let sec_num =Math.floor(ms_num / 1000);
+    let hours = Math.floor(sec_num / 3600);
+    let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    return minutes;
+}
+msToHours = function (ms_num) {
+    let sec_num =Math.floor(ms_num / 1000);
+   // let hours = Math.floor(sec_num / 3600);
+
+    let days = Math.floor(sec_num / 86400);
+
+    let hours = Math.floor((sec_num - (days * 86400)) / 3600);
+
+    return hours;
+}
+getMCNeedTime = async function (ms_delta = 0) { // 1000*60*3 (3 min)  ms_delta < 1000*60*57 минут
+    // за 3 мин + время на скрипты
+    // переход на след день не реализован
+    // let msNowTime = Date.parse(DateTimeNow());
+    let TimeZoneOffset = - (new Date()).getTimezoneOffset() / 60; // в часах
+    // await console.log(`TimeZoneOffset=(${TimeZoneOffset})`);
+     let msNowTime = Date.now() + TimeZoneOffset*60*60*1000; // + 2часа = 2*60*60*1000
+    //let msNowTime = Date.parse(new Date());
+    // let msNowTime = 123 + 11*1000 + 11*60*1000 + 11*60*60*1000 + 11*24*60*60*1000;
+        // текущая дата время сейчас + зазор по времени для выполнения скриптов
+    let msTimeLimit = msNowTime + ms_delta;
+
+    // получить текущие часы
+    let numHours = msToHours(msTimeLimit);
+    // let numHours = (new Date()).getHours();
+  //  await console.log(`numHours=(${numHours})`);
+    // получить текущие минуты
+    let numMinutes = msToMinutes(msTimeLimit);
+
+    //numMinutes = 56;
+    // получить ближайшее время кратное 3 минутам
+    let numMinutes_3 = 0;
+    for (let n = 0;n <= 57; n+= 3) {
+      //  await console.log(`n=(${n})`);
+        if(n > numMinutes){
+            numMinutes_3 = n;
+            break; // выход из for
+        }
+        if(n === 57) {
+            numHours++;
+            if (numHours === 24){
+                numHours = 0;
+            }
+        }
+    } // for (let n = 0;n <= 57; n+= 3)
+    if (numHours < 10 ) { numHours = `0` + numHours;}
+    if (numMinutes_3 < 10 ) { numMinutes_3 = `0` + numMinutes_3;}
+    let ResStr = `` + numHours + `:` + numMinutes_3;
+    // await console.log(`N3=(${numMinutes_3})`);
+    // await console.log(`numHours=(${numHours})`);
+    //
+    // let date_ob = new Date();
+    // await console.log(`nowTime=(${msNowTime}) = (${msToHHMMSS(msNowTime)})`);
+    // await console.log(`msTimeL=(${msTimeLimit}) = (${msToHHMMSS(msTimeLimit)})`);
+    // await console.log(`date_ob=(${date_ob})`);
+return ResStr;
+} // getMCNeedTime = async function (ms_delta = 0)
+// ---------------------------------------------------
 FRGB = function (FB,R,G,B) { // FB  - 0/1, (R G B - 0..5)
     if (FB === undefined) {return `\x1b[0m`;}
     //  https://en.wikipedia.org/wiki/ANSI_escape_code
@@ -1925,6 +2062,45 @@ FRGB = function (FB,R,G,B) { // FB  - 0/1, (R G B - 0..5)
         FBl = 48;
     }
     return `\x1b[${FBl};5;${N}m`;
+}
+//-----------------------------------------------------------------------------------
+consoleClearUpLine = async function() {
+    await process.stdout.write('\x1B[F'); // Вверх
+    await process.stdout.write('\x1B[2K'); // Очистить всю строку
+}
+//-----------------------------------------------------------------------------------
+MCSetAllIcons = async function(page) {
+    let resOk;
+    let xP = `//img[contains(@src, "https://dev.api.cfo.tl.ee/storage/files/DealMcStatus/")]`;
+    let strUrl;
+    let startTime = await Date.now();
+    try {
+        resOk = await ElementIsPresent(page, xP);
+        if (!resOk) {
+            return false;
+        }
+        while (resOk){
+            strUrl = await ElementGetAttribute(page, 0, 'src', xP);
+            if(strUrl === ``){
+                throw `\n Получен пустой адрес Иконки`;
+            }else {
+                let strUrlOk = strUrl.replace('/dev.api.cfo.tl.ee/', '/api.f.tl.ee/');
+                resOk = await ElementSetAttribute(page, 0, 'src', strUrlOk, xP);
+                if (!resOk) {
+                    throw `\n Не установлен Новый адрес Иконки`;
+                }
+            }
+            resOk = await ElementIsPresent(page, xP);
+        }// while (SetOk)
+        let dtAll = await Date.now() - startTime;
+        let strDtAll = msToTextMMSSMS(dtAll);
+        await console.log(`Иконки установлены за время: ${strDtAll}`);
+        return true;
+    }catch (e) {
+        await console.log(`MCSetAllIcons -> catch (e) ${e}`);
+        return false;
+    }
+
 }
 //-----------------------------------------------------------------------------------
 SaveTempPictureFromURL = async function(browser, strPicURL, MyFileName) {
@@ -2211,9 +2387,17 @@ ResponseListener = async function(page, requestUrl, setListener) {
                     return true;
                 }
 
-                if (request.url().includes(g_tempDataFromEventListener_requestUrl_func)) {
+                if (request.url().includes(g_tempDataFromEventListener_requestUrl_func)
+                    && request.method() !== `OPTIONS`) {
                     const response = await request.response();
-                    let resultJ = await response.json();
+                    let resultJ;
+                    try {
+                        resultJ = await response.json();
+                    }catch (e) {
+                        await console.log(`!!! -> (${g_tempDataFromEventListener_requestUrl_func})`);
+                        // await console.dir(response);
+                        // await console.log(`--------------------`);
+                    }
                     g_tempDataFromEventListener_requestUrl = request.url();
                     g_tempDataFromEventListener_json = resultJ;
                     g_tempDataFromEventListener_response = response;
@@ -2322,9 +2506,21 @@ ResponsesListener = async function(page, requestUrls, setListener, Q = 0) { // Q
                 }
 
                 for (let i=0;i<g_RecEventListener.requestUrlsArrayLength; i++) {
-                    if (request.url().includes(g_RecEventListener.requestUrls[i]) && g_RecEventListener.EventListener_responses[i] === ``) {
+                    if (request.url().includes(g_RecEventListener.requestUrls[i])
+                        && g_RecEventListener.EventListener_responses[i] === ``
+                        && request.method() !== `OPTIONS`) {
+                        // OPTIONS
                         const response = await request.response();
-                        let resultJ = await response.json();
+                        let resultJ;
+                        try {
+                            resultJ = await response.json();
+                        }catch (e) {
+                            await console.log(`!!! -> (${g_RecEventListener.requestUrls[i]})`);
+                            // await console.log(`request.method=(${request.method()})`);
+                            // await console.log(`--------------------`);
+                            // await console.dir(response,{ showHidden: true, depth: 4, colors: true });
+                            // await console.log(`--------------------`);
+                        }
                         g_RecEventListener.EventListener_requestUrls[i] = request.url();
                         g_RecEventListener.EventListener_jsons[i] = resultJ;
                         g_RecEventListener.EventListener_responses[i] = response;
@@ -2413,7 +2609,7 @@ ResponsesListenerWaitForAllResponses = async function (timeMS = 4000){
             } // for (let i = 1; i < g_RecEventListener.requestUrlsArrayLength; i++)
             if(!EmptyResponse){ // Если нет пустых Респонсов, значит всё выполнено !!!!!
                 g_RecEventListener.timeAll = await Date.now() - g_RecEventListener.startTime;
-                // let strDtAll = msToMMSSMS(dtAll);
+                // let strDtAll = msToTextMMSSMS(dtAll);
                return true;  // <--- Тут ПОЛОЖИТЕЛЬНЫЙ ВЫХОД !!!!!!
             }
             if ((await Date.now() - g_RecEventListener.startTime) > timeMS) {
@@ -2571,7 +2767,7 @@ BlockEditCheck = async function(page, btnN=1, OutText=``, MakeSS =false){
 } // BlockEditCheck = async function(page, btnN, OutText=false, MakeSS =false)
 //----------------------------------------
 MyJob = async function(mText) {
-        let tEnd = msToMMSSMS(await Date.now() - g_tempTimeStart);
+        let tEnd = msToTextMMSSMS(await Date.now() - g_tempTimeStart);
        await console.log(`MyJob -> mText=${mText} time=(${tEnd})--------------------------`);
 
 }

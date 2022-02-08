@@ -23,6 +23,9 @@ let MC_Clear_Call_List = async (LoginData, DealData) => {
 
         await WaitRender(NewPage);
         await NewPage.setViewport({width: g_width, height: g_height});
+        // await MCSetAllIcons(NewPage);
+        // await WaitRender(NewPage);
+        // await WaitStop(`Icons`);
         // Проверка URL
         let strPageURL = await NewPage.url();
         tStr = g_FrontCfoFoxURL + `/monitoring-center`;
@@ -33,10 +36,15 @@ let MC_Clear_Call_List = async (LoginData, DealData) => {
         let NewMCTable = new MCTable( NewBrowser, NewPage , DealData);
         resOk = await NewMCTable.CheckMCPage();
         if(!resOk){
-            throw `Fail -> NewMCTable.CheckMCPage();`;
+            // throw `Fail -> NewMCTable.CheckMCPage();`;
+            await console.log('\x1b[38;5;1m\t', `Проверка таблицы МЦ - Ошибки !!!`, '\x1b[0m');
         }else {
             await console.log('\x1b[38;5;2m\t', `Проверка таблицы МЦ - OK !!!`, '\x1b[0m');
         }
+        // Очистить очередь на прозвон (полностью)
+        resOk = await NewMCTable.ClearMCCallList();
+        await WaitStop(`MMMMCCCC---------`);
+
 
 
  // await TempStop(NewPage , `CheckMCPage`);
@@ -50,7 +58,7 @@ let MC_Clear_Call_List = async (LoginData, DealData) => {
         await g_SuccessfulTests++;
         await console.log('\x1b[38;5;2m', "Тест[", nameTest, "]=>", g_StatusCurrentTest, '\x1b[0m');
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
-        await NewBrowser.close();
+       // await NewBrowser.close();
         return true;// <----------------------------- EXIT OK!!!
 
     }catch (err) {
@@ -61,7 +69,7 @@ let MC_Clear_Call_List = async (LoginData, DealData) => {
         g_StrOutLog+=`=> ${g_StatusCurrentTest} \n`;
 
     }
-    await NewBrowser.close();
+   // await NewBrowser.close();
     return false;// <----------------------------- EXIT FAILED FALSE!!!
 };
 
